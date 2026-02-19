@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Home, User, LogOut } from "lucide-react";
+import { User, LogOut, Menu, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { AuthDialog } from "@/components/AuthDialog";
@@ -18,97 +18,148 @@ const Navbar = () => {
   const { user, signOut } = useAuth();
   const { isAdmin, isHost } = useUserRole();
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const navLinks = [
+    { label: "Experiences", to: "/services" },
+    { label: "Group Travel", to: "/group-travel" },
+    { label: "About", to: "/about" },
+    { label: "Contact", to: "/contact" },
+  ];
 
   return (
-    <nav className="border-b bg-card/95 backdrop-blur-sm sticky top-0 z-50">
-      <div className="container mx-auto px-2 sm:px-3 md:px-4">
-        <div className="flex items-center justify-between h-14 sm:h-16 gap-1 sm:gap-2">
-          <Link to="/" className="flex items-center gap-1 sm:gap-1.5 md:gap-2 flex-shrink-0">
-            <Home className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-primary" />
-            <span className="font-bold text-base sm:text-lg md:text-xl">Rentely</span>
-          </Link>
+    <>
+      <nav className="border-b border-border/40 bg-card/95 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16 md:h-20">
+            {/* Logo */}
+            <Link to="/" className="flex items-center gap-3 flex-shrink-0">
+              <div className="flex flex-col leading-none">
+                <span className="font-display text-xl md:text-2xl font-semibold tracking-wide text-foreground">
+                  KAISEN
+                </span>
+                <span className="text-[9px] md:text-[10px] tracking-[0.25em] text-primary font-sans font-medium uppercase">
+                  Travel Group
+                </span>
+              </div>
+            </Link>
 
-          <div className="hidden md:flex flex-1 justify-end items-center gap-6 mr-4">
-            <Link to="/" className="text-sm font-medium hover:text-primary transition-colors">
-              Home
-            </Link>
-            {user && (
-              <Link to="/guest/dashboard" className="text-sm font-medium hover:text-primary transition-colors">
-                Dashboard
-              </Link>
-            )}
-            <Link to="/become-host" className="text-sm font-medium hover:text-primary transition-colors">
-              Become a Host
-            </Link>
-            <Link to="/help-center" className="text-sm font-medium hover:text-primary transition-colors">
-              Help
-            </Link>
-          </div>
+            {/* Desktop nav */}
+            <div className="hidden md:flex items-center gap-8">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.label}
+                  to={link.to}
+                  className="text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
 
-          <div className="flex md:hidden flex-1 justify-end items-center gap-1 sm:gap-2">
-            <Link to="/" className="text-[10px] sm:text-xs font-medium hover:text-primary transition-colors px-1">
-              Home
-            </Link>
-            {user && (
-              <Link to="/guest/dashboard" className="text-[10px] sm:text-xs font-medium hover:text-primary transition-colors px-1">
-                Dashboard
-              </Link>
-            )}
-            <Link to="/become-host" className="text-[10px] sm:text-xs font-medium hover:text-primary transition-colors whitespace-nowrap px-1">
-              Become a Host
-            </Link>
-            <Link to="/help-center" className="text-[10px] sm:text-xs font-medium hover:text-primary transition-colors px-1">
-              Help
-            </Link>
-          </div>
-
-          <div className="flex items-center flex-shrink-0 ml-1 sm:ml-2">
-            {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="text-xs md:text-sm h-8 sm:h-9 px-2 sm:px-3">
-                    <User className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
-                    <span className="hidden sm:inline">Account</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link to="/guest/dashboard">Guest Dashboard</Link>
-                  </DropdownMenuItem>
-                  {isHost && (
+            {/* Auth */}
+            <div className="flex items-center gap-3 flex-shrink-0">
+              {user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="hidden md:flex items-center gap-2">
+                      <User className="h-4 w-4" />
+                      <span>Account</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link to="/host/dashboard">Host Dashboard</Link>
+                      <Link to="/guest/dashboard">My Trips</Link>
                     </DropdownMenuItem>
-                  )}
-                  {isAdmin && (
-                    <DropdownMenuItem asChild>
-                      <Link to="/admin/dashboard">Admin Dashboard</Link>
+                    {isHost && (
+                      <DropdownMenuItem asChild>
+                        <Link to="/host/dashboard">Host Dashboard</Link>
+                      </DropdownMenuItem>
+                    )}
+                    {isAdmin && (
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin/dashboard">Admin Dashboard</Link>
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={signOut}>
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Logout
                     </DropdownMenuItem>
-                  )}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={signOut}>
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Logout
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Button 
-                size="sm" 
-                className="rounded-full text-[10px] sm:text-xs md:text-sm px-2 sm:px-3 md:px-4 h-8 sm:h-9" 
-                onClick={() => setAuthDialogOpen(true)}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="hidden md:flex border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-none px-6 tracking-wider text-xs"
+                  onClick={() => setAuthDialogOpen(true)}
+                >
+                  Sign In
+                </Button>
+              )}
+
+              <Link to="/contact">
+                <Button
+                  size="sm"
+                  className="hidden md:flex rounded-none px-6 tracking-wider text-xs bg-primary hover:bg-primary/90"
+                >
+                  Plan Your Trip
+                </Button>
+              </Link>
+
+              {/* Mobile menu toggle */}
+              <button
+                className="md:hidden p-2"
+                onClick={() => setMobileOpen(!mobileOpen)}
+                aria-label="Toggle menu"
               >
-                Sign Up
-              </Button>
-            )}
+                {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-      
+
+        {/* Mobile menu */}
+        {mobileOpen && (
+          <div className="md:hidden border-t bg-card px-4 py-6 space-y-4">
+            {navLinks.map((link) => (
+              <Link
+                key={link.label}
+                to={link.to}
+                className="block text-sm font-medium tracking-wide py-2 text-foreground/80 hover:text-primary transition-colors"
+                onClick={() => setMobileOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
+            <div className="pt-4 space-y-3 border-t">
+              {user ? (
+                <>
+                  <Link to="/guest/dashboard" onClick={() => setMobileOpen(false)}>
+                    <Button variant="outline" className="w-full rounded-none">My Trips</Button>
+                  </Link>
+                  <Button variant="ghost" className="w-full rounded-none" onClick={signOut}>
+                    <LogOut className="h-4 w-4 mr-2" /> Logout
+                  </Button>
+                </>
+              ) : (
+                <Button variant="outline" className="w-full rounded-none border-primary text-primary" onClick={() => { setAuthDialogOpen(true); setMobileOpen(false); }}>
+                  Sign In
+                </Button>
+              )}
+              <Link to="/contact" onClick={() => setMobileOpen(false)}>
+                <Button className="w-full rounded-none bg-primary">Plan Your Trip</Button>
+              </Link>
+            </div>
+          </div>
+        )}
+      </nav>
+
       <AuthDialog open={authDialogOpen} onOpenChange={setAuthDialogOpen} />
-    </nav>
+    </>
   );
 };
 
