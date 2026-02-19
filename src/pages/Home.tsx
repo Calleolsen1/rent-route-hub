@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Users, Trophy, Star, Shield } from "lucide-react";
 import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar";
 import FAQSection from "@/components/home/FAQSection";
 import heroImage from "@/assets/kaisen-hero.jpg";
 import groupImage from "@/assets/kaisen-group.jpg";
@@ -89,6 +90,7 @@ const whyUs = [
 const Home = () => {
   return (
     <div className="min-h-screen">
+      <Navbar />
       {/* Hero */}
       <section className="relative min-h-[92vh] flex items-end overflow-hidden">
         <div className="absolute inset-0">
