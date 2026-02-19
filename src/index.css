@@ -2,88 +2,125 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+/* Kaisen Travel Group Design System
+   Palette: Deep Navy, Warm Gold, Cream, Terracotta
+   All colors MUST be HSL.
 */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap');
 
 @layer base {
   :root {
-    --background: 214 27% 97%;
-    --foreground: 215 25% 27%;
+    /* Deep navy background */
+    --background: 210 20% 97%;
+    --foreground: 222 35% 15%;
+
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 27%;
+    --card-foreground: 222 35% 15%;
+
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 27%;
-    --primary: 179 52% 16%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 214 27% 92%;
-    --secondary-foreground: 215 25% 27%;
-    --muted: 214 27% 92%;
-    --muted-foreground: 215 15% 55%;
-    --accent: 214 32% 91%;
-    --accent-foreground: 215 25% 27%;
+    --popover-foreground: 222 35% 15%;
+
+    /* Warm gold as primary */
+    --primary: 38 65% 38%;
+    --primary-foreground: 38 100% 97%;
+
+    --secondary: 210 20% 93%;
+    --secondary-foreground: 222 35% 15%;
+
+    --muted: 210 15% 93%;
+    --muted-foreground: 215 15% 52%;
+
+    --accent: 38 40% 90%;
+    --accent-foreground: 38 65% 25%;
+
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 220 33% 87%;
-    --input: 220 33% 87%;
-    --ring: 6 78% 67%;
-    --radius: 0.75rem;
+
+    --border: 215 20% 87%;
+    --input: 215 20% 87%;
+    --ring: 38 65% 38%;
+    --radius: 0.5rem;
+
     --success: 142 71% 45%;
     --success-foreground: 142 71% 35%;
     --warning: 38 92% 50%;
     --warning-foreground: 38 92% 40%;
     --info: 217 91% 60%;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-    --calendar-available: 173 59% 49%;
+
+    /* Deep navy for hero/dark sections */
+    --navy: 222 50% 12%;
+    --navy-foreground: 38 80% 85%;
+
+    /* Warm gold */
+    --gold: 38 65% 38%;
+    --gold-light: 38 70% 68%;
+    --gold-pale: 38 60% 92%;
+
+    /* Cream */
+    --cream: 40 40% 96%;
+    --cream-dark: 35 25% 88%;
+
+    /* Terracotta accent */
+    --terracotta: 18 55% 52%;
+    --terracotta-light: 18 45% 88%;
+
+    --sidebar-background: 222 50% 10%;
+    --sidebar-foreground: 38 60% 85%;
+    --sidebar-primary: 38 65% 38%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 222 40% 18%;
+    --sidebar-accent-foreground: 38 60% 85%;
+    --sidebar-border: 222 35% 22%;
+    --sidebar-ring: 38 65% 38%;
+
+    --calendar-available: 142 59% 49%;
     --calendar-blocked: 346 100% 64%;
     --calendar-booked: 220 33% 87%;
-    --calendar-selected: 178 49% 16%;
+    --calendar-selected: 38 65% 38%;
   }
 
   .dark {
-    --background: 215 28% 17%;
-    --foreground: 213 31% 91%;
-    --card: 215 25% 20%;
-    --card-foreground: 213 31% 91%;
-    --popover: 215 25% 20%;
-    --popover-foreground: 213 31% 91%;
-    --primary: 179 52% 25%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 215 20% 25%;
-    --secondary-foreground: 213 31% 91%;
-    --muted: 215 20% 25%;
-    --muted-foreground: 215 15% 65%;
-    --accent: 215 20% 25%;
-    --accent-foreground: 213 31% 91%;
+    --background: 222 50% 8%;
+    --foreground: 40 30% 90%;
+    --card: 222 40% 12%;
+    --card-foreground: 40 30% 90%;
+    --popover: 222 40% 12%;
+    --popover-foreground: 40 30% 90%;
+    --primary: 38 65% 55%;
+    --primary-foreground: 222 50% 8%;
+    --secondary: 222 35% 18%;
+    --secondary-foreground: 40 30% 90%;
+    --muted: 222 35% 18%;
+    --muted-foreground: 215 15% 60%;
+    --accent: 38 30% 22%;
+    --accent-foreground: 38 65% 75%;
     --destructive: 0 62% 30%;
-    --destructive-foreground: 213 31% 91%;
-    --border: 215 20% 30%;
-    --input: 215 20% 30%;
-    --ring: 6 78% 67%;
-    --success: 142 71% 45%;
-    --success-foreground: 142 71% 55%;
-    --warning: 38 92% 50%;
-    --warning-foreground: 38 92% 60%;
-    --info: 217 91% 60%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-    --calendar-available: 173 59% 49%;
+    --destructive-foreground: 40 30% 90%;
+    --border: 222 30% 25%;
+    --input: 222 30% 25%;
+    --ring: 38 65% 55%;
+    --navy: 222 50% 6%;
+    --navy-foreground: 38 80% 85%;
+    --gold: 38 65% 55%;
+    --gold-light: 38 70% 68%;
+    --gold-pale: 38 30% 20%;
+    --cream: 40 20% 15%;
+    --cream-dark: 35 15% 20%;
+    --terracotta: 18 55% 52%;
+    --terracotta-light: 18 30% 22%;
+    --sidebar-background: 222 50% 6%;
+    --sidebar-foreground: 38 60% 85%;
+    --sidebar-primary: 38 65% 55%;
+    --sidebar-primary-foreground: 222 50% 8%;
+    --sidebar-accent: 222 40% 14%;
+    --sidebar-accent-foreground: 38 60% 85%;
+    --sidebar-border: 222 35% 18%;
+    --sidebar-ring: 38 65% 55%;
+    --calendar-available: 142 59% 49%;
     --calendar-blocked: 346 100% 64%;
     --calendar-booked: 220 33% 87%;
-    --calendar-selected: 178 49% 16%;
+    --calendar-selected: 38 65% 55%;
   }
 }
 
@@ -93,13 +130,14 @@ All colors MUST be HSL.
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Jost', sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Clash Display', sans-serif;
-    font-weight: 500;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    letter-spacing: -0.01em;
   }
 }
 
@@ -107,9 +145,34 @@ All colors MUST be HSL.
   .glass-card {
     @apply bg-card/80 backdrop-blur-sm border border-border/50;
   }
-  
+
   .stat-card {
     @apply bg-card rounded-xl p-6 shadow-sm border border-border/50 hover:shadow-md transition-shadow;
+  }
+
+  .kaisen-section {
+    @apply py-20 md:py-28;
+  }
+
+  .kaisen-navy {
+    background-color: hsl(var(--navy));
+    color: hsl(var(--navy-foreground));
+  }
+
+  .kaisen-cream {
+    background-color: hsl(var(--cream));
+  }
+
+  .text-gold {
+    color: hsl(var(--gold));
+  }
+
+  .bg-gold {
+    background-color: hsl(var(--gold));
+  }
+
+  .gold-divider {
+    @apply w-16 h-px bg-primary my-6;
   }
 
   .search-highlight {
@@ -117,26 +180,22 @@ All colors MUST be HSL.
   }
 
   @keyframes highlight-pulse {
-    0% {
-      box-shadow: 0 0 0 0 rgba(20, 62, 61, 0.4), 0 0 20px rgba(20, 62, 61, 0.3);
-      transform: scale(1);
-    }
-    10% {
-      box-shadow: 0 0 0 8px rgba(20, 62, 61, 0.25), 0 0 40px rgba(20, 62, 61, 0.35), 0 10px 30px rgba(20, 62, 61, 0.15);
-      transform: scale(1.02);
-    }
-    50% {
-      box-shadow: 0 0 0 8px rgba(20, 62, 61, 0.2), 0 0 35px rgba(20, 62, 61, 0.3), 0 8px 25px rgba(20, 62, 61, 0.12);
-      transform: scale(1.01);
-    }
-    100% {
-      box-shadow: 0 0 0 0 rgba(20, 62, 61, 0), 0 0 0 rgba(20, 62, 61, 0);
-      transform: scale(1);
-    }
+    0% { box-shadow: 0 0 0 0 hsla(38, 65%, 38%, 0.4); }
+    30% { box-shadow: 0 0 0 10px hsla(38, 65%, 38%, 0.15); }
+    100% { box-shadow: 0 0 0 0 hsla(38, 65%, 38%, 0); }
+  }
+
+  @keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.7s ease-out forwards;
   }
 }
 
-/* Ensure Leaflet map doesn't interfere with popovers/dialogs */
+/* Leaflet z-index fixes */
 .leaflet-map-pane,
 .leaflet-tile-pane,
 .leaflet-overlay-pane,
@@ -145,27 +204,15 @@ All colors MUST be HSL.
 .leaflet-tooltip-pane {
   z-index: 4 !important;
 }
+.leaflet-popup-pane { z-index: 700 !important; }
+.leaflet-map-pane { z-index: 1 !important; }
+.leaflet-control-container { z-index: 5 !important; }
 
-/* Ensure popups appear above all map content */
-.leaflet-popup-pane {
-  z-index: 700 !important;
-}
-
-.leaflet-map-pane {
-  z-index: 1 !important;
-}
-
-.leaflet-control-container {
-  z-index: 5 !important;
-}
-
-/* Custom popup styles for listing cards */
 .listing-popup .leaflet-popup-content-wrapper {
   padding: 0;
   border-radius: 0.5rem;
   overflow: hidden;
 }
-
 .listing-popup .leaflet-popup-content {
   margin: 0;
   width: 208px !important;

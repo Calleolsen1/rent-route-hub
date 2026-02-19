@@ -47,6 +47,10 @@ import AdminDisputesManagement from "./pages/admin/DisputesManagement";
 import AdminSupport from "./pages/admin/Support";
 import ContentManagementPage from "./pages/admin/ContentManagement";
 import NotFound from "./pages/NotFound";
+import Services from "./pages/Services";
+import GroupTravel from "./pages/GroupTravel";
+import Contact from "./pages/Contact";
+import About from "./pages/About";
 
 const queryClient = new QueryClient();
 
@@ -61,7 +65,11 @@ const App = () => (
             <SuspendedUserListener />
             <ScrollToTop />
             <Routes>
-            <Route path="/" element={<><Navbar /><Home /></>} />
+            <Route path="/" element={<Home />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/group-travel" element={<GroupTravel />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/about" element={<About />} />
             <Route path="/search" element={<Search />} />
             <Route path="/faq" element={<><Navbar /><FAQ /></>} />
             <Route path="/help-center" element={<><Navbar /><HelpCenter /></>} />
