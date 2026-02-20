@@ -1,64 +1,64 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, MapPin } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import weekendImage from "@/assets/kaisen-weekend.jpg";
+import parisImage from "@/assets/city-paris.jpg";
+import amsterdamImage from "@/assets/city-amsterdam.jpg";
+import barcelonaImage from "@/assets/city-barcelona.jpg";
+import copenhagenImage from "@/assets/city-copenhagen.jpg";
+import pragueImage from "@/assets/city-prague.jpg";
+import veniceImage from "@/assets/city-venice.jpg";
 
 const destinations = [
   {
     city: "Paris",
     country: "Frankrike",
-    emoji: "🇫🇷",
-    tagline: "Romantikens huvudstad",
+    image: parisImage,
+    tagline: "Kaféer, konst & croissanter",
     description:
-      "Frodiga bistroer, världsklassiga museer och utsikter som tar andan ur en. Paris är alltid en bra idé för en helg.",
-    highlights: ["Seine-kryssning i solnedgången", "Privat guidning i Louvren", "Michelin-middag i Le Marais", "Shoppingtur längs Rue Saint-Honoré"],
+      "Börja morgonen med en crème brûlée-latte på ett gatukafé, strosa längs Seine och avsluta dagen med middag i en liten bistro i Le Marais. Paris är platsen för de som vill sakta ner och njuta.",
   },
   {
     city: "Amsterdam",
     country: "Nederländerna",
-    emoji: "🇳🇱",
-    tagline: "Kanalernas stad",
+    image: amsterdamImage,
+    tagline: "Kanaler, cykel & kultur",
     description:
-      "Kanal efter kanal, cykelvägar och ett rikt kulturliv. Amsterdam erbjuder en perfekt mix av avslappning och upplevelser.",
-    highlights: ["Privat kanalbåtstur", "Rijksmuseum & Van Gogh Museum", "Blomstermarknader & design-butiker", "Provsmakning av Goudaost & jenever"],
+      "Hyr en cykel och följ kanalerna genom stadens charmiga kvarter. Besök Rijksmuseet, fika på ett brunt hörncafé och ta en kvällsbåt längs de upplystta husfasaderna.",
   },
   {
     city: "Barcelona",
     country: "Spanien",
-    emoji: "🇪🇸",
-    tagline: "Arkitektur & Sol",
+    image: barcelonaImage,
+    tagline: "Tapas, sol & arkitektur",
     description:
-      "Gaudís mästerverk, Barceloneta-stranden och en tapaskultur som sträcker sig in på natten. En perfekt söderländsk helg.",
-    highlights: ["Sagrada Família tidigt på morgonen (inga köer)", "Tapasrunda i El Born", "Privat strand-access", "FC Barcelona-match"],
+      "Vandra runt bland Gaudís drömska byggnader på dagen och gå på tapasrunda i El Born på kvällen. Barcelona ger dig den perfekta mixen av avslappning, mat och upplevelser.",
   },
   {
     city: "Köpenhamn",
     country: "Danmark",
-    emoji: "🇩🇰",
-    tagline: "Norden i världsklass",
+    image: copenhagenImage,
+    tagline: "Hygge, ljus & skandinavisk mat",
     description:
-      "Noma-effekten har gjort Köpenhamn till en gastronomisk destination utan like. Lägg till design, hygge och Tivoli.",
-    highlights: ["Noma-inspirerat finmatlagning", "Designmuseum & Louisiana", "Tivoli Gardens på kvällen", "Cykeltur längs hamnfronten"],
+      "Känn hygge-känslan i ett litet kafé med levande ljus och nybakade kanelbullar. Utforska Nørrebro till fots och avsluta kvällen på en av stadens bästa restauranger.",
   },
   {
     city: "Prag",
     country: "Tjeckien",
-    emoji: "🇨🇿",
-    tagline: "Medeltida magi",
+    image: pragueImage,
+    tagline: "Medeltid, öl & kvällsstämning",
     description:
-      "En av Europas bäst bevarade medeltida städer. Prag trollbinder med sina torn, broar och en levande kafé- och ölkultur.",
-    highlights: ["Privat guidad tur på Pragborgen", "Kafékultur i Gamla Stan", "Konstiga restaurangupplevelser", "Kvällskonsert i barockkyrkorna"],
+      "Ta en promenad över Karlsbroen i skymningen och utforska Gamla Stans vindlande gränder. Kvällen avslutas med ett lokalt hantverk-öl på en krypin-bar under stadens gotiska torn.",
   },
   {
     city: "Venedig",
     country: "Italien",
-    emoji: "🇮🇹",
-    tagline: "La Serenissima",
+    image: veniceImage,
+    tagline: "Gondoler, solnedgångar & cicchetti",
     description:
-      "En stad helt utan bilar, med gondoler på kanalerna och en historia som väger tungt vid varje hörn. Oemotståndlig.",
-    highlights: ["Privat gondola di sera", "Muranoglas-verkstad besök", "Cicchetti-hopning i bacari", "Soluppgång vid Piazza San Marco (tom)"],
+      "Gå vilse bland Venedigs smala kanaler och rondola-broar — det är omöjligt att inte charmas. Prova cicchetti (venetiansk tapas) på en lokal bacaro och se solnedgången spegla sig i vattnet.",
   },
 ];
 
@@ -78,13 +78,13 @@ export default function WeekendGetaway() {
             Tjänster — Weekend Getaway
           </p>
           <h1 className="font-display text-4xl md:text-6xl text-white">
-            Europas Bästa <em className="italic font-light text-gold-light">Helgresmål</em>
+            Europas Mysigaste <em className="italic font-light text-gold-light">Helgresmål</em>
           </h1>
         </div>
       </section>
 
       {/* Intro */}
-      <section className="bg-cream py-16">
+      <section className="bg-cream py-14">
         <div className="container mx-auto px-4 max-w-3xl text-center">
           <p className="font-display text-2xl md:text-3xl text-foreground italic font-light leading-relaxed">
             "Tre dagar kan förändra allt. Vi ser till att de tre dagarna blir minnesvärda."
@@ -93,43 +93,47 @@ export default function WeekendGetaway() {
         </div>
       </section>
 
-      {/* Destinations */}
+      {/* City Sections */}
       <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-14">
-            <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Handplockade destinationer</p>
-            <h2 className="font-display text-3xl md:text-4xl text-foreground">
-              Helger som stannar kvar
-            </h2>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {destinations.map((dest) => (
-              <div key={dest.city} className="border border-border hover:border-primary transition-colors group overflow-hidden">
-                <div className="p-8">
-                  <div className="flex items-center gap-3 mb-4">
-                    <span className="text-3xl">{dest.emoji}</span>
-                    <div>
-                      <h3 className="font-display text-2xl text-foreground leading-none">{dest.city}</h3>
-                      <p className="text-xs text-muted-foreground tracking-widest uppercase mt-0.5 flex items-center gap-1">
-                        <MapPin className="h-2.5 w-2.5" /> {dest.country}
-                      </p>
-                    </div>
-                  </div>
-                  <p className="text-xs tracking-[0.2em] text-primary uppercase mb-3 font-sans">{dest.tagline}</p>
-                  <div className="w-8 h-px bg-primary mb-4" />
-                  <p className="text-muted-foreground text-sm leading-relaxed mb-5">{dest.description}</p>
-                  <ul className="space-y-1.5">
-                    {dest.highlights.map((h) => (
-                      <li key={h} className="flex items-start gap-2 text-xs text-foreground/70">
-                        <span className="text-primary mt-0.5">—</span>
-                        {h}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+        <div className="container mx-auto px-4 space-y-24">
+          {destinations.map((dest, index) => (
+            <div
+              key={dest.city}
+              className={`grid md:grid-cols-2 gap-10 lg:gap-16 items-center ${
+                index % 2 === 1 ? "md:[&>*:first-child]:order-2" : ""
+              }`}
+            >
+              {/* Image */}
+              <div className="aspect-[4/3] overflow-hidden">
+                <img
+                  src={dest.image}
+                  alt={dest.city}
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                />
               </div>
-            ))}
-          </div>
+
+              {/* Content */}
+              <div>
+                <div className="flex items-baseline gap-3 mb-1">
+                  <h2 className="font-display text-4xl md:text-5xl text-foreground">{dest.city}</h2>
+                  <span className="text-sm text-muted-foreground">{dest.country}</span>
+                </div>
+                <p className="text-[10px] tracking-[0.25em] uppercase text-primary font-sans mb-4">
+                  {dest.tagline}
+                </p>
+                <div className="w-10 h-px bg-primary mb-6" />
+                <p className="text-muted-foreground leading-relaxed text-base mb-10">
+                  {dest.description}
+                </p>
+                <Link to="/contact">
+                  <Button className="rounded-none bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
+                    Boka helgresa till {dest.city}
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -138,7 +142,7 @@ export default function WeekendGetaway() {
         <div className="container mx-auto px-4 text-center">
           <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Boka din helg</p>
           <h2 className="font-display text-3xl md:text-5xl text-white mb-6">
-            Vilken stad lockar dig?
+            Vilken stad lockar dig mest?
           </h2>
           <p className="text-white/60 max-w-lg mx-auto mb-10 leading-relaxed">
             Berätta vart du vill och vi skräddarsyr ett helgpaket som passar dig perfekt.
