@@ -4,6 +4,8 @@ import { ArrowRight, Check, Users, Projector, Utensils, Wifi, Car, Award } from 
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import incomingImage from "@/assets/kaisen-incoming.jpg";
+import konferens1 from "@/assets/konferens-1.jpg";
+import konferens2 from "@/assets/konferens-2.jpg";
 
 const services = [
   {
@@ -89,7 +91,7 @@ export default function Konferens() {
       </section>
 
       {/* Intro */}
-      <section className="bg-cream py-16">
+      <section className="bg-cream py-14">
         <div className="container mx-auto px-4 max-w-3xl text-center">
           <p className="font-display text-2xl md:text-3xl text-foreground italic font-light leading-relaxed">
             "Ett lyckat event handlar om detaljerna. Vi tar hand om dem alla."
@@ -98,18 +100,45 @@ export default function Konferens() {
         </div>
       </section>
 
-      {/* Services */}
+      {/* Image 1 + intro text */}
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-14">
-            <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Komplett service</p>
-            <h2 className="font-display text-3xl md:text-4xl text-foreground">
-              Allt under ett tak
-            </h2>
+          <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
+            <div className="aspect-[4/3] overflow-hidden">
+              <img
+                src={konferens1}
+                alt="Konferensrum med presentationsskärm"
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+            <div>
+              <span className="text-[10px] tracking-[0.25em] uppercase bg-accent text-accent-foreground px-3 py-1 font-sans">
+                Komplett service
+              </span>
+              <h2 className="font-display text-3xl md:text-4xl text-foreground mt-4 mb-2">
+                Allt under ett tak
+              </h2>
+              <div className="w-10 h-px bg-primary mb-6" />
+              <p className="text-muted-foreground leading-relaxed mb-8 text-base">
+                Vi hanterar hela kedjan — från lokalbokningar och AV-teknik till catering och deltagarlogistik. Du fokuserar på innehållet, vi tar hand om allt annat.
+              </p>
+              <Link to="/contact">
+                <Button className="rounded-none bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
+                  Begär offert
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        </div>
+      </section>
+
+      {/* Services Grid */}
+      <section className="py-16 bg-cream">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {services.map((s) => (
-              <div key={s.title} className="p-8 border border-border hover:border-primary transition-colors">
+              <div key={s.title} className="bg-background p-8 border border-border hover:border-primary transition-colors">
                 <s.icon className="h-6 w-6 text-primary mb-4" />
                 <h3 className="font-display text-xl text-foreground mb-2">{s.title}</h3>
                 <div className="w-6 h-px bg-primary mb-4" />
@@ -120,24 +149,37 @@ export default function Konferens() {
         </div>
       </section>
 
-      {/* Formats */}
-      <section className="py-20 bg-cream">
+      {/* Image 2 + formats */}
+      <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-14">
-            <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Format</p>
-            <h2 className="font-display text-3xl md:text-4xl text-foreground">
-              Anpassat efter er
-            </h2>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {formats.map((f) => (
-              <div key={f.title} className="bg-background p-8 border border-border text-center hover:border-primary transition-colors">
-                <h3 className="font-display text-xl text-foreground mb-3">{f.title}</h3>
-                <div className="w-8 h-px bg-primary mx-auto mb-4" />
-                <p className="text-muted-foreground text-sm leading-relaxed mb-4">{f.desc}</p>
-                <p className="text-xs tracking-[0.15em] text-primary uppercase font-sans">{f.guests}</p>
+          <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-start">
+            <div>
+              <span className="text-[10px] tracking-[0.25em] uppercase bg-accent text-accent-foreground px-3 py-1 font-sans">
+                Format
+              </span>
+              <h2 className="font-display text-3xl md:text-4xl text-foreground mt-4 mb-2">
+                Anpassat efter er
+              </h2>
+              <div className="w-10 h-px bg-primary mb-8" />
+              <div className="space-y-4">
+                {formats.map((f) => (
+                  <div key={f.title} className="border border-border p-6 hover:border-primary transition-colors">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-display text-xl text-foreground">{f.title}</h3>
+                      <span className="text-xs tracking-[0.15em] text-primary uppercase font-sans">{f.guests}</span>
+                    </div>
+                    <p className="text-muted-foreground text-sm leading-relaxed">{f.desc}</p>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+            <div className="aspect-[4/3] overflow-hidden md:sticky md:top-24">
+              <img
+                src={konferens2}
+                alt="Konferensmingel och nätverk"
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+              />
+            </div>
           </div>
         </div>
       </section>
