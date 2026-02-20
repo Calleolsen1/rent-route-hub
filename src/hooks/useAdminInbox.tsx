@@ -171,6 +171,34 @@ export const useAdminInbox = (adminUserId: string | undefined) => {
 
       // Update last_message_at on thread
       await supabase.from("message_threads").update({ last_message_at: new Date().toISOString() }).eq("id", threadId);
+
+      // Send email notification to recipient
+      const { data: recipientProfile } = await supabase
+        .from("profiles")
+        .select("email, first_name, last_name")
+        .eq("id", toUserId)
+        .maybeSingle();
+
+      if (recipientProfile?.email) {
+        const { data: { session } } = await supabase.auth.getSession();
+        const recipientName = [recipientProfile.first_name, recipientProfile.last_name].filter(Boolean).join(" ") || undefined;
+        fetch(
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-send-message`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${session?.access_token}`,
+            },
+            body: JSON.stringify({
+              toEmail: recipientProfile.email,
+              toName: recipientName,
+              subject: "Nytt meddelande från Kaisen",
+              body,
+            }),
+          }
+        ).catch(() => {}); // Best-effort — don't block on email
+      }
     } catch (err: any) {
       toast({ title: "Fel", description: err.message || "Kunde inte skicka meddelande", variant: "destructive" });
     }
