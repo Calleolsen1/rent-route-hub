@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,7 +10,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import {
   Loader2, Plus, Trash2, Plane, Car, Hotel, Ticket, Info,
-  Upload, FileText, X, DollarSign, CheckCircle2, Circle, Bell, CreditCard
+  Upload, FileText, X, DollarSign, CheckCircle2, Circle, Bell, CreditCard,
+  Search, User
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
@@ -132,6 +133,129 @@ export type Trip = {
 };
 
 const newId = () => crypto.randomUUID();
+
+// ─── Customer type ────────────────────────────────────────────────────────────
+type CustomerOption = {
+  id: string;
+  first_name: string | null;
+  last_name: string | null;
+  email: string;
+};
+
+// ─── Customer Picker ──────────────────────────────────────────────────────────
+const CustomerPicker = ({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (id: string) => void;
+}) => {
+  const [customers, setCustomers] = useState<CustomerOption[]>([]);
+  const [search, setSearch] = useState("");
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const dropRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setLoading(true);
+    supabase
+      .from("profiles")
+      .select("id, first_name, last_name, email")
+      .order("first_name")
+      .then(({ data }) => {
+        setCustomers((data as CustomerOption[]) || []);
+        setLoading(false);
+      });
+  }, []);
+
+  // Close on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (dropRef.current && !dropRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const selected = customers.find(c => c.id === value);
+  const filtered = customers.filter(c => {
+    const q = search.toLowerCase();
+    const name = `${c.first_name || ""} ${c.last_name || ""}`.toLowerCase();
+    return name.includes(q) || c.email.toLowerCase().includes(q);
+  });
+
+  const displayName = (c: CustomerOption) =>
+    `${c.first_name || ""} ${c.last_name || ""}`.trim() || c.email;
+
+  return (
+    <div className="relative" ref={dropRef}>
+      <button
+        type="button"
+        onClick={() => setOpen(v => !v)}
+        className={cn(
+          "w-full flex items-center gap-2 px-3 py-2 border rounded-md text-sm text-left transition-colors",
+          "bg-background hover:bg-muted/40",
+          open && "ring-2 ring-ring"
+        )}
+      >
+        <User className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+        {selected ? (
+          <span className="flex-1 truncate">
+            <span className="font-medium">{displayName(selected)}</span>
+            <span className="text-muted-foreground ml-2 text-xs">{selected.email}</span>
+          </span>
+        ) : (
+          <span className="text-muted-foreground flex-1">Välj resenär...</span>
+        )}
+      </button>
+
+      {open && (
+        <div className="absolute z-50 mt-1 w-full bg-popover border border-border rounded-md shadow-lg overflow-hidden">
+          <div className="p-2 border-b">
+            <div className="relative">
+              <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <input
+                autoFocus
+                className="w-full pl-7 pr-3 py-1.5 text-sm bg-muted rounded outline-none"
+                placeholder="Sök namn eller e-post..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="max-h-56 overflow-y-auto">
+            {loading ? (
+              <div className="p-3 text-sm text-muted-foreground text-center">Laddar...</div>
+            ) : filtered.length === 0 ? (
+              <div className="p-3 text-sm text-muted-foreground text-center">Inga kunder hittades</div>
+            ) : filtered.map(c => (
+              <button
+                key={c.id}
+                type="button"
+                onClick={() => { onChange(c.id); setOpen(false); setSearch(""); }}
+                className={cn(
+                  "w-full flex items-start gap-3 px-3 py-2.5 text-left hover:bg-accent transition-colors",
+                  c.id === value && "bg-primary/10"
+                )}
+              >
+                <div className="w-7 h-7 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0 text-xs font-semibold text-primary">
+                  {(c.first_name?.[0] || c.email[0]).toUpperCase()}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium truncate">{displayName(c)}</div>
+                  <div className="text-xs text-muted-foreground truncate">{c.email}</div>
+                  <div className="text-[10px] text-muted-foreground/60 font-mono truncate">{c.id}</div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+
 
 const emptyFlight = (): FlightLeg => ({
   id: newId(), from: "", to: "", flight_number: "", airline: "",
@@ -809,8 +933,14 @@ export const TripFormDialog = ({
           <TabsContent value="basics" className="space-y-4 pt-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2 space-y-1">
-                <Label>Resenärens User-ID *</Label>
-                <Input value={form.guest_user_id} onChange={e => set({ guest_user_id: e.target.value })} placeholder="UUID från resenärslistan" />
+                <Label>Resenär *</Label>
+                <CustomerPicker
+                  value={form.guest_user_id}
+                  onChange={id => set({ guest_user_id: id })}
+                />
+                {form.guest_user_id && (
+                  <p className="text-[10px] text-muted-foreground font-mono">ID: {form.guest_user_id}</p>
+                )}
               </div>
               <div className="col-span-2 space-y-1">
                 <Label>Resans titel *</Label>
