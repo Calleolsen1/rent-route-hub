@@ -77,6 +77,9 @@ const Navbar = () => {
               <Link to="/about" className="text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors">
                 Om oss
               </Link>
+              <Link to="/mitt-kaisen/dashboard" className="text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors">
+                Mitt konto
+              </Link>
               <Link to="/contact" className="text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors">
                 Kontakt
               </Link>
