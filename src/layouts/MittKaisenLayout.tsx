@@ -10,6 +10,7 @@ import {
   LogOut,
   Menu,
   X,
+  ArrowLeft,
 } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -87,6 +88,19 @@ export default function MittKaisenLayout() {
           );
         })}
       </nav>
+
+      {/* Back to site */}
+      <div className="px-3 pb-2">
+        <Link
+          to="/"
+          onClick={() => setMobileOpen(false)}
+          className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-sm font-light transition-all hover:opacity-80"
+          style={{ color: "hsl(215 15% 50%)" }}
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Tillbaka till siten
+        </Link>
+      </div>
 
       {/* Logout */}
       <div className="px-3 pb-8">

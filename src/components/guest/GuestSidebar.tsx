@@ -1,4 +1,4 @@
-import { Plane, CreditCard, MessageSquare, User, Settings, LogOut, Menu } from "lucide-react";
+import { Plane, CreditCard, MessageSquare, User, Settings, LogOut, Menu, ArrowLeft } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -77,11 +77,20 @@ const SidebarContent = ({
         ))}
       </nav>
 
+      {/* Back to site */}
+      <Link
+        to="/"
+        className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-3 mt-auto"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        <span>Tillbaka till siten</span>
+      </Link>
+
       {/* Log Out */}
       <Button
         variant="outline"
         onClick={handleLogout}
-        className="w-full justify-center gap-3 mt-auto rounded-full border-border bg-transparent text-foreground hover:bg-accent/30"
+        className="w-full justify-center gap-3 rounded-full border-border bg-transparent text-foreground hover:bg-accent/30"
       >
         <LogOut className="h-5 w-5" />
         <span>Logga ut</span>
