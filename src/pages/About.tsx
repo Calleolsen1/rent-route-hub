@@ -172,7 +172,7 @@ export default function About() {
             En personlig konversation är alltid startpunkten för en bra resa. Kontakta oss idag.
           </p>
           <Link to="/contact">
-            <Button size="lg" variant="outline" className="rounded-none border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary px-10 tracking-wider text-sm">
+            <Button size="lg" className="rounded-none bg-white text-primary hover:bg-white/90 px-10 tracking-wider text-sm font-semibold border-0">
               Kom i kontakt
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
