@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, UserPlus, CheckCircle } from "lucide-react";
+import { Loader2, UserPlus, CheckCircle, Copy, Check } from "lucide-react";
 
 interface Props {
   open: boolean;
@@ -25,6 +25,8 @@ export function CreateClientDialog({ open, onOpenChange, onSuccess }: Props) {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [createdUserId, setCreatedUserId] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
   const { toast } = useToast();
 
   const reset = () => {
@@ -32,11 +34,20 @@ export function CreateClientDialog({ open, onOpenChange, onSuccess }: Props) {
     setLastName("");
     setEmail("");
     setDone(false);
+    setCreatedUserId(null);
+    setCopied(false);
   };
 
   const handleClose = (v: boolean) => {
     if (!v) reset();
     onOpenChange(v);
+  };
+
+  const copyId = () => {
+    if (!createdUserId) return;
+    navigator.clipboard.writeText(createdUserId);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -73,6 +84,7 @@ export function CreateClientDialog({ open, onOpenChange, onSuccess }: Props) {
       return;
     }
 
+    setCreatedUserId(result.user_id || null);
     setDone(true);
     onSuccess?.();
   };
@@ -81,17 +93,35 @@ export function CreateClientDialog({ open, onOpenChange, onSuccess }: Props) {
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="max-w-md">
         {done ? (
-          <div className="py-8 text-center">
+          <div className="py-6 text-center">
             <CheckCircle className="h-14 w-14 mx-auto mb-5 text-green-500" />
             <h3 className="text-xl font-semibold mb-2">Konto skapat!</h3>
-            <p className="text-muted-foreground text-sm mb-6">
-              Ett välkomstmejl med inloggningsinstruktioner har skickats till{" "}
+            <p className="text-muted-foreground text-sm mb-5">
+              Ett välkomstmejl med en länk för att sätta lösenord har skickats till{" "}
               <strong>{email}</strong>.
             </p>
-            <p className="text-xs text-muted-foreground">
-              Kunden kan logga in via <strong>Mitt Kaisen</strong> och klicka "Glömt lösenord?" för att sätta sitt eget lösenord.
+
+            {createdUserId && (
+              <div className="mb-5 rounded-lg border border-border bg-muted p-4 text-left">
+                <p className="text-xs text-muted-foreground mb-2 font-medium uppercase tracking-wider">Kund-ID</p>
+                <div className="flex items-center gap-2">
+                  <code className="text-xs font-mono text-foreground flex-1 break-all">{createdUserId}</code>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-7 w-7 p-0 flex-shrink-0"
+                    onClick={copyId}
+                  >
+                    {copied ? <Check className="h-3.5 w-3.5 text-green-500" /> : <Copy className="h-3.5 w-3.5" />}
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            <p className="text-xs text-muted-foreground mb-6">
+              Kunden klickar på länken i mejlet och sätter sitt lösenord direkt — inga extra steg behövs.
             </p>
-            <Button className="mt-6" onClick={() => handleClose(false)}>
+            <Button className="w-full" onClick={() => handleClose(false)}>
               Stäng
             </Button>
           </div>
@@ -144,7 +174,7 @@ export function CreateClientDialog({ open, onOpenChange, onSuccess }: Props) {
               </div>
 
               <div className="rounded-lg p-3 bg-muted text-xs text-muted-foreground leading-relaxed">
-                Kunden får ett välkomstmejl med en länk till Mitt Kaisen. De sätter sitt eget lösenord via "Glömt lösenord?".
+                Kunden får ett mejl med en länk där de sätter sitt lösenord direkt — inga extra steg behövs.
               </div>
 
               <div className="flex gap-3 pt-1">
