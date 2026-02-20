@@ -120,8 +120,76 @@ Deno.serve(async (req) => {
       });
     }
 
-    const { email, first_name, last_name } = await req.json();
+    const body = await req.json();
+    const { email, first_name, last_name, mode, user_id } = body;
 
+    const siteUrl = req.headers.get("origin") || "https://rent-route-hub.lovable.app";
+    const redirectTo = `${siteUrl}/mitt-kaisen/aterstall-losenord`;
+
+    // ── RESEND INVITE MODE ──────────────────────────────────────────────────
+    if (mode === "resend") {
+      if (!user_id) {
+        return new Response(JSON.stringify({ error: "user_id krävs för resend" }), {
+          status: 400, headers: corsHeaders,
+        });
+      }
+
+      // Fetch user from auth
+      const { data: authUser, error: authUserError } = await adminClient.auth.admin.getUserById(user_id);
+      if (authUserError || !authUser.user) {
+        return new Response(JSON.stringify({ error: "Användaren hittades inte" }), {
+          status: 404, headers: corsHeaders,
+        });
+      }
+
+      const userEmail = authUser.user.email!;
+      const firstName = authUser.user.user_metadata?.first_name || userEmail.split("@")[0];
+
+      // Generate a fresh invite/recovery link
+      const { data: linkData, error: linkError } = await adminClient.auth.admin.generateLink({
+        type: "recovery",
+        email: userEmail,
+        options: { redirectTo },
+      });
+
+      if (linkError || !linkData) {
+        console.error("generateLink error:", linkError);
+        return new Response(
+          JSON.stringify({ error: linkError?.message || "Kunde inte generera länk" }),
+          { status: 500, headers: corsHeaders }
+        );
+      }
+
+      const actionLink = linkData.properties?.action_link;
+
+      if (resendApiKey && actionLink) {
+        const emailRes = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${resendApiKey}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            from: FROM_EMAIL,
+            to: [userEmail],
+            subject: "Välkommen till Mitt Kaisen – sätt ditt lösenord",
+            html: inviteEmailHtml(actionLink, firstName),
+          }),
+        });
+        if (!emailRes.ok) {
+          const emailErr = await emailRes.json();
+          console.error("Resend error:", emailErr);
+          return new Response(
+            JSON.stringify({ error: "Mejlet kunde inte skickas via Resend.", detail: emailErr }),
+            { status: 500, headers: corsHeaders }
+          );
+        }
+      }
+
+      return new Response(
+        JSON.stringify({ success: true, message: `Inbjudningsmejl skickat igen till ${userEmail}` }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // ── CREATE MODE (default) ───────────────────────────────────────────────
     if (!email || !first_name || !last_name) {
       return new Response(
         JSON.stringify({ error: "email, first_name och last_name krävs" }),
@@ -141,18 +209,12 @@ Deno.serve(async (req) => {
       );
     }
 
-    const siteUrl = req.headers.get("origin") || "https://rent-route-hub.lovable.app";
-    const redirectTo = `${siteUrl}/mitt-kaisen/aterstall-losenord`;
-
-    // Create user and generate invite link (without sending Supabase's default email)
+    // Create user and generate invite link
     const { data: linkData, error: linkError } = await adminClient.auth.admin.generateLink({
       type: "invite",
       email: email.toLowerCase().trim(),
       options: {
-        data: {
-          first_name: first_name.trim(),
-          last_name: last_name.trim(),
-        },
+        data: { first_name: first_name.trim(), last_name: last_name.trim() },
         redirectTo,
       },
     });
@@ -178,19 +240,13 @@ Deno.serve(async (req) => {
     });
 
     // Assign guest role
-    await adminClient.from("user_roles").upsert({
-      user_id: newUserId,
-      role: "guest",
-    });
+    await adminClient.from("user_roles").upsert({ user_id: newUserId, role: "guest" });
 
     // Send email via Resend
     if (resendApiKey && actionLink) {
       const emailRes = await fetch("https://api.resend.com/emails", {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${resendApiKey}`,
-          "Content-Type": "application/json",
-        },
+        headers: { Authorization: `Bearer ${resendApiKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({
           from: FROM_EMAIL,
           to: [email.toLowerCase().trim()],
@@ -202,24 +258,15 @@ Deno.serve(async (req) => {
       if (!emailRes.ok) {
         const emailErr = await emailRes.json();
         console.error("Resend error:", emailErr);
-        // Still return success since user was created — just note email issue
         return new Response(
-          JSON.stringify({
-            success: true,
-            user_id: newUserId,
-            warning: "Konto skapat men mejlet kunde inte skickas via Resend.",
-          }),
+          JSON.stringify({ success: true, user_id: newUserId, warning: "Konto skapat men mejlet kunde inte skickas via Resend." }),
           { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
     }
 
     return new Response(
-      JSON.stringify({
-        success: true,
-        message: `Konto skapat och välkomstmejl skickat till ${email}`,
-        user_id: newUserId,
-      }),
+      JSON.stringify({ success: true, message: `Konto skapat och välkomstmejl skickat till ${email}`, user_id: newUserId }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (err) {

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { format } from "date-fns";
-import { MoreVertical } from "lucide-react";
+import { MoreVertical, Mail } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -8,6 +8,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -75,6 +76,30 @@ export function UsersTable({ users, loading, hasActiveFilters }: UsersTableProps
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
   const { isDemoMode, suspendAdminUser, unsuspendAdminUser, deleteAdminUser } = useDemoData();
+  const [resendLoading, setResendLoading] = useState<string | null>(null);
+
+  const handleResendInvite = async (user: User) => {
+    setResendLoading(user.id);
+    const { data: { session } } = await supabase.auth.getSession();
+    const res = await fetch(
+      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-client-account`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+        body: JSON.stringify({ mode: "resend", user_id: user.id }),
+      }
+    );
+    const result = await res.json();
+    setResendLoading(null);
+    if (!res.ok) {
+      toast({ title: "Fel", description: result.error || "Kunde inte skicka mejlet.", variant: "destructive" });
+    } else {
+      toast({ title: "Mejl skickat!", description: `Inbjudningsmejl skickat till ${user.email}` });
+    }
+  };
 
   const handleSuspendClick = (user: User) => {
     setSelectedUser(user);
@@ -374,6 +399,19 @@ export function UsersTable({ users, loading, hasActiveFilters }: UsersTableProps
                     <MoreVertical className="h-4 w-4" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
+                    {user.primary_role === 'guest' && (
+                      <>
+                        <DropdownMenuItem
+                          onClick={() => handleResendInvite(user)}
+                          disabled={resendLoading === user.id}
+                          className="gap-2"
+                        >
+                          <Mail className="h-4 w-4" />
+                          {resendLoading === user.id ? "Skickar..." : "Skicka inbjudan igen"}
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                      </>
+                    )}
                     {user.status === 'suspended' ? (
                       <DropdownMenuItem onClick={() => handleUnsuspendClick(user)}>
                         Unsuspend User
