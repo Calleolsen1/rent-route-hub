@@ -1,4 +1,4 @@
-import { LayoutGrid, Inbox, LogOut, Building2, Menu, Users, FileText } from "lucide-react";
+import { LayoutGrid, Inbox, LogOut, Menu, Users, FileText } from "lucide-react";
 import { NavLink, useLocation, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -67,10 +67,14 @@ const SidebarContent = ({
     <div className="flex flex-col h-full">
       {/* Logo */}
       <Link to="/" className="flex items-center gap-3 mb-8 cursor-pointer hover:opacity-80 transition-opacity">
-        <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-          <Building2 className="h-5 w-5 text-foreground" />
+        <div className="flex flex-col leading-none">
+          <span className="font-display text-xl font-semibold tracking-wide text-foreground uppercase">
+            {logoText}
+          </span>
+          <span className="text-[9px] tracking-[0.25em] text-primary font-sans font-medium uppercase">
+            Travel Group
+          </span>
         </div>
-        <span className="text-lg font-semibold">{logoText}</span>
       </Link>
 
       {/* Navigation */}
