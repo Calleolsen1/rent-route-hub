@@ -81,9 +81,9 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
             <Route path="/about" element={<About />} />
             <Route path="/search" element={<Search />} />
-            <Route path="/faq" element={<><Navbar /><FAQ /></>} />
-            <Route path="/help-center" element={<><Navbar /><HelpCenter /></>} />
-            <Route path="/support" element={<><Navbar /><Support /></>} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/help-center" element={<HelpCenter />} />
+            <Route path="/support" element={<Support />} />
             <Route path="/forgot-password" element={<><Navbar /><ForgotPassword /></>} />
             <Route path="/become-host" element={<><Navbar /><BecomeHost /></>} />
             <Route path="/host" element={<HostLayout />}>

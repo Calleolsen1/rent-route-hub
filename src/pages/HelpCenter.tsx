@@ -1,165 +1,212 @@
-import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, Home, CreditCard, MessageSquare, Shield, FileText } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ArrowRight, LogIn, MapPin, Calendar, CreditCard, Users, Headphones, FileText, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar";
 
-const HelpCenter = () => {
-  const [activeCategory, setActiveCategory] = useState<string>("all");
+const topics = [
+  {
+    icon: LogIn,
+    title: "Mitt konto & inloggning",
+    desc: "Logga in, hantera ditt konto och spåra dina bokningar i realtid.",
+    articles: [
+      "Hur skapar jag ett konto?",
+      "Jag har glömt mitt lösenord",
+      "Hur håller jag koll på min resa?",
+      "Uppdatera mina kontaktuppgifter",
+    ],
+    comingSoon: true,
+  },
+  {
+    icon: Calendar,
+    title: "Bokningar & Ändringar",
+    desc: "Allt om hur din resa bokas, bekräftas och eventuellt ändras.",
+    articles: [
+      "Hur bekräftas min bokning?",
+      "Kan jag ändra datum eller antal resenärer?",
+      "Vad händer om jag behöver avboka?",
+      "Resehandlingar och vouchers",
+    ],
+  },
+  {
+    icon: CreditCard,
+    title: "Betalning & Fakturering",
+    desc: "Betalningsvillkor, fakturor och hur vår faktureringsprocess fungerar.",
+    articles: [
+      "Standardbetalning — 30 dagars faktura",
+      "Handpenning och delbetalning",
+      "Hur får jag min faktura?",
+      "Betalning i utländsk valuta",
+    ],
+  },
+  {
+    icon: Users,
+    title: "Gruppresor",
+    desc: "Specifika frågor om att resa i grupp — logistik, priser och upplägg.",
+    articles: [
+      "Minsta grupstorlek",
+      "Gruprabatter och offertprocess",
+      "Hantera resenärslista",
+      "Specialkost och tillgänglighet",
+    ],
+  },
+  {
+    icon: MapPin,
+    title: "Destinationer & Upplevelser",
+    desc: "Information om våra destinationer, event och vad vi kan ordna på plats.",
+    articles: [
+      "Vilka destinationer arbetar ni med?",
+      "Sportevent och VIP-biljetter",
+      "Lokala guider och aktiviteter",
+      "Incoming — ta emot grupper i Sverige",
+    ],
+  },
+  {
+    icon: Headphones,
+    title: "Support under resan",
+    desc: "Vad gör du om något uppstår under pågående resa — vi finns alltid tillgängliga.",
+    articles: [
+      "Akut hjälp under resan",
+      "Kontakta oss utanför kontorstid",
+      "Förseningar och störningar",
+      "Klagomål och feedback",
+    ],
+  },
+];
 
-  const categories = [
-    { value: 'all', label: 'All Topics', icon: BookOpen },
-    { value: 'getting-started', label: 'Getting Started', icon: Home },
-    { value: 'booking', label: 'Booking', icon: FileText },
-    { value: 'payments', label: 'Payments', icon: CreditCard },
-    { value: 'communication', label: 'Communication', icon: MessageSquare },
-    { value: 'safety', label: 'Safety & Security', icon: Shield },
-  ];
-
-  const articles = [
-    {
-      category: 'getting-started',
-      title: 'How to Create an Account',
-      description: 'Learn how to sign up and set up your profile on our platform.',
-      content: 'Creating an account is simple. Click the Sign Up button in the top right corner, enter your email address and create a password. You\'ll receive a confirmation email to verify your account.'
-    },
-    {
-      category: 'getting-started',
-      title: 'Understanding Your Dashboard',
-      description: 'Navigate through your personal dashboard and manage your activities.',
-      content: 'Your dashboard is your central hub for all activities. From here you can view bookings, messages, payments, and update your profile settings.'
-    },
-    {
-      category: 'booking',
-      title: 'How to Make a Booking',
-      description: 'Step-by-step guide to booking a property on our platform.',
-      content: 'To book a property, search for your destination, select your dates, choose a property from the results, and click Book Now. Review the details and complete the payment to confirm your booking.'
-    },
-    {
-      category: 'booking',
-      title: 'Cancellation Policy',
-      description: 'Learn about our cancellation policies and refund process.',
-      content: 'Cancellation policies vary by property. You can view the specific policy for each listing on its detail page. Generally, cancellations made more than 7 days before check-in receive a full refund.'
-    },
-    {
-      category: 'booking',
-      title: 'Modifying Your Booking',
-      description: 'How to change dates or details of your existing booking.',
-      content: 'To modify your booking, go to your bookings page, select the booking you want to change, and contact the host through the messaging system to discuss changes.'
-    },
-    {
-      category: 'payments',
-      title: 'Payment Methods',
-      description: 'Accepted payment methods and how to add them to your account.',
-      content: 'We accept major credit cards, debit cards, and digital payment methods. You can securely save your payment information in your account settings for faster checkout.'
-    },
-    {
-      category: 'payments',
-      title: 'Payment Schedule',
-      description: 'When and how payments are processed.',
-      content: 'Payment is typically charged when you confirm your booking. For hosts, payouts are processed after the guest checks in, according to the platform\'s payout schedule.'
-    },
-    {
-      category: 'payments',
-      title: 'Refund Process',
-      description: 'How refunds work and when to expect them.',
-      content: 'Refunds are processed according to the cancellation policy. Once approved, refunds typically take 5-10 business days to appear in your account, depending on your payment method.'
-    },
-    {
-      category: 'communication',
-      title: 'Messaging Hosts and Guests',
-      description: 'How to communicate through our messaging system.',
-      content: 'Use our secure messaging system to communicate with hosts or guests. Access messages from your inbox. All booking-related communications should happen through our platform.'
-    },
-    {
-      category: 'communication',
-      title: 'Notifications Settings',
-      description: 'Manage your email and push notification preferences.',
-      content: 'Control your notification preferences in your account settings. You can choose to receive notifications for bookings, messages, reminders, and promotional content.'
-    },
-    {
-      category: 'safety',
-      title: 'Platform Safety Guidelines',
-      description: 'Best practices for staying safe on our platform.',
-      content: 'Always communicate through our platform, verify property details, read reviews from previous guests, and report any suspicious activity to our support team immediately.'
-    },
-    {
-      category: 'safety',
-      title: 'Dispute Resolution',
-      description: 'How to file and resolve disputes.',
-      content: 'If you encounter an issue with a booking, you can file a dispute through your booking page. Our support team will review the case and work with both parties to reach a fair resolution.'
-    },
-  ];
-
-  const filteredArticles = activeCategory === 'all' 
-    ? articles 
-    : articles.filter(article => article.category === activeCategory);
-
+export default function HelpCenter() {
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      <div className="container mx-auto px-4 py-16 flex-grow">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium mb-4">
-            Help Center
+    <div className="min-h-screen">
+      <Navbar />
+
+      {/* Hero */}
+      <section className="bg-navy py-20 border-b border-white/10">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Hjälpcenter</p>
+          <h1 className="font-display text-4xl md:text-6xl text-white mb-4">
+            Hur kan vi <em className="italic font-light text-gold-light">hjälpa dig?</em>
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Browse our comprehensive guides and articles
+          <p className="text-white/60 max-w-xl mx-auto leading-relaxed">
+            Hitta svar på dina frågor eller kontakta oss direkt — vi är alltid nära till hands.
           </p>
         </div>
+      </section>
 
-        {/* Category Tabs */}
-        <Tabs value={activeCategory} onValueChange={setActiveCategory} className="w-full">
-          <TabsList className="w-full justify-start mb-8 flex-wrap h-auto gap-2 bg-transparent p-0">
-            {categories.map((category) => {
-              const Icon = category.icon;
-              return (
-                <TabsTrigger 
-                  key={category.value} 
-                  value={category.value}
-                  className="bg-white data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-full px-6 py-2 flex items-center gap-2"
-                >
-                  <Icon className="h-4 w-4" />
-                  {category.label}
-                </TabsTrigger>
-              );
-            })}
-          </TabsList>
-
-          <TabsContent value={activeCategory} className="mt-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredArticles.map((article, index) => (
-                <Card 
-                  key={index} 
-                  className="hover:shadow-lg transition-shadow cursor-pointer"
-                >
-                  <CardHeader>
-                    <CardTitle className="text-xl">{article.title}</CardTitle>
-                    <CardDescription>{article.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground line-clamp-3">
-                      {article.content}
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-            
-            {filteredArticles.length === 0 && (
-              <div className="text-center py-12 rounded-xl" style={{ backgroundColor: '#F8FAFF' }}>
-                <p className="text-muted-foreground text-lg">
-                  No articles available in this category.
-                </p>
+      {/* Coming soon: login portal teaser */}
+      <section className="bg-primary/10 border-b border-primary/20 py-5">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0">
+                <LogIn className="h-4 w-4 text-primary" />
               </div>
-            )}
-          </TabsContent>
-        </Tabs>
-      </div>
+              <div>
+                <p className="text-sm font-medium text-foreground">Mitt Kaisen — Lanseras snart</p>
+                <p className="text-xs text-muted-foreground">Logga in och håll koll på din resa, fakturor och uppdateringar i realtid.</p>
+              </div>
+            </div>
+            <Link to="/contact">
+              <Button size="sm" variant="outline" className="rounded-none border-primary text-primary hover:bg-primary hover:text-primary-foreground text-xs tracking-wider whitespace-nowrap">
+                Få tidig åtkomst <ChevronRight className="h-3 w-3 ml-1" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Topics grid */}
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Ämnesområden</p>
+            <h2 className="font-display text-3xl text-foreground">Bläddra efter ämne</h2>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {topics.map((topic) => (
+              <div key={topic.title} className="border border-border bg-card p-6 hover:border-primary/40 transition-colors group">
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="w-10 h-10 bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <topic.icon className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-display text-xl text-foreground mb-1">{topic.title}</h3>
+                    {topic.comingSoon && (
+                      <span className="text-[10px] tracking-wider uppercase bg-primary/10 text-primary px-2 py-0.5 font-sans">Kommer snart</span>
+                    )}
+                  </div>
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">{topic.desc}</p>
+                <div className="w-6 h-px bg-primary mb-4" />
+                <ul className="space-y-2">
+                  {topic.articles.map((a) => (
+                    <li key={a} className="flex items-center gap-2 text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+                      <ChevronRight className="h-3 w-3 text-primary flex-shrink-0" />
+                      {a}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How it works — booking update notifications */}
+      <section className="py-16 bg-cream">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Transparens</p>
+            <h2 className="font-display text-3xl text-foreground mb-2">
+              Alltid uppdaterad — <em className="italic font-light">utan ansträngning</em>
+            </h2>
+            <div className="w-10 h-px bg-primary mx-auto" />
+          </div>
+          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            {[
+              {
+                icon: FileText,
+                title: "Automatiska fakturor",
+                desc: "Varje gång något uppdateras i din bokning skickas en ny faktura eller bekräftelse direkt till din e-post.",
+              },
+              {
+                icon: Headphones,
+                title: "E-postnotiser",
+                desc: "Du får alltid ett mejl när vi gör en ändring — ingen uppdatering sker utan att du informeras.",
+              },
+              {
+                icon: LogIn,
+                title: "Reseportal (kommer snart)",
+                desc: "Snart lanserar vi en inloggningssida där du kan se alla dina resor, fakturor och uppdateringar på ett ställe.",
+              },
+            ].map((item) => (
+              <div key={item.title} className="text-center">
+                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <item.icon className="h-5 w-5 text-primary" />
+                </div>
+                <h3 className="font-display text-xl text-foreground mb-2">{item.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="bg-primary py-16">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="font-display text-3xl text-primary-foreground mb-4">Hittade du inte svaret?</h2>
+          <p className="text-primary-foreground/70 mb-8 max-w-md mx-auto">
+            Vårt team svarar alltid inom en timme under kontorstid.
+          </p>
+          <Link to="/contact">
+            <Button className="rounded-none bg-white text-primary hover:bg-white/90 px-10 tracking-wider text-sm font-semibold">
+              Kontakta oss <ArrowRight className="h-4 w-4 ml-2" />
+            </Button>
+          </Link>
+        </div>
+      </section>
 
       <Footer />
     </div>
   );
-};
-
-export default HelpCenter;
+}
