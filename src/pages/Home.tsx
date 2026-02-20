@@ -273,8 +273,8 @@ const Home = () => {
             <div className="relative">
               <div className="aspect-[4/5] overflow-hidden">
                 <img
-                  src={vipImage}
-                  alt="VIP-reseservice"
+                  src={luxuryImage}
+                  alt="Glad resenär i vackert landskap"
                   className="w-full h-full object-cover"
                 />
               </div>
