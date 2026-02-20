@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import FormSelect from "@/components/listing/FormSelect";
 
 const LANGUAGE_OPTIONS = [
+  { value: "sv", label: "Svenska" },
   { value: "en", label: "English" },
   { value: "es", label: "Español" },
   { value: "fr", label: "Français" },
@@ -14,38 +15,40 @@ const LANGUAGE_OPTIONS = [
 ];
 
 const CURRENCY_OPTIONS = [
+  { value: "sek", label: "SEK (kr)" },
   { value: "usd", label: "USD ($)" },
   { value: "eur", label: "EUR (€)" },
   { value: "gbp", label: "GBP (£)" },
-  { value: "jpy", label: "JPY (¥)" },
+  { value: "nok", label: "NOK (kr)" },
+  { value: "dkk", label: "DKK (kr)" },
 ];
 
 const TIMEZONE_OPTIONS = [
+  { value: "cet", label: "Central European Time (CET)" },
   { value: "utc", label: "UTC" },
   { value: "est", label: "Eastern Time (ET)" },
   { value: "pst", label: "Pacific Time (PT)" },
-  { value: "cet", label: "Central European Time (CET)" },
 ];
 
 const Settings = () => {
-  const [language, setLanguage] = useState("en");
-  const [currency, setCurrency] = useState("usd");
-  const [timezone, setTimezone] = useState("utc");
+  const [language, setLanguage] = useState("sv");
+  const [currency, setCurrency] = useState("sek");
+  const [timezone, setTimezone] = useState("cet");
 
   return (
     <div className="container mx-auto px-4 py-8 lg:px-8">
       <div className="max-w-3xl mx-auto space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle>Notifications</CardTitle>
-            <CardDescription>Manage how you receive notifications</CardDescription>
+            <CardTitle>Aviseringar</CardTitle>
+            <CardDescription>Hantera hur du tar emot aviseringar</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label htmlFor="email-notifications">Email Notifications</Label>
+                <Label htmlFor="email-notifications">E-postaviseringar</Label>
                 <p className="text-sm text-muted-foreground">
-                  Receive booking updates via email
+                  Få bokningsuppdateringar via e-post
                 </p>
               </div>
               <Switch id="email-notifications" defaultChecked />
@@ -53,9 +56,9 @@ const Settings = () => {
             <Separator />
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label htmlFor="sms-notifications">SMS Notifications</Label>
+                <Label htmlFor="sms-notifications">SMS-aviseringar</Label>
                 <p className="text-sm text-muted-foreground">
-                  Get text messages for urgent updates
+                  Få textmeddelanden för viktiga uppdateringar
                 </p>
               </div>
               <Switch id="sms-notifications" />
@@ -63,9 +66,9 @@ const Settings = () => {
             <Separator />
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label htmlFor="marketing">Marketing Emails</Label>
+                <Label htmlFor="marketing">Marknadsföringsutskick</Label>
                 <p className="text-sm text-muted-foreground">
-                  Receive promotional offers and deals
+                  Ta emot erbjudanden och kampanjer
                 </p>
               </div>
               <Switch id="marketing" defaultChecked />
@@ -75,15 +78,15 @@ const Settings = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Privacy</CardTitle>
-            <CardDescription>Control your privacy settings</CardDescription>
+            <CardTitle>Integritet</CardTitle>
+            <CardDescription>Kontrollera dina integritetsinställningar</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label htmlFor="profile-visibility">Profile Visibility</Label>
+                <Label htmlFor="profile-visibility">Profilsynlighet</Label>
                 <p className="text-sm text-muted-foreground">
-                  Show your profile to hosts
+                  Visa din profil för värdar
                 </p>
               </div>
               <Switch id="profile-visibility" defaultChecked />
@@ -91,9 +94,9 @@ const Settings = () => {
             <Separator />
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label htmlFor="review-visibility">Review Visibility</Label>
+                <Label htmlFor="review-visibility">Recensionssynlighet</Label>
                 <p className="text-sm text-muted-foreground">
-                  Allow hosts to see your reviews
+                  Tillåt värdar att se dina recensioner
                 </p>
               </div>
               <Switch id="review-visibility" defaultChecked />
@@ -103,24 +106,24 @@ const Settings = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Preferences</CardTitle>
-            <CardDescription>Customize your experience</CardDescription>
+            <CardTitle>Inställningar</CardTitle>
+            <CardDescription>Anpassa din upplevelse</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <FormSelect
-              label="Language"
+              label="Språk"
               value={language}
               onChange={setLanguage}
               options={LANGUAGE_OPTIONS}
             />
             <FormSelect
-              label="Currency"
+              label="Valuta"
               value={currency}
               onChange={setCurrency}
               options={CURRENCY_OPTIONS}
             />
             <FormSelect
-              label="Timezone"
+              label="Tidszon"
               value={timezone}
               onChange={setTimezone}
               options={TIMEZONE_OPTIONS}
@@ -130,18 +133,18 @@ const Settings = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Account Actions</CardTitle>
-            <CardDescription>Manage your account</CardDescription>
+            <CardTitle>Kontoåtgärder</CardTitle>
+            <CardDescription>Hantera ditt konto</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             <Button variant="outline" className="w-full">
-              Download My Data
+              Ladda ner mina uppgifter
             </Button>
             <Button variant="outline" className="w-full">
-              Deactivate Account
+              Inaktivera konto
             </Button>
             <Button variant="destructive" className="w-full">
-              Delete Account
+              Radera konto
             </Button>
           </CardContent>
         </Card>
