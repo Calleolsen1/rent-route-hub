@@ -106,8 +106,8 @@ export default function Konferens() {
           <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div className="aspect-[4/3] overflow-hidden">
               <img
-                src={konferens1}
-                alt="Konferensrum med presentationsskärm"
+                src={konferens2}
+                alt="Konferensmingel och nätverk"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
               />
             </div>
@@ -175,8 +175,8 @@ export default function Konferens() {
             </div>
             <div className="aspect-[4/3] overflow-hidden md:sticky md:top-24">
               <img
-                src={konferens2}
-                alt="Konferensmingel och nätverk"
+                src={konferens1}
+                alt="Konferens utomlands med wine tasting"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
               />
             </div>
