@@ -16,13 +16,11 @@ import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 interface GuestPageHeaderProps {
   title: string;
   navigationItems?: any[];
-  logoText?: string;
 }
 
 export const GuestPageHeader = ({ 
   title,
   navigationItems,
-  logoText
 }: GuestPageHeaderProps) => {
   const { user, signOut } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
@@ -43,7 +41,6 @@ export const GuestPageHeader = ({
       <div className="flex items-center gap-4">
         <MobileGuestSidebar 
           navigationItems={navigationItems}
-          logoText={logoText}
         />
         <h1 className="text-2xl lg:text-3xl font-bold">{title}</h1>
       </div>

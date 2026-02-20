@@ -34,6 +34,7 @@ import HostLayout from "./layouts/HostLayout";
 import GuestLayout from "./layouts/GuestLayout";
 import Overview from "./pages/admin/Overview";
 import GuestDashboard from "./pages/guest/Dashboard";
+import GuestTrips from "./pages/guest/Trips";
 import GuestBookings from "./pages/guest/Bookings";
 import GuestPayments from "./pages/guest/Payments";
 import GuestInbox from "./pages/guest/Inbox";
@@ -50,6 +51,7 @@ import AdminBookingsManagement from "./pages/admin/BookingsManagement";
 import AdminDisputesManagement from "./pages/admin/DisputesManagement";
 import AdminSupport from "./pages/admin/Support";
 import ContentManagementPage from "./pages/admin/ContentManagement";
+import AdminTrips from "./pages/admin/Trips";
 import NotFound from "./pages/NotFound";
 import Services from "./pages/Services";
 import GroupTravel from "./pages/GroupTravel";
@@ -104,7 +106,8 @@ const App = () => (
             <Route path="/checkout" element={<><Navbar /><Checkout /></>} />
             <Route path="/booking-confirmation/:id" element={<><Navbar /><BookingConfirmation /></>} />
             <Route path="/guest" element={<GuestLayout />}>
-              <Route path="dashboard" element={<GuestDashboard />} />
+              <Route path="dashboard" element={<GuestTrips />} />
+              <Route path="trips" element={<GuestTrips />} />
               <Route path="bookings" element={<GuestBookings />} />
               <Route path="payments" element={<GuestPayments />} />
               <Route path="inbox" element={<GuestInbox />} />
@@ -124,6 +127,7 @@ const App = () => (
               <Route path="reports" element={<Reports />} />
               <Route path="support" element={<AdminSupport />} />
               <Route path="content" element={<ContentManagementPage />} />
+              <Route path="trips" element={<AdminTrips />} />
             </Route>
             {/* Mitt Kaisen portal — public routes */}
             <Route path="/mitt-kaisen" element={<MittKaisenLogin />} />

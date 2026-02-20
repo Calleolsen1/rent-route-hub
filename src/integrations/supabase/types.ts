@@ -982,12 +982,16 @@ export type Database = {
           about: string | null
           avatar_url: string | null
           created_at: string
+          date_of_birth: string | null
           email: string
           first_name: string | null
           id: string
           is_demo: boolean | null
           is_system: boolean | null
           last_name: string | null
+          nationality: string | null
+          passport_expiry: string | null
+          passport_number: string | null
           phone: string | null
           status: Database["public"]["Enums"]["user_status"]
           updated_at: string
@@ -997,12 +1001,16 @@ export type Database = {
           about?: string | null
           avatar_url?: string | null
           created_at?: string
+          date_of_birth?: string | null
           email: string
           first_name?: string | null
           id: string
           is_demo?: boolean | null
           is_system?: boolean | null
           last_name?: string | null
+          nationality?: string | null
+          passport_expiry?: string | null
+          passport_number?: string | null
           phone?: string | null
           status?: Database["public"]["Enums"]["user_status"]
           updated_at?: string
@@ -1012,12 +1020,16 @@ export type Database = {
           about?: string | null
           avatar_url?: string | null
           created_at?: string
+          date_of_birth?: string | null
           email?: string
           first_name?: string | null
           id?: string
           is_demo?: boolean | null
           is_system?: boolean | null
           last_name?: string | null
+          nationality?: string | null
+          passport_expiry?: string | null
+          passport_number?: string | null
           phone?: string | null
           status?: Database["public"]["Enums"]["user_status"]
           updated_at?: string
@@ -1174,6 +1186,81 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      trips: {
+        Row: {
+          created_at: string
+          created_by_admin_id: string | null
+          destination: string | null
+          end_date: string | null
+          flights: Json | null
+          guest_user_id: string
+          hotel_address: string | null
+          hotel_checkin: string | null
+          hotel_checkout: string | null
+          hotel_confirmation: string | null
+          hotel_name: string | null
+          hotel_notes: string | null
+          hotel_stars: number | null
+          id: string
+          notes: string | null
+          schedule: Json | null
+          start_date: string | null
+          status: string
+          tickets: Json | null
+          title: string
+          transfers: Json | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by_admin_id?: string | null
+          destination?: string | null
+          end_date?: string | null
+          flights?: Json | null
+          guest_user_id: string
+          hotel_address?: string | null
+          hotel_checkin?: string | null
+          hotel_checkout?: string | null
+          hotel_confirmation?: string | null
+          hotel_name?: string | null
+          hotel_notes?: string | null
+          hotel_stars?: number | null
+          id?: string
+          notes?: string | null
+          schedule?: Json | null
+          start_date?: string | null
+          status?: string
+          tickets?: Json | null
+          title: string
+          transfers?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by_admin_id?: string | null
+          destination?: string | null
+          end_date?: string | null
+          flights?: Json | null
+          guest_user_id?: string
+          hotel_address?: string | null
+          hotel_checkin?: string | null
+          hotel_checkout?: string | null
+          hotel_confirmation?: string | null
+          hotel_name?: string | null
+          hotel_notes?: string | null
+          hotel_stars?: number | null
+          id?: string
+          notes?: string | null
+          schedule?: Json | null
+          start_date?: string | null
+          status?: string
+          tickets?: Json | null
+          title?: string
+          transfers?: Json | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
