@@ -47,7 +47,9 @@ export type HotelData = {
 export type ScheduleItem = {
   id: string;
   date: string;
+  end_date?: string;
   time: string;
+  end_time?: string;
   title: string;
   description?: string;
   location?: string;
@@ -966,12 +968,18 @@ const SchedulePreview = ({ schedule }: { schedule: ScheduleItem[] }) => {
                   <div className="flex-1 bg-card border border-border rounded-lg px-3 py-2.5 shadow-sm">
                     <div className="flex items-start justify-between gap-2">
                       <span className="text-sm font-semibold leading-tight">{item.title}</span>
-                      {item.time && (
+                      {(item.time || item.end_time) && (
                         <span className="text-xs text-muted-foreground font-mono bg-muted px-1.5 py-0.5 rounded flex-shrink-0">
-                          {item.time}
+                          {item.time || ""}
+                          {item.end_time && ` – ${item.end_time}`}
                         </span>
                       )}
                     </div>
+                    {(item.end_date && item.end_date !== item.date) && (
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        Till {format(parseISO(item.end_date), "d MMM", { locale: sv })}
+                      </p>
+                    )}
                     {item.location && (
                       <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
                         <span>📍</span>{item.location}
@@ -1022,8 +1030,10 @@ const ScheduleSection = ({ schedule, onChange }: { schedule: ScheduleItem[]; onC
             </div>
             <div className="space-y-1"><Label className="text-xs">Titel</Label><Input value={s.title} onChange={e => update(s.id, "title", e.target.value)} placeholder="t.ex. Champions League Final" /></div>
             <div className="grid grid-cols-2 gap-2">
-              <div className="space-y-1"><Label className="text-xs">Datum</Label><Input type="date" value={s.date} onChange={e => update(s.id, "date", e.target.value)} /></div>
-              <div className="space-y-1"><Label className="text-xs">Tid</Label><Input type="time" value={s.time} onChange={e => update(s.id, "time", e.target.value)} /></div>
+              <div className="space-y-1"><Label className="text-xs">Startdatum</Label><Input type="date" value={s.date} onChange={e => update(s.id, "date", e.target.value)} /></div>
+              <div className="space-y-1"><Label className="text-xs">Starttid</Label><Input type="time" value={s.time} onChange={e => update(s.id, "time", e.target.value)} /></div>
+              <div className="space-y-1"><Label className="text-xs">Slutdatum</Label><Input type="date" value={s.end_date || ""} onChange={e => update(s.id, "end_date", e.target.value)} /></div>
+              <div className="space-y-1"><Label className="text-xs">Sluttid</Label><Input type="time" value={s.end_time || ""} onChange={e => update(s.id, "end_time", e.target.value)} /></div>
             </div>
             <div className="space-y-1"><Label className="text-xs">Plats / Lokal</Label><Input value={s.location || ""} onChange={e => update(s.id, "location", e.target.value)} placeholder="t.ex. Stade de France" /></div>
             <div className="space-y-1"><Label className="text-xs">Beskrivning</Label><Input value={s.description || ""} onChange={e => update(s.id, "description", e.target.value)} /></div>
