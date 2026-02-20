@@ -10,6 +10,7 @@ import sportsImage from "@/assets/kaisen-sports.jpg";
 import incomingImage from "@/assets/kaisen-incoming.jpg";
 import weekendImage from "@/assets/kaisen-weekend.jpg";
 import vipImage from "@/assets/kaisen-vip.jpg";
+import luxuryImage from "@/assets/kaisen-luxury.jpg";
 
 const stats = [
   { value: "2 400+", label: "Resor arrangerade" },
@@ -110,7 +111,7 @@ const Home = () => {
     <div className="min-h-screen">
       <Navbar />
       {/* Hero */}
-      <section className="relative min-h-[92vh] flex items-end overflow-hidden">
+      <section className="relative min-h-[75vh] flex items-end overflow-hidden">
         <div className="absolute inset-0">
           <img
             src={heroImage}
@@ -272,8 +273,8 @@ const Home = () => {
             <div className="relative">
               <div className="aspect-[4/5] overflow-hidden">
                 <img
-                  src={vipImage}
-                  alt="VIP-reseservice"
+                  src={luxuryImage}
+                  alt="Glad resenär i vackert landskap"
                   className="w-full h-full object-cover"
                 />
               </div>
