@@ -45,7 +45,7 @@ const GuestLayout = () => {
     <div className="flex min-h-screen bg-background w-full">
       <GuestSidebar />
       <div className="flex-1">
-        <div className="container mx-auto px-4 pt-8 lg:px-8">
+        <div className="container mx-auto px-4 pt-8 pb-0 lg:px-8">
           <GuestPageHeader 
             title={pageTitle}
           />
