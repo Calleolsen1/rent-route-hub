@@ -157,20 +157,39 @@ export const useAdminInbox = (adminUserId: string | undefined) => {
     }
   };
 
+  const deleteThread = async (threadId: string) => {
+    try {
+      // Delete all messages in thread first
+      await supabase.from("messages").delete().eq("thread_id", threadId);
+      // Delete the thread
+      await supabase.from("message_threads").delete().eq("id", threadId);
+      setThreads(prev => prev.filter(t => t.thread_id !== threadId));
+      if (selectedThreadId === threadId) setSelectedThreadId(null);
+      toast({ title: "Konversation raderad" });
+    } catch (err: any) {
+      toast({ title: "Fel", description: err.message || "Kunde inte radera konversationen", variant: "destructive" });
+    }
+  };
+
   const sendMessage = async (threadId: string, toUserId: string, body: string) => {
     if (!adminUserId) return;
     try {
-      const { error } = await supabase.from("messages").insert({
+      const { data: inserted, error } = await supabase.from("messages").insert({
         thread_id: threadId,
         from_user_id: adminUserId,
         to_user_id: toUserId,
         body,
         read: false,
-      });
+      }).select().single();
       if (error) throw error;
 
+      // Optimistically add message to state
+      if (inserted) setMessages(prev => [...prev, inserted as any]);
+
       // Update last_message_at on thread
-      await supabase.from("message_threads").update({ last_message_at: new Date().toISOString() }).eq("id", threadId);
+      const now = new Date().toISOString();
+      await supabase.from("message_threads").update({ last_message_at: now }).eq("id", threadId);
+      setThreads(prev => prev.map(t => t.thread_id === threadId ? { ...t, last_message: body, last_message_at: now } : t));
 
       // Send email notification to recipient
       const { data: recipientProfile } = await supabase
@@ -266,7 +285,11 @@ export const useAdminInbox = (adminUserId: string | undefined) => {
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages" }, (payload) => {
         const msg = payload.new as Message;
         if (msg.thread_id === selectedThreadId) {
-          setMessages(prev => [...prev, msg]);
+          // Only add if not already in state (avoid duplicate from optimistic update)
+          setMessages(prev => {
+            if (prev.some(m => m.id === msg.id)) return prev;
+            return [...prev, msg];
+          });
           if (msg.to_user_id === adminUserId) {
             supabase.from("messages").update({ read: true }).eq("id", msg.id);
           }
@@ -286,6 +309,7 @@ export const useAdminInbox = (adminUserId: string | undefined) => {
     loading,
     messagesLoading,
     sendMessage,
+    deleteThread,
     uploadImage,
     startConversation,
     fetchThreads,
