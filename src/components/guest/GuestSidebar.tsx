@@ -17,6 +17,7 @@ const defaultNavigation: NavigationItem[] = [
   { name: "Mina resor", href: "/guest/dashboard", icon: Plane },
   { name: "Betalningar", href: "/guest/payments", icon: CreditCard },
   { name: "Meddelanden", href: "/guest/inbox", icon: MessageSquare },
+  { name: "Min profil", href: "/guest/profile", icon: User },
   { name: "Inställningar", href: "/guest/settings", icon: Settings },
 ];
 
