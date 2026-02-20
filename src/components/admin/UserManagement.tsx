@@ -11,12 +11,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search } from "lucide-react";
+import { Search, UserPlus } from "lucide-react";
 import { useDebounce } from "@/hooks/useDebounce";
 import { UsersTable } from "./UsersTable";
 import { UsersFiltersSheet } from "./UsersFiltersSheet";
 import ReviewsManagement from "./ReviewsManagement";
 import { useDemoData } from "@/hooks/useDemoData";
+import { CreateClientDialog } from "./CreateClientDialog";
+import { Button } from "@/components/ui/button";
 
 const UserManagement = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -24,6 +26,7 @@ const UserManagement = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortValue, setSortValue] = useState("created_at-desc");
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [createClientOpen, setCreateClientOpen] = useState(false);
 
   const debouncedSearch = useDebounce(searchQuery, 500);
   const { isDemoMode, getAdminUsers } = useDemoData();
@@ -87,8 +90,13 @@ const UserManagement = () => {
                 />
               </div>
 
-              {/* Right: Filters and Sort */}
+              {/* Right: Filters, Sort and Create */}
               <div className="flex items-center gap-2">
+                <Button onClick={() => setCreateClientOpen(true)} size="sm" className="gap-2">
+                  <UserPlus className="h-4 w-4" />
+                  Skapa Mitt Kaisen-kund
+                </Button>
+
                 <UsersFiltersSheet
                   roleFilter={roleFilter}
                   statusFilter={statusFilter}
@@ -126,6 +134,11 @@ const UserManagement = () => {
           </TabsContent>
         </Tabs>
       </CardContent>
+
+      <CreateClientDialog
+        open={createClientOpen}
+        onOpenChange={setCreateClientOpen}
+      />
     </Card>
   );
 };
