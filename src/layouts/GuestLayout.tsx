@@ -5,15 +5,17 @@ import { GuestSidebar } from "@/components/guest/GuestSidebar";
 import { GuestPageHeader } from "@/components/guest/GuestPageHeader";
 import { Loader2 } from "lucide-react";
 
+// Routes where the page itself handles the header (title + tabs inline)
+const SELF_HEADER_ROUTES = ["/guest/dashboard", "/guest/trips"];
+
 // Map routes to page titles
 const getPageTitle = (pathname: string): string => {
-  if (pathname === "/guest/dashboard" || pathname === "/guest/trips") return "Mina resor";
   if (pathname === "/guest/bookings") return "Bokningar";
   if (pathname === "/guest/payments") return "Betalningar";
   if (pathname === "/guest/inbox") return "Meddelanden";
   if (pathname === "/guest/profile") return "Min profil";
   if (pathname === "/guest/settings") return "Inställningar";
-  return "Mina resor";
+  return "";
 };
 
 const GuestLayout = () => {
@@ -21,6 +23,7 @@ const GuestLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
+  const isSelfHeader = SELF_HEADER_ROUTES.includes(location.pathname);
   const pageTitle = getPageTitle(location.pathname);
 
   useEffect(() => {
@@ -45,11 +48,11 @@ const GuestLayout = () => {
     <div className="flex min-h-screen bg-background w-full">
       <GuestSidebar />
       <div className="flex-1">
-        <div className="container mx-auto px-4 pt-8 pb-0 lg:px-8">
-          <GuestPageHeader 
-            title={pageTitle}
-          />
-        </div>
+        {!isSelfHeader && (
+          <div className="container mx-auto px-4 pt-8 pb-0 lg:px-8">
+            <GuestPageHeader title={pageTitle} />
+          </div>
+        )}
         <Outlet />
       </div>
     </div>
