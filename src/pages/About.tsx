@@ -4,37 +4,32 @@ import { ArrowRight } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import heroImage from "@/assets/kaisen-hero.jpg";
-import luxuryImage from "@/assets/kaisen-luxury.jpg";
-import groupImage from "@/assets/kaisen-group.jpg";
+import founderImage from "@/assets/about-founder.jpg";
 
-const team = [
+const values = [
   {
-    name: "Alexandra Voss",
-    role: "Founder & Chief Travel Advisor",
-    bio: "With 20 years curating journeys across 6 continents, Alexandra founded Kaisen on one principle: travel should be transformative, not transactional.",
+    title: "Personlig Service",
+    desc: "Vi tror att den bästa reseupplevelsen börjar med ett genuint samtal. Ingen mall, ingen automatisering — bara människor som bryr sig om din resa.",
   },
   {
-    name: "James Carver",
-    role: "Head of Group Experiences",
-    bio: "A former events director, James has organized everything from 10-person wine tours to 500-guest corporate expeditions across Europe and Asia.",
+    title: "Expertis i Världsklass",
+    desc: "Vårt team har djup erfarenhet inom alla resekategorier — från sportevent och konferenser till lyxresor och gruppresor i alla storlekar.",
   },
   {
-    name: "Isabelle Morel",
-    role: "Luxury & Lifestyle Director",
-    bio: "Isabelle's unmatched network of property owners, concierges, and cultural figures ensures Kaisen guests access experiences simply not available elsewhere.",
+    title: "Pålitlighet",
+    desc: "Med 25+ år i branschen och hundratals nöjda kunder vet vi vad som krävs för att leverera — varje gång, utan undantag.",
   },
   {
-    name: "Ravi Sharma",
-    role: "Sports Travel Specialist",
-    bio: "A former touring professional, Ravi designs sporting journeys for enthusiasts who want access, performance, and prestige in equal measure.",
+    title: "Diskretion",
+    desc: "Vi hanterar alla kundrelationer med fullständig konfidentialitet och professionell integritet — oavsett uppdragets storlek.",
   },
 ];
 
-const values = [
-  { title: "Human First", desc: "We believe the best travel service comes from genuine human relationships — not algorithms or automated processes." },
-  { title: "Excellence Without Exception", desc: "From first contact to final farewell, every touchpoint reflects our commitment to exceptional quality." },
-  { title: "Curious & Passionate", desc: "Our advisors are true travel enthusiasts. We explore so you can trust our recommendations entirely." },
-  { title: "Discretion Always", desc: "We handle our clients' plans with the highest level of confidentiality and professional discretion." },
+const expertise = [
+  { area: "Gruppresor & Logistik", years: "25+ år" },
+  { area: "Sportevent & VIP-biljetter", years: "20+ år" },
+  { area: "Konferenser & Incentive", years: "25+ år" },
+  { area: "Affärs- & Privatresor", years: "15+ år" },
 ];
 
 export default function About() {
@@ -45,97 +40,124 @@ export default function About() {
       {/* Hero */}
       <section className="relative h-[50vh] min-h-[360px] flex items-end">
         <div className="absolute inset-0">
-          <img src={heroImage} alt="About Kaisen Travel Group" className="w-full h-full object-cover" />
+          <img src={heroImage} alt="Om Kaisen Travel Group" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-navy/70" />
         </div>
         <div className="relative container mx-auto px-4 pb-14">
-          <p className="text-xs tracking-[0.3em] text-gold uppercase mb-3 font-sans">Our Story</p>
+          <p className="text-xs tracking-[0.3em] text-gold uppercase mb-3 font-sans">Om oss</p>
           <h1 className="font-display text-4xl md:text-6xl text-white">
-            About <em className="italic font-light text-gold-light">Kaisen</em>
+            Vår <em className="italic font-light text-gold-light">Historia</em>
           </h1>
         </div>
       </section>
 
-      {/* Story */}
-      <section className="kaisen-section bg-cream">
+      {/* Story + founder image */}
+      <section className="py-20 bg-cream">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <div>
-              <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Who We Are</p>
+              <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Vilka vi är</p>
               <h2 className="font-display text-3xl md:text-4xl text-foreground mb-2 leading-tight">
-                Born from a Belief That<br />
-                <em className="italic font-light">Travel Should Feel Personal</em>
+                25 År av Passion för<br />
+                <em className="italic font-light">Resor som Imponerar</em>
               </h2>
               <div className="w-10 h-px bg-primary mb-8" />
               <div className="space-y-5 text-muted-foreground leading-relaxed">
                 <p>
-                  Kaisen Travel Group was founded in 2009 by Alexandra Voss, a seasoned travel professional who believed the industry had forgotten something essential: the human touch.
+                  Kaisen Travel Group grundades av en erfaren reseproffs med över 25 års erfarenhet i branschen. Vi har alltid trott att resor ska kännas personliga — inte som en produkt ur en hylla.
                 </p>
                 <p>
-                  The name Kaisen draws from the Japanese philosophy of <em>kaizen</em> — continuous improvement. It defines how we approach every client relationship and every journey we craft: with curiosity, care, and an unwavering commitment to getting better.
+                  Under åren har vi arrangerat gruppresor för Svenska Fotbollsförbundet, stora börsnoterade bolag och internationella organisationer. Uppdragen har varierat från VM-resor och elitsportsevent till storskaliga konferenser och incentiveresor runt om i världen.
                 </p>
                 <p>
-                  Today, our team of specialist advisors works with individuals, groups, corporations, and sports communities across the world — always anchored in genuine conversation and personalized service.
+                  Idag har vi ett brett team med specialister inom alla resekategorier — men vår filosofi är densamma som dag ett: varje kund förtjänar personlig uppmärksamhet och en resa som är skräddarsydd just för dem.
                 </p>
               </div>
             </div>
             <div className="relative">
               <div className="aspect-[4/5] overflow-hidden">
-                <img src={luxuryImage} alt="Our story" className="w-full h-full object-cover" />
+                <img src={founderImage} alt="Grundare Kaisen Travel Group" className="w-full h-full object-cover" />
               </div>
-              <div className="absolute -bottom-4 -right-4 bg-navy p-6 max-w-[180px]">
-                <div className="font-display text-3xl text-white mb-1">2009</div>
-                <div className="text-[10px] tracking-[0.2em] uppercase text-gold font-sans">Founded with a vision</div>
+              <div className="absolute -bottom-4 -right-4 bg-navy p-6 max-w-[200px]">
+                <div className="font-display text-3xl text-white mb-1">25+</div>
+                <div className="text-[10px] tracking-[0.2em] uppercase text-gold font-sans">År i branschen</div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Values */}
-      <section className="kaisen-section bg-navy">
+      {/* References strip */}
+      <section className="bg-navy py-16 border-t border-gold/20">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Our Values</p>
-            <h2 className="font-display text-4xl text-white">
-              What We Stand For
-            </h2>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {values.map((v) => (
-              <div key={v.title} className="border-t border-white/10 pt-6">
-                <h3 className="font-display text-xl text-white mb-3">{v.title}</h3>
-                <p className="text-white/50 text-sm leading-relaxed">{v.desc}</p>
+          <p className="text-center text-xs tracking-[0.3em] text-gold uppercase mb-10 font-sans">Tidigare uppdrag & kunder</p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+            {[
+              { label: "Svenska Fotbollsförbundet", detail: "VM & EM-gruppresor" },
+              { label: "Stora Börsbolag", detail: "Incentive & konferenser" },
+              { label: "Internationella Organisationer", detail: "Storskaliga event" },
+              { label: "Privata Sällskap", detail: "Skräddarsydda resor" },
+            ].map((ref) => (
+              <div key={ref.label} className="border-t border-white/10 pt-6">
+                <h3 className="font-display text-lg text-white mb-2">{ref.label}</h3>
+                <p className="text-white/40 text-xs tracking-[0.15em] uppercase font-sans">{ref.detail}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Team */}
-      <section className="kaisen-section bg-background">
+      {/* Values */}
+      <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">The People Behind the Journeys</p>
-            <h2 className="font-display text-4xl text-foreground">
-              Meet Your <em className="italic font-light">Advisors</em>
+          <div className="text-center mb-14">
+            <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Vad vi står för</p>
+            <h2 className="font-display text-3xl md:text-4xl text-foreground">
+              Våra Värderingar
             </h2>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {team.map((member) => (
-              <div key={member.name} className="group">
-                <div className="aspect-square overflow-hidden mb-5 bg-muted">
-                  <img
-                    src={groupImage}
-                    alt={member.name}
-                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
-                  />
-                </div>
-                <h3 className="font-display text-xl text-foreground mb-0.5">{member.name}</h3>
-                <div className="text-[10px] tracking-[0.2em] uppercase text-primary mb-3 font-sans">{member.role}</div>
-                <p className="text-muted-foreground text-sm leading-relaxed">{member.bio}</p>
+            {values.map((v) => (
+              <div key={v.title} className="border-t border-border pt-6">
+                <h3 className="font-display text-xl text-foreground mb-3">{v.title}</h3>
+                <div className="w-6 h-px bg-primary mb-4" />
+                <p className="text-muted-foreground text-sm leading-relaxed">{v.desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Expertise */}
+      <section className="py-20 bg-cream">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div>
+              <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Vårt Team</p>
+              <h2 className="font-display text-3xl md:text-4xl text-foreground mb-2">
+                Bred Expertis — <em className="italic font-light">Djup Erfarenhet</em>
+              </h2>
+              <div className="w-10 h-px bg-primary mb-8" />
+              <p className="text-muted-foreground leading-relaxed mb-8">
+                Vi är ett team av resespecialister med lång erfarenhet inom varje nisch vi arbetar med. Ingen fråga är för komplex, ingen grupp för stor — vi har sett och löst det mesta under åren.
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                Det som skiljer oss åt är kombinationen av branscherfarenhet och personligt engagemang. Vi behandlar varje uppdrag som om det vore vårt eget.
+              </p>
+            </div>
+            <div className="space-y-0 border border-border">
+              {expertise.map((e, i) => (
+                <div
+                  key={e.area}
+                  className={`flex items-center justify-between p-6 hover:bg-accent/30 transition-colors ${
+                    i < expertise.length - 1 ? "border-b border-border" : ""
+                  }`}
+                >
+                  <span className="font-display text-lg text-foreground">{e.area}</span>
+                  <span className="text-primary text-sm font-sans tracking-wider">{e.years}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -144,14 +166,14 @@ export default function About() {
       <section className="bg-primary py-20">
         <div className="container mx-auto px-4 text-center">
           <h2 className="font-display text-3xl md:text-4xl text-primary-foreground mb-6">
-            Ready to Meet Your Advisor?
+            Redo att Planera Er Resa?
           </h2>
           <p className="text-primary-foreground/70 max-w-md mx-auto mb-10 leading-relaxed">
-            A genuine conversation is where every great journey begins.
+            En personlig konversation är alltid startpunkten för en bra resa. Kontakta oss idag.
           </p>
           <Link to="/contact">
             <Button size="lg" variant="outline" className="rounded-none border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary px-10 tracking-wider text-sm">
-              Get in Touch
+              Kom i kontakt
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
