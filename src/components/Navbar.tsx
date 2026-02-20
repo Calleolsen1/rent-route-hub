@@ -15,11 +15,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const tjänsterLinks = [
-  { label: "Sportresor", to: "/services#sports", desc: "F1, fotboll & golf" },
-  { label: "Affärsresor", to: "/services#business", desc: "Smidiga businessresor" },
-  { label: "Weekend Getaway", to: "/services#weekend", desc: "Helgresor i Europa" },
-  { label: "Konferens", to: "/services#conference", desc: "Möten & event utomlands" },
-  { label: "VIP-service", to: "/services#vip", desc: "Komplett personlig service" },
+  { label: "Sportresor", to: "/services/sportresor", desc: "F1, fotboll & golf" },
+  { label: "Affärsresor", to: "/services/affarsresor", desc: "Smidiga businessresor" },
+  { label: "Weekend Getaway", to: "/services/weekend-getaway", desc: "Helgresor i Europa" },
+  { label: "Konferens", to: "/services/konferens", desc: "Möten & event utomlands" },
+  { label: "VIP-service", to: "/services/vip-service", desc: "Komplett personlig service" },
 ];
 
 const Navbar = () => {
