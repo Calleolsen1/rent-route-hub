@@ -375,31 +375,31 @@ export const AuthDialog = ({ open, onOpenChange }: AuthDialogProps) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Welcome</DialogTitle>
-          <DialogDescription>Sign in to your account or create a new one</DialogDescription>
+          <DialogTitle className="font-display text-2xl">Välkommen</DialogTitle>
+          <DialogDescription>Logga in på ditt konto eller skapa ett nytt</DialogDescription>
         </DialogHeader>
         
         <Tabs defaultValue="login" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="login">Login</TabsTrigger>
-            <TabsTrigger value="signup">Sign Up</TabsTrigger>
+            <TabsTrigger value="login">Logga in</TabsTrigger>
+            <TabsTrigger value="signup">Skapa konto</TabsTrigger>
           </TabsList>
 
           <TabsContent value="login">
             <form onSubmit={handleSignIn} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="login-email">Email</Label>
+                <Label htmlFor="login-email">E-post</Label>
                 <Input
                   id="login-email"
                   type="email"
-                  placeholder="you@example.com"
+                  placeholder="din@epost.se"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="login-password">Password</Label>
+                <Label htmlFor="login-password">Lösenord</Label>
                 <Input
                   id="login-password"
                   type="password"
@@ -410,14 +410,14 @@ export const AuthDialog = ({ open, onOpenChange }: AuthDialogProps) => {
                   minLength={6}
                 />
               </div>
-              <Button type="submit" className="w-full" disabled={loadingStates.regular}>
+              <Button type="submit" className="w-full rounded-none" disabled={loadingStates.regular}>
                 {loadingStates.regular ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Logging in...
+                    Loggar in...
                   </>
                 ) : (
-                  "Login"
+                  "Logga in"
                 )}
               </Button>
             </form>
@@ -425,53 +425,53 @@ export const AuthDialog = ({ open, onOpenChange }: AuthDialogProps) => {
             <Separator className="my-4" />
             
             <div className="space-y-3">
-              <p className="text-sm text-muted-foreground text-center">Try Demo Mode</p>
+              <p className="text-sm text-muted-foreground text-center">Prova demoläge</p>
               <Button
                 type="button"
                 variant="outline"
-                className="w-full bg-white border-2 border-gray-300 hover:bg-gray-50"
+                className="w-full rounded-none"
                 onClick={handleDemoGuestLogin}
                 disabled={loadingStates.guestDemo}
               >
                 {loadingStates.guestDemo ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Loading demo...
+                    Laddar demo...
                   </>
                 ) : (
-                  "Guest Demo Login"
+                  "Demo — Resenär"
                 )}
               </Button>
               <Button
                   type="button"
                   variant="outline"
-                  className="w-full bg-white border-2 border-gray-300 hover:bg-gray-50"
+                  className="w-full rounded-none"
                   onClick={handleDemoHostLogin}
                   disabled={loadingStates.hostDemo}
                 >
                   {loadingStates.hostDemo ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Loading demo...
+                      Laddar demo...
                     </>
                   ) : (
-                    "Host Demo Login"
+                    "Demo — Arrangör"
                   )}
                 </Button>
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full bg-white border-2 border-gray-300 hover:bg-gray-50"
+                  className="w-full rounded-none"
                   onClick={handleDemoAdminLogin}
                   disabled={loadingStates.adminDemo}
                 >
                   {loadingStates.adminDemo ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Loading demo...
+                      Laddar demo...
                     </>
                   ) : (
-                    "Admin Demo Login"
+                    "Demo — Admin"
                   )}
                 </Button>
             </div>
@@ -481,22 +481,22 @@ export const AuthDialog = ({ open, onOpenChange }: AuthDialogProps) => {
             <form onSubmit={handleSignUp} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="first-name">First Name</Label>
+                  <Label htmlFor="first-name">Förnamn</Label>
                   <Input
                     id="first-name"
                     type="text"
-                    placeholder="John"
+                    placeholder="Anna"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="last-name">Last Name</Label>
+                  <Label htmlFor="last-name">Efternamn</Label>
                   <Input
                     id="last-name"
                     type="text"
-                    placeholder="Doe"
+                    placeholder="Svensson"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     required
@@ -504,18 +504,18 @@ export const AuthDialog = ({ open, onOpenChange }: AuthDialogProps) => {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="signup-email">Email</Label>
+                <Label htmlFor="signup-email">E-post</Label>
                 <Input
                   id="signup-email"
                   type="email"
-                  placeholder="you@example.com"
+                  placeholder="din@epost.se"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="signup-password">Password</Label>
+                <Label htmlFor="signup-password">Lösenord</Label>
                 <Input
                   id="signup-password"
                   type="password"
@@ -526,17 +526,17 @@ export const AuthDialog = ({ open, onOpenChange }: AuthDialogProps) => {
                   minLength={6}
                 />
                 <p className="text-xs text-muted-foreground">
-                  Password must be at least 6 characters
+                  Lösenordet måste vara minst 6 tecken
                 </p>
               </div>
-              <Button type="submit" className="w-full" disabled={loadingStates.regular}>
+              <Button type="submit" className="w-full rounded-none" disabled={loadingStates.regular}>
                 {loadingStates.regular ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Creating account...
+                    Skapar konto...
                   </>
                 ) : (
-                  "Create Account"
+                  "Skapa konto"
                 )}
               </Button>
             </form>
@@ -546,3 +546,4 @@ export const AuthDialog = ({ open, onOpenChange }: AuthDialogProps) => {
     </Dialog>
   );
 };
+

@@ -21,10 +21,10 @@ const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const navLinks = [
-    { label: "Experiences", to: "/services" },
-    { label: "Group Travel", to: "/group-travel" },
-    { label: "About", to: "/about" },
-    { label: "Contact", to: "/contact" },
+    { label: "Tjänster", to: "/services" },
+    { label: "Gruppresor", to: "/group-travel" },
+    { label: "Om oss", to: "/about" },
+    { label: "Kontakt", to: "/contact" },
   ];
 
   return (
@@ -64,29 +64,29 @@ const Navbar = () => {
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm" className="hidden md:flex items-center gap-2">
                       <User className="h-4 w-4" />
-                      <span>Account</span>
+                      <span>Konto</span>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuLabel>Mitt konto</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link to="/guest/dashboard">My Trips</Link>
+                      <Link to="/guest/dashboard">Mina resor</Link>
                     </DropdownMenuItem>
                     {isHost && (
                       <DropdownMenuItem asChild>
-                        <Link to="/host/dashboard">Host Dashboard</Link>
+                        <Link to="/host/dashboard">Host-panel</Link>
                       </DropdownMenuItem>
                     )}
                     {isAdmin && (
                       <DropdownMenuItem asChild>
-                        <Link to="/admin/dashboard">Admin Dashboard</Link>
+                        <Link to="/admin/dashboard">Admin-panel</Link>
                       </DropdownMenuItem>
                     )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={signOut}>
                       <LogOut className="h-4 w-4 mr-2" />
-                      Logout
+                      Logga ut
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -97,7 +97,7 @@ const Navbar = () => {
                   className="hidden md:flex border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-none px-6 tracking-wider text-xs"
                   onClick={() => setAuthDialogOpen(true)}
                 >
-                  Sign In
+                  Logga in
                 </Button>
               )}
 
@@ -106,7 +106,7 @@ const Navbar = () => {
                   size="sm"
                   className="hidden md:flex rounded-none px-6 tracking-wider text-xs bg-primary hover:bg-primary/90"
                 >
-                  Plan Your Trip
+                  Planera din resa
                 </Button>
               </Link>
 
@@ -139,19 +139,19 @@ const Navbar = () => {
               {user ? (
                 <>
                   <Link to="/guest/dashboard" onClick={() => setMobileOpen(false)}>
-                    <Button variant="outline" className="w-full rounded-none">My Trips</Button>
+                    <Button variant="outline" className="w-full rounded-none">Mina resor</Button>
                   </Link>
                   <Button variant="ghost" className="w-full rounded-none" onClick={signOut}>
-                    <LogOut className="h-4 w-4 mr-2" /> Logout
+                    <LogOut className="h-4 w-4 mr-2" /> Logga ut
                   </Button>
                 </>
               ) : (
                 <Button variant="outline" className="w-full rounded-none border-primary text-primary" onClick={() => { setAuthDialogOpen(true); setMobileOpen(false); }}>
-                  Sign In
+                  Logga in
                 </Button>
               )}
               <Link to="/contact" onClick={() => setMobileOpen(false)}>
-                <Button className="w-full rounded-none bg-primary">Plan Your Trip</Button>
+                <Button className="w-full rounded-none bg-primary">Planera din resa</Button>
               </Link>
             </div>
           </div>

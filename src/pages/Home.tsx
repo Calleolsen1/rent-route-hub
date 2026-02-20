@@ -1,13 +1,15 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Users, Trophy, Star, Shield, Globe, Plane } from "lucide-react";
+import { ArrowRight, Users, Trophy, Star, Shield, Globe } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import FAQSection from "@/components/home/FAQSection";
 import heroImage from "@/assets/kaisen-hero.jpg";
 import groupImage from "@/assets/kaisen-group.jpg";
 import sportsImage from "@/assets/kaisen-sports.jpg";
-import luxuryImage from "@/assets/kaisen-luxury.jpg";
+import incomingImage from "@/assets/kaisen-incoming.jpg";
+import weekendImage from "@/assets/kaisen-weekend.jpg";
+import vipImage from "@/assets/kaisen-vip.jpg";
 
 const stats = [
   { value: "2 400+", label: "Resor arrangerade" },
@@ -37,7 +39,7 @@ const services = [
     title: "Incoming",
     subtitle: "Ta emot världen i Sverige",
     description: "Vi tar hand om internationella grupper och delegationer som besöker Sverige — med skräddarsydda program, guider och upplevelser som lyfter fram det bästa Sverige har att erbjuda.",
-    image: heroImage,
+    image: incomingImage,
     href: "/services#incoming",
     tag: "Sverige som destination",
   },
@@ -45,7 +47,7 @@ const services = [
     title: "Weekendresor",
     subtitle: "Europa på nolltid",
     description: "En lång helg i Paris, Lissabon eller Prag? Vi paketerar de bästa weekendresorna i Europa med hotell, aktiviteter och smidig logistik — utan att du behöver lyfta ett finger.",
-    image: luxuryImage,
+    image: weekendImage,
     href: "/services#weekend",
     tag: "Europa · Helgresor",
   },
@@ -53,7 +55,7 @@ const services = [
     title: "VIP-service",
     subtitle: "Din personliga reseassistent",
     description: "En dedikerad rådgivare som hanterar all din reseservice — privata resor, affärsresor, sista minuten-ändringar och allt däremellan. För dig som kräver det bästa.",
-    image: luxuryImage,
+    image: vipImage,
     href: "/services#vip",
     tag: "Exklusivt · Personligt",
   },
@@ -140,7 +142,7 @@ const Home = () => {
                 </Button>
               </Link>
               <Link to="/services">
-                <Button size="lg" variant="outline" className="rounded-none border-white/40 text-white hover:bg-white/10 px-8 tracking-wider text-sm">
+                <Button size="lg" variant="outline" className="rounded-none border-white/60 text-white bg-white/10 hover:bg-white/20 px-8 tracking-wider text-sm">
                   Utforska tjänster
                 </Button>
               </Link>
@@ -270,8 +272,8 @@ const Home = () => {
             <div className="relative">
               <div className="aspect-[4/5] overflow-hidden">
                 <img
-                  src={luxuryImage}
-                  alt="Personlig lyxresa"
+                  src={vipImage}
+                  alt="VIP-reseservice"
                   className="w-full h-full object-cover"
                 />
               </div>
