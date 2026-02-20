@@ -63,26 +63,46 @@ const SendInvoiceDialog = ({
     }
     setSending(true);
 
-    // Generate a simple invoice number
-    const invoiceNum = `KAI-${new Date().getFullYear()}-${String(Date.now()).slice(-6)}`;
+    const invoiceNum = trip.invoice_number || `KAI-${new Date().getFullYear()}-${String(Date.now()).slice(-6)}`;
 
     try {
-      const { error } = await supabase.from("trips").update({
+      // Send invoice email via edge function
+      const { error: fnError } = await supabase.functions.invoke("send-invoice", {
+        body: {
+          guestEmail,
+          guestName,
+          invoiceNumber: invoiceNum,
+          tripTitle: trip.title,
+          destination: trip.destination || "",
+          startDate: trip.start_date || undefined,
+          endDate: trip.end_date || undefined,
+          paymentDueDate: trip.payment_due_date || undefined,
+          paymentMethod: trip.payment_method || undefined,
+          breakdown: breakdown.map(r => ({ label: r.label, amount: parseFloat(String(r.amount)) || 0 })),
+          total,
+          currency: trip.price_currency || "SEK",
+          invoiceNotes: trip.invoice_notes || undefined,
+        },
+      });
+
+      if (fnError) throw fnError;
+
+      // Mark as sent in DB
+      const { error: dbError } = await supabase.from("trips").update({
         invoice_sent_at: new Date().toISOString(),
         invoice_number: invoiceNum,
-        payment_status: trip.payment_status === "unpaid" ? "unpaid" : trip.payment_status,
       }).eq("id", trip.id);
 
-      if (error) throw error;
+      if (dbError) throw dbError;
 
       toast({
-        title: "Faktura markerad som skickad ✓",
-        description: `Fakturanummer: ${invoiceNum}`,
+        title: "Faktura skickad ✓",
+        description: `Skickad till ${guestEmail} · ${invoiceNum}`,
       });
       onSent();
       onOpenChange(false);
     } catch (e: any) {
-      toast({ title: "Fel", description: e.message, variant: "destructive" });
+      toast({ title: "Fel vid utskick", description: e.message, variant: "destructive" });
     } finally {
       setSending(false);
     }
@@ -176,10 +196,10 @@ const SendInvoiceDialog = ({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>Stäng</Button>
+        <Button variant="outline" onClick={() => onOpenChange(false)}>Stäng</Button>
           <Button onClick={handleSend} disabled={sending} className="gap-2">
             {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-            {trip.invoice_sent_at ? "Skicka igen" : "Markera som skickad"}
+            {sending ? "Skickar..." : trip.invoice_sent_at ? "Skicka igen" : "Skicka faktura via e-post"}
           </Button>
         </DialogFooter>
       </DialogContent>
