@@ -110,7 +110,7 @@ const Home = () => {
     <div className="min-h-screen">
       <Navbar />
       {/* Hero */}
-      <section className="relative min-h-[92vh] flex items-end overflow-hidden">
+      <section className="relative min-h-[82vh] flex items-end overflow-hidden">
         <div className="absolute inset-0">
           <img
             src={heroImage}
