@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { MapPin, Phone, Mail, Clock, CheckCircle } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import heroImage from "@/assets/kaisen-hero.jpg";
+import heroImage from "@/assets/contact-hero.jpg";
 
 const schema = z.object({
   name: z.string().min(2, "Namnet måste vara minst 2 tecken").max(100),
