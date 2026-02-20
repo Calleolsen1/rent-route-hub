@@ -21,22 +21,13 @@ function inviteTemplate(actionUrl: string, firstName?: string) {
           <!-- Header -->
           <tr>
             <td style="padding:36px 48px 28px;border-bottom:1px solid #1e2d4a;">
-              <table cellpadding="0" cellspacing="0">
-                <tr>
-                  <td style="background:#8B6914;width:36px;height:36px;text-align:center;vertical-align:middle;border-radius:50%;">
-                    <span style="color:#fff;font-size:16px;font-weight:700;">K</span>
-                  </td>
-                  <td style="padding-left:12px;">
-                    <span style="color:#d4a84b;font-size:18px;letter-spacing:0.25em;font-family:'Georgia',serif;">MITT KAISEN</span>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-          <!-- Body -->
-          <tr>
-            <td style="padding:40px 48px;">
-              <p style="margin:0 0 8px;color:#8a9bb5;font-size:11px;letter-spacing:0.25em;text-transform:uppercase;">Välkommen</p>
+              <img src="https://itaefkyfuvwicvarnfke.supabase.co/storage/v1/object/public/email-assets/kaisen-logo.png" alt="Kaisen Travel Group" style="height:48px;display:block;" />
+             </td>
+           </tr>
+           <!-- Body -->
+           <tr>
+             <td style="padding:40px 48px;">
+               <p style="margin:0 0 8px;color:#8a9bb5;font-size:11px;letter-spacing:0.25em;text-transform:uppercase;">Välkommen</p>
               <h1 style="margin:0 0 20px;color:#d4a84b;font-size:28px;font-weight:400;font-family:'Georgia',serif;line-height:1.3;">
                 ${firstName ? `Hej ${firstName},` : "Välkommen till Mitt Kaisen"}
               </h1>
@@ -89,21 +80,12 @@ function recoveryTemplate(actionUrl: string) {
         <table width="560" cellpadding="0" cellspacing="0" style="background:#162035;border:1px solid #1e2d4a;max-width:560px;width:100%;">
           <tr>
             <td style="padding:36px 48px 28px;border-bottom:1px solid #1e2d4a;">
-              <table cellpadding="0" cellspacing="0">
-                <tr>
-                  <td style="background:#8B6914;width:36px;height:36px;text-align:center;vertical-align:middle;border-radius:50%;">
-                    <span style="color:#fff;font-size:16px;font-weight:700;">K</span>
-                  </td>
-                  <td style="padding-left:12px;">
-                    <span style="color:#d4a84b;font-size:18px;letter-spacing:0.25em;font-family:'Georgia',serif;">MITT KAISEN</span>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:40px 48px;">
-              <p style="margin:0 0 8px;color:#8a9bb5;font-size:11px;letter-spacing:0.25em;text-transform:uppercase;">Lösenordsåterställning</p>
+              <img src="https://itaefkyfuvwicvarnfke.supabase.co/storage/v1/object/public/email-assets/kaisen-logo.png" alt="Kaisen Travel Group" style="height:48px;display:block;" />
+             </td>
+           </tr>
+           <tr>
+             <td style="padding:40px 48px;">
+               <p style="margin:0 0 8px;color:#8a9bb5;font-size:11px;letter-spacing:0.25em;text-transform:uppercase;">Lösenordsåterställning</p>
               <h1 style="margin:0 0 20px;color:#d4a84b;font-size:28px;font-weight:400;font-family:'Georgia',serif;">
                 Återställ ditt lösenord
               </h1>

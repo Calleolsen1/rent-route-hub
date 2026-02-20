@@ -72,17 +72,7 @@ function invoiceTemplate(data: {
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td>
-                    <table cellpadding="0" cellspacing="0">
-                      <tr>
-                        <td style="background:#8B6914;width:44px;height:44px;text-align:center;vertical-align:middle;border-radius:50%;">
-                          <span style="color:#fff;font-size:20px;font-weight:700;font-family:Georgia,serif;">K</span>
-                        </td>
-                        <td style="padding-left:14px;">
-                          <div style="color:#d4a84b;font-size:20px;letter-spacing:0.3em;font-family:Georgia,serif;">KAISEN</div>
-                          <div style="color:#8a9bb5;font-size:9px;letter-spacing:0.35em;text-transform:uppercase;margin-top:2px;">Travel Group</div>
-                        </td>
-                      </tr>
-                    </table>
+                    <img src="https://itaefkyfuvwicvarnfke.supabase.co/storage/v1/object/public/email-assets/kaisen-logo.png" alt="Kaisen Travel Group" style="height:52px;display:block;" />
                   </td>
                   <td align="right">
                     <div style="color:#4a5d75;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:4px;">Faktura</div>
@@ -183,9 +173,7 @@ function invoiceTemplate(data: {
                     <p style="margin:0;color:#4a5d75;font-size:11px;">info@kaisengroup.se &nbsp;·&nbsp; kaisengroup.se</p>
                   </td>
                   <td align="right">
-                    <div style="color:#8B6914;width:28px;height:28px;border-radius:50%;background:#8B6914;text-align:center;line-height:28px;display:inline-block;">
-                      <span style="color:#fff;font-size:13px;font-weight:700;font-family:Georgia,serif;">K</span>
-                    </div>
+                    <img src="https://itaefkyfuvwicvarnfke.supabase.co/storage/v1/object/public/email-assets/kaisen-logo.png" alt="Kaisen Travel Group" style="height:32px;display:block;" />
                   </td>
                 </tr>
               </table>
