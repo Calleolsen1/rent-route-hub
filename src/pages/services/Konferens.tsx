@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, Users, Projector, Utensils, Wifi, Car, Award } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import incomingImage from "@/assets/kaisen-incoming.jpg";
+import konferensHero from "@/assets/konferens-hero.jpg";
 import konferens1 from "@/assets/konferens-1.jpg";
 import konferens2 from "@/assets/konferens-2.jpg";
 
@@ -77,7 +77,7 @@ export default function Konferens() {
       {/* Hero */}
       <section className="relative h-[50vh] min-h-[360px] flex items-end">
         <div className="absolute inset-0">
-          <img src={incomingImage} alt="Konferensresor" className="w-full h-full object-cover" />
+          <img src={konferensHero} alt="Konferensresor utomlands" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-navy/72" />
         </div>
         <div className="relative container mx-auto px-4 pb-14">
