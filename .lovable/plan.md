@@ -1,154 +1,114 @@
 
-# Arrangörsportal – Ombyggnad + Fakturering
+## Problem Analysis
 
-## Vad vi bygger
+The Overview dashboard (Översikt) shows all zeros because:
 
-En komplett ombyggnad av host-panelen till en **svensk arrangörsportal** med fyra sektioner:
+**KPI Cards** — source data from `trip_groups` + `trip_members`, which are empty. The actual trip data is in the `trips` table.
 
-1. **Översikt** – Välkomstdashboard med gruppsummering
-2. **Min grupp** – Resenärslista + hotellrumfördelning
-3. **Fakturering** – Dedikerad fakturasida med historik och utskick
-4. **Meddelanden** – Inbox (befintlig)
+**Kommande resor** — queries `trips` with `start_date >= today`, but one existing trip has start_date `2026-02-18` (yesterday) which is now filtered out, and the other has `null` start_date, so neither shows up.
 
----
+**Senaste fakturor** — queries `trip_members` for invoice_sent_at entries — also empty since no groups exist.
 
-## Filöversikt
+**Gruppsummering** — shows trip groups which is empty.
 
-| Fil | Åtgärd |
-|-----|--------|
-| `src/components/host/HostSidebar.tsx` | Bygg om navigation till svenska + arrangörsmenyn |
-| `src/layouts/HostLayout.tsx` | Svenska sidtitlar, ta bort irrelevant logik |
-| `src/pages/host/Dashboard.tsx` | Bygg om till arrangörsöversikt på svenska |
-| `src/pages/host/GroupView.tsx` | Ny sida – Min grupp (resenärer + hotellrum) |
-| `src/pages/host/InvoicingView.tsx` | Ny sida – Fakturering |
-| `src/components/host/HostPageHeader.tsx` | "Logout" → "Logga ut" |
-| `src/App.tsx` | Lägg till /host/group och /host/invoicing routes |
+The core issue: the system has two separate concepts that need to be unified on the Overview:
+- **Individual trips** (in `trips` table) — where the real data lives
+- **Group trips** (in `trip_groups` + `trip_members`) — currently empty
 
 ---
 
-## 1. Sidebar – `HostSidebar.tsx`
+## Plan
 
-Ny navigation (på svenska):
+### 1. Fix "Kommande resor" (Upcoming Trips)
 
-```
-Översikt       →  /host/dashboard   (LayoutGrid)
-Min grupp      →  /host/group       (Users)
-Fakturering    →  /host/invoicing   (FileText)
-Meddelanden    →  /host/inbox       (Inbox)
-──────────────────────────────────
-Logga ut
+**File:** `src/pages/admin/Overview.tsx`
+
+Change the query to include trips with `null` start_date OR future dates:
+- Remove the strict `gte("start_date", today)` filter — or make it `OR start_date IS NULL`
+- Show up to 5 trips ordered by `start_date` ascending (nulls last)
+
+```ts
+// Before:
+.gte("start_date", new Date().toISOString().split("T")[0])
+
+// After — include null dates and use status filter instead:
+.in("status", ["upcoming", "ongoing"])
+.order("start_date", { ascending: true, nullsFirst: false })
+.limit(5)
 ```
 
-Tas bort från nav: Listings, Bookings, Payouts, Earnings Report.
-Logotyp: Byt "Rentely" till arrangörsvarumärket (behålls som prop, sätts till "Kaisen" i HostLayout).
-"Log Out" → "Logga ut".
+### 2. Fix KPI Cards to use the `trips` table
 
----
+**File:** `src/pages/admin/Overview.tsx`
 
-## 2. Layout – `HostLayout.tsx`
+Currently, all 4 KPI values are derived from `trip_groups`. Since trips live in the `trips` table, remap as follows:
 
-- Byt sidtitlar till svenska:
-  - `/host/dashboard` → "Översikt"
-  - `/host/group` → "Min grupp"
-  - `/host/invoicing` → "Fakturering"
-  - `/host/inbox` → "Meddelanden"
-- Ta bort "Become a Host"-blocket (irrelevant för arrangörer)
-- Ändra logoText från `"Rentely"` till `"Kaisen"`
-- Ta bort `shouldHideHeader` för create/edit-listing (inte aktuellt längre)
+| KPI | Current source | Fixed source |
+|---|---|---|
+| Aktiva grupper | `trip_groups.length` | Count of trips with status `upcoming` or `ongoing` |
+| Bekräftade resenärer | `trip_members` with status `confirmed` | Count of trips with `payment_status = paid` vs total |
+| Fakturor skickade | `trip_members.invoice_sent_at` | Count of trips with `invoice_sent_at IS NOT NULL` |
+| Utestående belopp | Sum of invoice_amount - paid | Sum of `price_total` where `payment_status != paid` |
 
----
-
-## 3. Dashboard – `src/pages/host/Dashboard.tsx`
-
-Helt ombyggd arrangörsöversikt. Tar bort all earnings/listings-data. Visar istället:
-
-**Välkomst-sektion:** Hej [namn]! + gruppresans namn och destination (hämtat från arrangörens `trip_groups`)
-
-**Statistik-kort (4 stycken):**
-- Antal resenärer i gruppen
-- Antal bekräftade
-- Fakturor skickade
-- Nästa avresedag
-
-**Genvägar:**
-- Knapp "Se gruppen" → /host/group
-- Knapp "Skicka faktura" → /host/invoicing
-
-Data hämtas via:
-```
-supabase.from("trip_groups").select("*, trip_members(*)").eq("organizer_user_id", user.id)
+Add a new query for trips-based KPIs:
+```ts
+const { data: tripsData } = useQuery({
+  queryKey: ["admin-trips-kpi"],
+  queryFn: async () => {
+    const { data } = await supabase
+      .from("trips")
+      .select("id, status, payment_status, price_total, price_currency, invoice_sent_at");
+    return data ?? [];
+  }
+});
 ```
 
----
+Then derive KPIs:
+- **Aktiva resor** = trips with status `upcoming` or `ongoing`
+- **Betalda resor** = `X / Y` format — paid vs total
+- **Fakturor skickade** = count of `invoice_sent_at IS NOT NULL`
+- **Utestående belopp** = sum of `price_total` where payment_status = `unpaid` or `partial`
 
-## 4. Ny sida – `src/pages/host/GroupView.tsx`
+### 3. Fix "Senaste fakturor" section
 
-Återanvänder logiken från `GroupTripView`-komponenten men som en hel sida i host-layouten. Visar:
+**File:** `src/pages/admin/Overview.tsx`
 
-**Grupplista per grupp:**
-- Gruppnamn, destination
-- Tabell med alla resenärer: namn, e-post, status (Inbjuden/Bekräftad/Avbokad)
-- Fakturastatus per rad
-- Checkbox per person för selektiv fakturering
-
-**Hotellrumfördelning (ny sektion per grupp):**
-- Tabell: Deltagare | Hotell | Incheckning | Utcheckning | Bekräftelse
-- Data hämtas från varje deltagares enskilda `trips`-rad
-
-Knapparna "Skicka faktura" öppnar InvoiceDialog (samma som i GroupTripView).
-
----
-
-## 5. Ny sida – `src/pages/host/InvoicingView.tsx`
-
-En dedikerad fakturasida med tre sektioner:
-
-### Sektion A: Skicka ny faktura
-- Välj grupp (dropdown om arrangör har flera grupper)
-- Välj mottagare: Alla / Specifika (checkboxar)
-- Belopp (SEK)
-- Meddelande
-- Knapp: "Skicka faktura"
-
-### Sektion B: Fakturastatus
-En tabell som visar alla gruppmedlemmar med:
-- Namn | E-post | Belopp | Datum skickat | Status
-- Filtrera per grupp
-- Ikoner: ✓ Skickad / ⏳ Ej skickad
-
-### Sektion C: Historik
-Senaste fakturor skickade, sorterade efter datum. Varje rad: person, belopp, datum.
-
-All data hämtas från `trip_members.invoice_sent_at`, `invoice_amount`, `invoice_currency`, `invoice_notes`.
-
----
-
-## 6. App.tsx – Nya routes
-
-Lägg till under `/host`:
-```tsx
-<Route path="group" element={<GroupView />} />
-<Route path="invoicing" element={<InvoicingView />} />
+Change the query from `trip_members` to `trips` — showing trips that have been invoiced:
+```ts
+const { data: recentInvoices } = useQuery({
+  queryKey: ["admin-recent-invoices"],
+  queryFn: async () => {
+    const { data } = await supabase
+      .from("trips")
+      .select("id, title, destination, invoice_sent_at, price_total, price_currency, payment_status, guest_user_id, profiles:profiles(first_name, last_name, email)")
+      .not("invoice_sent_at", "is", null)
+      .order("invoice_sent_at", { ascending: false })
+      .limit(6);
+    return data ?? [];
+  }
+});
 ```
 
-Befintliga routes (listings, bookings, payouts, earnings-report) lämnas kvar tekniskt men syns inte i nav.
+Render each item with customer name, trip name, amount, and paid/unpaid icon.
+
+### 4. Replace "Gruppsummering" with "Resestatus" summary
+
+**File:** `src/pages/admin/Overview.tsx`
+
+Since `trip_groups` is empty, replace "Gruppsummering" with a **"Alla resor"** summary that lists all trips with their status and payment state. Each row shows:
+- Trip title + destination
+- Status badge (Kommande / Pågående / Avslutad)
+- Payment badge (Obetald / Betald)
+- Click → navigates to `/admin/trips`
+
+### 5. Add auto-refresh with React Query `refetchInterval`
+
+**File:** `src/pages/admin/Overview.tsx`
+
+Add `refetchInterval: 30_000` (30 seconds) to all queries so the dashboard self-updates without needing a page reload.
 
 ---
 
-## 7. HostPageHeader – "Logout" → "Logga ut"
+## Files to Edit
 
-Liten ändring i dropdown-menyn.
-
----
-
-## Flöde
-
-```
-Arrangör loggar in
-        ↓
-Översikt – ser gruppens status + snabbkort
-        ↓
-Min grupp – ser alla resenärer, hotellrum
-        ↓
-Fakturering – skickar fakturor, ser historik
-```
+- `src/pages/admin/Overview.tsx` — complete rewrite of data sources and KPI calculations to use the `trips` table instead of (empty) `trip_groups`. All UI structure stays the same.
