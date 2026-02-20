@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { format } from "date-fns";
-import { MoreVertical, Mail } from "lucide-react";
+import { MoreVertical, Mail, MessageSquare, UserCog } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -11,6 +11,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { AdminSendMessageDialog } from "./AdminSendMessageDialog";
+import { AdminEditUserDialog } from "./AdminEditUserDialog";
 import {
   Table,
   TableBody,
@@ -73,6 +75,8 @@ export function UsersTable({ users, loading, hasActiveFilters }: UsersTableProps
   const [suspendDialogOpen, setSuspendDialogOpen] = useState(false);
   const [unsuspendDialogOpen, setUnsuspendDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [sendMessageOpen, setSendMessageOpen] = useState(false);
+  const [editUserOpen, setEditUserOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
   const { isDemoMode, suspendAdminUser, unsuspendAdminUser, deleteAdminUser } = useDemoData();
@@ -402,6 +406,21 @@ export function UsersTable({ users, loading, hasActiveFilters }: UsersTableProps
                     <MoreVertical className="h-4 w-4" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
+                    <DropdownMenuItem
+                      onClick={() => { setSelectedUser(user); setSendMessageOpen(true); }}
+                      className="gap-2"
+                    >
+                      <MessageSquare className="h-4 w-4" />
+                      Skicka meddelande
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => { setSelectedUser(user); setEditUserOpen(true); }}
+                      className="gap-2"
+                    >
+                      <UserCog className="h-4 w-4" />
+                      Redigera personuppgifter
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
                     {user.primary_role === 'guest' && (
                       <>
                         <DropdownMenuItem
@@ -417,21 +436,21 @@ export function UsersTable({ users, loading, hasActiveFilters }: UsersTableProps
                     )}
                     {user.status === 'suspended' ? (
                       <DropdownMenuItem onClick={() => handleUnsuspendClick(user)}>
-                        Unsuspend User
+                        Återaktivera användare
                       </DropdownMenuItem>
                     ) : (
-                      <DropdownMenuItem 
+                      <DropdownMenuItem
                         className="text-destructive"
                         onClick={() => handleSuspendClick(user)}
                       >
-                        Suspend User
+                        Stäng av användare
                       </DropdownMenuItem>
                     )}
-                    <DropdownMenuItem 
+                    <DropdownMenuItem
                       className="text-destructive"
                       onClick={() => handleDeleteClick(user)}
                     >
-                      Delete User
+                      Ta bort användare
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -524,6 +543,16 @@ export function UsersTable({ users, loading, hasActiveFilters }: UsersTableProps
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      <AdminSendMessageDialog
+        open={sendMessageOpen}
+        onOpenChange={setSendMessageOpen}
+        user={selectedUser}
+      />
+      <AdminEditUserDialog
+        open={editUserOpen}
+        onOpenChange={setEditUserOpen}
+        user={selectedUser}
+      />
     </div>
   );
 }
