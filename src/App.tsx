@@ -51,6 +51,11 @@ import Services from "./pages/Services";
 import GroupTravel from "./pages/GroupTravel";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
+import Sportresor from "./pages/services/Sportresor";
+import Affarsresor from "./pages/services/Affarsresor";
+import WeekendGetaway from "./pages/services/WeekendGetaway";
+import Konferens from "./pages/services/Konferens";
+import VIPService from "./pages/services/VIPService";
 
 const queryClient = new QueryClient();
 
@@ -67,6 +72,11 @@ const App = () => (
             <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/services" element={<Services />} />
+            <Route path="/services/sportresor" element={<Sportresor />} />
+            <Route path="/services/affarsresor" element={<Affarsresor />} />
+            <Route path="/services/weekend-getaway" element={<WeekendGetaway />} />
+            <Route path="/services/konferens" element={<Konferens />} />
+            <Route path="/services/vip-service" element={<VIPService />} />
             <Route path="/group-travel" element={<GroupTravel />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/about" element={<About />} />
