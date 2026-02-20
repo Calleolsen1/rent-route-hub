@@ -14,52 +14,50 @@ import { Search, CheckCircle2, Clock, TrendingDown, FileText, Loader2 } from "lu
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
 
-type Member = {
+type TripInvoice = {
   id: string;
-  user_id: string;
-  group_id: string;
-  invoice_amount: number | null;
-  invoice_currency: string;
+  title: string;
+  destination: string | null;
+  guest_user_id: string;
   invoice_sent_at: string | null;
-  invoice_paid_amount: number | null;
-  invoice_paid_at: string | null;
-  invoice_notes: string | null;
-  status: string;
-  profiles: { first_name: string | null; last_name: string | null; email: string } | null;
-  trip_groups: { name: string } | null;
+  invoice_number: string | null;
+  price_total: number | null;
+  price_currency: string | null;
+  payment_status: string | null;
+  payment_confirmed_at: string | null;
+  payment_due_date: string | null;
+  profile: { first_name: string | null; last_name: string | null; email: string } | null;
 };
 
 const MarkPaidDialog = ({
   open,
   onOpenChange,
-  member,
+  trip,
   onSaved,
 }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
-  member: Member | null;
+  trip: TripInvoice | null;
   onSaved: () => void;
 }) => {
   const { toast } = useToast();
-  const [amount, setAmount] = useState(member?.invoice_paid_amount?.toString() ?? "");
   const [saving, setSaving] = useState(false);
 
-  const handleSave = async () => {
-    if (!member) return;
+  const handleMark = async (status: "paid" | "unpaid") => {
+    if (!trip) return;
     setSaving(true);
-    const paidAmount = parseFloat(amount) || 0;
     const { error } = await supabase
-      .from("trip_members")
+      .from("trips")
       .update({
-        invoice_paid_amount: paidAmount,
-        invoice_paid_at: paidAmount > 0 ? new Date().toISOString() : null,
+        payment_status: status,
+        payment_confirmed_at: status === "paid" ? new Date().toISOString() : null,
       })
-      .eq("id", member.id);
+      .eq("id", trip.id);
     setSaving(false);
     if (error) {
       toast({ title: "Fel", description: error.message, variant: "destructive" });
     } else {
-      toast({ title: "Betalning registrerad" });
+      toast({ title: status === "paid" ? "Markerad som betald" : "Markerad som obetald" });
       onSaved();
       onOpenChange(false);
     }
@@ -69,28 +67,32 @@ const MarkPaidDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-sm">
         <DialogHeader>
-          <DialogTitle>Registrera betalning</DialogTitle>
+          <DialogTitle>Uppdatera betalningsstatus</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4 py-2">
+        <div className="space-y-3 py-2">
           <p className="text-sm text-muted-foreground">
-            Faktura: <strong>{(member?.invoice_amount ?? 0).toLocaleString("sv-SE")} {member?.invoice_currency}</strong>
+            Resa: <strong>{trip?.title}</strong>
           </p>
-          <div className="space-y-1">
-            <Label>Betalt belopp</Label>
-            <Input
-              type="number"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder="0"
-            />
-          </div>
+          <p className="text-sm text-muted-foreground">
+            Belopp: <strong>{(trip?.price_total ?? 0).toLocaleString("sv-SE")} {trip?.price_currency ?? "SEK"}</strong>
+          </p>
+          <p className="text-sm text-muted-foreground">
+            Nuvarande status: <strong>{trip?.payment_status === "paid" ? "Betald" : "Obetald"}</strong>
+          </p>
         </div>
-        <DialogFooter>
+        <DialogFooter className="gap-2">
           <Button variant="outline" onClick={() => onOpenChange(false)}>Avbryt</Button>
-          <Button onClick={handleSave} disabled={saving}>
-            {saving && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-            Spara
-          </Button>
+          {trip?.payment_status !== "paid" ? (
+            <Button onClick={() => handleMark("paid")} disabled={saving}>
+              {saving && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              Markera betald
+            </Button>
+          ) : (
+            <Button variant="outline" onClick={() => handleMark("unpaid")} disabled={saving}>
+              {saving && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              Markera obetald
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -101,73 +103,51 @@ export default function AdminInvoices() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
-  const [groupFilter, setGroupFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [markPaidMember, setMarkPaidMember] = useState<Member | null>(null);
+  const [selectedTrip, setSelectedTrip] = useState<TripInvoice | null>(null);
 
-  const { data: groups } = useQuery({
-    queryKey: ["admin-invoice-groups"],
+  const { data: trips, isLoading } = useQuery({
+    queryKey: ["admin-invoice-trips"],
     queryFn: async () => {
-      const { data } = await supabase.from("trip_groups").select("id, name").order("name");
-      return data ?? [];
-    },
-  });
-
-  const { data: members, isLoading } = useQuery({
-    queryKey: ["admin-invoice-members", search, groupFilter, statusFilter],
-    queryFn: async () => {
-    let q = supabase
-        .from("trip_members")
-        .select("id, user_id, group_id, invoice_amount, invoice_currency, invoice_sent_at, invoice_paid_amount, invoice_paid_at, invoice_notes, status")
+      const { data: tripsData, error } = await supabase
+        .from("trips")
+        .select("id, title, destination, guest_user_id, invoice_sent_at, invoice_number, price_total, price_currency, payment_status, payment_confirmed_at, payment_due_date")
         .order("invoice_sent_at", { ascending: false, nullsFirst: false });
-
-      if (groupFilter !== "all") q = q.eq("group_id", groupFilter);
-
-      const { data: rawData, error } = await q;
       if (error) throw error;
 
-      // Fetch profiles and groups separately to avoid join issues
-      const memberIds = (rawData ?? []).map((m) => m.user_id);
-      const groupIds = [...new Set((rawData ?? []).map((m) => m.group_id))];
-
-      const [{ data: profilesData }, { data: groupsData }] = await Promise.all([
-        memberIds.length > 0
-          ? supabase.from("profiles").select("id, first_name, last_name, email").in("id", memberIds)
-          : Promise.resolve({ data: [] }),
-        groupIds.length > 0
-          ? supabase.from("trip_groups").select("id, name").in("id", groupIds)
-          : Promise.resolve({ data: [] }),
-      ]);
+      const userIds = [...new Set((tripsData ?? []).map((t) => t.guest_user_id))];
+      const { data: profilesData } = userIds.length > 0
+        ? await supabase.from("profiles").select("id, first_name, last_name, email").in("id", userIds)
+        : { data: [] };
 
       const profileMap = Object.fromEntries((profilesData ?? []).map((p) => [p.id, p]));
-      const groupMap = Object.fromEntries((groupsData ?? []).map((g) => [g.id, g]));
 
-      let result: Member[] = (rawData ?? []).map((m) => ({
-        ...m,
-        profiles: profileMap[m.user_id] ?? null,
-        trip_groups: groupMap[m.group_id] ?? null,
+      return (tripsData ?? []).map((t): TripInvoice => ({
+        ...t,
+        profile: profileMap[t.guest_user_id] ?? null,
       }));
-
-      if (search) {
-        const s = search.toLowerCase();
-        result = result.filter((m) => {
-          const p = m.profiles;
-          const name = p ? `${p.first_name ?? ""} ${p.last_name ?? ""} ${p.email}`.toLowerCase() : "";
-          return name.includes(s);
-        });
-      }
-
-      if (statusFilter === "sent") result = result.filter((m) => m.invoice_sent_at);
-      if (statusFilter === "unsent") result = result.filter((m) => !m.invoice_sent_at);
-      if (statusFilter === "paid") result = result.filter((m) => (m.invoice_paid_amount ?? 0) >= (m.invoice_amount ?? 1));
-      if (statusFilter === "unpaid") result = result.filter((m) => m.invoice_sent_at && (m.invoice_paid_amount ?? 0) < (m.invoice_amount ?? 0));
-
-      return result;
     },
+    refetchInterval: 30_000,
   });
 
-  const totalInvoiced = (members ?? []).reduce((acc, m) => acc + (m.invoice_amount ?? 0), 0);
-  const totalPaid = (members ?? []).reduce((acc, m) => acc + (m.invoice_paid_amount ?? 0), 0);
+  const filtered = (trips ?? []).filter((t) => {
+    const p = t.profile;
+    const nameMatch = search
+      ? `${p?.first_name ?? ""} ${p?.last_name ?? ""} ${p?.email ?? ""} ${t.title}`.toLowerCase().includes(search.toLowerCase())
+      : true;
+
+    const statusMatch =
+      statusFilter === "all" ? true :
+      statusFilter === "sent" ? !!t.invoice_sent_at :
+      statusFilter === "unsent" ? !t.invoice_sent_at :
+      statusFilter === "paid" ? t.payment_status === "paid" :
+      statusFilter === "unpaid" ? t.payment_status !== "paid" : true;
+
+    return nameMatch && statusMatch;
+  });
+
+  const totalInvoiced = filtered.filter(t => t.invoice_sent_at).reduce((acc, t) => acc + (t.price_total ?? 0), 0);
+  const totalPaid = filtered.filter(t => t.payment_status === "paid").reduce((acc, t) => acc + (t.price_total ?? 0), 0);
   const outstanding = totalInvoiced - totalPaid;
 
   return (
@@ -187,8 +167,8 @@ export default function AdminInvoices() {
         </Card>
         <Card>
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-10 h-10 rounded-full bg-secondary/30 flex items-center justify-center">
-              <CheckCircle2 className="h-5 w-5 text-secondary-foreground" />
+            <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+              <CheckCircle2 className="h-5 w-5 text-muted-foreground" />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Totalt betalt</p>
@@ -215,27 +195,16 @@ export default function AdminInvoices() {
       <div className="flex flex-wrap gap-3 items-center">
         <div className="relative flex-1 min-w-[200px] max-w-xs">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Sök resenär..." className="pl-9" />
+          <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Sök resa eller kund..." className="pl-9" />
         </div>
-        <Select value={groupFilter} onValueChange={setGroupFilter}>
-          <SelectTrigger className="w-44">
-            <SelectValue placeholder="Alla grupper" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Alla grupper</SelectItem>
-            {groups?.map((g) => (
-              <SelectItem key={g.id} value={g.id}>{g.name}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-44">
             <SelectValue placeholder="Alla statusar" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Alla statusar</SelectItem>
-            <SelectItem value="sent">Skickad</SelectItem>
-            <SelectItem value="unsent">Ej skickad</SelectItem>
+            <SelectItem value="sent">Faktura skickad</SelectItem>
+            <SelectItem value="unsent">Ej fakturerad</SelectItem>
             <SelectItem value="paid">Betald</SelectItem>
             <SelectItem value="unpaid">Ej betald</SelectItem>
           </SelectContent>
@@ -245,60 +214,65 @@ export default function AdminInvoices() {
       {/* Table */}
       <Card>
         <CardHeader className="border-b pb-4">
-          <CardTitle className="text-base">Fakturastatus per resenär</CardTitle>
+          <CardTitle className="text-base">Fakturastatus per resa ({filtered.length})</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           {isLoading ? (
             <div className="p-6 space-y-3">
               {Array(5).fill(0).map((_, i) => <Skeleton key={i} className="h-12 w-full" />)}
             </div>
-          ) : members && members.length > 0 ? (
+          ) : filtered.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b bg-muted/40">
-                    <th className="text-left px-4 py-3 font-medium text-muted-foreground">Resenär</th>
-                    <th className="text-left px-4 py-3 font-medium text-muted-foreground">Grupp</th>
+                    <th className="text-left px-4 py-3 font-medium text-muted-foreground">Kund</th>
+                    <th className="text-left px-4 py-3 font-medium text-muted-foreground">Resa</th>
+                    <th className="text-left px-4 py-3 font-medium text-muted-foreground">Fakturanr</th>
                     <th className="text-right px-4 py-3 font-medium text-muted-foreground">Belopp</th>
-                    <th className="text-right px-4 py-3 font-medium text-muted-foreground">Betalt</th>
-                    <th className="text-right px-4 py-3 font-medium text-muted-foreground">Återstår</th>
                     <th className="text-center px-4 py-3 font-medium text-muted-foreground">Status</th>
                     <th className="text-right px-4 py-3 font-medium text-muted-foreground">Skickat</th>
+                    <th className="text-right px-4 py-3 font-medium text-muted-foreground">Förfaller</th>
                     <th className="px-4 py-3"></th>
                   </tr>
                 </thead>
                 <tbody>
-                  {members.map((m) => {
-                    const p = m.profiles;
-                    const g = m.trip_groups;
-                    const amount = m.invoice_amount ?? 0;
-                    const paid = m.invoice_paid_amount ?? 0;
-                    const remaining = amount - paid;
-                    const isPaid = paid >= amount && amount > 0;
-                    const isSent = !!m.invoice_sent_at;
+                  {filtered.map((t) => {
+                    const p = t.profile;
+                    const isPaid = t.payment_status === "paid";
+                    const isSent = !!t.invoice_sent_at;
                     return (
-                      <tr key={m.id} className="border-b last:border-0 hover:bg-muted/30 transition-colors">
+                      <tr key={t.id} className="border-b last:border-0 hover:bg-muted/30 transition-colors">
                         <td className="px-4 py-3">
                           <div className="font-medium">{p ? `${p.first_name ?? ""} ${p.last_name ?? ""}`.trim() : "–"}</div>
-                          <div className="text-xs text-muted-foreground">{p?.email}</div>
+                          <div className="text-xs text-muted-foreground">{p?.email ?? "–"}</div>
                         </td>
-                        <td className="px-4 py-3 text-muted-foreground">{g?.name ?? "–"}</td>
-                        <td className="px-4 py-3 text-right font-medium">{amount > 0 ? `${amount.toLocaleString("sv-SE")} ${m.invoice_currency}` : "–"}</td>
-                        <td className="px-4 py-3 text-right">{paid > 0 ? `${paid.toLocaleString("sv-SE")} ${m.invoice_currency}` : "–"}</td>
-                        <td className={`px-4 py-3 text-right font-medium ${remaining > 0 ? "text-destructive" : "text-muted-foreground"}`}>
-                          {amount > 0 ? `${remaining.toLocaleString("sv-SE")} ${m.invoice_currency}` : "–"}
+                        <td className="px-4 py-3">
+                          <div className="font-medium">{t.title}</div>
+                          {t.destination && <div className="text-xs text-muted-foreground">{t.destination}</div>}
+                        </td>
+                        <td className="px-4 py-3 text-xs text-muted-foreground font-mono">{t.invoice_number ?? "–"}</td>
+                        <td className="px-4 py-3 text-right font-medium">
+                          {t.price_total != null ? `${t.price_total.toLocaleString("sv-SE")} ${t.price_currency ?? "SEK"}` : "–"}
                         </td>
                         <td className="px-4 py-3 text-center">
                           {!isSent ? (
-                            <Badge variant="outline" className="text-xs">Ej skickad</Badge>
+                            <Badge variant="outline" className="text-xs">Ej fakturerad</Badge>
                           ) : isPaid ? (
-                            <Badge className="text-xs bg-secondary text-secondary-foreground">Betald</Badge>
+                            <Badge variant="secondary" className="text-xs gap-1">
+                              <CheckCircle2 className="h-3 w-3" /> Betald
+                            </Badge>
                           ) : (
-                            <Badge variant="outline" className="text-xs border-warning text-warning">Väntar</Badge>
+                            <Badge variant="outline" className="text-xs gap-1">
+                              <Clock className="h-3 w-3" /> Väntar
+                            </Badge>
                           )}
                         </td>
                         <td className="px-4 py-3 text-right text-xs text-muted-foreground">
-                          {m.invoice_sent_at ? format(new Date(m.invoice_sent_at), "d MMM yyyy", { locale: sv }) : "–"}
+                          {t.invoice_sent_at ? format(new Date(t.invoice_sent_at), "d MMM yyyy", { locale: sv }) : "–"}
+                        </td>
+                        <td className="px-4 py-3 text-right text-xs text-muted-foreground">
+                          {t.payment_due_date ? format(new Date(t.payment_due_date), "d MMM yyyy", { locale: sv }) : "–"}
                         </td>
                         <td className="px-4 py-3 text-right">
                           {isSent && (
@@ -306,7 +280,7 @@ export default function AdminInvoices() {
                               size="sm"
                               variant="outline"
                               className="text-xs h-7"
-                              onClick={() => setMarkPaidMember(m)}
+                              onClick={() => setSelectedTrip(t)}
                             >
                               {isPaid ? "Ändra" : "Markera betald"}
                             </Button>
@@ -325,10 +299,10 @@ export default function AdminInvoices() {
       </Card>
 
       <MarkPaidDialog
-        open={!!markPaidMember}
-        onOpenChange={(v) => !v && setMarkPaidMember(null)}
-        member={markPaidMember}
-        onSaved={() => queryClient.invalidateQueries({ queryKey: ["admin-invoice-members"] })}
+        open={!!selectedTrip}
+        onOpenChange={(v) => !v && setSelectedTrip(null)}
+        trip={selectedTrip}
+        onSaved={() => queryClient.invalidateQueries({ queryKey: ["admin-invoice-trips"] })}
       />
     </div>
   );
