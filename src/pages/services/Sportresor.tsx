@@ -13,7 +13,6 @@ import golfImage from "@/assets/sport-golf.jpg";
 const sports = [
   {
     id: "f1",
-    emoji: "🏎️",
     title: "Formel 1",
     image: f1Image,
     description:
@@ -27,7 +26,6 @@ const sports = [
   },
   {
     id: "fotboll",
-    emoji: "⚽",
     title: "Fotboll",
     image: fotbollImage,
     description:
@@ -41,7 +39,6 @@ const sports = [
   },
   {
     id: "ishockey",
-    emoji: "🏒",
     title: "Ishockey",
     image: ishockeyImage,
     description:
@@ -55,7 +52,6 @@ const sports = [
   },
   {
     id: "tennis",
-    emoji: "🎾",
     title: "Tennis",
     image: tennisImage,
     description:
@@ -69,7 +65,6 @@ const sports = [
   },
   {
     id: "golf",
-    emoji: "⛳",
     title: "Golf",
     image: golfImage,
     description:
@@ -136,13 +131,10 @@ export default function Sportresor() {
 
               {/* Content */}
               <div>
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-3xl">{sport.emoji}</span>
-                  <span className="text-[10px] tracking-[0.25em] uppercase bg-accent text-accent-foreground px-3 py-1 font-sans">
-                    {sport.title}
-                  </span>
-                </div>
-                <h2 className="font-display text-3xl md:text-4xl text-foreground mb-2">
+                <span className="text-[10px] tracking-[0.25em] uppercase bg-accent text-accent-foreground px-3 py-1 font-sans">
+                  {sport.title}
+                </span>
+                <h2 className="font-display text-3xl md:text-4xl text-foreground mt-4 mb-2">
                   {sport.title}-resor
                 </h2>
                 <div className="w-10 h-px bg-primary mb-6" />
@@ -157,6 +149,12 @@ export default function Sportresor() {
                     </li>
                   ))}
                 </ul>
+                <Link to="/contact">
+                  <Button className="rounded-none bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
+                    Boka nu
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
               </div>
             </div>
           ))}
