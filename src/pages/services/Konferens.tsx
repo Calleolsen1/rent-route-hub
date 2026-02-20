@@ -4,8 +4,8 @@ import { ArrowRight, Check, Users, Projector, Utensils, Wifi, Car, Award } from 
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import konferensHero from "@/assets/konferens-hero.jpg";
-import konferens1 from "@/assets/konferens-1.jpg";
-import konferens2 from "@/assets/konferens-2.jpg";
+import konferens1 from "@/assets/konferens-dinner.jpg";
+import konferens2 from "@/assets/konferens-event.jpg";
 
 const services = [
   {
