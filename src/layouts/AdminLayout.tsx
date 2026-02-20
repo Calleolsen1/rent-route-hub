@@ -4,36 +4,31 @@ import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { HostSidebar, NavigationItem } from "@/components/host/HostSidebar";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
-import { LayoutDashboard, Home, Users, DollarSign, FileText, Loader2, Percent, Calendar, MessageSquare, AlertTriangle, FilePenLine, Plane } from "lucide-react";
+import {
+  LayoutDashboard,
+  Users,
+  Plane,
+  FileText,
+  MessageSquare,
+  Loader2,
+  UsersRound,
+} from "lucide-react";
 
 const adminNavigationItems: NavigationItem[] = [
-  { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
-  { name: "Listings", href: "/admin/listings", icon: Home },
-  { name: "Bookings", href: "/admin/bookings", icon: Calendar },
-  { name: "Resor", href: "/admin/trips", icon: Plane },
-  { name: "Disputes", href: "/admin/disputes", icon: AlertTriangle },
-  { name: "Support Chat", href: "/admin/support", icon: MessageSquare },
-  { name: "Users & Reviews", href: "/admin/users", icon: Users },
-  { name: "Transactions", href: "/admin/transactions", icon: DollarSign },
-  { name: "Commissions", href: "/admin/commissions", icon: Percent },
-  { name: "Reports & Analytics", href: "/admin/reports", icon: FileText },
-  { name: "Content", href: "/admin/content", icon: FilePenLine },
+  { name: "Översikt", href: "/admin/dashboard", icon: LayoutDashboard },
+  { name: "Gruppresor", href: "/admin/trips", icon: UsersRound },
+  { name: "Resenärer", href: "/admin/users", icon: Users },
+  { name: "Fakturering", href: "/admin/invoices", icon: FileText },
+  { name: "Meddelanden", href: "/admin/support", icon: MessageSquare },
 ];
 
-// Map routes to page titles
 const getPageTitle = (pathname: string): string => {
-  if (pathname === "/admin/dashboard") return "Dashboard";
-  if (pathname === "/admin/listings") return "Listings";
-  if (pathname === "/admin/bookings") return "Bookings Management";
-  if (pathname === "/admin/disputes") return "Disputes Management";
-  if (pathname.startsWith("/admin/review-listing")) return "Review Listing";
-  if (pathname === "/admin/users") return "User Management";
-  if (pathname === "/admin/transactions") return "Transactions";
-  if (pathname === "/admin/commissions") return "Commission Management";
-  if (pathname === "/admin/reports") return "Reports & Analytics";
-  if (pathname === "/admin/support") return "Support Chat";
-  if (pathname === "/admin/content") return "Content Management";
-  return "Admin Panel";
+  if (pathname === "/admin/dashboard") return "Översikt";
+  if (pathname === "/admin/trips") return "Gruppresor";
+  if (pathname === "/admin/users") return "Resenärer";
+  if (pathname === "/admin/invoices") return "Fakturering";
+  if (pathname === "/admin/support") return "Meddelanden";
+  return "Admin";
 };
 
 export default function AdminLayout() {
@@ -41,7 +36,7 @@ export default function AdminLayout() {
   const { isAdmin, loading } = useUserRole();
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   const pageTitle = getPageTitle(location.pathname);
 
   useEffect(() => {
@@ -68,13 +63,13 @@ export default function AdminLayout() {
 
   return (
     <div className="flex min-h-screen bg-background w-full">
-      <HostSidebar 
+      <HostSidebar
         navigationItems={adminNavigationItems}
-        logoText="Rentely Admin"
+        logoText="KAISEN"
       />
       <div className="flex-1">
-        <div className="container mx-auto pt-8">
-          <AdminPageHeader 
+        <div className="container mx-auto pt-8 px-4 lg:px-8">
+          <AdminPageHeader
             title={pageTitle}
             navigationItems={adminNavigationItems}
           />

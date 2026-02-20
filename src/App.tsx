@@ -54,6 +54,7 @@ import AdminDisputesManagement from "./pages/admin/DisputesManagement";
 import AdminSupport from "./pages/admin/Support";
 import ContentManagementPage from "./pages/admin/ContentManagement";
 import AdminTrips from "./pages/admin/Trips";
+import AdminInvoices from "./pages/admin/AdminInvoices";
 import NotFound from "./pages/NotFound";
 import Services from "./pages/Services";
 import GroupTravel from "./pages/GroupTravel";
@@ -132,6 +133,7 @@ const App = () => (
               <Route path="support" element={<AdminSupport />} />
               <Route path="content" element={<ContentManagementPage />} />
               <Route path="trips" element={<AdminTrips />} />
+              <Route path="invoices" element={<AdminInvoices />} />
             </Route>
             {/* Mitt Kaisen portal — public routes */}
             <Route path="/mitt-kaisen" element={<MittKaisenLogin />} />
