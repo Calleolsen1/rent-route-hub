@@ -32,19 +32,9 @@ const UserManagement = () => {
   const { isDemoMode, getAdminUsers } = useDemoData();
 
   const { data: users, isLoading } = useQuery({
-    queryKey: ["admin-users", debouncedSearch, roleFilter, statusFilter, sortValue, isDemoMode],
+    queryKey: ["admin-users", debouncedSearch, roleFilter, statusFilter, sortValue],
     queryFn: async () => {
-      if (isDemoMode) {
-        const [sortBy, sortOrder] = sortValue.split("-");
-        return getAdminUsers({
-          searchQuery: debouncedSearch || null,
-          statusFilter: statusFilter === "all" ? null : statusFilter,
-          roleFilter: roleFilter === "all" ? null : roleFilter,
-          sortBy,
-          sortOrder,
-        });
-      }
-      
+      // Always fetch real users — admins need to see actual customers regardless of demo mode
       const [sortBy, sortOrder] = sortValue.split("-");
       const { data, error } = await supabase.rpc("admin_search_users", {
         search_query: debouncedSearch || null,
