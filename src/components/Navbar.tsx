@@ -105,6 +105,15 @@ const Navbar = () => {
                           <span className="text-sm font-medium text-foreground group-hover:text-primary tracking-wide">Host-panel</span>
                         </Link>
                       )}
+                      {isAdmin && (
+                        <Link
+                          to="/admin/dashboard"
+                          className="flex flex-col px-5 py-3 hover:bg-accent transition-colors group"
+                          onClick={() => setMittKontoOpen(false)}
+                        >
+                          <span className="text-sm font-medium text-foreground group-hover:text-primary tracking-wide">Admin-panel</span>
+                        </Link>
+                      )}
                     </div>
                   )}
                 </div>
