@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { format } from "date-fns";
-import { MoreVertical, Mail, MessageSquare, UserCog } from "lucide-react";
+import { MoreVertical, Mail, MessageSquare, UserCog, Eye } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { AdminSendMessageDialog } from "./AdminSendMessageDialog";
 import { AdminEditUserDialog } from "./AdminEditUserDialog";
+import { AdminViewUserDialog } from "./AdminViewUserDialog";
 import {
   Table,
   TableBody,
@@ -77,6 +78,7 @@ export function UsersTable({ users, loading, hasActiveFilters }: UsersTableProps
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [sendMessageOpen, setSendMessageOpen] = useState(false);
   const [editUserOpen, setEditUserOpen] = useState(false);
+  const [viewUserOpen, setViewUserOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
   const { isDemoMode, suspendAdminUser, unsuspendAdminUser, deleteAdminUser } = useDemoData();
@@ -407,6 +409,13 @@ export function UsersTable({ users, loading, hasActiveFilters }: UsersTableProps
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem
+                      onClick={() => { setSelectedUser(user); setViewUserOpen(true); }}
+                      className="gap-2"
+                    >
+                      <Eye className="h-4 w-4" />
+                      Visa uppgifter
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
                       onClick={() => { setSelectedUser(user); setSendMessageOpen(true); }}
                       className="gap-2"
                     >
@@ -551,6 +560,11 @@ export function UsersTable({ users, loading, hasActiveFilters }: UsersTableProps
       <AdminEditUserDialog
         open={editUserOpen}
         onOpenChange={setEditUserOpen}
+        user={selectedUser}
+      />
+      <AdminViewUserDialog
+        open={viewUserOpen}
+        onOpenChange={setViewUserOpen}
         user={selectedUser}
       />
     </div>
