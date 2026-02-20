@@ -16,7 +16,7 @@ const stats = [
   { value: "2 400+", label: "Resor arrangerade" },
   { value: "98%", label: "Nöjda kunder" },
   { value: "60+", label: "Destinationer" },
-  { value: "15+", label: "År av expertis" },
+  { value: "25+", label: "År av expertis" },
 ];
 
 const services = [
@@ -279,7 +279,7 @@ const Home = () => {
                 />
               </div>
               <div className="absolute -bottom-6 -left-6 bg-primary p-6 max-w-[200px]">
-                <div className="font-display text-3xl text-primary-foreground mb-1">15+</div>
+                <div className="font-display text-3xl text-primary-foreground mb-1">25+</div>
                 <div className="text-[10px] tracking-[0.2em] uppercase text-primary-foreground/70 font-sans">År av extraordinära resor</div>
               </div>
             </div>
