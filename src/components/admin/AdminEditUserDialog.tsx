@@ -67,6 +67,8 @@ export function AdminEditUserDialog({ open, onOpenChange, user }: Props) {
     phone: "",
     nationality: "",
     date_of_birth: "",
+    passport_number: "",
+    passport_expiry: "",
   });
 
   // Load full profile when dialog opens
@@ -74,7 +76,7 @@ export function AdminEditUserDialog({ open, onOpenChange, user }: Props) {
     if (open && user) {
       supabase
         .from("profiles")
-        .select("first_name, last_name, phone, nationality, date_of_birth")
+        .select("first_name, last_name, phone, nationality, date_of_birth, passport_number, passport_expiry")
         .eq("id", user.id)
         .single()
         .then(({ data }) => {
@@ -85,6 +87,8 @@ export function AdminEditUserDialog({ open, onOpenChange, user }: Props) {
               phone: data.phone || "",
               nationality: data.nationality || "",
               date_of_birth: data.date_of_birth || "",
+              passport_number: data.passport_number || "",
+              passport_expiry: data.passport_expiry || "",
             });
           }
         });
@@ -103,6 +107,8 @@ export function AdminEditUserDialog({ open, onOpenChange, user }: Props) {
           phone: form.phone.trim() || null,
           nationality: form.nationality || null,
           date_of_birth: form.date_of_birth || null,
+          passport_number: form.passport_number.trim() || null,
+          passport_expiry: form.passport_expiry || null,
         })
         .eq("id", user.id);
 
@@ -166,6 +172,17 @@ export function AdminEditUserDialog({ open, onOpenChange, user }: Props) {
           <div className="space-y-1.5">
             <Label>Födelsedatum</Label>
             <Input type="date" value={form.date_of_birth} onChange={set("date_of_birth")} />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <Label>Passnummer</Label>
+              <Input value={form.passport_number} onChange={set("passport_number")} placeholder="AB1234567" />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Passutgångsdatum</Label>
+              <Input type="date" value={form.passport_expiry} onChange={set("passport_expiry")} />
+            </div>
           </div>
         </div>
 
