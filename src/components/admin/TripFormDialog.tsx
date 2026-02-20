@@ -7,13 +7,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import {
   Loader2, Plus, Trash2, Plane, Car, Hotel, Ticket, Info,
-  Upload, FileText, X, DollarSign
+  Upload, FileText, X, DollarSign, CheckCircle2, Circle, Bell, CreditCard
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { format, parseISO } from "date-fns";
+import { sv } from "date-fns/locale";
+import { cn } from "@/lib/utils";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 export type FlightLeg = {
@@ -54,6 +57,22 @@ export type PriceRow = {
   amount: string;
 };
 
+// ─── Booking Checklist ────────────────────────────────────────────────────────
+// Each item: { done: boolean, visible_to_customer: boolean }
+export type ChecklistItem = {
+  done: boolean;
+  visible_to_customer: boolean;
+};
+
+export type BookingChecklist = {
+  hotel?: ChecklistItem;
+  flights?: ChecklistItem;
+  transfers?: ChecklistItem;
+  tickets?: ChecklistItem;
+  payment?: ChecklistItem;
+  [key: string]: ChecklistItem | undefined;
+};
+
 export type TripFormData = {
   guest_user_id: string;
   title: string;
@@ -73,6 +92,7 @@ export type TripFormData = {
   payment_status: string;
   invoice_notes: string;
   price_breakdown: PriceRow[];
+  booking_checklist: BookingChecklist;
 };
 
 export type Trip = {
@@ -104,6 +124,9 @@ export type Trip = {
   price_breakdown: PriceRow[];
   invoice_sent_at: string | null;
   invoice_number: string | null;
+  booking_checklist: BookingChecklist | null;
+  customer_notified_at: string | null;
+  payment_confirmed_at: string | null;
   created_at: string;
   profiles?: { first_name: string | null; last_name: string | null; email: string } | null;
 };
@@ -126,6 +149,13 @@ const emptyPriceRow = (): PriceRow => ({
 const emptyHotel = (): HotelData => ({
   name: "", address: "", stars: "", checkin: "", checkout: "", confirmation: "", notes: ""
 });
+const defaultChecklist = (): BookingChecklist => ({
+  hotel: { done: false, visible_to_customer: true },
+  flights: { done: false, visible_to_customer: true },
+  transfers: { done: false, visible_to_customer: true },
+  tickets: { done: false, visible_to_customer: true },
+  payment: { done: false, visible_to_customer: false },
+});
 
 const initForm = (trip: Trip | null): TripFormData => {
   if (!trip) return {
@@ -136,6 +166,7 @@ const initForm = (trip: Trip | null): TripFormData => {
     price_total: "", price_currency: "SEK",
     payment_method: "invoice", payment_due_date: "", payment_status: "unpaid",
     invoice_notes: "", price_breakdown: [],
+    booking_checklist: defaultChecklist(),
   };
   return {
     guest_user_id: trip.guest_user_id,
@@ -163,7 +194,221 @@ const initForm = (trip: Trip | null): TripFormData => {
     price_breakdown: Array.isArray(trip.price_breakdown)
       ? trip.price_breakdown.map((r: any) => ({ ...r, id: r.id || newId() }))
       : [],
+    booking_checklist: trip.booking_checklist
+      ? { ...defaultChecklist(), ...trip.booking_checklist }
+      : defaultChecklist(),
   };
+};
+
+// ─── Checklist Row ────────────────────────────────────────────────────────────
+const ChecklistRow = ({
+  label, icon: Icon, item, onChange,
+}: {
+  label: string;
+  icon: React.ElementType;
+  item: ChecklistItem;
+  onChange: (update: Partial<ChecklistItem>) => void;
+}) => (
+  <div className={cn(
+    "flex items-center justify-between p-3 rounded-lg border transition-colors",
+  item.done ? "bg-primary/5 border-primary/30" : "bg-muted/30 border-border"
+  )}>
+    <div className="flex items-center gap-3">
+      <button
+        type="button"
+        onClick={() => onChange({ done: !item.done })}
+        className="flex-shrink-0"
+      >
+        {item.done
+          ? <CheckCircle2 className="h-5 w-5 text-primary" />
+          : <Circle className="h-5 w-5 text-muted-foreground" />}
+      </button>
+      <div className="flex items-center gap-2">
+        <Icon className="h-4 w-4 text-muted-foreground" />
+        <span className={cn("text-sm font-medium", item.done && "line-through text-muted-foreground")}>
+          {label}
+        </span>
+        {item.done && (
+          <span className="text-xs text-primary font-medium">Klart</span>
+        )}
+      </div>
+    </div>
+    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+      <span>Synlig för kund</span>
+      <Switch
+        checked={item.visible_to_customer}
+        onCheckedChange={v => onChange({ visible_to_customer: v })}
+        className="scale-75"
+      />
+    </div>
+  </div>
+);
+
+// ─── Checklist Section ────────────────────────────────────────────────────────
+const ChecklistSection = ({
+  checklist, onChange, trip, onNotifySent, onPaymentConfirmed,
+}: {
+  checklist: BookingChecklist;
+  onChange: (key: string, update: Partial<ChecklistItem>) => void;
+  trip: Trip | null;
+  onNotifySent: () => void;
+  onPaymentConfirmed: () => void;
+}) => {
+  const { toast } = useToast();
+  const [notifying, setNotifying] = useState(false);
+  const [confirming, setConfirming] = useState(false);
+
+  const ITEMS = [
+    { key: "flights", label: "Flyg", icon: Plane },
+    { key: "hotel", label: "Hotell", icon: Hotel },
+    { key: "transfers", label: "Transfer", icon: Car },
+    { key: "tickets", label: "Biljetter & Events", icon: Ticket },
+  ];
+
+  const doneCount = ITEMS.filter(i => checklist[i.key]?.done).length;
+  const progress = Math.round((doneCount / ITEMS.length) * 100);
+
+  const handleNotify = async () => {
+    if (!trip) return;
+    setNotifying(true);
+    try {
+      const { error } = await supabase.from("trips").update({
+        customer_notified_at: new Date().toISOString(),
+      }).eq("id", trip.id);
+      if (error) throw error;
+      toast({ title: "Notifikation skickad till kund ✓" });
+      onNotifySent();
+    } catch (e: any) {
+      toast({ title: "Fel", description: e.message, variant: "destructive" });
+    } finally {
+      setNotifying(false);
+    }
+  };
+
+  const handlePaymentConfirmed = async () => {
+    if (!trip) return;
+    setConfirming(true);
+    try {
+      const newStatus = trip.payment_status === "paid" ? "unpaid" : "paid";
+      const { error } = await supabase.from("trips").update({
+        payment_status: newStatus,
+        payment_confirmed_at: newStatus === "paid" ? new Date().toISOString() : null,
+      }).eq("id", trip.id);
+      if (error) throw error;
+      toast({ title: newStatus === "paid" ? "Betalning bekräftad ✓" : "Betalning avmarkerad" });
+      onPaymentConfirmed();
+    } catch (e: any) {
+      toast({ title: "Fel", description: e.message, variant: "destructive" });
+    } finally {
+      setConfirming(false);
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Progress */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between text-sm">
+          <span className="font-medium">Bokningsstatus</span>
+          <span className="text-muted-foreground">{doneCount}/{ITEMS.length} klara</span>
+        </div>
+        <div className="h-2 bg-muted rounded-full overflow-hidden">
+          <div
+            className="h-full bg-primary rounded-full transition-all duration-300"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Checklist items */}
+      <div className="space-y-2">
+        {ITEMS.map(item => (
+          <ChecklistRow
+            key={item.key}
+            label={item.label}
+            icon={item.icon}
+            item={checklist[item.key] || { done: false, visible_to_customer: true }}
+            onChange={update => onChange(item.key, update)}
+          />
+        ))}
+      </div>
+
+      {/* Payment confirmation */}
+      <div className="border rounded-lg p-4 space-y-3">
+        <h4 className="font-medium text-sm flex items-center gap-2">
+          <CreditCard className="h-4 w-4 text-muted-foreground" />
+          Betalning
+        </h4>
+        {trip ? (
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm">
+                Status: <span className={cn(
+                  "font-medium",
+                  trip.payment_status === "paid" ? "text-primary" :
+                  trip.payment_status === "overdue" ? "text-destructive" :
+                  "text-muted-foreground"
+                )}>
+                  {trip.payment_status === "paid" ? "Betald" :
+                   trip.payment_status === "partial" ? "Delbetalad" :
+                   trip.payment_status === "overdue" ? "Förfallen" : "Obetald"}
+                </span>
+              </p>
+              {trip.payment_confirmed_at && (
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Bekräftad {format(parseISO(trip.payment_confirmed_at), "d MMM yyyy HH:mm", { locale: sv })}
+                </p>
+              )}
+            </div>
+            <Button
+              variant={trip.payment_status === "paid" ? "default" : "outline"}
+              size="sm"
+              onClick={handlePaymentConfirmed}
+              disabled={confirming}
+              className={cn("gap-2", trip.payment_status === "paid" && "bg-primary hover:bg-primary/90")}
+            >
+              {confirming ? <Loader2 className="h-3 w-3 animate-spin" /> :
+                trip.payment_status === "paid"
+                  ? <CheckCircle2 className="h-3 w-3" />
+                  : <Circle className="h-3 w-3" />}
+              {trip.payment_status === "paid" ? "Betald ✓" : "Markera som betald"}
+            </Button>
+          </div>
+        ) : (
+          <p className="text-xs text-muted-foreground">Spara resan först för att bekräfta betalning</p>
+        )}
+      </div>
+
+      {/* Customer notification */}
+      <div className="border rounded-lg p-4 space-y-3">
+        <h4 className="font-medium text-sm flex items-center gap-2">
+          <Bell className="h-4 w-4 text-muted-foreground" />
+          Kundnotifikation
+        </h4>
+        <p className="text-xs text-muted-foreground">
+          Skicka en notifikation till kunden om vad som är bokat. Kunden ser bara de komponenter du markerat som "Synlig för kund".
+        </p>
+        {trip?.customer_notified_at && (
+          <p className="text-xs text-muted-foreground">
+            Senast notifierad: {format(parseISO(trip.customer_notified_at), "d MMM yyyy HH:mm", { locale: sv })}
+          </p>
+        )}
+        {trip ? (
+          <Button
+            onClick={handleNotify}
+            disabled={notifying}
+            variant="outline"
+            className="gap-2 w-full"
+          >
+            {notifying ? <Loader2 className="h-4 w-4 animate-spin" /> : <Bell className="h-4 w-4" />}
+            {trip.customer_notified_at ? "Skicka notifikation igen" : "Skicka notifikation till kund"}
+          </Button>
+        ) : (
+          <p className="text-xs text-muted-foreground">Spara resan först för att skicka notifikation</p>
+        )}
+      </div>
+    </div>
+  );
 };
 
 // ─── PDF Upload helper ────────────────────────────────────────────────────────
@@ -373,7 +618,7 @@ const PricingSection = ({ form, onChange }: { form: TripFormData; onChange: (upd
       {/* Price breakdown rows */}
       <div className="space-y-3">
         <Label className="text-sm font-medium">Prisposter</Label>
-        {form.price_breakdown.map((r, idx) => (
+        {form.price_breakdown.map((r) => (
           <div key={r.id} className="flex items-center gap-2">
             <Input placeholder="Beskrivning (t.ex. Flyg tur-retur)" value={r.label}
               onChange={e => updateRow(r.id, "label", e.target.value)} className="flex-1" />
@@ -475,6 +720,16 @@ export const TripFormDialog = ({
   const set = (updates: Partial<TripFormData>) => setForm(f => ({ ...f, ...updates }));
   const setHotel = (updates: Partial<HotelData>) => set({ hotel: { ...form.hotel, ...updates } });
 
+  const updateChecklist = (key: string, update: Partial<ChecklistItem>) => {
+    setForm(f => ({
+      ...f,
+      booking_checklist: {
+        ...f.booking_checklist,
+        [key]: { ...(f.booking_checklist[key] || { done: false, visible_to_customer: true }), ...update }
+      }
+    }));
+  };
+
   const effectiveTotal = form.price_total
     ? parseFloat(form.price_total)
     : form.price_breakdown.reduce((s, r) => s + (parseFloat(r.amount) || 0), 0);
@@ -511,6 +766,7 @@ export const TripFormDialog = ({
       payment_status: form.payment_status,
       invoice_notes: form.invoice_notes || null,
       price_breakdown: form.price_breakdown,
+      booking_checklist: form.booking_checklist,
       created_by_admin_id: user?.id,
     };
 
@@ -540,12 +796,13 @@ export const TripFormDialog = ({
         </DialogHeader>
 
         <Tabs defaultValue="basics" className="mt-2">
-          <TabsList className="grid grid-cols-5 w-full">
+          <TabsList className="grid grid-cols-6 w-full">
             <TabsTrigger value="basics" className="gap-1 text-xs"><Info className="h-3 w-3" />Grundinfo</TabsTrigger>
             <TabsTrigger value="flights" className="gap-1 text-xs"><Plane className="h-3 w-3" />Flyg</TabsTrigger>
             <TabsTrigger value="transfers" className="gap-1 text-xs"><Car className="h-3 w-3" />Transfer</TabsTrigger>
             <TabsTrigger value="tickets" className="gap-1 text-xs"><Ticket className="h-3 w-3" />Biljetter</TabsTrigger>
             <TabsTrigger value="pricing" className="gap-1 text-xs"><DollarSign className="h-3 w-3" />Betalning</TabsTrigger>
+            <TabsTrigger value="checklist" className="gap-1 text-xs"><CheckCircle2 className="h-3 w-3" />Bocklista</TabsTrigger>
           </TabsList>
 
           {/* ── Grundinfo ── */}
@@ -630,6 +887,17 @@ export const TripFormDialog = ({
           {/* ── Betalning ── */}
           <TabsContent value="pricing" className="pt-4">
             <PricingSection form={form} onChange={set} />
+          </TabsContent>
+
+          {/* ── Bocklista ── */}
+          <TabsContent value="checklist" className="pt-4">
+            <ChecklistSection
+              checklist={form.booking_checklist}
+              onChange={updateChecklist}
+              trip={trip}
+              onNotifySent={onSaved}
+              onPaymentConfirmed={onSaved}
+            />
           </TabsContent>
         </Tabs>
 
