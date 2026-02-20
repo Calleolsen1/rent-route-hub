@@ -1225,6 +1225,8 @@ export type Database = {
           invoice_amount: number | null
           invoice_currency: string
           invoice_notes: string | null
+          invoice_paid_amount: number | null
+          invoice_paid_at: string | null
           invoice_sent_at: string | null
           status: string
           trip_id: string | null
@@ -1237,6 +1239,8 @@ export type Database = {
           invoice_amount?: number | null
           invoice_currency?: string
           invoice_notes?: string | null
+          invoice_paid_amount?: number | null
+          invoice_paid_at?: string | null
           invoice_sent_at?: string | null
           status?: string
           trip_id?: string | null
@@ -1249,6 +1253,8 @@ export type Database = {
           invoice_amount?: number | null
           invoice_currency?: string
           invoice_notes?: string | null
+          invoice_paid_amount?: number | null
+          invoice_paid_at?: string | null
           invoice_sent_at?: string | null
           status?: string
           trip_id?: string | null
