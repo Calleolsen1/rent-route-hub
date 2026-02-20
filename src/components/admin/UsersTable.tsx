@@ -367,7 +367,10 @@ export function UsersTable({ users, loading, hasActiveFilters }: UsersTableProps
                       {(user.first_name?.[0] || "") + (user.last_name?.[0] || "")}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="font-medium">{user.full_name}</span>
+                  <div className="flex flex-col">
+                    <span className="font-medium">{user.full_name}</span>
+                    <span className="text-xs text-muted-foreground">{user.email}</span>
+                  </div>
                 </div>
               </TableCell>
               <TableCell>
