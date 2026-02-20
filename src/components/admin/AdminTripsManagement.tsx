@@ -4,282 +4,182 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Plus, Pencil, Trash2, Plane, Search, Users } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import {
+  Loader2, Plus, Pencil, Trash2, Plane, Search, Users,
+  Send, FileText, Hotel, Car, Ticket, CreditCard, Calendar,
+  ChevronRight
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { format } from "date-fns";
+import { format, parseISO, isFuture, isPast } from "date-fns";
 import { sv } from "date-fns/locale";
 import { useAuth } from "@/hooks/useAuth";
 import TripGroupsManagement from "@/components/admin/TripGroupsManagement";
+import { TripFormDialog, type Trip } from "@/components/admin/TripFormDialog";
 
-type Trip = {
-  id: string;
-  guest_user_id: string;
-  title: string;
-  destination: string | null;
-  start_date: string | null;
-  end_date: string | null;
-  status: string;
-  notes: string | null;
-  hotel_name: string | null;
-  hotel_address: string | null;
-  hotel_checkin: string | null;
-  hotel_checkout: string | null;
-  hotel_confirmation: string | null;
-  hotel_notes: string | null;
-  hotel_stars: number | null;
-  flights: any[];
-  transfers: any[];
-  schedule: any[];
-  tickets: any[];
-  created_at: string;
-  profiles?: { first_name: string | null; last_name: string | null; email: string } | null;
+// ─── Status config ────────────────────────────────────────────────────────────
+const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
+  upcoming:  { label: "Kommande",  color: "bg-blue-100 text-blue-700 border-blue-200" },
+  ongoing:   { label: "Pågående",  color: "bg-green-100 text-green-700 border-green-200" },
+  completed: { label: "Avslutad", color: "bg-muted text-muted-foreground border-border" },
+  cancelled: { label: "Inställd", color: "bg-red-100 text-red-700 border-red-200" },
 };
 
-const EMPTY_TRIP = {
-  guest_user_id: "",
-  title: "",
-  destination: "",
-  start_date: "",
-  end_date: "",
-  status: "upcoming",
-  notes: "",
-  hotel_name: "",
-  hotel_address: "",
-  hotel_checkin: "",
-  hotel_checkout: "",
-  hotel_confirmation: "",
-  hotel_notes: "",
-  hotel_stars: "" as any,
-  flights_raw: "[]",
-  transfers_raw: "[]",
-  schedule_raw: "[]",
-  tickets_raw: "[]",
+const PAYMENT_STATUS_CONFIG: Record<string, { label: string; color: string }> = {
+  unpaid:  { label: "Obetald",     color: "bg-red-100 text-red-700" },
+  partial: { label: "Delbetalad", color: "bg-yellow-100 text-yellow-700" },
+  paid:    { label: "Betald",     color: "bg-green-100 text-green-700" },
+  overdue: { label: "Förfallen",  color: "bg-orange-100 text-orange-700" },
 };
 
-const statusColors: Record<string, string> = {
-  upcoming: "bg-blue-100 text-blue-700",
-  ongoing: "bg-green-100 text-green-700",
-  completed: "bg-muted text-muted-foreground",
-  cancelled: "bg-red-100 text-red-700",
-};
-const statusLabels: Record<string, string> = {
-  upcoming: "Kommande",
-  ongoing: "Pågående",
-  completed: "Avslutad",
-  cancelled: "Inställd",
-};
-
-const TripFormDialog = ({
-  open,
-  onOpenChange,
-  trip,
-  onSaved,
+// ─── Invoice Send Dialog ──────────────────────────────────────────────────────
+const SendInvoiceDialog = ({
+  trip, open, onOpenChange, onSent
 }: {
-  open: boolean;
-  onOpenChange: (v: boolean) => void;
-  trip: Trip | null;
-  onSaved: () => void;
+  trip: Trip | null; open: boolean;
+  onOpenChange: (v: boolean) => void; onSent: () => void;
 }) => {
-  const { user } = useAuth();
   const { toast } = useToast();
-  const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState(
-    trip
-      ? {
-          guest_user_id: trip.guest_user_id,
-          title: trip.title,
-          destination: trip.destination || "",
-          start_date: trip.start_date || "",
-          end_date: trip.end_date || "",
-          status: trip.status,
-          notes: trip.notes || "",
-          hotel_name: trip.hotel_name || "",
-          hotel_address: trip.hotel_address || "",
-          hotel_checkin: trip.hotel_checkin || "",
-          hotel_checkout: trip.hotel_checkout || "",
-          hotel_confirmation: trip.hotel_confirmation || "",
-          hotel_notes: trip.hotel_notes || "",
-          hotel_stars: trip.hotel_stars?.toString() || "",
-          flights_raw: JSON.stringify(trip.flights || [], null, 2),
-          transfers_raw: JSON.stringify(trip.transfers || [], null, 2),
-          schedule_raw: JSON.stringify(trip.schedule || [], null, 2),
-          tickets_raw: JSON.stringify(trip.tickets || [], null, 2),
-        }
-      : { ...EMPTY_TRIP }
-  );
+  const [sending, setSending] = useState(false);
+  const { user } = useAuth();
 
-  const set = (k: string, v: any) => setForm((f) => ({ ...f, [k]: v }));
+  if (!trip) return null;
 
-  const handleSave = async () => {
-    if (!form.guest_user_id || !form.title) {
-      toast({ title: "Fyll i resenärens ID och resans titel", variant: "destructive" });
+  const breakdown = Array.isArray(trip.price_breakdown) ? trip.price_breakdown as Array<{ label: string; amount: string | number }> : [];
+  const total = trip.price_total || breakdown.reduce((s, r) => s + (parseFloat(String(r.amount)) || 0), 0);
+  const guestName = trip.profiles
+    ? `${trip.profiles.first_name || ""} ${trip.profiles.last_name || ""}`.trim() || trip.profiles.email
+    : trip.guest_user_id;
+  const guestEmail = trip.profiles?.email;
+
+  const handleSend = async () => {
+    if (!guestEmail) {
+      toast({ title: "Ingen e-post hittad för resenären", variant: "destructive" });
       return;
     }
-    let flights, transfers, schedule, tickets;
-    try {
-      flights = JSON.parse(form.flights_raw || "[]");
-      transfers = JSON.parse(form.transfers_raw || "[]");
-      schedule = JSON.parse(form.schedule_raw || "[]");
-      tickets = JSON.parse(form.tickets_raw || "[]");
-    } catch {
-      toast({ title: "Ogiltig JSON i ett fält", variant: "destructive" });
-      return;
-    }
+    setSending(true);
 
-    setSaving(true);
-    const payload: any = {
-      guest_user_id: form.guest_user_id,
-      title: form.title,
-      destination: form.destination || null,
-      start_date: form.start_date || null,
-      end_date: form.end_date || null,
-      status: form.status,
-      notes: form.notes || null,
-      hotel_name: form.hotel_name || null,
-      hotel_address: form.hotel_address || null,
-      hotel_checkin: form.hotel_checkin || null,
-      hotel_checkout: form.hotel_checkout || null,
-      hotel_confirmation: form.hotel_confirmation || null,
-      hotel_notes: form.hotel_notes || null,
-      hotel_stars: form.hotel_stars ? parseInt(form.hotel_stars) : null,
-      flights,
-      transfers,
-      schedule,
-      tickets,
-      created_by_admin_id: user?.id,
-    };
+    // Generate a simple invoice number
+    const invoiceNum = `KAI-${new Date().getFullYear()}-${String(Date.now()).slice(-6)}`;
 
     try {
-      if (trip) {
-        const { error } = await supabase.from("trips").update(payload).eq("id", trip.id);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.from("trips").insert(payload);
-        if (error) throw error;
-      }
-      toast({ title: trip ? "Resa uppdaterad" : "Resa skapad" });
-      onSaved();
+      const { error } = await supabase.from("trips").update({
+        invoice_sent_at: new Date().toISOString(),
+        invoice_number: invoiceNum,
+        payment_status: trip.payment_status === "unpaid" ? "unpaid" : trip.payment_status,
+      }).eq("id", trip.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Faktura markerad som skickad ✓",
+        description: `Fakturanummer: ${invoiceNum}`,
+      });
+      onSent();
       onOpenChange(false);
     } catch (e: any) {
       toast({ title: "Fel", description: e.message, variant: "destructive" });
     } finally {
-      setSaving(false);
+      setSending(false);
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>{trip ? "Redigera resa" : "Ny resa"}</DialogTitle>
+          <DialogTitle className="flex items-center gap-2">
+            <FileText className="h-5 w-5 text-primary" />
+            Faktura – {trip.title}
+          </DialogTitle>
         </DialogHeader>
-        <div className="space-y-5 py-2">
-          {/* Grundinfo */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="sm:col-span-2 space-y-1">
-              <Label>Resenärens User-ID *</Label>
-              <Input value={form.guest_user_id} onChange={e => set("guest_user_id", e.target.value)} placeholder="UUID" />
+
+        <div className="space-y-4 py-2">
+          {/* Header */}
+          <div className="bg-muted/50 rounded-lg p-4 space-y-1">
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Till:</span>
+              <span className="font-medium">{guestName}</span>
             </div>
-            <div className="sm:col-span-2 space-y-1">
-              <Label>Titel *</Label>
-              <Input value={form.title} onChange={e => set("title", e.target.value)} placeholder="t.ex. Paris Weekend 2025" />
+            {guestEmail && (
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">E-post:</span>
+                <span>{guestEmail}</span>
+              </div>
+            )}
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Resa:</span>
+              <span>{trip.destination}</span>
             </div>
-            <div className="space-y-1">
-              <Label>Destination</Label>
-              <Input value={form.destination} onChange={e => set("destination", e.target.value)} placeholder="t.ex. Paris, Frankrike" />
-            </div>
-            <div className="space-y-1">
-              <Label>Status</Label>
-              <Select value={form.status} onValueChange={v => set("status", v)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="upcoming">Kommande</SelectItem>
-                  <SelectItem value="ongoing">Pågående</SelectItem>
-                  <SelectItem value="completed">Avslutad</SelectItem>
-                  <SelectItem value="cancelled">Inställd</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1">
-              <Label>Startdatum</Label>
-              <Input type="date" value={form.start_date} onChange={e => set("start_date", e.target.value)} />
-            </div>
-            <div className="space-y-1">
-              <Label>Slutdatum</Label>
-              <Input type="date" value={form.end_date} onChange={e => set("end_date", e.target.value)} />
-            </div>
+            {trip.start_date && (
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Datum:</span>
+                <span>{format(parseISO(trip.start_date), "d MMM yyyy", { locale: sv })}{trip.end_date ? ` – ${format(parseISO(trip.end_date), "d MMM yyyy", { locale: sv })}` : ""}</span>
+              </div>
+            )}
+            {trip.payment_due_date && (
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Förfallodatum:</span>
+                <span className="font-medium text-destructive">{format(parseISO(trip.payment_due_date), "d MMM yyyy", { locale: sv })}</span>
+              </div>
+            )}
           </div>
 
-          {/* Hotell */}
-          <div className="border rounded-lg p-4 space-y-3">
-            <h4 className="font-medium text-sm">Hotell</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="space-y-1">
-                <Label className="text-xs">Namn</Label>
-                <Input value={form.hotel_name} onChange={e => set("hotel_name", e.target.value)} placeholder="Hotellnamn" />
-              </div>
-              <div className="space-y-1">
-                <Label className="text-xs">Stjärnor (1-5)</Label>
-                <Input type="number" min={1} max={5} value={form.hotel_stars} onChange={e => set("hotel_stars", e.target.value)} />
-              </div>
-              <div className="sm:col-span-2 space-y-1">
-                <Label className="text-xs">Adress</Label>
-                <Input value={form.hotel_address} onChange={e => set("hotel_address", e.target.value)} />
-              </div>
-              <div className="space-y-1">
-                <Label className="text-xs">Incheckning</Label>
-                <Input type="date" value={form.hotel_checkin} onChange={e => set("hotel_checkin", e.target.value)} />
-              </div>
-              <div className="space-y-1">
-                <Label className="text-xs">Utcheckning</Label>
-                <Input type="date" value={form.hotel_checkout} onChange={e => set("hotel_checkout", e.target.value)} />
-              </div>
-              <div className="space-y-1">
-                <Label className="text-xs">Bokningsreferens</Label>
-                <Input value={form.hotel_confirmation} onChange={e => set("hotel_confirmation", e.target.value)} />
-              </div>
-              <div className="space-y-1">
-                <Label className="text-xs">Hotellanteckningar</Label>
-                <Input value={form.hotel_notes} onChange={e => set("hotel_notes", e.target.value)} />
-              </div>
+          {/* Price breakdown */}
+          {breakdown.length > 0 && (
+            <div className="space-y-2">
+              <Label className="text-xs text-muted-foreground uppercase tracking-wide">Specifikation</Label>
+              {breakdown.map((r, i) => (
+                <div key={i} className="flex justify-between text-sm">
+                  <span>{r.label}</span>
+                  <span>{parseFloat(String(r.amount)).toLocaleString("sv-SE")} {trip.price_currency}</span>
+                </div>
+              ))}
+              <Separator />
             </div>
+          )}
+
+          <div className="flex justify-between font-semibold">
+            <span>Totalt</span>
+            <span className="text-lg">{total.toLocaleString("sv-SE")} {trip.price_currency || "SEK"}</span>
           </div>
 
-          {/* JSON-fält */}
-          {[
-            { key: "flights_raw", label: "Flyg (JSON-array)", placeholder: '[{"from":"ARN","to":"CDG","flight_number":"SK1234","departure":"2025-06-01 10:00","arrival":"2025-06-01 12:30","airline":"SAS"}]' },
-            { key: "transfers_raw", label: "Transfer (JSON-array)", placeholder: '[{"from":"Flygplats","to":"Hotel","datetime":"2025-06-01 13:00","vehicle":"Limousin"}]' },
-            { key: "schedule_raw", label: "Schema (JSON-array)", placeholder: '[{"date":"2025-06-01","time":"19:00","title":"Middag","description":"Restaurang Jules Verne"}]' },
-            { key: "tickets_raw", label: "Biljetter (JSON-array)", placeholder: '[{"name":"Eiffel Tower","date":"2025-06-02","url":"https://..."}]' },
-          ].map(({ key, label, placeholder }) => (
-            <div key={key} className="space-y-1">
-              <Label className="text-xs">{label}</Label>
-              <Textarea
-                rows={3}
-                value={(form as any)[key]}
-                onChange={e => set(key, e.target.value)}
-                placeholder={placeholder}
-                className="font-mono text-xs"
-              />
-            </div>
-          ))}
+          {trip.invoice_notes && (
+            <p className="text-sm text-muted-foreground bg-muted/50 rounded p-3">{trip.invoice_notes}</p>
+          )}
 
-          <div className="space-y-1">
-            <Label className="text-xs">Anteckningar</Label>
-            <Textarea value={form.notes} onChange={e => set("notes", e.target.value)} rows={2} />
-          </div>
+          {/* Flight tickets links */}
+          {Array.isArray(trip.flights) && trip.flights.some((f: any) => f.ticket_url) && (
+            <div className="space-y-1">
+              <Label className="text-xs text-muted-foreground uppercase tracking-wide">Bifogade biljetter</Label>
+              {trip.flights.filter((f: any) => f.ticket_url).map((f: any, i: number) => (
+                <div key={i} className="flex items-center gap-2 text-sm">
+                  <Plane className="h-3 w-3 text-muted-foreground" />
+                  <a href={f.ticket_url} target="_blank" rel="noopener noreferrer" className="text-primary underline">
+                    {f.ticket_name || `Flygbiljett ${f.from}→${f.to}`}
+                  </a>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {trip.invoice_sent_at && (
+            <p className="text-xs text-muted-foreground">
+              Senast skickad: {format(parseISO(trip.invoice_sent_at), "d MMM yyyy HH:mm", { locale: sv })}
+              {trip.invoice_number && ` · ${trip.invoice_number}`}
+            </p>
+          )}
         </div>
+
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>Avbryt</Button>
-          <Button onClick={handleSave} disabled={saving}>
-            {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-            {trip ? "Spara ändringar" : "Skapa resa"}
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Stäng</Button>
+          <Button onClick={handleSend} disabled={sending} className="gap-2">
+            {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+            {trip.invoice_sent_at ? "Skicka igen" : "Markera som skickad"}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -287,37 +187,157 @@ const TripFormDialog = ({
   );
 };
 
+// ─── Trip Card ────────────────────────────────────────────────────────────────
+const TripCard = ({ trip, onEdit, onDelete, onInvoice }: {
+  trip: Trip; onEdit: () => void; onDelete: () => void; onInvoice: () => void;
+}) => {
+  const statusCfg = STATUS_CONFIG[trip.status] || STATUS_CONFIG.upcoming;
+  const payStatusCfg = PAYMENT_STATUS_CONFIG[trip.payment_status || "unpaid"] || PAYMENT_STATUS_CONFIG.unpaid;
+  const guestName = trip.profiles
+    ? `${trip.profiles.first_name || ""} ${trip.profiles.last_name || ""}`.trim() || trip.profiles.email
+    : "–";
+
+  const daysUntil = trip.start_date
+    ? Math.ceil((new Date(trip.start_date).getTime() - new Date().getTime()) / 86400000)
+    : null;
+
+  const flights = Array.isArray(trip.flights) ? trip.flights : [];
+  const transfers = Array.isArray(trip.transfers) ? trip.transfers : [];
+  const tickets = Array.isArray(trip.tickets) ? trip.tickets : [];
+
+  return (
+    <Card className="border border-border/60 hover:border-border transition-colors">
+      <CardContent className="p-5">
+        <div className="flex items-start justify-between gap-4 flex-wrap">
+          <div className="flex items-start gap-4 flex-1 min-w-0">
+            {/* Date column */}
+            <div className="text-center min-w-[52px]">
+              {trip.start_date ? (
+                <>
+                  <div className="text-xs text-muted-foreground uppercase">{format(parseISO(trip.start_date), "MMM", { locale: sv })}</div>
+                  <div className="text-2xl font-bold leading-tight">{format(parseISO(trip.start_date), "d")}</div>
+                  <div className="text-xs text-muted-foreground">{format(parseISO(trip.start_date), "yyyy")}</div>
+                </>
+              ) : (
+                <div className="text-muted-foreground text-xs">–</div>
+              )}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-semibold truncate">{trip.title}</span>
+                <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${statusCfg.color}`}>
+                  {statusCfg.label}
+                </span>
+                {daysUntil !== null && daysUntil > 0 && trip.status === "upcoming" && (
+                  <span className="text-xs text-muted-foreground">om {daysUntil} dagar</span>
+                )}
+              </div>
+              <div className="text-sm text-muted-foreground mt-0.5">
+                {guestName}
+                {trip.destination && <><ChevronRight className="inline h-3 w-3" />{trip.destination}</>}
+              </div>
+
+              {/* Quick summary icons */}
+              <div className="flex items-center gap-3 mt-2 flex-wrap">
+                {flights.length > 0 && (
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Plane className="h-3 w-3" /> {flights.length} flyg
+                    {flights.some((f: any) => f.ticket_url) && <FileText className="h-3 w-3 text-primary" />}
+                  </div>
+                )}
+                {(trip.hotel_name) && (
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Hotel className="h-3 w-3" /> {trip.hotel_name}
+                    {trip.hotel_stars && " · " + "★".repeat(trip.hotel_stars)}
+                  </div>
+                )}
+                {transfers.length > 0 && (
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Car className="h-3 w-3" /> {transfers.length} transfer
+                  </div>
+                )}
+                {tickets.length > 0 && (
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Ticket className="h-3 w-3" /> {tickets.length} biljett{tickets.length !== 1 ? "er" : ""}
+                  </div>
+                )}
+                {trip.price_total && (
+                  <div className="flex items-center gap-1 text-xs">
+                    <CreditCard className="h-3 w-3 text-muted-foreground" />
+                    <span className="font-medium">{Number(trip.price_total).toLocaleString("sv-SE")} {trip.price_currency}</span>
+                    <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${payStatusCfg.color}`}>
+                      {payStatusCfg.label}
+                    </span>
+                  </div>
+                )}
+                {trip.invoice_sent_at && (
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Send className="h-3 w-3" /> Faktura skickad {format(parseISO(trip.invoice_sent_at), "d MMM", { locale: sv })}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <Button variant="outline" size="sm" onClick={onInvoice} className="gap-1 text-xs">
+              <FileText className="h-3.5 w-3.5" /> Faktura
+            </Button>
+            <Button variant="outline" size="sm" onClick={onEdit}>
+              <Pencil className="h-4 w-4" />
+            </Button>
+            <Button variant="outline" size="sm" onClick={onDelete} className="text-destructive hover:text-destructive">
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+// ─── Individual Trips Tab ─────────────────────────────────────────────────────
 const IndividualTripsTab = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [invoiceOpen, setInvoiceOpen] = useState(false);
   const [editing, setEditing] = useState<Trip | null>(null);
+  const [invoicingTrip, setInvoicingTrip] = useState<Trip | null>(null);
 
   const { data: trips, isLoading } = useQuery({
-    queryKey: ["admin-trips", search],
+    queryKey: ["admin-trips", search, statusFilter],
     queryFn: async () => {
       let q = supabase
         .from("trips")
         .select("*")
-        .order("start_date", { ascending: false });
+        // Sort by start_date ascending – next upcoming first
+        .order("start_date", { ascending: true, nullsFirst: false });
+
       if (search) q = q.ilike("title", `%${search}%`);
+      if (statusFilter !== "all") q = q.eq("status", statusFilter);
+
       const { data, error } = await q;
       if (error) throw error;
-      // Fetch profiles separately
-      const trips = data as Trip[];
-      if (trips.length > 0) {
-        const userIds = [...new Set(trips.map(t => t.guest_user_id))];
+
+      const tripList = data as unknown as Trip[];
+
+      // Fetch profiles
+      if (tripList.length > 0) {
+        const userIds = [...new Set(tripList.map(t => t.guest_user_id))];
         const { data: profiles } = await supabase
           .from("profiles")
           .select("id, first_name, last_name, email")
           .in("id", userIds);
         if (profiles) {
           const profileMap = Object.fromEntries(profiles.map(p => [p.id, p]));
-          trips.forEach(t => { (t as any).profiles = profileMap[t.guest_user_id] || null; });
+          tripList.forEach(t => { (t as any).profiles = profileMap[t.guest_user_id] || null; });
         }
       }
-      return trips;
+      return tripList;
     },
   });
 
@@ -334,62 +354,55 @@ const IndividualTripsTab = () => {
 
   const onSaved = () => queryClient.invalidateQueries({ queryKey: ["admin-trips"] });
 
+  // Group trips: upcoming first, then by date
+  const upcoming = trips?.filter(t => t.status === "upcoming") || [];
+  const ongoing = trips?.filter(t => t.status === "ongoing") || [];
+  const others = trips?.filter(t => t.status !== "upcoming" && t.status !== "ongoing") || [];
+
+  const grouped = statusFilter === "all"
+    ? [...ongoing, ...upcoming, ...others]
+    : (trips || []);
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div className="relative flex-1 max-w-sm">
+      {/* Controls */}
+      <div className="flex items-center gap-3 flex-wrap">
+        <div className="relative flex-1 min-w-[200px] max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Sök resa..."
-            className="pl-9"
-          />
+          <Input value={search} onChange={e => setSearch(e.target.value)} placeholder="Sök resa..." className="pl-9" />
         </div>
-        <Button onClick={() => { setEditing(null); setDialogOpen(true); }} className="gap-2">
+        <div className="flex gap-1">
+          {[["all","Alla"],["upcoming","Kommande"],["ongoing","Pågående"],["completed","Avslutade"],["cancelled","Inställda"]].map(([val, label]) => (
+            <Button key={val} variant={statusFilter === val ? "default" : "outline"} size="sm"
+              onClick={() => setStatusFilter(val)} className="text-xs">
+              {label}
+            </Button>
+          ))}
+        </div>
+        <Button onClick={() => { setEditing(null); setDialogOpen(true); }} className="gap-2 ml-auto">
           <Plus className="h-4 w-4" /> Ny resa
         </Button>
       </div>
 
       {isLoading ? (
         <div className="flex justify-center py-12"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>
-      ) : trips && trips.length > 0 ? (
-        <div className="space-y-3">
-          {trips.map(t => (
-            <Card key={t.id} className="border border-border/60">
-              <CardContent className="flex items-center justify-between gap-4 py-4 px-5 flex-wrap">
-                <div className="flex items-center gap-4">
-                  <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Plane className="h-4 w-4 text-primary" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-medium">{t.title}</span>
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusColors[t.status] || "bg-muted text-muted-foreground"}`}>
-                        {statusLabels[t.status] || t.status}
-                      </span>
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      {t.profiles ? `${t.profiles.first_name || ""} ${t.profiles.last_name || ""} · ${t.profiles.email}` : t.guest_user_id}
-                      {t.destination && ` · ${t.destination}`}
-                      {t.start_date && ` · ${format(new Date(t.start_date), "d MMM yyyy", { locale: sv })}`}
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" size="sm" onClick={() => { setEditing(t); setDialogOpen(true); }}>
-                    <Pencil className="h-4 w-4" />
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => handleDelete(t.id)} className="text-destructive hover:text-destructive">
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+      ) : grouped.length > 0 ? (
+        <div className="space-y-2">
+          {grouped.map(t => (
+            <TripCard
+              key={t.id}
+              trip={t}
+              onEdit={() => { setEditing(t); setDialogOpen(true); }}
+              onDelete={() => handleDelete(t.id)}
+              onInvoice={() => { setInvoicingTrip(t); setInvoiceOpen(true); }}
+            />
           ))}
         </div>
       ) : (
-        <div className="text-center py-12 text-muted-foreground">Inga resor hittades</div>
+        <div className="text-center py-16 text-muted-foreground">
+          <Calendar className="h-12 w-12 mx-auto mb-3 opacity-30" />
+          <p>Inga resor hittades</p>
+        </div>
       )}
 
       <TripFormDialog
@@ -398,10 +411,17 @@ const IndividualTripsTab = () => {
         trip={editing}
         onSaved={onSaved}
       />
+      <SendInvoiceDialog
+        trip={invoicingTrip}
+        open={invoiceOpen}
+        onOpenChange={setInvoiceOpen}
+        onSent={onSaved}
+      />
     </div>
   );
 };
 
+// ─── Main Component ───────────────────────────────────────────────────────────
 const AdminTripsManagement = () => {
   return (
     <Tabs defaultValue="individual">

@@ -1294,7 +1294,16 @@ export type Database = {
           hotel_notes: string | null
           hotel_stars: number | null
           id: string
+          invoice_notes: string | null
+          invoice_number: string | null
+          invoice_sent_at: string | null
           notes: string | null
+          payment_due_date: string | null
+          payment_method: string | null
+          payment_status: string | null
+          price_breakdown: Json | null
+          price_currency: string | null
+          price_total: number | null
           schedule: Json | null
           start_date: string | null
           status: string
@@ -1319,7 +1328,16 @@ export type Database = {
           hotel_notes?: string | null
           hotel_stars?: number | null
           id?: string
+          invoice_notes?: string | null
+          invoice_number?: string | null
+          invoice_sent_at?: string | null
           notes?: string | null
+          payment_due_date?: string | null
+          payment_method?: string | null
+          payment_status?: string | null
+          price_breakdown?: Json | null
+          price_currency?: string | null
+          price_total?: number | null
           schedule?: Json | null
           start_date?: string | null
           status?: string
@@ -1344,7 +1362,16 @@ export type Database = {
           hotel_notes?: string | null
           hotel_stars?: number | null
           id?: string
+          invoice_notes?: string | null
+          invoice_number?: string | null
+          invoice_sent_at?: string | null
           notes?: string | null
+          payment_due_date?: string | null
+          payment_method?: string | null
+          payment_status?: string | null
+          price_breakdown?: Json | null
+          price_currency?: string | null
+          price_total?: number | null
           schedule?: Json | null
           start_date?: string | null
           status?: string
