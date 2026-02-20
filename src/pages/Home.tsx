@@ -10,6 +10,7 @@ import sportsImage from "@/assets/kaisen-sports.jpg";
 import incomingImage from "@/assets/kaisen-incoming.jpg";
 import weekendImage from "@/assets/kaisen-weekend.jpg";
 import vipImage from "@/assets/kaisen-vip.jpg";
+import luxuryImage from "@/assets/kaisen-luxury.jpg";
 
 const stats = [
   { value: "2 400+", label: "Resor arrangerade" },
