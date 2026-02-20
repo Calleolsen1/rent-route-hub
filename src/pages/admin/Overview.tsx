@@ -3,16 +3,17 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import {
-  UsersRound,
-  UserCheck,
+  Plane,
   FileText,
   CalendarClock,
   ArrowRight,
   TrendingUp,
   Clock,
   CheckCircle2,
+  CreditCard,
 } from "lucide-react";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
@@ -20,73 +21,80 @@ import { sv } from "date-fns/locale";
 export default function Overview() {
   const navigate = useNavigate();
 
-  const { data: groups, isLoading: groupsLoading } = useQuery({
-    queryKey: ["admin-groups-overview"],
+  // All trips for KPIs + "Alla resor" summary
+  const { data: tripsData, isLoading: tripsKpiLoading } = useQuery({
+    queryKey: ["admin-trips-kpi"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("trip_groups")
-        .select("*, trip_members(id, status, invoice_sent_at, invoice_amount, invoice_paid_amount)");
+        .from("trips")
+        .select("id, status, payment_status, price_total, price_currency, invoice_sent_at, title, destination, start_date, guest_user_id");
       if (error) throw error;
-      return data;
+      return data ?? [];
     },
+    refetchInterval: 30_000,
   });
 
-  const { data: upcomingTrips, isLoading: tripsLoading } = useQuery({
+  // Upcoming trips (status upcoming/ongoing, ordered by start_date)
+  const { data: upcomingTrips, isLoading: upcomingLoading } = useQuery({
     queryKey: ["admin-upcoming-trips"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("trips")
         .select("id, title, destination, start_date, status, guest_user_id, profiles:profiles(first_name, last_name)")
+        .in("status", ["upcoming", "ongoing"])
         .order("start_date", { ascending: true })
-        .gte("start_date", new Date().toISOString().split("T")[0])
         .limit(5);
       if (error) throw error;
-      return data;
+      return data ?? [];
     },
+    refetchInterval: 30_000,
   });
 
+  // Recent invoices from trips table
   const { data: recentInvoices, isLoading: invoicesLoading } = useQuery({
     queryKey: ["admin-recent-invoices"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("trip_members")
-        .select("id, invoice_amount, invoice_currency, invoice_sent_at, invoice_paid_amount, user_id, group_id, profiles:profiles(first_name, last_name, email), trip_groups(name)")
+        .from("trips")
+        .select("id, title, destination, invoice_sent_at, price_total, price_currency, payment_status, guest_user_id, profiles:profiles(first_name, last_name, email)")
         .not("invoice_sent_at", "is", null)
         .order("invoice_sent_at", { ascending: false })
         .limit(6);
       if (error) throw error;
-      return data;
+      return data ?? [];
     },
+    refetchInterval: 30_000,
   });
 
-  const allMembers = groups?.flatMap((g) => g.trip_members) ?? [];
-  const totalMembers = allMembers.length;
-  const confirmedMembers = allMembers.filter((m) => m.status === "confirmed").length;
-  const invoicedMembers = allMembers.filter((m) => m.invoice_sent_at).length;
-  const totalInvoiced = allMembers.reduce((acc, m) => acc + (m.invoice_amount ?? 0), 0);
-  const totalPaid = allMembers.reduce((acc, m) => acc + (m.invoice_paid_amount ?? 0), 0);
-  const totalOutstanding = totalInvoiced - totalPaid;
+  // KPI derivations
+  const trips = tripsData ?? [];
+  const activeTrips = trips.filter((t) => t.status === "upcoming" || t.status === "ongoing").length;
+  const paidTrips = trips.filter((t) => t.payment_status === "paid").length;
+  const invoicedTrips = trips.filter((t) => t.invoice_sent_at).length;
+  const outstandingAmount = trips
+    .filter((t) => t.payment_status !== "paid")
+    .reduce((acc, t) => acc + (t.price_total ?? 0), 0);
 
   const kpiCards = [
     {
-      label: "Aktiva grupper",
-      value: groupsLoading ? null : (groups?.length ?? 0),
-      icon: UsersRound,
+      label: "Aktiva resor",
+      value: tripsKpiLoading ? null : activeTrips,
+      icon: Plane,
       color: "text-primary",
       bg: "bg-primary/10",
       href: "/admin/trips",
     },
     {
-      label: "Bekräftade resenärer",
-      value: groupsLoading ? null : `${confirmedMembers} / ${totalMembers}`,
-      icon: UserCheck,
+      label: "Betalda resor",
+      value: tripsKpiLoading ? null : `${paidTrips} / ${trips.length}`,
+      icon: CreditCard,
       color: "text-emerald-600",
       bg: "bg-emerald-50",
-      href: "/admin/users",
+      href: "/admin/trips",
     },
     {
       label: "Fakturor skickade",
-      value: groupsLoading ? null : invoicedMembers,
+      value: tripsKpiLoading ? null : invoicedTrips,
       icon: FileText,
       color: "text-amber-600",
       bg: "bg-amber-50",
@@ -94,13 +102,26 @@ export default function Overview() {
     },
     {
       label: "Utestående belopp",
-      value: groupsLoading ? null : `${totalOutstanding.toLocaleString("sv-SE")} SEK`,
+      value: tripsKpiLoading ? null : `${outstandingAmount.toLocaleString("sv-SE")} SEK`,
       icon: TrendingUp,
-      color: totalOutstanding > 0 ? "text-destructive" : "text-emerald-600",
-      bg: totalOutstanding > 0 ? "bg-destructive/10" : "bg-emerald-50",
+      color: outstandingAmount > 0 ? "text-destructive" : "text-emerald-600",
+      bg: outstandingAmount > 0 ? "bg-destructive/10" : "bg-emerald-50",
       href: "/admin/invoices",
     },
   ];
+
+  const statusLabel: Record<string, string> = {
+    upcoming: "Kommande",
+    ongoing: "Pågående",
+    completed: "Avslutad",
+    cancelled: "Avbokad",
+  };
+  const statusVariant: Record<string, "default" | "secondary" | "outline" | "destructive"> = {
+    upcoming: "default",
+    ongoing: "secondary",
+    completed: "outline",
+    cancelled: "destructive",
+  };
 
   return (
     <div className="pb-8 space-y-8">
@@ -145,13 +166,17 @@ export default function Overview() {
             </div>
           </CardHeader>
           <CardContent className="pt-4 space-y-3">
-            {tripsLoading ? (
+            {upcomingLoading ? (
               Array(4).fill(0).map((_, i) => <Skeleton key={i} className="h-12 w-full" />)
             ) : upcomingTrips && upcomingTrips.length > 0 ? (
               upcomingTrips.map((trip) => {
                 const profile = Array.isArray(trip.profiles) ? trip.profiles[0] : trip.profiles;
                 return (
-                  <div key={trip.id} className="flex items-center justify-between py-2 border-b last:border-0">
+                  <div
+                    key={trip.id}
+                    className="flex items-center justify-between py-2 border-b last:border-0 cursor-pointer hover:bg-muted/30 px-1 rounded"
+                    onClick={() => navigate("/admin/trips")}
+                  >
                     <div>
                       <p className="text-sm font-medium">{trip.title}</p>
                       <p className="text-xs text-muted-foreground">
@@ -161,7 +186,7 @@ export default function Overview() {
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-medium text-primary">
-                        {trip.start_date ? format(new Date(trip.start_date), "d MMM", { locale: sv }) : "–"}
+                        {trip.start_date ? format(new Date(trip.start_date), "d MMM", { locale: sv }) : "TBD"}
                       </p>
                     </div>
                   </div>
@@ -189,21 +214,24 @@ export default function Overview() {
             {invoicesLoading ? (
               Array(4).fill(0).map((_, i) => <Skeleton key={i} className="h-12 w-full" />)
             ) : recentInvoices && recentInvoices.length > 0 ? (
-              recentInvoices.map((m) => {
-                const profile = Array.isArray(m.profiles) ? m.profiles[0] : m.profiles;
-                const group = Array.isArray(m.trip_groups) ? m.trip_groups[0] : m.trip_groups;
-                const isPaid = (m.invoice_paid_amount ?? 0) >= (m.invoice_amount ?? 0);
+              recentInvoices.map((trip) => {
+                const profile = Array.isArray(trip.profiles) ? trip.profiles[0] : trip.profiles;
+                const isPaid = trip.payment_status === "paid";
                 return (
-                  <div key={m.id} className="flex items-center justify-between py-2 border-b last:border-0">
+                  <div
+                    key={trip.id}
+                    className="flex items-center justify-between py-2 border-b last:border-0 cursor-pointer hover:bg-muted/30 px-1 rounded"
+                    onClick={() => navigate("/admin/invoices")}
+                  >
                     <div>
                       <p className="text-sm font-medium">
                         {profile ? `${profile.first_name ?? ""} ${profile.last_name ?? ""}`.trim() : "–"}
                       </p>
-                      <p className="text-xs text-muted-foreground">{group?.name ?? "–"}</p>
+                      <p className="text-xs text-muted-foreground">{trip.title}{trip.destination ? ` · ${trip.destination}` : ""}</p>
                     </div>
                     <div className="text-right flex items-center gap-2">
                       <span className="text-sm font-medium">
-                        {(m.invoice_amount ?? 0).toLocaleString("sv-SE")} {m.invoice_currency}
+                        {(trip.price_total ?? 0).toLocaleString("sv-SE")} {trip.price_currency ?? "SEK"}
                       </span>
                       {isPaid ? (
                         <CheckCircle2 className="h-4 w-4 text-emerald-500" />
@@ -221,46 +249,59 @@ export default function Overview() {
         </Card>
       </div>
 
-      {/* Groups summary */}
+      {/* All trips summary */}
       <Card>
         <CardHeader className="border-b pb-4">
           <div className="flex items-center justify-between">
             <CardTitle className="text-base flex items-center gap-2">
-              <UsersRound className="h-4 w-4 text-primary" /> Gruppsummering
+              <Plane className="h-4 w-4 text-primary" /> Alla resor
             </CardTitle>
             <Button variant="ghost" size="sm" className="text-xs gap-1" onClick={() => navigate("/admin/trips")}>
-              Hantera grupper <ArrowRight className="h-3 w-3" />
+              Hantera resor <ArrowRight className="h-3 w-3" />
             </Button>
           </div>
         </CardHeader>
         <CardContent className="pt-4">
-          {groupsLoading ? (
+          {tripsKpiLoading ? (
             <div className="space-y-3">
               {Array(3).fill(0).map((_, i) => <Skeleton key={i} className="h-14 w-full" />)}
             </div>
-          ) : groups && groups.length > 0 ? (
+          ) : trips.length > 0 ? (
             <div className="space-y-3">
-              {groups.map((g) => {
-                const members = g.trip_members ?? [];
-                const confirmed = members.filter((m: any) => m.status === "confirmed").length;
-                const invoiced = members.filter((m: any) => m.invoice_sent_at).length;
-                const paid = members.filter((m: any) => (m.invoice_paid_amount ?? 0) > 0).length;
-                return (
-                  <div key={g.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/40 hover:bg-muted/70 transition-colors cursor-pointer" onClick={() => navigate("/admin/trips")}>
-                    <div>
-                      <p className="text-sm font-medium">{g.name}</p>
-                      <p className="text-xs text-muted-foreground">{members.length} resenärer · {confirmed} bekräftade</p>
-                    </div>
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                      <span>{invoiced} fakturerade</span>
-                      <span className="text-emerald-600 font-medium">{paid} betalda</span>
-                    </div>
+              {trips.slice(0, 8).map((t) => (
+                <div
+                  key={t.id}
+                  className="flex items-center justify-between p-3 rounded-lg bg-muted/40 hover:bg-muted/70 transition-colors cursor-pointer"
+                  onClick={() => navigate("/admin/trips")}
+                >
+                  <div>
+                    <p className="text-sm font-medium">{t.title}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {t.destination ?? "–"}
+                      {t.start_date ? ` · ${format(new Date(t.start_date), "d MMM yyyy", { locale: sv })}` : ""}
+                    </p>
                   </div>
-                );
-              })}
+                  <div className="flex items-center gap-2">
+                    <Badge variant={statusVariant[t.status] ?? "outline"} className="text-xs">
+                      {statusLabel[t.status] ?? t.status}
+                    </Badge>
+                    <Badge
+                      variant={t.payment_status === "paid" ? "outline" : "secondary"}
+                      className="text-xs"
+                    >
+                      {t.payment_status === "paid" ? "Betald" : t.payment_status === "partial" ? "Delvis betald" : "Obetald"}
+                    </Badge>
+                  </div>
+                </div>
+              ))}
+              {trips.length > 8 && (
+                <Button variant="ghost" size="sm" className="w-full text-xs" onClick={() => navigate("/admin/trips")}>
+                  Visa alla {trips.length} resor <ArrowRight className="h-3 w-3 ml-1" />
+                </Button>
+              )}
             </div>
           ) : (
-            <p className="text-sm text-muted-foreground text-center py-4">Inga grupper skapade ännu</p>
+            <p className="text-sm text-muted-foreground text-center py-4">Inga resor skapade ännu</p>
           )}
         </CardContent>
       </Card>
