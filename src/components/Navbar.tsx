@@ -24,7 +24,7 @@ const tjänsterLinks = [
 
 const Navbar = () => {
   const { user, signOut } = useAuth();
-  const { isAdmin, isHost } = useUserRole();
+  const { isAdmin, isHost, isGuest } = useUserRole();
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [tjänsterOpen, setTjänsterOpen] = useState(false);
@@ -80,6 +80,11 @@ const Navbar = () => {
               <Link to="/contact" className="text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors">
                 Kontakt
               </Link>
+              {user && isGuest && (
+                <Link to="/guest/dashboard" className="text-sm tracking-wide font-medium text-primary border-b border-primary pb-0.5 transition-colors hover:text-primary/80">
+                  Mina resor
+                </Link>
+              )}
             </div>
 
             {/* Auth */}
