@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { User, LogOut, Menu, X } from "lucide-react";
+import { User, LogOut, Menu, X, ChevronDown } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { AuthDialog } from "@/components/AuthDialog";
@@ -14,18 +14,20 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+const tjänsterLinks = [
+  { label: "Sportresor", to: "/services#sports", desc: "F1, fotboll & golf" },
+  { label: "Affärsresor", to: "/services#business", desc: "Smidiga businessresor" },
+  { label: "Weekend Getaway", to: "/services#weekend", desc: "Helgresor i Europa" },
+  { label: "Konferens", to: "/services#conference", desc: "Möten & event utomlands" },
+  { label: "VIP-service", to: "/services#vip", desc: "Komplett personlig service" },
+];
+
 const Navbar = () => {
   const { user, signOut } = useAuth();
   const { isAdmin, isHost } = useUserRole();
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  const navLinks = [
-    { label: "Tjänster", to: "/services" },
-    { label: "Gruppresor", to: "/group-travel" },
-    { label: "Om oss", to: "/about" },
-    { label: "Kontakt", to: "/contact" },
-  ];
+  const [tjänsterOpen, setTjänsterOpen] = useState(false);
 
   return (
     <>
@@ -46,15 +48,38 @@ const Navbar = () => {
 
             {/* Desktop nav */}
             <div className="hidden md:flex items-center gap-8">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  to={link.to}
-                  className="text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors"
-                >
-                  {link.label}
-                </Link>
-              ))}
+              {/* Tjänster dropdown */}
+              <div className="relative" onMouseEnter={() => setTjänsterOpen(true)} onMouseLeave={() => setTjänsterOpen(false)}>
+                <button className="flex items-center gap-1 text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors py-2">
+                  Tjänster
+                  <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${tjänsterOpen ? "rotate-180" : ""}`} />
+                </button>
+                {tjänsterOpen && (
+                  <div className="absolute top-full left-0 bg-card border border-border shadow-lg z-50 min-w-[220px] py-2">
+                    {tjänsterLinks.map((item) => (
+                      <Link
+                        key={item.label}
+                        to={item.to}
+                        className="flex flex-col px-5 py-3 hover:bg-accent transition-colors group"
+                        onClick={() => setTjänsterOpen(false)}
+                      >
+                        <span className="text-sm font-medium text-foreground group-hover:text-primary tracking-wide">{item.label}</span>
+                        <span className="text-xs text-muted-foreground mt-0.5">{item.desc}</span>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <Link to="/group-travel" className="text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors">
+                Gruppresor
+              </Link>
+              <Link to="/about" className="text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors">
+                Om oss
+              </Link>
+              <Link to="/contact" className="text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors">
+                Kontakt
+              </Link>
             </div>
 
             {/* Auth */}
@@ -124,17 +149,28 @@ const Navbar = () => {
 
         {/* Mobile menu */}
         {mobileOpen && (
-          <div className="md:hidden border-t bg-card px-4 py-6 space-y-4">
-            {navLinks.map((link) => (
+          <div className="md:hidden border-t bg-card px-4 py-6 space-y-1">
+            <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground px-2 pb-1">Tjänster</p>
+            {tjänsterLinks.map((link) => (
               <Link
                 key={link.label}
                 to={link.to}
-                className="block text-sm font-medium tracking-wide py-2 text-foreground/80 hover:text-primary transition-colors"
+                className="block text-sm font-medium tracking-wide py-2 px-2 text-foreground/80 hover:text-primary transition-colors"
                 onClick={() => setMobileOpen(false)}
               >
                 {link.label}
               </Link>
             ))}
+            <div className="pt-2 border-t space-y-1">
+              {["Gruppresor", "Om oss", "Kontakt"].map((label) => {
+                const to = label === "Gruppresor" ? "/group-travel" : label === "Om oss" ? "/about" : "/contact";
+                return (
+                  <Link key={label} to={to} className="block text-sm font-medium tracking-wide py-2 px-2 text-foreground/80 hover:text-primary transition-colors" onClick={() => setMobileOpen(false)}>
+                    {label}
+                  </Link>
+                );
+              })}
+            </div>
             <div className="pt-4 space-y-3 border-t">
               {user ? (
                 <>
