@@ -4,12 +4,13 @@ import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { HostSidebar, NavigationItem } from "@/components/host/HostSidebar";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
-import { LayoutDashboard, Home, Users, DollarSign, FileText, Loader2, Percent, Calendar, MessageSquare, AlertTriangle, FilePenLine } from "lucide-react";
+import { LayoutDashboard, Home, Users, DollarSign, FileText, Loader2, Percent, Calendar, MessageSquare, AlertTriangle, FilePenLine, Plane } from "lucide-react";
 
 const adminNavigationItems: NavigationItem[] = [
   { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
   { name: "Listings", href: "/admin/listings", icon: Home },
   { name: "Bookings", href: "/admin/bookings", icon: Calendar },
+  { name: "Resor", href: "/admin/trips", icon: Plane },
   { name: "Disputes", href: "/admin/disputes", icon: AlertTriangle },
   { name: "Support Chat", href: "/admin/support", icon: MessageSquare },
   { name: "Users & Reviews", href: "/admin/users", icon: Users },

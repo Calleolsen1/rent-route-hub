@@ -7,13 +7,13 @@ import { Loader2 } from "lucide-react";
 
 // Map routes to page titles
 const getPageTitle = (pathname: string): string => {
-  if (pathname === "/guest/dashboard") return "Dashboard";
-  if (pathname === "/guest/bookings") return "My Bookings";
-  if (pathname === "/guest/payments") return "Payments & Receipts";
-  if (pathname === "/guest/inbox") return "Messages";
-  if (pathname === "/guest/profile") return "My Profile";
-  if (pathname === "/guest/settings") return "Settings";
-  return "Dashboard";
+  if (pathname === "/guest/dashboard" || pathname === "/guest/trips") return "Mina resor";
+  if (pathname === "/guest/bookings") return "Bokningar";
+  if (pathname === "/guest/payments") return "Betalningar";
+  if (pathname === "/guest/inbox") return "Meddelanden";
+  if (pathname === "/guest/profile") return "Min profil";
+  if (pathname === "/guest/settings") return "Inställningar";
+  return "Mina resor";
 };
 
 const GuestLayout = () => {
@@ -43,7 +43,7 @@ const GuestLayout = () => {
 
   return (
     <div className="flex min-h-screen bg-background w-full">
-      <GuestSidebar logoText="Rentely" />
+      <GuestSidebar />
       <div className="flex-1">
         <div className="container mx-auto px-4 pt-8 lg:px-8">
           <GuestPageHeader 
