@@ -44,6 +44,25 @@ export type HotelData = {
   confirmation: string; notes: string;
 };
 
+export type ScheduleItem = {
+  id: string;
+  date: string;
+  time: string;
+  title: string;
+  description?: string;
+  location?: string;
+};
+
+export type RestaurantItem = {
+  id: string;
+  name: string;
+  date: string;
+  time: string;
+  address?: string;
+  reservation_ref?: string;
+  notes?: string;
+};
+
 export type TicketItem = {
   id: string;
   name: string; date: string; time: string;
@@ -86,6 +105,8 @@ export type TripFormData = {
   flights: FlightLeg[];
   transfers: Transfer[];
   tickets: TicketItem[];
+  schedule: ScheduleItem[];
+  restaurants: RestaurantItem[];
   price_total: string;
   price_currency: string;
   payment_method: string;
@@ -281,12 +302,19 @@ const defaultChecklist = (): BookingChecklist => ({
   payment: { done: false, visible_to_customer: false },
 });
 
+const emptyScheduleItem = (): ScheduleItem => ({
+  id: newId(), date: "", time: "", title: "", description: "", location: ""
+});
+const emptyRestaurant = (): RestaurantItem => ({
+  id: newId(), name: "", date: "", time: "", address: "", reservation_ref: "", notes: ""
+});
+
 const initForm = (trip: Trip | null): TripFormData => {
   if (!trip) return {
     guest_user_id: "", title: "", destination: "", start_date: "", end_date: "",
     status: "upcoming", notes: "",
     hotel: emptyHotel(),
-    flights: [], transfers: [], tickets: [],
+    flights: [], transfers: [], tickets: [], schedule: [], restaurants: [],
     price_total: "", price_currency: "SEK",
     payment_method: "invoice", payment_due_date: "", payment_status: "unpaid",
     invoice_notes: "", price_breakdown: [],
@@ -309,6 +337,8 @@ const initForm = (trip: Trip | null): TripFormData => {
     flights: Array.isArray(trip.flights) ? trip.flights.map(f => ({ ...f, id: f.id || newId() })) : [],
     transfers: Array.isArray(trip.transfers) ? trip.transfers.map(t => ({ ...t, id: t.id || newId() })) : [],
     tickets: Array.isArray(trip.tickets) ? trip.tickets.map(t => ({ ...t, id: t.id || newId() })) : [],
+    schedule: Array.isArray(trip.schedule) ? trip.schedule.filter((s: any) => s._type !== 'restaurant').map((s: any) => ({ ...s, id: s.id || newId() })) : [],
+    restaurants: Array.isArray(trip.schedule) ? trip.schedule.filter((s: any) => s._type === 'restaurant').map((r: any) => ({ ...r, id: r.id || newId() })) : [],
     price_total: trip.price_total?.toString() || "",
     price_currency: trip.price_currency || "SEK",
     payment_method: trip.payment_method || "invoice",
@@ -822,6 +852,97 @@ const PricingSection = ({ form, onChange }: { form: TripFormData; onChange: (upd
   );
 };
 
+// ─── Hotel Section ────────────────────────────────────────────────────────────
+const HotelSection = ({ hotel, onChange }: { hotel: HotelData; onChange: (updates: Partial<HotelData>) => void }) => (
+  <div className="space-y-3">
+    <div className="grid grid-cols-2 gap-3">
+      <div className="space-y-1"><Label className="text-xs">Hotellnamn</Label><Input value={hotel.name} onChange={e => onChange({ name: e.target.value })} /></div>
+      <div className="space-y-1"><Label className="text-xs">Stjärnor</Label>
+        <Select value={hotel.stars || ""} onValueChange={v => onChange({ stars: v })}>
+          <SelectTrigger><SelectValue placeholder="–" /></SelectTrigger>
+          <SelectContent>
+            {[1,2,3,4,5].map(s => <SelectItem key={s} value={s.toString()}>{s} ★</SelectItem>)}
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="col-span-2 space-y-1"><Label className="text-xs">Adress</Label><Input value={hotel.address} onChange={e => onChange({ address: e.target.value })} /></div>
+      <div className="space-y-1"><Label className="text-xs">Incheckning</Label><Input type="date" value={hotel.checkin} onChange={e => onChange({ checkin: e.target.value })} /></div>
+      <div className="space-y-1"><Label className="text-xs">Utcheckning</Label><Input type="date" value={hotel.checkout} onChange={e => onChange({ checkout: e.target.value })} /></div>
+      <div className="space-y-1"><Label className="text-xs">Bokningsreferens</Label><Input value={hotel.confirmation} onChange={e => onChange({ confirmation: e.target.value })} /></div>
+      <div className="space-y-1"><Label className="text-xs">Hotellnot</Label><Input value={hotel.notes} onChange={e => onChange({ notes: e.target.value })} /></div>
+    </div>
+  </div>
+);
+
+// ─── Restaurant Section ───────────────────────────────────────────────────────
+const RestaurantSection = ({ restaurants, onChange }: { restaurants: RestaurantItem[]; onChange: (r: RestaurantItem[]) => void }) => {
+  const update = (id: string, key: keyof RestaurantItem, val: string) =>
+    onChange(restaurants.map(r => r.id === id ? { ...r, [key]: val } : r));
+
+  return (
+    <div className="space-y-4">
+      {restaurants.map((r, idx) => (
+        <div key={r.id} className="border rounded-lg p-4 space-y-3 bg-muted/30">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-muted-foreground">Restaurang {idx + 1}</span>
+            <Button variant="ghost" size="sm" onClick={() => onChange(restaurants.filter(x => x.id !== r.id))}>
+              <Trash2 className="h-4 w-4 text-destructive" />
+            </Button>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="col-span-2 space-y-1"><Label className="text-xs">Restaurangnamn</Label><Input value={r.name} onChange={e => update(r.id, "name", e.target.value)} placeholder="t.ex. Le Bernardin" /></div>
+            <div className="space-y-1"><Label className="text-xs">Datum</Label><Input type="date" value={r.date} onChange={e => update(r.id, "date", e.target.value)} /></div>
+            <div className="space-y-1"><Label className="text-xs">Tid</Label><Input type="time" value={r.time} onChange={e => update(r.id, "time", e.target.value)} /></div>
+            <div className="col-span-2 space-y-1"><Label className="text-xs">Adress</Label><Input value={r.address || ""} onChange={e => update(r.id, "address", e.target.value)} placeholder="t.ex. 155 W 51st St, New York" /></div>
+            <div className="space-y-1"><Label className="text-xs">Bokningsreferens</Label><Input value={r.reservation_ref || ""} onChange={e => update(r.id, "reservation_ref", e.target.value)} placeholder="t.ex. CONF-12345" /></div>
+            <div className="space-y-1"><Label className="text-xs">Anteckningar</Label><Input value={r.notes || ""} onChange={e => update(r.id, "notes", e.target.value)} placeholder="t.ex. Vegetarisk meny bokad" /></div>
+          </div>
+        </div>
+      ))}
+      <Button variant="outline" size="sm" onClick={() => onChange([...restaurants, emptyRestaurant()])}>
+        <Plus className="h-4 w-4 mr-1" /> Lägg till restaurang
+      </Button>
+    </div>
+  );
+};
+
+// ─── Schedule Section ─────────────────────────────────────────────────────────
+const ScheduleSection = ({ schedule, onChange }: { schedule: ScheduleItem[]; onChange: (s: ScheduleItem[]) => void }) => {
+  const update = (id: string, key: keyof ScheduleItem, val: string) =>
+    onChange(schedule.map(s => s.id === id ? { ...s, [key]: val } : s));
+
+  const sorted = [...schedule].sort((a, b) => {
+    const da = a.date + a.time;
+    const db = b.date + b.time;
+    return da.localeCompare(db);
+  });
+
+  return (
+    <div className="space-y-4">
+      {sorted.map((s, idx) => (
+        <div key={s.id} className="border rounded-lg p-4 space-y-3 bg-muted/30">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-muted-foreground">Aktivitet {idx + 1}</span>
+            <Button variant="ghost" size="sm" onClick={() => onChange(schedule.filter(x => x.id !== s.id))}>
+              <Trash2 className="h-4 w-4 text-destructive" />
+            </Button>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="col-span-2 space-y-1"><Label className="text-xs">Titel</Label><Input value={s.title} onChange={e => update(s.id, "title", e.target.value)} placeholder="t.ex. Match Champions League Final" /></div>
+            <div className="space-y-1"><Label className="text-xs">Datum</Label><Input type="date" value={s.date} onChange={e => update(s.id, "date", e.target.value)} /></div>
+            <div className="space-y-1"><Label className="text-xs">Tid</Label><Input type="time" value={s.time} onChange={e => update(s.id, "time", e.target.value)} /></div>
+            <div className="col-span-2 space-y-1"><Label className="text-xs">Plats / Lokal</Label><Input value={s.location || ""} onChange={e => update(s.id, "location", e.target.value)} placeholder="t.ex. Stade de France" /></div>
+            <div className="col-span-2 space-y-1"><Label className="text-xs">Beskrivning</Label><Input value={s.description || ""} onChange={e => update(s.id, "description", e.target.value)} /></div>
+          </div>
+        </div>
+      ))}
+      <Button variant="outline" size="sm" onClick={() => onChange([...schedule, emptyScheduleItem()])}>
+        <Plus className="h-4 w-4 mr-1" /> Lägg till aktivitet
+      </Button>
+    </div>
+  );
+};
+
 // ─── Main Dialog ──────────────────────────────────────────────────────────────
 export const TripFormDialog = ({
   open, onOpenChange, trip, onSaved
@@ -881,7 +1002,10 @@ export const TripFormDialog = ({
       hotel_stars: form.hotel.stars ? parseInt(form.hotel.stars) : null,
       flights: form.flights,
       transfers: form.transfers,
-      schedule: [],
+      schedule: [
+        ...form.schedule.map(s => ({ ...s, _type: 'activity' })),
+        ...form.restaurants.map(r => ({ ...r, _type: 'restaurant' })),
+      ],
       tickets: form.tickets,
       price_total: effectiveTotal || null,
       price_currency: form.price_currency,
@@ -920,13 +1044,15 @@ export const TripFormDialog = ({
         </DialogHeader>
 
         <Tabs defaultValue="basics" className="mt-2">
-          <TabsList className="grid grid-cols-6 w-full">
+          <TabsList className="grid grid-cols-8 w-full">
             <TabsTrigger value="basics" className="gap-1 text-xs"><Info className="h-3 w-3" />Grundinfo</TabsTrigger>
+            <TabsTrigger value="hotel" className="gap-1 text-xs"><Hotel className="h-3 w-3" />Hotell</TabsTrigger>
             <TabsTrigger value="flights" className="gap-1 text-xs"><Plane className="h-3 w-3" />Flyg</TabsTrigger>
             <TabsTrigger value="transfers" className="gap-1 text-xs"><Car className="h-3 w-3" />Transfer</TabsTrigger>
             <TabsTrigger value="tickets" className="gap-1 text-xs"><Ticket className="h-3 w-3" />Biljetter</TabsTrigger>
+            <TabsTrigger value="restaurants" className="gap-1 text-xs"><span className="text-xs">🍽</span>Restauranger</TabsTrigger>
+            <TabsTrigger value="schedule" className="gap-1 text-xs"><span className="text-xs">📅</span>Schema</TabsTrigger>
             <TabsTrigger value="pricing" className="gap-1 text-xs"><DollarSign className="h-3 w-3" />Betalning</TabsTrigger>
-            <TabsTrigger value="checklist" className="gap-1 text-xs"><CheckCircle2 className="h-3 w-3" />Bocklista</TabsTrigger>
           </TabsList>
 
           {/* ── Grundinfo ── */}
@@ -971,32 +1097,15 @@ export const TripFormDialog = ({
                 <Input type="date" value={form.end_date} onChange={e => set({ end_date: e.target.value })} />
               </div>
             </div>
-
-            {/* Hotell */}
-            <div className="border rounded-lg p-4 space-y-3">
-              <div className="flex items-center gap-2"><Hotel className="h-4 w-4 text-muted-foreground" /><h4 className="font-medium text-sm">Hotell</h4></div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1"><Label className="text-xs">Hotellnamn</Label><Input value={form.hotel.name} onChange={e => setHotel({ name: e.target.value })} /></div>
-                <div className="space-y-1"><Label className="text-xs">Stjärnor</Label>
-                  <Select value={form.hotel.stars || ""} onValueChange={v => setHotel({ stars: v })}>
-                    <SelectTrigger><SelectValue placeholder="–" /></SelectTrigger>
-                    <SelectContent>
-                      {[1,2,3,4,5].map(s => <SelectItem key={s} value={s.toString()}>{s} ★</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="col-span-2 space-y-1"><Label className="text-xs">Adress</Label><Input value={form.hotel.address} onChange={e => setHotel({ address: e.target.value })} /></div>
-                <div className="space-y-1"><Label className="text-xs">Incheckning</Label><Input type="date" value={form.hotel.checkin} onChange={e => setHotel({ checkin: e.target.value })} /></div>
-                <div className="space-y-1"><Label className="text-xs">Utcheckning</Label><Input type="date" value={form.hotel.checkout} onChange={e => setHotel({ checkout: e.target.value })} /></div>
-                <div className="space-y-1"><Label className="text-xs">Bokningsreferens</Label><Input value={form.hotel.confirmation} onChange={e => setHotel({ confirmation: e.target.value })} /></div>
-                <div className="space-y-1"><Label className="text-xs">Hotellnot</Label><Input value={form.hotel.notes} onChange={e => setHotel({ notes: e.target.value })} /></div>
-              </div>
-            </div>
-
             <div className="space-y-1">
               <Label className="text-xs">Interna anteckningar</Label>
               <Textarea rows={2} value={form.notes} onChange={e => set({ notes: e.target.value })} placeholder="Visas ej för resenären" />
             </div>
+          </TabsContent>
+
+          {/* ── Hotell ── */}
+          <TabsContent value="hotel" className="pt-4">
+            <HotelSection hotel={form.hotel} onChange={setHotel} />
           </TabsContent>
 
           {/* ── Flyg ── */}
@@ -1014,20 +1123,19 @@ export const TripFormDialog = ({
             <TicketSection tickets={form.tickets} onChange={tickets => set({ tickets })} />
           </TabsContent>
 
+          {/* ── Restauranger ── */}
+          <TabsContent value="restaurants" className="pt-4">
+            <RestaurantSection restaurants={form.restaurants} onChange={restaurants => set({ restaurants })} />
+          </TabsContent>
+
+          {/* ── Schema ── */}
+          <TabsContent value="schedule" className="pt-4">
+            <ScheduleSection schedule={form.schedule} onChange={schedule => set({ schedule })} />
+          </TabsContent>
+
           {/* ── Betalning ── */}
           <TabsContent value="pricing" className="pt-4">
             <PricingSection form={form} onChange={set} />
-          </TabsContent>
-
-          {/* ── Bocklista ── */}
-          <TabsContent value="checklist" className="pt-4">
-            <ChecklistSection
-              checklist={form.booking_checklist}
-              onChange={updateChecklist}
-              trip={trip}
-              onNotifySent={onSaved}
-              onPaymentConfirmed={onSaved}
-            />
           </TabsContent>
         </Tabs>
 
