@@ -25,7 +25,7 @@ const services = [
     subtitle: "F1 · Fotboll · Golf",
     description: "Upplev F1-race på Circuit de Monaco, Champions League-finaler eller exklusiva golfrundor på världens bästa banor. Vi ordnar allt — biljetter, boende och VIP-access.",
     image: sportsImage,
-    href: "/services#sports",
+    href: "/services/sportresor",
     tag: "Premiumupplevelser",
   },
   {
@@ -41,7 +41,7 @@ const services = [
     subtitle: "Ta emot världen i Sverige",
     description: "Vi tar hand om internationella grupper och delegationer som besöker Sverige — med skräddarsydda program, guider och upplevelser som lyfter fram det bästa Sverige har att erbjuda.",
     image: incomingImage,
-    href: "/services#incoming",
+    href: "/contact",
     tag: "Sverige som destination",
   },
   {
@@ -49,7 +49,7 @@ const services = [
     subtitle: "Europa på nolltid",
     description: "En lång helg i Paris, Lissabon eller Prag? Vi paketerar de bästa weekendresorna i Europa med hotell, aktiviteter och smidig logistik — utan att du behöver lyfta ett finger.",
     image: weekendImage,
-    href: "/services#weekend",
+    href: "/services/weekend-getaway",
     tag: "Europa · Helgresor",
   },
   {
@@ -57,7 +57,7 @@ const services = [
     subtitle: "Din personliga reseassistent",
     description: "En dedikerad rådgivare som hanterar all din reseservice — privata resor, affärsresor, sista minuten-ändringar och allt däremellan. För dig som kräver det bästa.",
     image: vipImage,
-    href: "/services#vip",
+    href: "/services/vip-service",
     tag: "Exklusivt · Personligt",
   },
 ];
