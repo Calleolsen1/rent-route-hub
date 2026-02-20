@@ -28,6 +28,7 @@ const Navbar = () => {
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [tjänsterOpen, setTjänsterOpen] = useState(false);
+  const [mittKontoOpen, setMittKontoOpen] = useState(false);
 
   return (
     <>
@@ -81,14 +82,32 @@ const Navbar = () => {
                 Kontakt
               </Link>
               {user && (
-                <Link to="/mitt-kaisen/dashboard" className="text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors">
-                  Mitt konto
-                </Link>
-              )}
-              {user && isGuest && (
-                <Link to="/guest/dashboard" className="text-sm tracking-wide font-medium text-primary border-b border-primary pb-0.5 transition-colors hover:text-primary/80">
-                  Mina resor
-                </Link>
+                <div className="relative" onMouseEnter={() => setMittKontoOpen(true)} onMouseLeave={() => setMittKontoOpen(false)}>
+                  <button className="flex items-center gap-1 text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors py-2">
+                    Mitt konto
+                    <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${mittKontoOpen ? "rotate-180" : ""}`} />
+                  </button>
+                  {mittKontoOpen && (
+                    <div className="absolute top-full left-0 bg-card border border-border shadow-lg z-50 min-w-[180px] py-2">
+                      <Link
+                        to="/guest/dashboard"
+                        className="flex flex-col px-5 py-3 hover:bg-accent transition-colors group"
+                        onClick={() => setMittKontoOpen(false)}
+                      >
+                        <span className="text-sm font-medium text-foreground group-hover:text-primary tracking-wide">Mina resor</span>
+                      </Link>
+                      {isHost && (
+                        <Link
+                          to="/host/dashboard"
+                          className="flex flex-col px-5 py-3 hover:bg-accent transition-colors group"
+                          onClick={() => setMittKontoOpen(false)}
+                        >
+                          <span className="text-sm font-medium text-foreground group-hover:text-primary tracking-wide">Host-panel</span>
+                        </Link>
+                      )}
+                    </div>
+                  )}
+                </div>
               )}
             </div>
 
