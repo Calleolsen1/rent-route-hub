@@ -11,6 +11,10 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Search from "./pages/Search";
 import ForgotPassword from "./pages/ForgotPassword";
+import MittKaisenLogin from "./pages/MittKaisenLogin";
+import MittKaisenResetPassword from "./pages/MittKaisenResetPassword";
+import MittKaisenLayout from "./layouts/MittKaisenLayout";
+import MittKaisenDashboard from "./pages/mitt-kaisen/Dashboard";
 import BecomeHost from "./pages/BecomeHost";
 import FAQ from "./pages/FAQ";
 import HelpCenter from "./pages/HelpCenter";
@@ -120,6 +124,16 @@ const App = () => (
               <Route path="reports" element={<Reports />} />
               <Route path="support" element={<AdminSupport />} />
               <Route path="content" element={<ContentManagementPage />} />
+            </Route>
+            {/* Mitt Kaisen portal — public routes */}
+            <Route path="/mitt-kaisen" element={<MittKaisenLogin />} />
+            <Route path="/mitt-kaisen/aterstall-losenord" element={<MittKaisenResetPassword />} />
+            {/* Mitt Kaisen portal — protected routes */}
+            <Route path="/mitt-kaisen" element={<MittKaisenLayout />}>
+              <Route path="dashboard" element={<MittKaisenDashboard />} />
+              <Route path="resor" element={<GuestBookings />} />
+              <Route path="fakturor" element={<GuestPayments />} />
+              <Route path="profil" element={<GuestProfile />} />
             </Route>
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<><Navbar /><NotFound /></>} />
