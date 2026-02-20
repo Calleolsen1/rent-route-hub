@@ -911,6 +911,86 @@ const RestaurantSection = ({ restaurants, onChange }: { restaurants: RestaurantI
   );
 };
 
+// ─── Schedule Visual Preview ──────────────────────────────────────────────────
+const SchedulePreview = ({ schedule }: { schedule: ScheduleItem[] }) => {
+  const sorted = [...schedule]
+    .filter(s => s.title)
+    .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+
+  if (sorted.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground py-12 px-4">
+        <span className="text-4xl mb-3">📅</span>
+        <p className="text-sm font-medium">Ingen plan ännu</p>
+        <p className="text-xs mt-1">Lägg till aktiviteter så visas de här</p>
+      </div>
+    );
+  }
+
+  // Group by date
+  const byDate: Record<string, ScheduleItem[]> = {};
+  sorted.forEach(s => {
+    const key = s.date || "Inget datum";
+    if (!byDate[key]) byDate[key] = [];
+    byDate[key].push(s);
+  });
+
+  const formatDate = (dateStr: string) => {
+    if (dateStr === "Inget datum") return dateStr;
+    try {
+      return format(parseISO(dateStr), "EEEE d MMMM", { locale: sv });
+    } catch { return dateStr; }
+  };
+
+  return (
+    <div className="space-y-5 py-2">
+      {Object.entries(byDate).map(([date, items]) => (
+        <div key={date}>
+          {/* Day header */}
+          <div className="flex items-center gap-2 mb-3">
+            <div className="h-px flex-1 bg-border" />
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide px-2 capitalize">
+              {formatDate(date)}
+            </span>
+            <div className="h-px flex-1 bg-border" />
+          </div>
+          {/* Timeline items */}
+          <div className="relative pl-5">
+            {/* Vertical line */}
+            <div className="absolute left-2 top-2 bottom-2 w-px bg-border" />
+            <div className="space-y-3">
+              {items.map((item, idx) => (
+                <div key={item.id} className="relative flex items-start gap-3">
+                  {/* Dot */}
+                  <div className="absolute -left-3 mt-1.5 w-2.5 h-2.5 rounded-full bg-primary border-2 border-background ring-1 ring-primary/30 flex-shrink-0" />
+                  <div className="flex-1 bg-card border border-border rounded-lg px-3 py-2.5 shadow-sm">
+                    <div className="flex items-start justify-between gap-2">
+                      <span className="text-sm font-semibold leading-tight">{item.title}</span>
+                      {item.time && (
+                        <span className="text-xs text-muted-foreground font-mono bg-muted px-1.5 py-0.5 rounded flex-shrink-0">
+                          {item.time}
+                        </span>
+                      )}
+                    </div>
+                    {item.location && (
+                      <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                        <span>📍</span>{item.location}
+                      </p>
+                    )}
+                    {item.description && (
+                      <p className="text-xs text-muted-foreground mt-1">{item.description}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 // ─── Schedule Section ─────────────────────────────────────────────────────────
 const ScheduleSection = ({ schedule, onChange }: { schedule: ScheduleItem[]; onChange: (s: ScheduleItem[]) => void }) => {
   const update = (id: string, key: keyof ScheduleItem, val: string) =>
@@ -923,27 +1003,48 @@ const ScheduleSection = ({ schedule, onChange }: { schedule: ScheduleItem[]; onC
   });
 
   return (
-    <div className="space-y-4">
-      {sorted.map((s, idx) => (
-        <div key={s.id} className="border rounded-lg p-4 space-y-3 bg-muted/30">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-muted-foreground">Aktivitet {idx + 1}</span>
-            <Button variant="ghost" size="sm" onClick={() => onChange(schedule.filter(x => x.id !== s.id))}>
-              <Trash2 className="h-4 w-4 text-destructive" />
-            </Button>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="col-span-2 space-y-1"><Label className="text-xs">Titel</Label><Input value={s.title} onChange={e => update(s.id, "title", e.target.value)} placeholder="t.ex. Match Champions League Final" /></div>
-            <div className="space-y-1"><Label className="text-xs">Datum</Label><Input type="date" value={s.date} onChange={e => update(s.id, "date", e.target.value)} /></div>
-            <div className="space-y-1"><Label className="text-xs">Tid</Label><Input type="time" value={s.time} onChange={e => update(s.id, "time", e.target.value)} /></div>
-            <div className="col-span-2 space-y-1"><Label className="text-xs">Plats / Lokal</Label><Input value={s.location || ""} onChange={e => update(s.id, "location", e.target.value)} placeholder="t.ex. Stade de France" /></div>
-            <div className="col-span-2 space-y-1"><Label className="text-xs">Beskrivning</Label><Input value={s.description || ""} onChange={e => update(s.id, "description", e.target.value)} /></div>
-          </div>
+    <div className="grid grid-cols-2 gap-4 min-h-[400px]">
+      {/* Left: Form */}
+      <div className="space-y-3 overflow-y-auto pr-1" style={{ maxHeight: "520px" }}>
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Aktiviteter</span>
+          <Button variant="outline" size="sm" onClick={() => onChange([...schedule, emptyScheduleItem()])}>
+            <Plus className="h-3.5 w-3.5 mr-1" /> Lägg till
+          </Button>
         </div>
-      ))}
-      <Button variant="outline" size="sm" onClick={() => onChange([...schedule, emptyScheduleItem()])}>
-        <Plus className="h-4 w-4 mr-1" /> Lägg till aktivitet
-      </Button>
+        {sorted.map((s, idx) => (
+          <div key={s.id} className="border rounded-lg p-3 space-y-2.5 bg-muted/30">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium text-muted-foreground">Aktivitet {idx + 1}</span>
+              <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => onChange(schedule.filter(x => x.id !== s.id))}>
+                <Trash2 className="h-3.5 w-3.5 text-destructive" />
+              </Button>
+            </div>
+            <div className="space-y-1"><Label className="text-xs">Titel</Label><Input value={s.title} onChange={e => update(s.id, "title", e.target.value)} placeholder="t.ex. Champions League Final" /></div>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-1"><Label className="text-xs">Datum</Label><Input type="date" value={s.date} onChange={e => update(s.id, "date", e.target.value)} /></div>
+              <div className="space-y-1"><Label className="text-xs">Tid</Label><Input type="time" value={s.time} onChange={e => update(s.id, "time", e.target.value)} /></div>
+            </div>
+            <div className="space-y-1"><Label className="text-xs">Plats / Lokal</Label><Input value={s.location || ""} onChange={e => update(s.id, "location", e.target.value)} placeholder="t.ex. Stade de France" /></div>
+            <div className="space-y-1"><Label className="text-xs">Beskrivning</Label><Input value={s.description || ""} onChange={e => update(s.id, "description", e.target.value)} /></div>
+          </div>
+        ))}
+        {sorted.length === 0 && (
+          <div className="text-center py-8 text-muted-foreground text-sm border border-dashed rounded-lg">
+            Inga aktiviteter än
+          </div>
+        )}
+      </div>
+
+      {/* Right: Visual preview */}
+      <div className="border rounded-lg bg-muted/20 overflow-y-auto" style={{ maxHeight: "520px" }}>
+        <div className="sticky top-0 bg-muted/80 backdrop-blur-sm border-b px-3 py-2 z-10">
+          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Förhandsgranskning</span>
+        </div>
+        <div className="px-3 pb-3">
+          <SchedulePreview schedule={schedule} />
+        </div>
+      </div>
     </div>
   );
 };
@@ -1046,7 +1147,7 @@ export const TripFormDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[92vh] overflow-y-auto">
+      <DialogContent className="max-w-5xl max-h-[92vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-xl">{trip ? "Redigera resa" : "Skapa ny resa"}</DialogTitle>
         </DialogHeader>
