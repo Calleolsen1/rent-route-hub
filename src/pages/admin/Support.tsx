@@ -1,6 +1,5 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminInbox, AdminThread } from "@/hooks/useAdminInbox";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -8,12 +7,16 @@ import { Badge } from "@/components/ui/badge";
 import { MessageInput } from "@/components/inbox/MessageInput";
 import { MessageList } from "@/components/inbox/MessageList";
 import { AdminComposeDialog } from "@/components/admin/AdminComposeDialog";
-import { ArrowLeft, MessageSquarePlus, Search, MessageSquare } from "lucide-react";
+import { ArrowLeft, MessageSquarePlus, Search, MessageSquare, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { format, formatDistanceToNow, isToday } from "date-fns";
-import { sv } from "date-fns/locale";
+import { format, isToday } from "date-fns";
 import { cn } from "@/lib/utils";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel,
+  AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
+  AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const getRoleBadge = (role: string) => {
   if (role === "admin") return { label: "Admin", variant: "default" as const };
@@ -71,6 +74,7 @@ export default function AdminSupport() {
     loading,
     messagesLoading,
     sendMessage,
+    deleteThread,
     uploadImage,
     startConversation,
     searchQuery,
@@ -183,6 +187,32 @@ export default function AdminSupport() {
                   </div>
                   <p className="text-xs text-muted-foreground truncate">{selectedThread.other_user_email}</p>
                 </div>
+
+                {/* Delete button */}
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive shrink-0">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Radera konversation?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Alla meddelanden med {selectedThread.other_user_name} kommer att raderas permanent. Detta kan inte ångras.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                      <AlertDialogAction
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        onClick={() => deleteThread(selectedThread.thread_id)}
+                      >
+                        Radera
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
 
               {/* Messages */}
