@@ -23,12 +23,22 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
   Loader2,
   Send,
   CheckCircle2,
   Clock,
   FileText,
   History,
+  TrendingDown,
+  Wallet,
+  AlertCircle,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
@@ -50,6 +60,8 @@ type TripMember = {
   invoice_amount: number | null;
   invoice_currency: string;
   invoice_notes: string | null;
+  invoice_paid_at: string | null;
+  invoice_paid_amount: number | null;
   profiles?: Profile | null;
 };
 
@@ -57,6 +69,119 @@ type TripGroup = {
   id: string;
   name: string;
   trip_members: TripMember[];
+};
+
+// Dialog to register a received payment
+const MarkPaidDialog = ({
+  open,
+  onOpenChange,
+  member,
+  onSaved,
+}: {
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
+  member: TripMember;
+  onSaved: () => void;
+}) => {
+  const { toast } = useToast();
+  const [saving, setSaving] = useState(false);
+  const name = member.profiles
+    ? `${member.profiles.first_name ?? ""} ${member.profiles.last_name ?? ""}`.trim()
+    : "Deltagaren";
+  const [paidAmount, setPaidAmount] = useState(
+    member.invoice_paid_amount?.toString() ?? member.invoice_amount?.toString() ?? ""
+  );
+  const [paidDate, setPaidDate] = useState(
+    member.invoice_paid_at
+      ? format(new Date(member.invoice_paid_at), "yyyy-MM-dd")
+      : format(new Date(), "yyyy-MM-dd")
+  );
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from("trip_members")
+        .update({
+          invoice_paid_amount: paidAmount ? parseFloat(paidAmount) : null,
+          invoice_paid_at: paidDate ? new Date(paidDate).toISOString() : null,
+        })
+        .eq("id", member.id);
+
+      if (error) throw error;
+      toast({ title: `Betalning registrerad för ${name}` });
+      onSaved();
+      onOpenChange(false);
+    } catch (e: any) {
+      toast({ title: "Fel", description: e.message, variant: "destructive" });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleClear = async () => {
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from("trip_members")
+        .update({ invoice_paid_amount: null, invoice_paid_at: null })
+        .eq("id", member.id);
+
+      if (error) throw error;
+      toast({ title: "Betalning borttagen" });
+      onSaved();
+      onOpenChange(false);
+    } catch (e: any) {
+      toast({ title: "Fel", description: e.message, variant: "destructive" });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-sm">
+        <DialogHeader>
+          <DialogTitle>Registrera betalning – {name}</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 py-2">
+          <div className="space-y-1.5">
+            <Label>Betalt belopp ({member.invoice_currency})</Label>
+            <Input
+              type="number"
+              value={paidAmount}
+              onChange={(e) => setPaidAmount(e.target.value)}
+              placeholder={member.invoice_amount?.toString() ?? "0"}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label>Betalningsdatum</Label>
+            <Input
+              type="date"
+              value={paidDate}
+              onChange={(e) => setPaidDate(e.target.value)}
+            />
+          </div>
+        </div>
+        <DialogFooter className="flex-row justify-between">
+          {member.invoice_paid_at && (
+            <Button variant="ghost" size="sm" onClick={handleClear} disabled={saving}>
+              Rensa betalning
+            </Button>
+          )}
+          <div className="flex gap-2 ml-auto">
+            <Button variant="outline" onClick={() => onOpenChange(false)}>
+              Avbryt
+            </Button>
+            <Button onClick={handleSave} disabled={saving || !paidAmount} className="gap-2">
+              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
+              Spara
+            </Button>
+          </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
 };
 
 const InvoicingView = () => {
@@ -70,6 +195,7 @@ const InvoicingView = () => {
   const [currency, setCurrency] = useState("SEK");
   const [notes, setNotes] = useState("");
   const [sending, setSending] = useState(false);
+  const [markPaidMember, setMarkPaidMember] = useState<TripMember | null>(null);
 
   const { data: groups, isLoading } = useQuery({
     queryKey: ["organizer-groups-invoice", user?.id],
@@ -116,14 +242,23 @@ const InvoicingView = () => {
   const refresh = () =>
     queryClient.invalidateQueries({ queryKey: ["organizer-groups-invoice"] });
 
-  // Filtered members based on selected group
   const filteredGroups =
     selectedGroupId === "all"
       ? groups ?? []
       : (groups ?? []).filter((g) => g.id === selectedGroupId);
 
   const allMembers = filteredGroups.flatMap((g) => g.trip_members);
-  const displayedMembers = selectAll ? allMembers : allMembers.filter((m) => selectedMemberIds.includes(m.id));
+
+  // Financial summary
+  const totalInvoiced = allMembers
+    .filter((m) => m.invoice_sent_at && m.invoice_amount)
+    .reduce((acc, m) => acc + (m.invoice_amount ?? 0), 0);
+  const totalPaid = allMembers
+    .filter((m) => m.invoice_paid_at && m.invoice_paid_amount)
+    .reduce((acc, m) => acc + (m.invoice_paid_amount ?? 0), 0);
+  const totalOutstanding = totalInvoiced - totalPaid;
+
+  const currency0 = allMembers.find((m) => m.invoice_currency)?.invoice_currency ?? "SEK";
 
   const handleSend = async () => {
     if (!filteredGroups.length) return;
@@ -180,7 +315,6 @@ const InvoicingView = () => {
     );
   };
 
-  // Invoice history – all members with invoice_sent_at, sorted by date desc
   const invoiceHistory = (groups ?? [])
     .flatMap((g) =>
       g.trip_members
@@ -202,6 +336,58 @@ const InvoicingView = () => {
 
   return (
     <div className="container mx-auto px-4 pb-8 lg:px-8 space-y-8">
+
+      {/* Financial summary cards */}
+      {totalInvoiced > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <Card className="border border-border/60">
+            <CardContent className="p-5">
+              <div className="flex items-center gap-2 mb-1 text-muted-foreground text-sm">
+                <FileText className="h-4 w-4" />
+                Totalt fakturerat
+              </div>
+              <p className="text-2xl font-bold">
+                {totalInvoiced.toLocaleString("sv-SE")} {currency0}
+              </p>
+            </CardContent>
+          </Card>
+          <Card className="border border-border/60">
+            <CardContent className="p-5">
+              <div className="flex items-center gap-2 mb-1 text-muted-foreground text-sm">
+                <Wallet className="h-4 w-4" />
+                Totalt betalt
+              </div>
+              <p className="text-2xl font-bold text-foreground">
+                {totalPaid.toLocaleString("sv-SE")} {currency0}
+              </p>
+              <div className="mt-2 h-1.5 rounded-full bg-muted overflow-hidden">
+                <div
+                  className="h-full bg-primary rounded-full transition-all"
+                  style={{ width: `${totalInvoiced > 0 ? Math.min(100, (totalPaid / totalInvoiced) * 100) : 0}%` }}
+                />
+              </div>
+            </CardContent>
+          </Card>
+          <Card className={`border ${totalOutstanding > 0 ? "border-destructive/30 bg-destructive/5" : "border-border/60"}`}>
+            <CardContent className="p-5">
+              <div className="flex items-center gap-2 mb-1 text-muted-foreground text-sm">
+                {totalOutstanding > 0
+                  ? <AlertCircle className="h-4 w-4 text-destructive" />
+                  : <CheckCircle2 className="h-4 w-4" />}
+                Utestående
+              </div>
+              <p className={`text-2xl font-bold ${totalOutstanding > 0 ? "text-destructive" : ""}`}>
+                {totalOutstanding.toLocaleString("sv-SE")} {currency0}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {allMembers.filter((m) => m.invoice_sent_at && !m.invoice_paid_at).length} av{" "}
+                {allMembers.filter((m) => m.invoice_sent_at).length} har ännu inte betalat
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
       {/* Section A: Send invoice */}
       <Card className="border border-border/60">
         <CardHeader className="border-b">
@@ -211,7 +397,6 @@ const InvoicingView = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6 space-y-6">
-          {/* Group selector */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <Label>Välj grupp</Label>
@@ -229,8 +414,6 @@ const InvoicingView = () => {
                 </SelectContent>
               </Select>
             </div>
-
-            {/* Recipient selector */}
             <div className="space-y-1.5">
               <Label>Mottagare</Label>
               <Select
@@ -251,7 +434,6 @@ const InvoicingView = () => {
             </div>
           </div>
 
-          {/* Specific member selection */}
           {!selectAll && (
             <div className="border rounded-lg divide-y max-h-60 overflow-y-auto">
               {allMembers.map((m) => {
@@ -282,7 +464,6 @@ const InvoicingView = () => {
             </div>
           )}
 
-          {/* Amount + currency + message */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="sm:col-span-2 space-y-1.5">
               <Label>Belopp</Label>
@@ -307,45 +488,56 @@ const InvoicingView = () => {
               rows={3}
             />
           </div>
-
           <Button
             onClick={handleSend}
             disabled={sending || (!selectAll && selectedMemberIds.length === 0)}
             className="gap-2"
           >
-            {sending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Send className="h-4 w-4" />
-            )}
+            {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             Skicka faktura
           </Button>
         </CardContent>
       </Card>
 
-      {/* Section B: Invoice status */}
+      {/* Section B: Invoice + payment status */}
       <Card className="border border-border/60">
         <CardHeader className="border-b">
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="h-5 w-5" />
-            Fakturastatus
-          </CardTitle>
+          <div className="flex items-center justify-between gap-2">
+            <CardTitle className="flex items-center gap-2">
+              <TrendingDown className="h-5 w-5" />
+              Betalningsstatus
+            </CardTitle>
+            {(groups ?? []).length > 1 && (
+              <Select value={selectedGroupId} onValueChange={setSelectedGroupId}>
+                <SelectTrigger className="w-44 h-8 text-sm">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Alla grupper</SelectItem>
+                  {(groups ?? []).map((g) => (
+                    <SelectItem key={g.id} value={g.id}>{g.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          </div>
         </CardHeader>
         <CardContent className="p-0">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Namn</TableHead>
-                <TableHead>E-post</TableHead>
-                <TableHead>Belopp</TableHead>
-                <TableHead>Datum skickat</TableHead>
-                <TableHead className="text-right">Status</TableHead>
+                <TableHead>Fakturerat</TableHead>
+                <TableHead>Betalt</TableHead>
+                <TableHead>Återstår</TableHead>
+                <TableHead>Betalningsdatum</TableHead>
+                <TableHead className="text-right">Åtgärd</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {allMembers.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                  <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
                     Inga deltagare hittades.
                   </TableCell>
                 </TableRow>
@@ -354,33 +546,64 @@ const InvoicingView = () => {
                   const name = m.profiles
                     ? `${m.profiles.first_name ?? ""} ${m.profiles.last_name ?? ""}`.trim()
                     : "Okänd";
+                  const invoiced = m.invoice_amount ?? 0;
+                  const paid = m.invoice_paid_amount ?? 0;
+                  const remaining = invoiced - paid;
+                  const fullyPaid = m.invoice_paid_at && remaining <= 0;
+
                   return (
                     <TableRow key={m.id}>
-                      <TableCell className="font-medium text-sm">{name}</TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
-                        {m.profiles?.email ?? "–"}
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-semibold flex-shrink-0">
+                            {name.charAt(0) || "?"}
+                          </div>
+                          <div>
+                            <p className="font-medium text-sm">{name}</p>
+                            <p className="text-xs text-muted-foreground">{m.profiles?.email}</p>
+                          </div>
+                        </div>
                       </TableCell>
                       <TableCell className="text-sm">
-                        {m.invoice_amount
-                          ? `${m.invoice_amount} ${m.invoice_currency}`
+                        {m.invoice_sent_at
+                          ? `${invoiced.toLocaleString("sv-SE")} ${m.invoice_currency}`
+                          : <span className="text-muted-foreground flex items-center gap-1"><Clock className="h-3.5 w-3.5" />Ej fakturerad</span>}
+                      </TableCell>
+                      <TableCell className="text-sm font-medium">
+                        {m.invoice_paid_at
+                          ? `${paid.toLocaleString("sv-SE")} ${m.invoice_currency}`
                           : "–"}
                       </TableCell>
+                      <TableCell>
+                        {m.invoice_sent_at ? (
+                          fullyPaid ? (
+                            <span className="text-xs flex items-center gap-1 font-medium">
+                              <CheckCircle2 className="h-3.5 w-3.5" />
+                              Betalt
+                            </span>
+                          ) : (
+                            <span className="text-sm font-semibold text-destructive">
+                              {remaining.toLocaleString("sv-SE")} {m.invoice_currency}
+                            </span>
+                          )
+                        ) : (
+                          <span className="text-muted-foreground text-sm">–</span>
+                        )}
+                      </TableCell>
                       <TableCell className="text-sm text-muted-foreground">
-                        {m.invoice_sent_at
-                          ? format(new Date(m.invoice_sent_at), "d MMM yyyy", { locale: sv })
+                        {m.invoice_paid_at
+                          ? format(new Date(m.invoice_paid_at), "d MMM yyyy", { locale: sv })
                           : "–"}
                       </TableCell>
                       <TableCell className="text-right">
-                        {m.invoice_sent_at ? (
-                          <span className="text-xs flex items-center gap-1 justify-end text-foreground">
-                            <CheckCircle2 className="h-3.5 w-3.5" />
-                            Skickad
-                          </span>
-                        ) : (
-                          <span className="text-xs flex items-center gap-1 justify-end text-muted-foreground">
-                            <Clock className="h-3.5 w-3.5" />
-                            Ej skickad
-                          </span>
+                        {m.invoice_sent_at && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setMarkPaidMember(m)}
+                          >
+                            {m.invoice_paid_at ? "Redigera" : "Markera betald"}
+                          </Button>
                         )}
                       </TableCell>
                     </TableRow>
@@ -398,7 +621,7 @@ const InvoicingView = () => {
           <CardHeader className="border-b">
             <CardTitle className="flex items-center gap-2">
               <History className="h-5 w-5" />
-              Historik
+              Historik – skickade fakturor
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
@@ -408,7 +631,7 @@ const InvoicingView = () => {
                   <TableHead>Person</TableHead>
                   <TableHead>Grupp</TableHead>
                   <TableHead>Belopp</TableHead>
-                  <TableHead>Datum</TableHead>
+                  <TableHead>Datum skickat</TableHead>
                   <TableHead>Meddelande</TableHead>
                 </TableRow>
               </TableHeader>
@@ -441,6 +664,16 @@ const InvoicingView = () => {
             </Table>
           </CardContent>
         </Card>
+      )}
+
+      {/* Mark paid dialog */}
+      {markPaidMember && (
+        <MarkPaidDialog
+          open={true}
+          onOpenChange={(v) => !v && setMarkPaidMember(null)}
+          member={markPaidMember}
+          onSaved={refresh}
+        />
       )}
     </div>
   );
