@@ -78,10 +78,11 @@ export type PriceRow = {
 };
 
 // ─── Booking Checklist ────────────────────────────────────────────────────────
-// Each item: { done: boolean, visible_to_customer: boolean }
+// Each item: { done: boolean, visible_to_customer: boolean, included: boolean }
 export type ChecklistItem = {
   done: boolean;
   visible_to_customer: boolean;
+  included: boolean; // whether this section is part of this trip
 };
 
 export type BookingChecklist = {
@@ -89,6 +90,8 @@ export type BookingChecklist = {
   flights?: ChecklistItem;
   transfers?: ChecklistItem;
   tickets?: ChecklistItem;
+  restaurants?: ChecklistItem;
+  schedule?: ChecklistItem;
   payment?: ChecklistItem;
   [key: string]: ChecklistItem | undefined;
 };
@@ -295,11 +298,13 @@ const emptyHotel = (): HotelData => ({
   name: "", address: "", stars: "", checkin: "", checkout: "", confirmation: "", notes: ""
 });
 const defaultChecklist = (): BookingChecklist => ({
-  hotel: { done: false, visible_to_customer: true },
-  flights: { done: false, visible_to_customer: true },
-  transfers: { done: false, visible_to_customer: true },
-  tickets: { done: false, visible_to_customer: true },
-  payment: { done: false, visible_to_customer: false },
+  hotel: { done: false, visible_to_customer: true, included: true },
+  flights: { done: false, visible_to_customer: true, included: true },
+  transfers: { done: false, visible_to_customer: true, included: true },
+  tickets: { done: false, visible_to_customer: true, included: true },
+  restaurants: { done: false, visible_to_customer: true, included: false },
+  schedule: { done: false, visible_to_customer: true, included: false },
+  payment: { done: false, visible_to_customer: false, included: true },
 });
 
 const emptyScheduleItem = (): ScheduleItem => ({
@@ -481,7 +486,7 @@ const ChecklistSection = ({
             key={item.key}
             label={item.label}
             icon={item.icon}
-            item={checklist[item.key] || { done: false, visible_to_customer: true }}
+            item={checklist[item.key] || { done: false, visible_to_customer: true, included: true }}
             onChange={update => onChange(item.key, update)}
           />
         ))}
@@ -966,13 +971,16 @@ export const TripFormDialog = ({
   const setHotel = (updates: Partial<HotelData>) => set({ hotel: { ...form.hotel, ...updates } });
 
   const updateChecklist = (key: string, update: Partial<ChecklistItem>) => {
-    setForm(f => ({
-      ...f,
-      booking_checklist: {
-        ...f.booking_checklist,
-        [key]: { ...(f.booking_checklist[key] || { done: false, visible_to_customer: true }), ...update }
-      }
-    }));
+    setForm(f => {
+      const existing = f.booking_checklist[key] || { done: false, visible_to_customer: true, included: true };
+      return {
+        ...f,
+        booking_checklist: {
+          ...f.booking_checklist,
+          [key]: { ...existing, ...update } as ChecklistItem,
+        }
+      };
+    });
   };
 
   const effectiveTotal = form.price_total
@@ -1044,15 +1052,50 @@ export const TripFormDialog = ({
         </DialogHeader>
 
         <Tabs defaultValue="basics" className="mt-2">
-          <TabsList className="grid grid-cols-8 w-full">
+          <TabsList className="flex flex-wrap gap-1 h-auto w-full justify-start bg-muted p-1 rounded-lg">
             <TabsTrigger value="basics" className="gap-1 text-xs"><Info className="h-3 w-3" />Grundinfo</TabsTrigger>
-            <TabsTrigger value="hotel" className="gap-1 text-xs"><Hotel className="h-3 w-3" />Hotell</TabsTrigger>
-            <TabsTrigger value="flights" className="gap-1 text-xs"><Plane className="h-3 w-3" />Flyg</TabsTrigger>
-            <TabsTrigger value="transfers" className="gap-1 text-xs"><Car className="h-3 w-3" />Transfer</TabsTrigger>
-            <TabsTrigger value="tickets" className="gap-1 text-xs"><Ticket className="h-3 w-3" />Biljetter</TabsTrigger>
-            <TabsTrigger value="restaurants" className="gap-1 text-xs"><span className="text-xs">🍽</span>Restauranger</TabsTrigger>
-            <TabsTrigger value="schedule" className="gap-1 text-xs"><span className="text-xs">📅</span>Schema</TabsTrigger>
-            <TabsTrigger value="pricing" className="gap-1 text-xs"><DollarSign className="h-3 w-3" />Betalning</TabsTrigger>
+            {form.booking_checklist.hotel?.included !== false && (
+              <TabsTrigger value="hotel" className="gap-1 text-xs relative">
+                <Hotel className="h-3 w-3" />Hotell
+                {form.booking_checklist.hotel?.done && <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-primary rounded-full" />}
+              </TabsTrigger>
+            )}
+            {form.booking_checklist.flights?.included !== false && (
+              <TabsTrigger value="flights" className="gap-1 text-xs relative">
+                <Plane className="h-3 w-3" />Flyg
+                {form.booking_checklist.flights?.done && <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-primary rounded-full" />}
+              </TabsTrigger>
+            )}
+            {form.booking_checklist.transfers?.included !== false && (
+              <TabsTrigger value="transfers" className="gap-1 text-xs relative">
+                <Car className="h-3 w-3" />Transfer
+                {form.booking_checklist.transfers?.done && <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-primary rounded-full" />}
+              </TabsTrigger>
+            )}
+            {form.booking_checklist.tickets?.included !== false && (
+              <TabsTrigger value="tickets" className="gap-1 text-xs relative">
+                <Ticket className="h-3 w-3" />Biljetter
+                {form.booking_checklist.tickets?.done && <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-primary rounded-full" />}
+              </TabsTrigger>
+            )}
+            {form.booking_checklist.restaurants?.included && (
+              <TabsTrigger value="restaurants" className="gap-1 text-xs relative">
+                <span className="text-xs">🍽</span>Restauranger
+                {form.booking_checklist.restaurants?.done && <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-primary rounded-full" />}
+              </TabsTrigger>
+            )}
+            {form.booking_checklist.schedule?.included && (
+              <TabsTrigger value="schedule" className="gap-1 text-xs relative">
+                <span className="text-xs">📅</span>Schema
+                {form.booking_checklist.schedule?.done && <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-primary rounded-full" />}
+              </TabsTrigger>
+            )}
+            {form.booking_checklist.payment?.included !== false && (
+              <TabsTrigger value="pricing" className="gap-1 text-xs relative">
+                <DollarSign className="h-3 w-3" />Betalning
+                {form.booking_checklist.payment?.done && <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-primary rounded-full" />}
+              </TabsTrigger>
+            )}
           </TabsList>
 
           {/* ── Grundinfo ── */}
@@ -1100,6 +1143,81 @@ export const TripFormDialog = ({
             <div className="space-y-1">
               <Label className="text-xs">Interna anteckningar</Label>
               <Textarea rows={2} value={form.notes} onChange={e => set({ notes: e.target.value })} placeholder="Visas ej för resenären" />
+            </div>
+
+            {/* Section toggles */}
+            <div className="border rounded-lg p-4 space-y-3">
+              <h4 className="font-medium text-sm">Resans innehåll – välj vad som ingår</h4>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { key: "hotel", label: "Hotell", icon: <Hotel className="h-4 w-4" /> },
+                  { key: "flights", label: "Flyg", icon: <Plane className="h-4 w-4" /> },
+                  { key: "transfers", label: "Transfer", icon: <Car className="h-4 w-4" /> },
+                  { key: "tickets", label: "Biljetter", icon: <Ticket className="h-4 w-4" /> },
+                  { key: "restaurants", label: "Restauranger", icon: <span>🍽</span> },
+                  { key: "schedule", label: "Schema", icon: <span>📅</span> },
+                  { key: "payment", label: "Betalning", icon: <DollarSign className="h-4 w-4" /> },
+                ].map(({ key, label, icon }) => {
+                  const item = form.booking_checklist[key];
+                  const isIncluded = item?.included !== false;
+                  return (
+                    <div key={key} className={cn(
+                      "flex items-center justify-between p-2.5 rounded-lg border transition-colors",
+                      isIncluded ? "bg-primary/5 border-primary/30" : "bg-muted/30 border-border"
+                    )}>
+                      <div className="flex items-center gap-2 text-sm">
+                        <span className="text-muted-foreground">{icon}</span>
+                        <span className={cn("font-medium", !isIncluded && "text-muted-foreground")}>{label}</span>
+                      </div>
+                      <Switch
+                        checked={isIncluded}
+                        onCheckedChange={v => updateChecklist(key, { included: v })}
+                        className="scale-75"
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Per-section checklist */}
+            <div className="border rounded-lg p-4 space-y-2">
+              <h4 className="font-medium text-sm">Checklista – markera vad som är klart</h4>
+              <div className="space-y-1.5">
+                {[
+                  { key: "hotel", label: "Hotell", icon: Hotel },
+                  { key: "flights", label: "Flyg", icon: Plane },
+                  { key: "transfers", label: "Transfer", icon: Car },
+                  { key: "tickets", label: "Biljetter", icon: Ticket },
+                  { key: "restaurants", label: "Restauranger" },
+                  { key: "schedule", label: "Schema" },
+                  { key: "payment", label: "Betalning", icon: DollarSign },
+                ].filter(({ key }) => form.booking_checklist[key]?.included !== false && (
+                  key !== "restaurants" && key !== "schedule"
+                    ? true
+                    : form.booking_checklist[key]?.included
+                )).map(({ key, label, icon: Icon }) => {
+                  const item = form.booking_checklist[key];
+                  const done = item?.done ?? false;
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => updateChecklist(key, { done: !done })}
+                      className={cn(
+                        "w-full flex items-center gap-3 px-3 py-2 rounded-lg border text-left transition-colors",
+                        done ? "bg-primary/5 border-primary/30" : "bg-muted/30 border-border hover:bg-muted/50"
+                      )}
+                    >
+                      {done
+                        ? <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0" />
+                        : <Circle className="h-4 w-4 text-muted-foreground flex-shrink-0" />}
+                      <span className={cn("text-sm font-medium", done && "line-through text-muted-foreground")}>{label}</span>
+                      {done && <span className="text-xs text-primary font-medium ml-auto">Klart ✓</span>}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </TabsContent>
 
