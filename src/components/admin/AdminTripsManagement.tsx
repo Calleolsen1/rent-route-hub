@@ -12,7 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import {
   Loader2, Plus, Pencil, Trash2, Plane, Search, Users,
   Send, FileText, Hotel, Car, Ticket, CreditCard, Calendar,
-  ChevronRight
+  ChevronRight, CheckCircle2, Circle, Bell
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format, parseISO, isFuture, isPast } from "date-fns";
@@ -188,6 +188,8 @@ const SendInvoiceDialog = ({
 };
 
 // ─── Trip Card ────────────────────────────────────────────────────────────────
+const CHECKLIST_KEYS = ["flights", "hotel", "transfers", "tickets"];
+
 const TripCard = ({ trip, onEdit, onDelete, onInvoice }: {
   trip: Trip; onEdit: () => void; onDelete: () => void; onInvoice: () => void;
 }) => {
@@ -204,6 +206,11 @@ const TripCard = ({ trip, onEdit, onDelete, onInvoice }: {
   const flights = Array.isArray(trip.flights) ? trip.flights : [];
   const transfers = Array.isArray(trip.transfers) ? trip.transfers : [];
   const tickets = Array.isArray(trip.tickets) ? trip.tickets : [];
+
+  // Checklist progress
+  const checklist = trip.booking_checklist || {};
+  const doneCount = CHECKLIST_KEYS.filter(k => (checklist as any)[k]?.done).length;
+  const allDone = doneCount === CHECKLIST_KEYS.length;
 
   return (
     <Card className="border border-border/60 hover:border-border transition-colors">
@@ -270,11 +277,33 @@ const TripCard = ({ trip, onEdit, onDelete, onInvoice }: {
                     </span>
                   </div>
                 )}
+                {trip.payment_status === "paid" && (
+                  <div className="flex items-center gap-1 text-xs text-primary font-medium">
+                    <CheckCircle2 className="h-3 w-3" /> Betald
+                  </div>
+                )}
                 {trip.invoice_sent_at && (
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
                     <Send className="h-3 w-3" /> Faktura skickad {format(parseISO(trip.invoice_sent_at), "d MMM", { locale: sv })}
                   </div>
                 )}
+                {trip.customer_notified_at && (
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Bell className="h-3 w-3" /> Kund notifierad {format(parseISO(trip.customer_notified_at), "d MMM", { locale: sv })}
+                  </div>
+                )}
+              </div>
+
+              {/* Checklist progress bar */}
+              <div className="mt-2 flex items-center gap-2">
+                <div className="flex gap-1">
+                  {CHECKLIST_KEYS.map(k => (
+                    <div key={k} className={`w-4 h-1.5 rounded-full ${(checklist as any)[k]?.done ? "bg-primary" : "bg-muted"}`} />
+                  ))}
+                </div>
+                <span className="text-xs text-muted-foreground">
+                  {allDone ? "Allt klart ✓" : `${doneCount}/${CHECKLIST_KEYS.length} bokat`}
+                </span>
               </div>
             </div>
           </div>

@@ -1279,8 +1279,10 @@ export type Database = {
       }
       trips: {
         Row: {
+          booking_checklist: Json | null
           created_at: string
           created_by_admin_id: string | null
+          customer_notified_at: string | null
           destination: string | null
           end_date: string | null
           flights: Json | null
@@ -1298,6 +1300,8 @@ export type Database = {
           invoice_number: string | null
           invoice_sent_at: string | null
           notes: string | null
+          payment_confirmed_at: string | null
+          payment_confirmed_by_admin_id: string | null
           payment_due_date: string | null
           payment_method: string | null
           payment_status: string | null
@@ -1313,8 +1317,10 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          booking_checklist?: Json | null
           created_at?: string
           created_by_admin_id?: string | null
+          customer_notified_at?: string | null
           destination?: string | null
           end_date?: string | null
           flights?: Json | null
@@ -1332,6 +1338,8 @@ export type Database = {
           invoice_number?: string | null
           invoice_sent_at?: string | null
           notes?: string | null
+          payment_confirmed_at?: string | null
+          payment_confirmed_by_admin_id?: string | null
           payment_due_date?: string | null
           payment_method?: string | null
           payment_status?: string | null
@@ -1347,8 +1355,10 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          booking_checklist?: Json | null
           created_at?: string
           created_by_admin_id?: string | null
+          customer_notified_at?: string | null
           destination?: string | null
           end_date?: string | null
           flights?: Json | null
@@ -1366,6 +1376,8 @@ export type Database = {
           invoice_number?: string | null
           invoice_sent_at?: string | null
           notes?: string | null
+          payment_confirmed_at?: string | null
+          payment_confirmed_by_admin_id?: string | null
           payment_due_date?: string | null
           payment_method?: string | null
           payment_status?: string | null
