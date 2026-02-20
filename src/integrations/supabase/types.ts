@@ -1187,6 +1187,90 @@ export type Database = {
           },
         ]
       }
+      trip_groups: {
+        Row: {
+          created_at: string
+          created_by_admin_id: string | null
+          description: string | null
+          id: string
+          name: string
+          organizer_user_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by_admin_id?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          organizer_user_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by_admin_id?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          organizer_user_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      trip_members: {
+        Row: {
+          created_at: string
+          group_id: string
+          id: string
+          invoice_amount: number | null
+          invoice_currency: string
+          invoice_notes: string | null
+          invoice_sent_at: string | null
+          status: string
+          trip_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          group_id: string
+          id?: string
+          invoice_amount?: number | null
+          invoice_currency?: string
+          invoice_notes?: string | null
+          invoice_sent_at?: string | null
+          status?: string
+          trip_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          group_id?: string
+          id?: string
+          invoice_amount?: number | null
+          invoice_currency?: string
+          invoice_notes?: string | null
+          invoice_sent_at?: string | null
+          status?: string
+          trip_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "trip_groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_members_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       trips: {
         Row: {
           created_at: string
@@ -1194,6 +1278,7 @@ export type Database = {
           destination: string | null
           end_date: string | null
           flights: Json | null
+          group_id: string | null
           guest_user_id: string
           hotel_address: string | null
           hotel_checkin: string | null
@@ -1218,6 +1303,7 @@ export type Database = {
           destination?: string | null
           end_date?: string | null
           flights?: Json | null
+          group_id?: string | null
           guest_user_id: string
           hotel_address?: string | null
           hotel_checkin?: string | null
@@ -1242,6 +1328,7 @@ export type Database = {
           destination?: string | null
           end_date?: string | null
           flights?: Json | null
+          group_id?: string | null
           guest_user_id?: string
           hotel_address?: string | null
           hotel_checkin?: string | null
@@ -1260,7 +1347,15 @@ export type Database = {
           transfers?: Json | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "trips_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "trip_groups"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {

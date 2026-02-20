@@ -9,11 +9,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Plus, Pencil, Trash2, Plane, Search } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Loader2, Plus, Pencil, Trash2, Plane, Search, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
 import { useAuth } from "@/hooks/useAuth";
+import TripGroupsManagement from "@/components/admin/TripGroupsManagement";
 
 type Trip = {
   id: string;
@@ -285,7 +287,7 @@ const TripFormDialog = ({
   );
 };
 
-const AdminTripsManagement = () => {
+const IndividualTripsTab = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
@@ -397,6 +399,27 @@ const AdminTripsManagement = () => {
         onSaved={onSaved}
       />
     </div>
+  );
+};
+
+const AdminTripsManagement = () => {
+  return (
+    <Tabs defaultValue="individual">
+      <TabsList className="mb-6">
+        <TabsTrigger value="individual" className="gap-2">
+          <Plane className="h-4 w-4" /> Individuella resor
+        </TabsTrigger>
+        <TabsTrigger value="groups" className="gap-2">
+          <Users className="h-4 w-4" /> Gruppresor
+        </TabsTrigger>
+      </TabsList>
+      <TabsContent value="individual">
+        <IndividualTripsTab />
+      </TabsContent>
+      <TabsContent value="groups">
+        <TripGroupsManagement />
+      </TabsContent>
+    </Tabs>
   );
 };
 
