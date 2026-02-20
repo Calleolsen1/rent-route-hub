@@ -17,9 +17,21 @@ export default function MittKaisenResetPassword() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Supabase handles the magic link token from the URL hash automatically
+    // Handle both invite tokens and password recovery tokens from URL hash
+    const hash = window.location.hash;
+    const params = new URLSearchParams(hash.replace("#", "?"));
+    const accessToken = params.get("access_token");
+    const refreshToken = params.get("refresh_token");
+
+    if (accessToken && refreshToken) {
+      // Set session from URL tokens (works for both invite and recovery links)
+      supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken }).then(() => {
+        setSessionReady(true);
+      });
+    }
+
     const { data: listener } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") {
+      if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN" || event === "USER_UPDATED") {
         setSessionReady(true);
       }
     });
