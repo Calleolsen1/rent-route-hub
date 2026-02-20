@@ -4,76 +4,81 @@ import { ArrowRight, Check } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import sportsImage from "@/assets/kaisen-sports.jpg";
+import f1Image from "@/assets/sport-f1.jpg";
+import fotbollImage from "@/assets/sport-fotboll.jpg";
+import ishockeyImage from "@/assets/sport-ishockey.jpg";
+import tennisImage from "@/assets/sport-tennis.jpg";
+import golfImage from "@/assets/sport-golf.jpg";
 
 const sports = [
   {
     id: "f1",
-    icon: "🏎️",
+    emoji: "🏎️",
     title: "Formel 1",
+    image: f1Image,
     description:
-      "Upplev det ultimata i motorsport. Vi arrangerar exklusiva F1-paket till Monaco Grand Prix, Silverstone, Spa och fler av världens mest ikoniska banor.",
+      "Känn adrenalinet när racerna dundrar förbi. Vi arrangerar F1-resor till Monaco, Silverstone, Spa och fler ikoniska banor — med bra platser, boende och all logistik ordnad.",
     features: [
-      "Paddock Club & Hospitality-paket",
-      "Hotell i premiumlägen nära banan",
-      "Privata transferer & helikoptertransfer",
-      "Exklusiva team-meet & greet möjligheter",
-      "Tillgång till träningar, kval och race",
+      "Biljetter till träningar, kval och race",
+      "Hotell nära banan med bra läge",
+      "Transferer & praktisk logistik",
+      "Paket för enskilda och grupper",
     ],
   },
   {
     id: "fotboll",
-    icon: "⚽",
+    emoji: "⚽",
     title: "Fotboll",
+    image: fotbollImage,
     description:
-      "Från Champions League-finalen till Premier League-derbyn — vi tar dig till de mest eftertraktade matcherna i världen med biljetter och upplevelsepaket i toppklass.",
+      "Från Premier League-derbyn till Champions League — vi fixar biljetter och resor till de matcher du drömt om att se live. Enkelt, smidigt och med bra service.",
     features: [
-      "Champions League & Europa League",
       "Premier League, La Liga & Bundesliga",
-      "VIP-lounger & executive boxes",
+      "Champions League & Europa League",
       "Hotelarrangemang nära arenan",
-      "Lokala guider & insiderupplevelser",
+      "Paket för kompisgäng och familjer",
     ],
   },
   {
     id: "ishockey",
-    icon: "🏒",
+    emoji: "🏒",
     title: "Ishockey",
+    image: ishockeyImage,
     description:
-      "Scandinavians hemmasport på sin mest intensiva nivå. Vi arrangerar resor till NHL-matcher i Nordamerika och stora europeiska turneringar.",
+      "Inget slår att se ishockey live i en fullpackad arena. Vi ordnar resor till NHL-matcher i Nordamerika och stora europeiska turneringar.",
     features: [
       "NHL-matcher i Toronto, New York & Boston",
       "Stanley Cup Playoffs-paket",
       "IIHF VM och Euro Hockey Tour",
-      "Rinkside-platser & lounge-access",
       "Hotelarrangemang & transfers",
     ],
   },
   {
     id: "tennis",
-    icon: "🎾",
+    emoji: "🎾",
     title: "Tennis",
+    image: tennisImage,
     description:
-      "Wimbledon på centerbanan, Roland Garros i solskenet och US Open på natten — vi skapar tennisupplevelser du sent glömmer.",
+      "Upplev Wimbledon på centerbanan, Roland Garros i solskenet eller US Open under New Yorks stjärnhimmel. Vi ordnar biljetter och en komplett resa.",
     features: [
-      "Wimbledon Debenture-biljetter",
-      "Roland Garros Court Philippe-Chatrier",
-      "US Open & Australian Open",
-      "Privata träningssessioner med proffs",
-      "Exklusiva hospitality-tält & dining",
+      "Wimbledon, Roland Garros & US Open",
+      "Australian Open-paket",
+      "Bra sitplatser med fri sikt",
+      "Resa för grupper och par",
     ],
   },
   {
     id: "golf",
-    icon: "⛳",
+    emoji: "⛳",
     title: "Golf",
+    image: golfImage,
     description:
-      "Spela på The Old Course i St Andrews, Pebble Beach längs Stilla havet eller Augusta National — vi öppnar dörrar som annars förblir stängda.",
+      "Spela på världens finaste golfbanor eller se de bästa proffsen tävla live. Vi ordnar golfresorna — från St Andrews till Pebble Beach — för allt från nybörjare till hängiven golfare.",
     features: [
       "St Andrews, Carnoustie & Turnberry",
       "Pebble Beach & Augusta National",
       "The Masters & The Open Championship",
-      "Privata golfcaddie & coaching",
-      "Resa för grupper 4–20 spelare",
+      "Golfresa för grupper 4–20 spelare",
     ],
   },
 ];
@@ -94,7 +99,7 @@ export default function Sportresor() {
             Tjänster — Sportresor
           </p>
           <h1 className="font-display text-4xl md:text-6xl text-white">
-            Elite <em className="italic font-light text-gold-light">Sportupplevelser</em>
+            Resor för <em className="italic font-light text-gold-light">Sportälskare</em>
           </h1>
         </div>
       </section>
@@ -103,51 +108,70 @@ export default function Sportresor() {
       <section className="bg-cream py-16">
         <div className="container mx-auto px-4 max-w-3xl text-center">
           <p className="font-display text-2xl md:text-3xl text-foreground italic font-light leading-relaxed">
-            "Vi är resebyrån för sportälskare som inte nöjer sig med läktarplats nummer 47."
+            "Oavsett om det är din första F1-resa eller din tjugonde — vi ser till att du har en bra upplevelse."
           </p>
           <div className="w-8 h-px bg-primary mx-auto mt-8" />
         </div>
       </section>
 
-      {/* Sport Categories */}
+      {/* Sport Sections */}
       <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {sports.map((sport) => (
-              <div
-                key={sport.id}
-                id={sport.id}
-                className="border border-border p-8 hover:border-primary transition-colors group"
-              >
-                <div className="text-4xl mb-4">{sport.icon}</div>
-                <h2 className="font-display text-2xl text-foreground mb-2">{sport.title}</h2>
-                <div className="w-8 h-px bg-primary mb-4" />
-                <p className="text-muted-foreground text-sm leading-relaxed mb-6">
+        <div className="container mx-auto px-4 space-y-24">
+          {sports.map((sport, index) => (
+            <div
+              key={sport.id}
+              id={sport.id}
+              className={`grid md:grid-cols-2 gap-10 lg:gap-16 items-center ${
+                index % 2 === 1 ? "md:[&>*:first-child]:order-2" : ""
+              }`}
+            >
+              {/* Image */}
+              <div className="aspect-[4/3] overflow-hidden">
+                <img
+                  src={sport.image}
+                  alt={sport.title}
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                />
+              </div>
+
+              {/* Content */}
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-3xl">{sport.emoji}</span>
+                  <span className="text-[10px] tracking-[0.25em] uppercase bg-accent text-accent-foreground px-3 py-1 font-sans">
+                    {sport.title}
+                  </span>
+                </div>
+                <h2 className="font-display text-3xl md:text-4xl text-foreground mb-2">
+                  {sport.title}-resor
+                </h2>
+                <div className="w-10 h-px bg-primary mb-6" />
+                <p className="text-muted-foreground leading-relaxed mb-8 text-base">
                   {sport.description}
                 </p>
-                <ul className="space-y-2 mb-8">
+                <ul className="space-y-3 mb-10">
                   {sport.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-sm">
-                      <Check className="h-3.5 w-3.5 text-primary mt-0.5 flex-shrink-0" />
-                      <span className="text-foreground/75">{f}</span>
+                    <li key={f} className="flex items-start gap-3 text-sm">
+                      <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                      <span className="text-foreground/80">{f}</span>
                     </li>
                   ))}
                 </ul>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </section>
 
       {/* CTA */}
       <section className="bg-navy py-20">
         <div className="container mx-auto px-4 text-center">
-          <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Boka nu</p>
+          <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Boka din sportresa</p>
           <h2 className="font-display text-3xl md:text-5xl text-white mb-6">
-            Redo att se din sport live?
+            Vilken sport vill du uppleva live?
           </h2>
           <p className="text-white/60 max-w-lg mx-auto mb-10 leading-relaxed">
-            Kontakta oss så skapar vi ett skräddarsytt sportrespaket för dig eller din grupp.
+            Hör av dig till oss och berätta vilken match eller tävling du vill se — så fixar vi resten.
           </p>
           <Link to="/contact">
             <Button
