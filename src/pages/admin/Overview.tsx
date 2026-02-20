@@ -40,7 +40,7 @@ export default function Overview() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("trips")
-        .select("id, title, destination, start_date, status, guest_user_id, profiles:profiles(first_name, last_name)")
+        .select("id, title, destination, start_date, status, guest_user_id")
         .in("status", ["upcoming", "ongoing"])
         .order("start_date", { ascending: true })
         .limit(5);
@@ -56,7 +56,7 @@ export default function Overview() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("trips")
-        .select("id, title, destination, invoice_sent_at, price_total, price_currency, payment_status, guest_user_id, profiles:profiles(first_name, last_name, email)")
+        .select("id, title, destination, invoice_sent_at, price_total, price_currency, payment_status, guest_user_id")
         .not("invoice_sent_at", "is", null)
         .order("invoice_sent_at", { ascending: false })
         .limit(6);
@@ -170,7 +170,6 @@ export default function Overview() {
               Array(4).fill(0).map((_, i) => <Skeleton key={i} className="h-12 w-full" />)
             ) : upcomingTrips && upcomingTrips.length > 0 ? (
               upcomingTrips.map((trip) => {
-                const profile = Array.isArray(trip.profiles) ? trip.profiles[0] : trip.profiles;
                 return (
                   <div
                     key={trip.id}
@@ -180,8 +179,7 @@ export default function Overview() {
                     <div>
                       <p className="text-sm font-medium">{trip.title}</p>
                       <p className="text-xs text-muted-foreground">
-                        {profile ? `${profile.first_name ?? ""} ${profile.last_name ?? ""}`.trim() : "–"}
-                        {trip.destination ? ` · ${trip.destination}` : ""}
+                        {trip.destination ?? "–"}
                       </p>
                     </div>
                     <div className="text-right">
@@ -215,7 +213,6 @@ export default function Overview() {
               Array(4).fill(0).map((_, i) => <Skeleton key={i} className="h-12 w-full" />)
             ) : recentInvoices && recentInvoices.length > 0 ? (
               recentInvoices.map((trip) => {
-                const profile = Array.isArray(trip.profiles) ? trip.profiles[0] : trip.profiles;
                 const isPaid = trip.payment_status === "paid";
                 return (
                   <div
@@ -224,10 +221,8 @@ export default function Overview() {
                     onClick={() => navigate("/admin/invoices")}
                   >
                     <div>
-                      <p className="text-sm font-medium">
-                        {profile ? `${profile.first_name ?? ""} ${profile.last_name ?? ""}`.trim() : "–"}
-                      </p>
-                      <p className="text-xs text-muted-foreground">{trip.title}{trip.destination ? ` · ${trip.destination}` : ""}</p>
+                      <p className="text-sm font-medium">{trip.title}</p>
+                      <p className="text-xs text-muted-foreground">{trip.destination ?? "–"}</p>
                     </div>
                     <div className="text-right flex items-center gap-2">
                       <span className="text-sm font-medium">
