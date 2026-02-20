@@ -7,30 +7,30 @@ import heroImage from "@/assets/kaisen-hero.jpg";
 import founderImage from "@/assets/about-founder.jpg";
 
 const values = [
-  {
-    title: "Personlig Service",
-    desc: "Vi tror att den bästa reseupplevelsen börjar med ett genuint samtal. Ingen mall, ingen automatisering — bara människor som bryr sig om din resa.",
-  },
-  {
-    title: "Expertis i Världsklass",
-    desc: "Vårt team har djup erfarenhet inom alla resekategorier — från sportevent och konferenser till lyxresor och gruppresor i alla storlekar.",
-  },
-  {
-    title: "Pålitlighet",
-    desc: "Med 25+ år i branschen och hundratals nöjda kunder vet vi vad som krävs för att leverera — varje gång, utan undantag.",
-  },
-  {
-    title: "Diskretion",
-    desc: "Vi hanterar alla kundrelationer med fullständig konfidentialitet och professionell integritet — oavsett uppdragets storlek.",
-  },
-];
+{
+  title: "Personlig Service",
+  desc: "Vi tror att den bästa reseupplevelsen börjar med ett genuint samtal. Ingen mall, ingen automatisering — bara människor som bryr sig om din resa."
+},
+{
+  title: "Expertis i Världsklass",
+  desc: "Vårt team har djup erfarenhet inom alla resekategorier — från sportevent och konferenser till lyxresor och gruppresor i alla storlekar."
+},
+{
+  title: "Pålitlighet",
+  desc: "Med 25+ år i branschen och hundratals nöjda kunder vet vi vad som krävs för att leverera — varje gång, utan undantag."
+},
+{
+  title: "Diskretion",
+  desc: "Vi hanterar alla kundrelationer med fullständig konfidentialitet och professionell integritet — oavsett uppdragets storlek."
+}];
+
 
 const expertise = [
-  { area: "Gruppresor & Logistik", years: "25+ år" },
-  { area: "Sportevent & VIP-biljetter", years: "20+ år" },
-  { area: "Konferenser & Incentive", years: "25+ år" },
-  { area: "Affärs- & Privatresor", years: "15+ år" },
-];
+{ area: "Gruppresor & Logistik", years: "25+ år" },
+{ area: "Sportevent & VIP-biljetter", years: "20+ år" },
+{ area: "Konferenser & Incentive", years: "25+ år" },
+{ area: "Affärs- & Privatresor", years: "15+ år" }];
+
 
 export default function About() {
   return (
@@ -63,8 +63,8 @@ export default function About() {
               </h2>
               <div className="w-10 h-px bg-primary mb-8" />
               <div className="space-y-5 text-muted-foreground leading-relaxed">
-                <p>
-                  Kaisen Travel Group grundades av en erfaren reseproffs med över 25 års erfarenhet i branschen. Vi har alltid trott att resor ska kännas personliga — inte som en produkt ur en hylla.
+                <p>Kaisen Travel Group grundades av ett erfaret reseproffs med över 25 års erfarenhet i branschen. Vi har alltid trott att resor ska kännas personliga och inte som en produkt ur en hylla.
+
                 </p>
                 <p>
                   Under åren har vi arrangerat gruppresor för Svenska Fotbollsförbundet, stora börsnoterade bolag och internationella organisationer. Uppdragen har varierat från VM-resor och elitsportsevent till storskaliga konferenser och incentiveresor runt om i världen.
@@ -93,16 +93,16 @@ export default function About() {
           <p className="text-center text-xs tracking-[0.3em] text-gold uppercase mb-10 font-sans">Tidigare uppdrag & kunder</p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
             {[
-              { label: "Svenska Fotbollsförbundet", detail: "VM & EM-gruppresor" },
-              { label: "Stora Börsbolag", detail: "Incentive & konferenser" },
-              { label: "Internationella Organisationer", detail: "Storskaliga event" },
-              { label: "Privata Sällskap", detail: "Skräddarsydda resor" },
-            ].map((ref) => (
-              <div key={ref.label} className="border-t border-white/10 pt-6">
+            { label: "Svenska Fotbollsförbundet", detail: "VM & EM-gruppresor" },
+            { label: "Stora Börsbolag", detail: "Incentive & konferenser" },
+            { label: "Internationella Organisationer", detail: "Storskaliga event" },
+            { label: "Privata Sällskap", detail: "Skräddarsydda resor" }].
+            map((ref) =>
+            <div key={ref.label} className="border-t border-white/10 pt-6">
                 <h3 className="font-display text-lg text-white mb-2">{ref.label}</h3>
                 <p className="text-white/40 text-xs tracking-[0.15em] uppercase font-sans">{ref.detail}</p>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </section>
@@ -117,13 +117,13 @@ export default function About() {
             </h2>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {values.map((v) => (
-              <div key={v.title} className="border-t border-border pt-6">
+            {values.map((v) =>
+            <div key={v.title} className="border-t border-border pt-6">
                 <h3 className="font-display text-xl text-foreground mb-3">{v.title}</h3>
                 <div className="w-6 h-px bg-primary mb-4" />
                 <p className="text-muted-foreground text-sm leading-relaxed">{v.desc}</p>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </section>
@@ -146,17 +146,17 @@ export default function About() {
               </p>
             </div>
             <div className="space-y-0 border border-border">
-              {expertise.map((e, i) => (
-                <div
-                  key={e.area}
-                  className={`flex items-center justify-between p-6 hover:bg-accent/30 transition-colors ${
-                    i < expertise.length - 1 ? "border-b border-border" : ""
-                  }`}
-                >
+              {expertise.map((e, i) =>
+              <div
+                key={e.area}
+                className={`flex items-center justify-between p-6 hover:bg-accent/30 transition-colors ${
+                i < expertise.length - 1 ? "border-b border-border" : ""}`
+                }>
+
                   <span className="font-display text-lg text-foreground">{e.area}</span>
                   <span className="text-primary text-sm font-sans tracking-wider">{e.years}</span>
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </div>
@@ -181,6 +181,6 @@ export default function About() {
       </section>
 
       <Footer />
-    </div>
-  );
+    </div>);
+
 }
