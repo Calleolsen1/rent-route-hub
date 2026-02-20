@@ -78,7 +78,7 @@ export const HostPageHeader = ({ title }: HostPageHeaderProps) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48 bg-card">
             <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
-              Logout
+              Logga ut
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

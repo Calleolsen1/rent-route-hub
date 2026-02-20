@@ -1,4 +1,4 @@
-import { Home, LayoutGrid, Inbox, Calendar, DollarSign, TrendingUp, LogOut, Building2, Menu } from "lucide-react";
+import { LayoutGrid, Inbox, LogOut, Building2, Menu, Users, FileText } from "lucide-react";
 import { NavLink, useLocation, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -13,12 +13,10 @@ export interface NavigationItem {
 }
 
 const defaultNavigation: NavigationItem[] = [
-  { name: "Dashboard", href: "/host/dashboard", icon: LayoutGrid },
-  { name: "Listings & Availability", href: "/host/listings", icon: Home },
-  { name: "Inbox", href: "/host/inbox", icon: Inbox },
-  { name: "Bookings", href: "/host/bookings", icon: Calendar },
-  { name: "Payouts", href: "/host/payouts", icon: DollarSign },
-  { name: "Earnings Report", href: "/host/earnings-report", icon: TrendingUp },
+  { name: "Översikt", href: "/host/dashboard", icon: LayoutGrid },
+  { name: "Min grupp", href: "/host/group", icon: Users },
+  { name: "Fakturering", href: "/host/invoicing", icon: FileText },
+  { name: "Meddelanden", href: "/host/inbox", icon: Inbox },
 ];
 
 interface SidebarContentProps {
@@ -112,7 +110,7 @@ const SidebarContent = ({
         className="w-full justify-center gap-3 mt-auto rounded-full border-border bg-transparent text-foreground hover:bg-accent/30"
       >
         <LogOut className="h-5 w-5" />
-        <span>Log Out</span>
+        <span>Logga ut</span>
       </Button>
     </div>
   );

@@ -20,6 +20,8 @@ import FAQ from "./pages/FAQ";
 import HelpCenter from "./pages/HelpCenter";
 import Support from "./pages/Support";
 import HostDashboard from "./pages/host/Dashboard";
+import GroupView from "./pages/host/GroupView";
+import InvoicingView from "./pages/host/InvoicingView";
 import CreateListing from "./pages/host/CreateListing";
 import EditListing from "./pages/host/EditListing";
 import ListingsManagement from "./pages/host/ListingsManagement";
@@ -94,11 +96,13 @@ const App = () => (
             <Route path="/become-host" element={<><Navbar /><BecomeHost /></>} />
             <Route path="/host" element={<HostLayout />}>
               <Route path="dashboard" element={<HostDashboard />} />
+              <Route path="group" element={<GroupView />} />
+              <Route path="invoicing" element={<InvoicingView />} />
+              <Route path="inbox" element={<HostInbox />} />
               <Route path="listings" element={<ListingsManagement />} />
               <Route path="bookings" element={<HostBookings />} />
               <Route path="payouts" element={<HostPayouts />} />
               <Route path="earnings-report" element={<EarningsReport />} />
-              <Route path="inbox" element={<HostInbox />} />
               <Route path="create-listing" element={<CreateListing />} />
               <Route path="edit-listing/:id" element={<EditListing />} />
             </Route>
