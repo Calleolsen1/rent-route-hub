@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import heroImage from "@/assets/kaisen-hero.jpg";
+import heroImage from "@/assets/about-hero.jpg";
 import founderImage from "@/assets/about-founder.jpg";
 
 const values = [
