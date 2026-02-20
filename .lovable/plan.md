@@ -1,150 +1,154 @@
 
-# Arrangörsfunktionen – Plan
+# Arrangörsportal – Ombyggnad + Fakturering
 
 ## Vad vi bygger
 
-En **gruppresa-funktion** där en person utses till arrangör för en resa. Arrangören kan se hela resegruppen och skicka fakturor/påminnelser till deltagarna. Admin kan också hantera allt detta centralt.
+En komplett ombyggnad av host-panelen till en **svensk arrangörsportal** med fyra sektioner:
+
+1. **Översikt** – Välkomstdashboard med gruppsummering
+2. **Min grupp** – Resenärslista + hotellrumfördelning
+3. **Fakturering** – Dedikerad fakturasida med historik och utskick
+4. **Meddelanden** – Inbox (befintlig)
 
 ---
 
-## Konceptet i tre delar
+## Filöversikt
 
-### 1. Gruppresor & arrangörsutnämning
-En resa kan kopplas till flera resenärer (en grupp). En av dem utses till **arrangör** (organizer). Arrangören har utökade rättigheter för just den resan.
-
-### 2. Arrangörsvyn (gäst-portal)
-Arrangören ser en ny flik "Min grupp" med hela resegruppen och kan skicka fakturainformation/påminnelser till deltagarna.
-
-### 3. Adminvyn
-Admin kan skapa gruppresor, lägga till deltagare, utse arrangör och skicka fakturor till alla eller enskilda deltagare.
+| Fil | Åtgärd |
+|-----|--------|
+| `src/components/host/HostSidebar.tsx` | Bygg om navigation till svenska + arrangörsmenyn |
+| `src/layouts/HostLayout.tsx` | Svenska sidtitlar, ta bort irrelevant logik |
+| `src/pages/host/Dashboard.tsx` | Bygg om till arrangörsöversikt på svenska |
+| `src/pages/host/GroupView.tsx` | Ny sida – Min grupp (resenärer + hotellrum) |
+| `src/pages/host/InvoicingView.tsx` | Ny sida – Fakturering |
+| `src/components/host/HostPageHeader.tsx` | "Logout" → "Logga ut" |
+| `src/App.tsx` | Lägg till /host/group och /host/invoicing routes |
 
 ---
 
-## Databasändringar
+## 1. Sidebar – `HostSidebar.tsx`
 
-### Ny kolumn: `trips.group_id`
-Resor som tillhör samma grupp kopplas ihop med ett gemensamt `group_id` (UUID). Alternativt: en separat `trip_groups`-tabell.
+Ny navigation (på svenska):
 
-Vi väljer en **`trip_groups`-tabell** + `trip_members`-tabell för att hantera många-till-många relationer:
-
-```text
-trip_groups
-├── id (uuid, PK)
-├── name (text)             -- gruppresans namn, t.ex. "Barcelona FC 2025"
-├── trip_id (uuid, FK → trips) -- mallresan (admin-skapad)
-├── organizer_user_id (uuid)   -- vald arrangör
-├── created_by_admin_id (uuid)
-├── created_at, updated_at
-
-trip_members
-├── id (uuid, PK)
-├── group_id (uuid, FK → trip_groups)
-├── user_id (uuid)             -- gästens user_id
-├── trip_id (uuid, FK → trips) -- personens enskilda resa
-├── status (text)              -- 'invited', 'confirmed', 'cancelled'
-├── invoice_sent_at (timestamp, nullable)
-├── invoice_amount (numeric, nullable)
-├── invoice_currency (text, default 'SEK')
-├── invoice_notes (text, nullable)
-├── created_at
+```
+Översikt       →  /host/dashboard   (LayoutGrid)
+Min grupp      →  /host/group       (Users)
+Fakturering    →  /host/invoicing   (FileText)
+Meddelanden    →  /host/inbox       (Inbox)
+──────────────────────────────────
+Logga ut
 ```
 
-**RLS-policies:**
-- Gäster: kan läsa `trip_groups` och `trip_members` för grupper de är med i
-- Arrangör: kan läsa alla medlemmar i sina grupper (via `organizer_user_id`)
-- Admin: full CRUD
-
-### Kolumn på `trips`: `group_id` (nullable FK → trip_groups)
-Varje enskild resa kan kopplas till en grupp.
+Tas bort från nav: Listings, Bookings, Payouts, Earnings Report.
+Logotyp: Byt "Rentely" till arrangörsvarumärket (behålls som prop, sätts till "Kaisen" i HostLayout).
+"Log Out" → "Logga ut".
 
 ---
 
-## Ny Edge Function: `send-group-invoice`
+## 2. Layout – `HostLayout.tsx`
 
-En backend-funktion som skickar faktura/notifiering till en eller flera deltagare. Funktionen:
-1. Verifierar att anroparen är admin **eller** arrangör för gruppen
-2. Uppdaterar `trip_members.invoice_sent_at`
-3. (I demo-läge) loggar bara till konsolen – ingen riktig e-post i denna iteration
+- Byt sidtitlar till svenska:
+  - `/host/dashboard` → "Översikt"
+  - `/host/group` → "Min grupp"
+  - `/host/invoicing` → "Fakturering"
+  - `/host/inbox` → "Meddelanden"
+- Ta bort "Become a Host"-blocket (irrelevant för arrangörer)
+- Ändra logoText från `"Rentely"` till `"Kaisen"`
+- Ta bort `shouldHideHeader` för create/edit-listing (inte aktuellt längre)
 
 ---
 
-## Admingränssnitt – Ändringar i `AdminTripsManagement`
+## 3. Dashboard – `src/pages/host/Dashboard.tsx`
 
-**Ny flik "Gruppresor"** i admin-sidan:
-- Lista över alla `trip_groups`
-- Skapa ny gruppresa: välj deltagare (sök bland kunder), utse arrangör, sätt fakturabelopp
-- Per grupp: se alla medlemmar, status, om faktura är skickad
-- Knappar: "Skicka faktura till alla", "Skicka faktura till vald person"
+Helt ombyggd arrangörsöversikt. Tar bort all earnings/listings-data. Visar istället:
 
-**Faktura-dialog:**
+**Välkomst-sektion:** Hej [namn]! + gruppresans namn och destination (hämtat från arrangörens `trip_groups`)
+
+**Statistik-kort (4 stycken):**
+- Antal resenärer i gruppen
+- Antal bekräftade
+- Fakturor skickade
+- Nästa avresedag
+
+**Genvägar:**
+- Knapp "Se gruppen" → /host/group
+- Knapp "Skicka faktura" → /host/invoicing
+
+Data hämtas via:
+```
+supabase.from("trip_groups").select("*, trip_members(*)").eq("organizer_user_id", user.id)
+```
+
+---
+
+## 4. Ny sida – `src/pages/host/GroupView.tsx`
+
+Återanvänder logiken från `GroupTripView`-komponenten men som en hel sida i host-layouten. Visar:
+
+**Grupplista per grupp:**
+- Gruppnamn, destination
+- Tabell med alla resenärer: namn, e-post, status (Inbjuden/Bekräftad/Avbokad)
+- Fakturastatus per rad
+- Checkbox per person för selektiv fakturering
+
+**Hotellrumfördelning (ny sektion per grupp):**
+- Tabell: Deltagare | Hotell | Incheckning | Utcheckning | Bekräftelse
+- Data hämtas från varje deltagares enskilda `trips`-rad
+
+Knapparna "Skicka faktura" öppnar InvoiceDialog (samma som i GroupTripView).
+
+---
+
+## 5. Ny sida – `src/pages/host/InvoicingView.tsx`
+
+En dedikerad fakturasida med tre sektioner:
+
+### Sektion A: Skicka ny faktura
+- Välj grupp (dropdown om arrangör har flera grupper)
+- Välj mottagare: Alla / Specifika (checkboxar)
 - Belopp (SEK)
-- Meddelande/anteckning
-- Välj: alla deltagare eller specifika
+- Meddelande
+- Knapp: "Skicka faktura"
+
+### Sektion B: Fakturastatus
+En tabell som visar alla gruppmedlemmar med:
+- Namn | E-post | Belopp | Datum skickat | Status
+- Filtrera per grupp
+- Ikoner: ✓ Skickad / ⏳ Ej skickad
+
+### Sektion C: Historik
+Senaste fakturor skickade, sorterade efter datum. Varje rad: person, belopp, datum.
+
+All data hämtas från `trip_members.invoice_sent_at`, `invoice_amount`, `invoice_currency`, `invoice_notes`.
 
 ---
 
-## Gästgränssnitt – Arrangörsvyn
+## 6. App.tsx – Nya routes
 
-Om inloggad användare är arrangör för en aktiv grupp → ny flik **"Min grupp"** visas i `Trips.tsx`-flikarna.
-
-Fliken visar:
-- Gruppresans namn och destination
-- Lista över alla deltagare med namn, e-post, status
-- Fakturastatus per person (skickad / ej skickad)
-- Knapp: "Skicka faktura" → öppnar dialog (anropar `send-group-invoice`)
-
----
-
-## Ändringar i filer
-
-### Nya filer
-| Fil | Syfte |
-|-----|-------|
-| `supabase/migrations/xxx_trip_groups.sql` | Skapar `trip_groups` + `trip_members` tabeller med RLS |
-| `supabase/functions/send-group-invoice/index.ts` | Edge function för att "skicka" faktura |
-| `src/components/admin/TripGroupsManagement.tsx` | Admin-UI för gruppresor |
-| `src/components/guest/GroupTripView.tsx` | Arrangörsvyn i gäst-portalen |
-
-### Ändrade filer
-| Fil | Ändring |
-|-----|---------|
-| `src/components/admin/AdminTripsManagement.tsx` | Lägg till "Gruppresor"-flik |
-| `src/pages/guest/Trips.tsx` | Lägg till "Min grupp"-flik villkorligt om arrangör |
-| `supabase/config.toml` | Registrera ny edge function |
-
----
-
-## Flöde steg för steg
-
-```text
-ADMIN-FLÖDE:
-1. Admin skapar enskilda resor per resenär (befintlig funktion)
-2. Admin skapar en "Gruppresa" → väljer vilka trip_id:n/users som ingår
-3. Admin utser en av deltagarna som arrangör
-4. Admin kan skicka faktura direkt från admin-panelen till alla/valda
-
-ARRANGÖRS-FLÖDE:
-1. Arrangören loggar in → ser "Min grupp"-flik
-2. Ser hela gruppen med status
-3. Kan skicka faktura/påminnelse till en eller alla deltagare
-4. Faktura-status uppdateras i realtid
-
-GÄST-FLÖDE (ej arrangör):
-1. Ser sina egna resor som vanligt
-2. Ser inte "Min grupp"-fliken
+Lägg till under `/host`:
+```tsx
+<Route path="group" element={<GroupView />} />
+<Route path="invoicing" element={<InvoicingView />} />
 ```
 
----
-
-## Vad som INTE byggs i denna iteration
-- Riktig e-postleverans (det kräver en e-posttjänst som Resend/SendGrid) – fakturan loggas och status uppdateras men inget mejl skickas på riktigt ännu
-- Betalningsintegration – faktura är informativ, inte en riktig betalningslänk
+Befintliga routes (listings, bookings, payouts, earnings-report) lämnas kvar tekniskt men syns inte i nav.
 
 ---
 
-## Sammanfattning av ordning
+## 7. HostPageHeader – "Logout" → "Logga ut"
 
-1. **Databas**: Skapa `trip_groups` + `trip_members` med RLS
-2. **Edge Function**: `send-group-invoice`  
-3. **Admin-UI**: `TripGroupsManagement` med ny flik i `AdminTripsManagement`
-4. **Gäst-UI**: `GroupTripView` + villkorlig flik i `Trips.tsx`
+Liten ändring i dropdown-menyn.
+
+---
+
+## Flöde
+
+```
+Arrangör loggar in
+        ↓
+Översikt – ser gruppens status + snabbkort
+        ↓
+Min grupp – ser alla resenärer, hotellrum
+        ↓
+Fakturering – skickar fakturor, ser historik
+```
