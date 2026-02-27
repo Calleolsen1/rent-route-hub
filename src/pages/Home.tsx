@@ -4,7 +4,6 @@ import { ArrowRight, Users, Trophy, Star, Shield, Globe } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import FAQSection from "@/components/home/FAQSection";
-import CategoryScrollBar from "@/components/home/CategoryScrollBar";
 import heroImage from "@/assets/kaisen-hero.jpg";
 import groupImage from "@/assets/kaisen-group.jpg";
 import sportsImage from "@/assets/kaisen-sports.jpg";
@@ -157,9 +156,6 @@ const Home = () => {
           <div className="w-px h-12 bg-white/50 animate-pulse" />
         </div>
       </section>
-
-      {/* Category Scroll Bar */}
-      <CategoryScrollBar />
 
       {/* Stats */}
       <section className="bg-primary py-12">
