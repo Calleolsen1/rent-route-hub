@@ -13,6 +13,7 @@ import monteGordoImg from "@/assets/camp-montegordo.jpg";
 
 const camps = [
   {
+    slug: "la-manga",
     image: laMangaImg,
     sport: "Fotboll",
     location: "La Manga, Spanien",
@@ -20,6 +21,7 @@ const camps = [
     desc: "Toppmoderna gräs- och konstgräsplaner, milt klimat året runt och ett av Europas mest etablerade träningsläger för fotbollslag på alla nivåer.",
   },
   {
+    slug: "algarve",
     image: algarveImg,
     sport: "Fotboll",
     location: "Algarve, Portugal",
@@ -27,6 +29,7 @@ const camps = [
     desc: "Solsäkra vintrar, professionella anläggningar och ett brett utbud av planer. Populärt bland både ungdomslag och seniorlag i förberedelseperioden.",
   },
   {
+    slug: "belek",
     image: belekImg,
     sport: "Fotboll",
     location: "Belek, Turkiet",
@@ -34,6 +37,7 @@ const camps = [
     desc: "Stora hotellanläggningar med flera planer på samma område, träningstider efter behov och full service. Perfekt för läger med kort framförhållning.",
   },
   {
+    slug: "norra-italien",
     image: italyImg,
     sport: "Fotboll",
     location: "Norra Italien",
@@ -41,6 +45,7 @@ const camps = [
     desc: "Välskötta planer i lugn miljö, högkvalitativ italiensk gastronomi och nära till sjöar och berg för aktiv återhämtning mellan passen.",
   },
   {
+    slug: "mallorca-simning",
     image: mallorcaSwimImg,
     sport: "Simning",
     location: "Mallorca, Spanien",
@@ -48,6 +53,7 @@ const camps = [
     desc: "Olympisk utomhusbassäng med hela banor till förfogande, varma morgnar och boenden direkt vid anläggningen. Ideal för seriösa simläger.",
   },
   {
+    slug: "monte-gordo",
     image: monteGordoImg,
     sport: "Friidrott",
     location: "Monte Gordo, Portugal",
