@@ -90,18 +90,8 @@ export default function Traningslager() {
         </div>
       </section>
 
-      {/* Intro */}
-      <section className="bg-cream py-16">
-        <div className="container mx-auto px-4 max-w-3xl text-center">
-          <p className="font-display text-2xl md:text-3xl text-foreground italic font-light leading-relaxed">
-            "Hos oss handlar det inte bara om träning — det handlar om att skapa energi, laganda och motivation som varar långt efter lägret är slut."
-          </p>
-          <div className="w-8 h-px bg-primary mx-auto mt-8" />
-        </div>
-      </section>
-
       {/* Camps grid */}
-      <section className="py-20 bg-background">
+      <section className="py-20 bg-cream">
         <div className="container mx-auto px-4">
           <div className="text-center mb-14">
             <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Utvalda Träningsläger</p>
@@ -115,7 +105,7 @@ export default function Traningslager() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {camps.map((camp) => (
-              <article key={camp.title} className="group bg-cream overflow-hidden flex flex-col">
+              <article key={camp.title} className="group bg-background overflow-hidden flex flex-col">
                 <div className="aspect-[4/3] overflow-hidden">
                   <img
                     src={camp.image}
@@ -143,6 +133,16 @@ export default function Traningslager() {
               </article>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Intro */}
+      <section className="bg-background py-16">
+        <div className="container mx-auto px-4 max-w-3xl text-center">
+          <p className="font-display text-2xl md:text-3xl text-foreground italic font-light leading-relaxed">
+            "Hos oss handlar det inte bara om träning — det handlar om att skapa energi, laganda och motivation som varar långt efter lägret är slut."
+          </p>
+          <div className="w-8 h-px bg-primary mx-auto mt-8" />
         </div>
       </section>
 
