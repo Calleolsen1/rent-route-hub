@@ -111,7 +111,12 @@ export default function Traningslager() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {camps.map((camp) => (
-              <article key={camp.title} className="group bg-background overflow-hidden flex flex-col">
+              <Link
+                key={camp.title}
+                to={`/contact?intresse=traningslager&laeger=${encodeURIComponent(camp.location)}`}
+                className="group bg-background overflow-hidden flex flex-col hover:shadow-lg transition-shadow duration-300 focus:outline-none focus:ring-2 focus:ring-primary"
+                aria-label={`Läs mer om ${camp.sport}läger i ${camp.location}`}
+              >
                 <div className="aspect-[4/3] overflow-hidden">
                   <img
                     src={camp.image}
@@ -134,9 +139,13 @@ export default function Traningslager() {
                   </div>
                   <h3 className="font-display text-xl text-foreground mb-2">{camp.title}</h3>
                   <div className="w-8 h-px bg-primary mb-3" />
-                  <p className="text-muted-foreground text-sm leading-relaxed flex-1">{camp.desc}</p>
+                  <p className="text-muted-foreground text-sm leading-relaxed flex-1 mb-4">{camp.desc}</p>
+                  <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary group-hover:gap-3 transition-all mt-auto">
+                    Läs mer
+                    <ArrowRight className="h-4 w-4" />
+                  </span>
                 </div>
-              </article>
+              </Link>
             ))}
           </div>
         </div>
