@@ -13,7 +13,6 @@ import monteGordoImg from "@/assets/camp-montegordo.jpg";
 
 const camps = [
   {
-    slug: "la-manga",
     image: laMangaImg,
     sport: "Fotboll",
     location: "La Manga, Spanien",
@@ -21,7 +20,6 @@ const camps = [
     desc: "Toppmoderna gräs- och konstgräsplaner, milt klimat året runt och ett av Europas mest etablerade träningsläger för fotbollslag på alla nivåer.",
   },
   {
-    slug: "algarve",
     image: algarveImg,
     sport: "Fotboll",
     location: "Algarve, Portugal",
@@ -29,7 +27,6 @@ const camps = [
     desc: "Solsäkra vintrar, professionella anläggningar och ett brett utbud av planer. Populärt bland både ungdomslag och seniorlag i förberedelseperioden.",
   },
   {
-    slug: "belek",
     image: belekImg,
     sport: "Fotboll",
     location: "Belek, Turkiet",
@@ -37,7 +34,6 @@ const camps = [
     desc: "Stora hotellanläggningar med flera planer på samma område, träningstider efter behov och full service. Perfekt för läger med kort framförhållning.",
   },
   {
-    slug: "norra-italien",
     image: italyImg,
     sport: "Fotboll",
     location: "Norra Italien",
@@ -45,7 +41,6 @@ const camps = [
     desc: "Välskötta planer i lugn miljö, högkvalitativ italiensk gastronomi och nära till sjöar och berg för aktiv återhämtning mellan passen.",
   },
   {
-    slug: "mallorca-simning",
     image: mallorcaSwimImg,
     sport: "Simning",
     location: "Mallorca, Spanien",
@@ -53,7 +48,6 @@ const camps = [
     desc: "Olympisk utomhusbassäng med hela banor till förfogande, varma morgnar och boenden direkt vid anläggningen. Ideal för seriösa simläger.",
   },
   {
-    slug: "monte-gordo",
     image: monteGordoImg,
     sport: "Friidrott",
     location: "Monte Gordo, Portugal",
@@ -111,12 +105,7 @@ export default function Traningslager() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {camps.map((camp) => (
-              <Link
-                key={camp.title}
-                to={`/contact?intresse=traningslager&laeger=${encodeURIComponent(camp.location)}`}
-                className="group bg-background overflow-hidden flex flex-col hover:shadow-lg transition-shadow duration-300 focus:outline-none focus:ring-2 focus:ring-primary"
-                aria-label={`Läs mer om ${camp.sport}läger i ${camp.location}`}
-              >
+              <article key={camp.title} className="group bg-background overflow-hidden flex flex-col">
                 <div className="aspect-[4/3] overflow-hidden">
                   <img
                     src={camp.image}
@@ -139,13 +128,9 @@ export default function Traningslager() {
                   </div>
                   <h3 className="font-display text-xl text-foreground mb-2">{camp.title}</h3>
                   <div className="w-8 h-px bg-primary mb-3" />
-                  <p className="text-muted-foreground text-sm leading-relaxed flex-1 mb-4">{camp.desc}</p>
-                  <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary group-hover:gap-3 transition-all mt-auto">
-                    Läs mer
-                    <ArrowRight className="h-4 w-4" />
-                  </span>
+                  <p className="text-muted-foreground text-sm leading-relaxed flex-1">{camp.desc}</p>
                 </div>
-              </Link>
+              </article>
             ))}
           </div>
         </div>
