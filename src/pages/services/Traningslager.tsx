@@ -100,36 +100,8 @@ export default function Traningslager() {
         </div>
       </section>
 
-      {/* Pillar text blocks */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4 max-w-5xl">
-          <div className="grid md:grid-cols-2 gap-12 lg:gap-20">
-            <div>
-              <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Noggrant Utvalda Destinationer</p>
-              <h2 className="font-display text-2xl md:text-3xl text-foreground mb-4">
-                Europas bästa träningsmiljöer
-              </h2>
-              <div className="w-10 h-px bg-primary mb-6" />
-              <p className="text-muted-foreground leading-relaxed">
-                Våra destinationer i Europa är noggrant utvalda för att ge bästa förutsättningarna för träning, vila och inspiration. Spanien, Turkiet, Italien, Portugal, Polen, Holland, Tyskland, Danmark och Sverige — soliga kustorter, moderna anläggningar och klassiska idrottsstäder.
-              </p>
-            </div>
-            <div>
-              <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Vi Tar Hand Om Helheten</p>
-              <h2 className="font-display text-2xl md:text-3xl text-foreground mb-4">
-                Ni fokuserar på träningen
-              </h2>
-              <div className="w-10 h-px bg-primary mb-6" />
-              <p className="text-muted-foreground leading-relaxed">
-                Att planera ett träningsläger kan vara komplext — men vi gör det enkelt. Transport, boende, träningstider och praktiska detaljer hanterar vi. Varje upplägg skräddarsys efter era mål och förväntningar.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Camps grid */}
-      <section className="py-20 bg-cream">
+      <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-14">
             <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Utvalda Träningsläger</p>
@@ -143,7 +115,7 @@ export default function Traningslager() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {camps.map((camp) => (
-              <article key={camp.title} className="group bg-background overflow-hidden flex flex-col">
+              <article key={camp.title} className="group bg-cream overflow-hidden flex flex-col">
                 <div className="aspect-[4/3] overflow-hidden">
                   <img
                     src={camp.image}
@@ -170,6 +142,34 @@ export default function Traningslager() {
                 </div>
               </article>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pillar text blocks */}
+      <section className="py-20 bg-cream">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <div className="grid md:grid-cols-2 gap-12 lg:gap-20">
+            <div>
+              <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Noggrant Utvalda Destinationer</p>
+              <h2 className="font-display text-2xl md:text-3xl text-foreground mb-4">
+                Europas bästa träningsmiljöer
+              </h2>
+              <div className="w-10 h-px bg-primary mb-6" />
+              <p className="text-muted-foreground leading-relaxed">
+                Våra destinationer i Europa är noggrant utvalda för att ge bästa förutsättningarna för träning, vila och inspiration. Spanien, Turkiet, Italien, Portugal, Polen, Holland, Tyskland, Danmark och Sverige — soliga kustorter, moderna anläggningar och klassiska idrottsstäder.
+              </p>
+            </div>
+            <div>
+              <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Vi Tar Hand Om Helheten</p>
+              <h2 className="font-display text-2xl md:text-3xl text-foreground mb-4">
+                Ni fokuserar på träningen
+              </h2>
+              <div className="w-10 h-px bg-primary mb-6" />
+              <p className="text-muted-foreground leading-relaxed">
+                Att planera ett träningsläger kan vara komplext — men vi gör det enkelt. Transport, boende, träningstider och praktiska detaljer hanterar vi. Varje upplägg skräddarsys efter era mål och förväntningar.
+              </p>
+            </div>
           </div>
         </div>
       </section>
