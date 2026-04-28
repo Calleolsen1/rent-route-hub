@@ -16,6 +16,7 @@ import {
 
 const tjänsterLinks = [
   { label: "Sportresor", to: "/services/sportresor", desc: "F1, fotboll & golf" },
+  { label: "Träningsläger", to: "/services/traningslager", desc: "Fotboll, simning & friidrott" },
   { label: "Affärsresor", to: "/services/affarsresor", desc: "Smidiga businessresor" },
   { label: "Weekend Getaway", to: "/services/weekend-getaway", desc: "Helgresor i Europa" },
   { label: "Konferens", to: "/services/konferens", desc: "Möten & event utomlands" },

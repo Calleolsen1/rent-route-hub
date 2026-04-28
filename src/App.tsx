@@ -65,6 +65,7 @@ import Affarsresor from "./pages/services/Affarsresor";
 import WeekendGetaway from "./pages/services/WeekendGetaway";
 import Konferens from "./pages/services/Konferens";
 import VIPService from "./pages/services/VIPService";
+import Traningslager from "./pages/services/Traningslager";
 
 const queryClient = new QueryClient();
 
@@ -82,6 +83,7 @@ const App = () => (
             <Route path="/" element={<Home />} />
             <Route path="/services" element={<Services />} />
             <Route path="/services/sportresor" element={<Sportresor />} />
+            <Route path="/services/traningslager" element={<Traningslager />} />
             <Route path="/services/affarsresor" element={<Affarsresor />} />
             <Route path="/services/weekend-getaway" element={<WeekendGetaway />} />
             <Route path="/services/konferens" element={<Konferens />} />
