@@ -226,8 +226,8 @@ const Home = () => {
               <Calendar className="h-5 w-5 text-primary flex-shrink-0" />
               <Input
                 type="text"
-                aria-label="Start date"
-                placeholder="Start date"
+                aria-label="Startdatum"
+                placeholder="Startdatum"
                 onFocus={(e) => (e.currentTarget.type = "date")}
                 onBlur={(e) => { if (!e.currentTarget.value) e.currentTarget.type = "text"; }}
                 className="h-12 md:h-14 w-[140px] border-0 bg-transparent px-2 text-sm focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none text-muted-foreground"
@@ -235,8 +235,8 @@ const Home = () => {
               <span className="text-muted-foreground">—</span>
               <Input
                 type="text"
-                aria-label="End date"
-                placeholder="End date"
+                aria-label="Slutdatum"
+                placeholder="Slutdatum"
                 onFocus={(e) => (e.currentTarget.type = "date")}
                 onBlur={(e) => { if (!e.currentTarget.value) e.currentTarget.type = "text"; }}
                 className="h-12 md:h-14 w-[140px] border-0 bg-transparent px-2 text-sm focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none text-muted-foreground"
