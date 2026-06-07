@@ -43,12 +43,13 @@ const heroSlides = [
   },
   {
     image: groupImage,
-    eyebrow: "Hitta din nästa resa",
-    title: "Sök bland våra",
-    italic: "resor & upplevelser",
+    eyebrow: "Grupp & Konferens",
+    title: "Gruppresor &",
+    italic: "konferenser",
     description:
-      "Sök på destination, lag, race eller typ av resa — vi har samlat hela vårt utbud på ett ställe.",
-    search: true,
+      "Från företagsevent till kompisgäng — vi sköter hela logistiken för grupper från 8 upp till 200+ personer.",
+    primary: { label: "Läs mer", to: "/group-travel" },
+    secondary: { label: "Få offert", to: "/contact" },
   },
   {
     image: incomingImage,
