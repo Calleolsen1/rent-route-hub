@@ -184,6 +184,15 @@ const whyUs = [
 
 const Home = () => {
   const [activeHero, setActiveHero] = useState(0);
+  const [heroQuery, setHeroQuery] = useState("");
+  const navigate = useNavigate();
+
+  const handleHeroSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = heroQuery.trim();
+    navigate(q ? `/search?q=${encodeURIComponent(q)}` : "/search");
+  };
+
 
   return (
     <div className="min-h-screen">
