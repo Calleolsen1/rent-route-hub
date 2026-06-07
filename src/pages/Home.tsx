@@ -199,14 +199,15 @@ const Home = () => {
     <div className="min-h-screen">
       <Navbar />
 
-      {/* Search bar — full width, above hero (Intrepid-style) */}
-      <section className="bg-background border-b border-border/40">
-        <div className="container mx-auto px-4 py-6 md:py-8">
+      {/* Search bar — full width, above hero (Intrepid-style with date range) */}
+      <section className="bg-background">
+        <div className="container mx-auto px-4 pt-6 md:pt-8 pb-4">
           <form
             onSubmit={handleHeroSearch}
             className="flex flex-col md:flex-row items-stretch gap-2 md:gap-0 bg-card border border-border md:rounded-full rounded-2xl shadow-sm overflow-hidden p-2 md:pl-6 md:pr-2"
           >
-            <div className="relative flex-1 flex items-center">
+            {/* Search input */}
+            <div className="relative flex items-center flex-1 md:pr-6">
               <Search className="absolute left-3 md:left-0 top-1/2 -translate-y-1/2 h-5 w-5 text-primary" />
               <Input
                 type="search"
@@ -216,110 +217,122 @@ const Home = () => {
                 className="h-12 md:h-14 border-0 bg-transparent pl-11 md:pl-9 text-base focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
               />
             </div>
+
+            {/* Divider */}
+            <div className="hidden md:block w-px bg-border my-3" />
+
+            {/* Date range */}
+            <div className="hidden md:flex items-center gap-2 px-6">
+              <Calendar className="h-5 w-5 text-primary flex-shrink-0" />
+              <Input
+                type="date"
+                aria-label="Startdatum"
+                className="h-12 md:h-14 w-[140px] border-0 bg-transparent px-2 text-sm focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none text-muted-foreground"
+              />
+              <span className="text-muted-foreground">—</span>
+              <Input
+                type="date"
+                aria-label="Slutdatum"
+                className="h-12 md:h-14 w-[140px] border-0 bg-transparent px-2 text-sm focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none text-muted-foreground"
+              />
+            </div>
+
             <Button
               type="submit"
               size="lg"
               className="h-12 md:h-14 md:rounded-full rounded-xl bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm font-medium"
             >
-              <Search className="mr-2 h-4 w-4" />
               Sök
+              <Search className="ml-2 h-4 w-4" />
             </Button>
           </form>
         </div>
       </section>
 
-      {/* Hero carousel — slightly shorter so next section peeks */}
-      <section className="relative">
-
-        <Carousel
-          opts={{ loop: true }}
-          className="w-full"
-          setApi={(api) => {
-            if (!api) return;
-            api.on("select", () => setActiveHero(api.selectedScrollSnap()));
-          }}
-        >
-          <CarouselContent>
-            {heroSlides.map((slide, idx) => (
-              <CarouselItem key={idx}>
-                <div className="relative h-[48vh] min-h-[380px] max-h-[560px] overflow-hidden">
-                  <img
-                    src={slide.image}
-                    alt={slide.title}
-                    className="absolute inset-0 w-full h-full object-cover"
-                    loading={idx === 0 ? "eager" : "lazy"}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/50 to-transparent" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-navy/60 to-transparent" />
-                  <div className="relative container mx-auto px-4 h-full flex items-end pb-16 md:pb-20 pt-24">
-                    <div className="max-w-2xl">
-                      <p className="text-xs tracking-[0.3em] text-gold-light uppercase mb-5 font-sans">
-                        {slide.eyebrow}
-                      </p>
-                      <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-light text-white leading-tight mb-5">
-                        {slide.title}
-                        <br />
-                        <em className="font-light italic text-gold-light">{slide.italic}</em>
-                      </h1>
-                      <p className="text-white/75 text-base md:text-lg leading-relaxed mb-8 max-w-lg">
-                        {slide.description}
-                      </p>
-                      <div className="flex flex-col sm:flex-row gap-3">
-                        <Link to={slide.primary.to}>
-                          <Button
-                            size="lg"
-                            className="rounded-none bg-primary hover:bg-primary/90 text-primary-foreground px-8 tracking-wider text-sm"
-                          >
-                            {slide.primary.label}
-                            <ArrowRight className="ml-2 h-4 w-4" />
-                          </Button>
-                        </Link>
-                        <Link to={slide.secondary.to}>
-                          <Button
-                            size="lg"
-                            variant="outline"
-                            className="rounded-none border-white/60 text-white bg-white/10 hover:bg-white/20 px-8 tracking-wider text-sm"
-                          >
-                            {slide.secondary.label}
-                          </Button>
-                        </Link>
+      {/* Hero carousel — contained rounded card, Intrepid-style */}
+      <section className="relative bg-background pb-12 md:pb-16">
+        <div className="container mx-auto px-4">
+          <div className="relative rounded-2xl md:rounded-3xl overflow-hidden">
+            <Carousel
+              opts={{ loop: true }}
+              className="w-full"
+              setApi={(api) => {
+                if (!api) return;
+                api.on("select", () => setActiveHero(api.selectedScrollSnap()));
+              }}
+            >
+              <CarouselContent>
+                {heroSlides.map((slide, idx) => (
+                  <CarouselItem key={idx}>
+                    <div className="relative h-[58vh] min-h-[420px] max-h-[640px] overflow-hidden">
+                      <img
+                        src={slide.image}
+                        alt={slide.title}
+                        className="absolute inset-0 w-full h-full object-cover"
+                        loading={idx === 0 ? "eager" : "lazy"}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-navy/85 via-navy/30 to-transparent" />
+                      <div className="relative h-full flex items-end p-8 md:p-14">
+                        <div className="max-w-xl">
+                          <p className="text-[11px] tracking-[0.3em] text-gold-light uppercase mb-4 font-sans">
+                            {slide.eyebrow}
+                          </p>
+                          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-light text-white leading-tight mb-6">
+                            {slide.title}
+                            <br />
+                            <em className="font-light italic text-gold-light">{slide.italic}</em>
+                          </h1>
+                          <Link to={slide.primary.to}>
+                            <Button
+                              size="lg"
+                              className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-7 h-12 text-sm font-medium"
+                            >
+                              {slide.primary.label}
+                            </Button>
+                          </Link>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious className="left-4 md:left-8 bg-white/10 hover:bg-white/20 text-white border-white/30 h-11 w-11" />
-          <CarouselNext className="right-4 md:right-8 bg-white/10 hover:bg-white/20 text-white border-white/30 h-11 w-11" />
-        </Carousel>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="left-4 md:left-6 bg-white hover:bg-white/90 text-foreground border-0 h-11 w-11 shadow-md" />
+              <CarouselNext className="right-4 md:right-6 bg-white hover:bg-white/90 text-foreground border-0 h-11 w-11 shadow-md" />
+            </Carousel>
 
-        {/* Dots */}
-        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-          {heroSlides.map((_, i) => (
-            <div
-              key={i}
-              className={`h-1.5 transition-all ${
-                i === activeHero ? "w-8 bg-gold-light" : "w-1.5 bg-white/40"
-              }`}
-            />
-          ))}
+            {/* Dots */}
+            <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+              {heroSlides.map((_, i) => (
+                <div
+                  key={i}
+                  className={`h-1.5 transition-all ${
+                    i === activeHero ? "w-8 bg-gold-light" : "w-1.5 bg-white/50"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Stats / nyckeltal */}
-      <section className="bg-primary py-12">
+      {/* Stats highlights — Intrepid-style, 3 columns with vertical dividers */}
+      <section className="bg-background pb-16 md:pb-20">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            {stats.map((stat) => (
-              <div key={stat.label}>
-                <div className="font-display text-3xl md:text-4xl text-primary-foreground mb-1">{stat.value}</div>
-                <div className="text-xs tracking-widest uppercase text-primary-foreground/70 font-sans">{stat.label}</div>
+          <h2 className="text-center font-display text-2xl md:text-3xl text-foreground mb-10 md:mb-14">
+            Personlig reseservice — för riktiga upplevelser, världen över
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
+            {stats.slice(0, 3).map((stat) => (
+              <div key={stat.label} className="px-6 py-6 md:py-2 text-center">
+                <div className="font-display text-2xl md:text-3xl text-foreground mb-2">
+                  {stat.value} {stat.label.toLowerCase()}
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
+
 
       {/* Konkreta reseerbjudanden — swipeable icon cards */}
       <section className="py-16 md:py-20 bg-background">
