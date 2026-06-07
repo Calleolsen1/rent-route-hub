@@ -43,12 +43,13 @@ const heroSlides = [
   },
   {
     image: groupImage,
-    eyebrow: "Hitta din nästa resa",
-    title: "Sök bland våra",
-    italic: "resor & upplevelser",
+    eyebrow: "Grupp & Konferens",
+    title: "Gruppresor &",
+    italic: "konferenser",
     description:
-      "Sök på destination, lag, race eller typ av resa — vi har samlat hela vårt utbud på ett ställe.",
-    search: true,
+      "Från företagsevent till kompisgäng — vi sköter hela logistiken för grupper från 8 upp till 200+ personer.",
+    primary: { label: "Läs mer", to: "/group-travel" },
+    secondary: { label: "Få offert", to: "/contact" },
   },
   {
     image: incomingImage,
@@ -198,8 +199,38 @@ const Home = () => {
     <div className="min-h-screen">
       <Navbar />
 
+      {/* Search bar — full width, above hero (Intrepid-style) */}
+      <section className="bg-background border-b border-border/40">
+        <div className="container mx-auto px-4 py-6 md:py-8">
+          <form
+            onSubmit={handleHeroSearch}
+            className="flex flex-col md:flex-row items-stretch gap-2 md:gap-0 bg-card border border-border md:rounded-full rounded-2xl shadow-sm overflow-hidden p-2 md:pl-6 md:pr-2"
+          >
+            <div className="relative flex-1 flex items-center">
+              <Search className="absolute left-3 md:left-0 top-1/2 -translate-y-1/2 h-5 w-5 text-primary" />
+              <Input
+                type="search"
+                value={heroQuery}
+                onChange={(e) => setHeroQuery(e.target.value)}
+                placeholder="Sök destination, lag, race eller resetyp..."
+                className="h-12 md:h-14 border-0 bg-transparent pl-11 md:pl-9 text-base focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
+              />
+            </div>
+            <Button
+              type="submit"
+              size="lg"
+              className="h-12 md:h-14 md:rounded-full rounded-xl bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm font-medium"
+            >
+              <Search className="mr-2 h-4 w-4" />
+              Sök
+            </Button>
+          </form>
+        </div>
+      </section>
+
       {/* Hero carousel — slightly shorter so next section peeks */}
       <section className="relative">
+
         <Carousel
           opts={{ loop: true }}
           className="w-full"
@@ -233,49 +264,26 @@ const Home = () => {
                       <p className="text-white/75 text-base md:text-lg leading-relaxed mb-8 max-w-lg">
                         {slide.description}
                       </p>
-                      {slide.search ? (
-                        <form onSubmit={handleHeroSearch} className="flex flex-col sm:flex-row gap-3 max-w-xl">
-                          <div className="relative flex-1">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input
-                              type="search"
-                              value={heroQuery}
-                              onChange={(e) => setHeroQuery(e.target.value)}
-                              placeholder="T.ex. Monaco, Real Madrid, träningsläger..."
-                              className="h-12 pl-11 rounded-none bg-white border-white/60 text-foreground placeholder:text-muted-foreground"
-                            />
-                          </div>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <Link to={slide.primary.to}>
                           <Button
-                            type="submit"
                             size="lg"
-                            className="rounded-none bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm"
+                            className="rounded-none bg-primary hover:bg-primary/90 text-primary-foreground px-8 tracking-wider text-sm"
                           >
-                            Sök
+                            {slide.primary.label}
                             <ArrowRight className="ml-2 h-4 w-4" />
                           </Button>
-                        </form>
-                      ) : (
-                        <div className="flex flex-col sm:flex-row gap-3">
-                          <Link to={slide.primary!.to}>
-                            <Button
-                              size="lg"
-                              className="rounded-none bg-primary hover:bg-primary/90 text-primary-foreground px-8 tracking-wider text-sm"
-                            >
-                              {slide.primary!.label}
-                              <ArrowRight className="ml-2 h-4 w-4" />
-                            </Button>
-                          </Link>
-                          <Link to={slide.secondary!.to}>
-                            <Button
-                              size="lg"
-                              variant="outline"
-                              className="rounded-none border-white/60 text-white bg-white/10 hover:bg-white/20 px-8 tracking-wider text-sm"
-                            >
-                              {slide.secondary!.label}
-                            </Button>
-                          </Link>
-                        </div>
-                      )}
+                        </Link>
+                        <Link to={slide.secondary.to}>
+                          <Button
+                            size="lg"
+                            variant="outline"
+                            className="rounded-none border-white/60 text-white bg-white/10 hover:bg-white/20 px-8 tracking-wider text-sm"
+                          >
+                            {slide.secondary.label}
+                          </Button>
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>
