@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Users, Trophy, Star, Shield, Globe, Calendar, MapPin, Flag } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { ArrowRight, Users, Trophy, Star, Shield, Globe, Calendar, MapPin, Flag, Search } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import {
@@ -42,13 +43,12 @@ const heroSlides = [
   },
   {
     image: groupImage,
-    eyebrow: "Sökfunktion kommer",
-    title: "Gruppresor &",
-    italic: "konferenser",
+    eyebrow: "Hitta din nästa resa",
+    title: "Sök bland våra",
+    italic: "resor & upplevelser",
     description:
-      "Från företagsevent till kompisgäng — vi sköter hela logistiken för grupper från 8 upp till 200+ personer.",
-    primary: { label: "Läs mer", to: "/group-travel" },
-    secondary: { label: "Få offert", to: "/contact" },
+      "Sök på destination, lag, race eller typ av resa — vi har samlat hela vårt utbud på ett ställe.",
+    search: true,
   },
   {
     image: incomingImage,
@@ -184,6 +184,15 @@ const whyUs = [
 
 const Home = () => {
   const [activeHero, setActiveHero] = useState(0);
+  const [heroQuery, setHeroQuery] = useState("");
+  const navigate = useNavigate();
+
+  const handleHeroSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = heroQuery.trim();
+    navigate(q ? `/search?q=${encodeURIComponent(q)}` : "/search");
+  };
+
 
   return (
     <div className="min-h-screen">
@@ -224,26 +233,49 @@ const Home = () => {
                       <p className="text-white/75 text-base md:text-lg leading-relaxed mb-8 max-w-lg">
                         {slide.description}
                       </p>
-                      <div className="flex flex-col sm:flex-row gap-3">
-                        <Link to={slide.primary.to}>
+                      {slide.search ? (
+                        <form onSubmit={handleHeroSearch} className="flex flex-col sm:flex-row gap-3 max-w-xl">
+                          <div className="relative flex-1">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              type="search"
+                              value={heroQuery}
+                              onChange={(e) => setHeroQuery(e.target.value)}
+                              placeholder="T.ex. Monaco, Real Madrid, träningsläger..."
+                              className="h-12 pl-11 rounded-none bg-white border-white/60 text-foreground placeholder:text-muted-foreground"
+                            />
+                          </div>
                           <Button
+                            type="submit"
                             size="lg"
-                            className="rounded-none bg-primary hover:bg-primary/90 text-primary-foreground px-8 tracking-wider text-sm"
+                            className="rounded-none bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm"
                           >
-                            {slide.primary.label}
+                            Sök
                             <ArrowRight className="ml-2 h-4 w-4" />
                           </Button>
-                        </Link>
-                        <Link to={slide.secondary.to}>
-                          <Button
-                            size="lg"
-                            variant="outline"
-                            className="rounded-none border-white/60 text-white bg-white/10 hover:bg-white/20 px-8 tracking-wider text-sm"
-                          >
-                            {slide.secondary.label}
-                          </Button>
-                        </Link>
-                      </div>
+                        </form>
+                      ) : (
+                        <div className="flex flex-col sm:flex-row gap-3">
+                          <Link to={slide.primary!.to}>
+                            <Button
+                              size="lg"
+                              className="rounded-none bg-primary hover:bg-primary/90 text-primary-foreground px-8 tracking-wider text-sm"
+                            >
+                              {slide.primary!.label}
+                              <ArrowRight className="ml-2 h-4 w-4" />
+                            </Button>
+                          </Link>
+                          <Link to={slide.secondary!.to}>
+                            <Button
+                              size="lg"
+                              variant="outline"
+                              className="rounded-none border-white/60 text-white bg-white/10 hover:bg-white/20 px-8 tracking-wider text-sm"
+                            >
+                              {slide.secondary!.label}
+                            </Button>
+                          </Link>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
