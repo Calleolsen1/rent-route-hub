@@ -199,8 +199,38 @@ const Home = () => {
     <div className="min-h-screen">
       <Navbar />
 
+      {/* Search bar — full width, above hero (Intrepid-style) */}
+      <section className="bg-background border-b border-border/40">
+        <div className="container mx-auto px-4 py-6 md:py-8">
+          <form
+            onSubmit={handleHeroSearch}
+            className="flex flex-col md:flex-row items-stretch gap-2 md:gap-0 bg-card border border-border md:rounded-full rounded-2xl shadow-sm overflow-hidden p-2 md:pl-6 md:pr-2"
+          >
+            <div className="relative flex-1 flex items-center">
+              <Search className="absolute left-3 md:left-0 top-1/2 -translate-y-1/2 h-5 w-5 text-primary" />
+              <Input
+                type="search"
+                value={heroQuery}
+                onChange={(e) => setHeroQuery(e.target.value)}
+                placeholder="Sök destination, lag, race eller resetyp..."
+                className="h-12 md:h-14 border-0 bg-transparent pl-11 md:pl-9 text-base focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
+              />
+            </div>
+            <Button
+              type="submit"
+              size="lg"
+              className="h-12 md:h-14 md:rounded-full rounded-xl bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm font-medium"
+            >
+              <Search className="mr-2 h-4 w-4" />
+              Sök
+            </Button>
+          </form>
+        </div>
+      </section>
+
       {/* Hero carousel — slightly shorter so next section peeks */}
       <section className="relative">
+
         <Carousel
           opts={{ loop: true }}
           className="w-full"
