@@ -225,14 +225,20 @@ const Home = () => {
             <div className="hidden md:flex items-center gap-2 px-6">
               <Calendar className="h-5 w-5 text-primary flex-shrink-0" />
               <Input
-                type="date"
-                aria-label="Startdatum"
+                type="text"
+                aria-label="Start date"
+                placeholder="Start date"
+                onFocus={(e) => (e.currentTarget.type = "date")}
+                onBlur={(e) => { if (!e.currentTarget.value) e.currentTarget.type = "text"; }}
                 className="h-12 md:h-14 w-[140px] border-0 bg-transparent px-2 text-sm focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none text-muted-foreground"
               />
               <span className="text-muted-foreground">—</span>
               <Input
-                type="date"
-                aria-label="Slutdatum"
+                type="text"
+                aria-label="End date"
+                placeholder="End date"
+                onFocus={(e) => (e.currentTarget.type = "date")}
+                onBlur={(e) => { if (!e.currentTarget.value) e.currentTarget.type = "text"; }}
                 className="h-12 md:h-14 w-[140px] border-0 bg-transparent px-2 text-sm focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none text-muted-foreground"
               />
             </div>
