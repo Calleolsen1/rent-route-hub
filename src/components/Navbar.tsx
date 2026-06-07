@@ -160,7 +160,7 @@ const Navbar = () => {
                 {openMenu === "sprak" && (
                   <div className="absolute top-full right-0 bg-card border border-border shadow-lg z-50 min-w-[140px] py-2">
                     <button className="w-full text-left px-4 py-2 text-sm hover:bg-accent transition-colors">Svenska</button>
-                    <button className="w-full text-left px-4 py-2 text-sm hover:bg-accent transition-colors">English</button>
+                    <button className="w-full text-left px-4 py-2 text-sm hover:bg-accent transition-colors">Engelska</button>
                   </div>
                 )}
               </div>
@@ -220,7 +220,7 @@ const Navbar = () => {
               <button
                 className="lg:hidden p-2"
                 onClick={() => setMobileOpen(!mobileOpen)}
-                aria-label="Toggle menu"
+                aria-label="Växla meny"
               >
                 {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </button>
