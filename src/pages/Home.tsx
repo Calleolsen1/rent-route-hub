@@ -242,7 +242,7 @@ const Home = () => {
           <CarouselContent>
             {heroSlides.map((slide, idx) => (
               <CarouselItem key={idx}>
-                <div className="relative h-[62vh] min-h-[480px] overflow-hidden">
+                <div className="relative h-[48vh] min-h-[380px] max-h-[560px] overflow-hidden">
                   <img
                     src={slide.image}
                     alt={slide.title}
