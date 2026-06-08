@@ -880,6 +880,7 @@ export type Database = {
         | "failed"
         | "refunded"
         | "cancelled"
+        | "awaiting_payment"
       payout_status_enum: "pending" | "completed" | "failed" | "cancelled"
       property_type: "apartment" | "villa" | "room" | "house" | "condo"
       review_status: "pending" | "approved" | "rejected" | "blocked"
@@ -1055,6 +1056,7 @@ export const Constants = {
         "failed",
         "refunded",
         "cancelled",
+        "awaiting_payment",
       ],
       payout_status_enum: ["pending", "completed", "failed", "cancelled"],
       property_type: ["apartment", "villa", "room", "house", "condo"],
