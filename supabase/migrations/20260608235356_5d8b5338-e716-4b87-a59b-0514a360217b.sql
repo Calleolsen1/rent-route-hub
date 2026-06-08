@@ -1,0 +1,1 @@
+UPDATE public.events SET cover_image_url = 'https://images.unsplash.com/photo-1504707748692-419802cf939d?w=1600' WHERE id = 'ac37ec28-05db-4a28-8e21-396074608709';
