@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import {
   LayoutDashboard,
-  Map,
+  Ticket,
   FileText,
   User,
   LogOut,
@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { to: "/mitt-kaisen/dashboard", label: "Översikt", icon: LayoutDashboard },
-  { to: "/mitt-kaisen/resor", label: "Mina Resor", icon: Map },
+  { to: "/mitt-kaisen/biljetter", label: "Mina biljetter", icon: Ticket },
   { to: "/mitt-kaisen/fakturor", label: "Fakturor", icon: FileText },
   { to: "/mitt-kaisen/profil", label: "Min Profil", icon: User },
 ];
