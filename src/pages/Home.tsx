@@ -363,9 +363,6 @@ const Home = () => {
       {/* Stats highlights — Intrepid-style, 3 columns with vertical dividers */}
       <section className="bg-background pt-10 md:pt-12 pb-8 md:pb-10">
         <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
-          <h2 className="text-center font-sans font-semibold text-xl md:text-2xl leading-tight text-foreground mb-8">
-            Personlig reseservice — för riktiga upplevelser, världen över
-          </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border/60">
             <div className="px-6 py-4 md:py-2 text-center">
