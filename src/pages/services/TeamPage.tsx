@@ -61,6 +61,32 @@ export default function TeamPage() {
         </div>
       </section>
 
+      {/* Sample fixtures */}
+      <section className="py-12 md:py-16 bg-background border-t border-border">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans text-center">Exempel på matcher vi paketerar</p>
+          <h2 className="font-display text-3xl md:text-4xl text-center mb-12">Fler matcher att uppleva</h2>
+          <div className="space-y-3">
+            {info.fixtures.map((f, i) => (
+              <div key={i} className="flex items-center justify-between bg-card border border-border rounded-lg p-5 hover:shadow-md transition-shadow">
+                <div>
+                  <p className="font-display text-lg">{info.name} vs {f.opponent}</p>
+                  <p className="text-xs uppercase tracking-wider text-muted-foreground mt-1">{f.competition}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-medium">{f.date}</p>
+                  <Link to="/contact">
+                    <Button size="sm" variant="outline" className="rounded-full mt-2 text-xs">
+                      Förfrågan <ArrowRight className="ml-1 h-3 w-3" />
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Intro */}
       <section className="bg-cream py-16">
         <div className="container mx-auto px-4 max-w-3xl">
@@ -90,32 +116,6 @@ export default function TeamPage() {
           <p className="font-display text-xl md:text-2xl text-foreground italic font-light leading-relaxed text-center">
             "{info.description}"
           </p>
-        </div>
-      </section>
-
-      {/* Sample fixtures */}
-      <section className="py-12 md:py-16 bg-cream">
-        <div className="container mx-auto px-4 max-w-4xl">
-          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans text-center">Exempel på matcher vi paketerar</p>
-          <h2 className="font-display text-3xl md:text-4xl text-center mb-12">Fler matcher att uppleva</h2>
-          <div className="space-y-3">
-            {info.fixtures.map((f, i) => (
-              <div key={i} className="flex items-center justify-between bg-card border border-border rounded-lg p-5 hover:shadow-md transition-shadow">
-                <div>
-                  <p className="font-display text-lg">{info.name} vs {f.opponent}</p>
-                  <p className="text-xs uppercase tracking-wider text-muted-foreground mt-1">{f.competition}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-medium">{f.date}</p>
-                  <Link to="/contact">
-                    <Button size="sm" variant="outline" className="rounded-full mt-2 text-xs">
-                      Förfrågan <ArrowRight className="ml-1 h-3 w-3" />
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
