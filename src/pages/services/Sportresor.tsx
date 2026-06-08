@@ -9,6 +9,7 @@ import fotbollImage from "@/assets/sport-fotboll.jpg";
 import ishockeyImage from "@/assets/sport-ishockey.jpg";
 import tennisImage from "@/assets/sport-tennis.jpg";
 import golfImage from "@/assets/sport-golf.jpg";
+import UpcomingEventsList from "@/components/UpcomingEventsList";
 
 const sports = [
  {
