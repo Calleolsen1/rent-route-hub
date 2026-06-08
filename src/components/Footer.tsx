@@ -11,7 +11,7 @@ const Footer = () => {
         {/* Newsletter */}
         <div className="grid md:grid-cols-2 gap-6 md:gap-10 items-start pb-6">
           <div>
-            <h2 className="font-sans font-semibold text-xl md:text-2xl text-white">
+            <h2 className="font-sans font-semibold text-2xl md:text-3xl text-white">
               Anmäl dig och håll dig uppdaterad!
             </h2>
           </div>
