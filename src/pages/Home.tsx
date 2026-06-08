@@ -388,59 +388,85 @@ const Home = () => {
 
 
 
-      {/* Konkreta reseerbjudanden — swipeable icon cards */}
-      <section className="py-16 md:py-20 bg-cream">
-
+      {/* Konkreta reseerbjudanden — Intrepid-style cards */}
+      <section className="py-16 md:py-20 bg-background">
         <div className="container mx-auto px-4">
-          <div className="flex items-end justify-between mb-10 gap-6">
-            <div>
-              <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Aktuella erbjudanden</p>
-              <h2 className="font-display text-3xl md:text-4xl text-foreground">
-                Bokningsbara <em className="italic font-light">just nu</em>
-              </h2>
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
+            <div className="flex flex-wrap items-end gap-x-8 gap-y-3">
+              {offerTabs.map((tab) => {
+                const active = tab.id === offerTab;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setOfferTab(tab.id)}
+                    className={`relative pb-3 font-sans font-semibold text-base md:text-lg transition-colors ${
+                      active ? "text-foreground" : "text-foreground/50 hover:text-foreground/80"
+                    }`}
+                  >
+                    {tab.label}
+                    {active && (
+                      <span className="absolute left-0 right-0 -bottom-px h-[3px] bg-primary rounded-full" />
+                    )}
+                  </button>
+                );
+              })}
             </div>
-            <Link to="/services" className="hidden md:inline-flex items-center gap-2 text-sm text-primary tracking-wider uppercase hover:gap-3 transition-all">
-              Se alla <ArrowRight className="h-4 w-4" />
+            <Link
+              to="/services"
+              className="self-start md:self-auto inline-flex items-center justify-center text-sm font-semibold text-foreground border border-border px-5 py-2.5 rounded-full hover:bg-foreground hover:text-background transition-colors"
+            >
+              Utforska alla resor
             </Link>
           </div>
 
           <Carousel opts={{ align: "start", dragFree: true }}>
-            <CarouselContent className="-ml-4">
-              {quickOffers.map((offer) => (
-                <CarouselItem key={offer.title} className="pl-4 basis-[78%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
+            <CarouselContent className="-ml-5">
+              {filteredOffers.map((offer) => (
+                <CarouselItem
+                  key={offer.title}
+                  className="pl-5 basis-[80%] sm:basis-1/2 md:basis-[38%] lg:basis-[22%]"
+                >
                   <Link
                     to={offer.href}
-                    className="group block bg-card border border-border h-full hover:border-primary transition-colors overflow-hidden"
+                    className="group block h-full bg-card rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.10)] transition-shadow"
                   >
-                    <div className="relative aspect-[4/3] overflow-hidden">
+                    <div className="relative aspect-[4/5] overflow-hidden">
                       <img
                         src={offer.image}
                         alt={offer.title}
                         loading="lazy"
-                        width={800}
-                        height={600}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent" />
-                      <span className="absolute top-3 right-3 text-[10px] tracking-[0.2em] uppercase bg-white/90 text-primary px-2.5 py-1 font-sans">
-                        {offer.tag}
-                      </span>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
+                      {offer.isNew && (
+                        <span className="absolute top-3 right-3 bg-white text-foreground text-[11px] font-semibold px-2.5 py-1 rounded">
+                          Ny
+                        </span>
+                      )}
+                      <h3 className="absolute inset-x-0 bottom-0 p-5 font-sans font-bold text-white text-xl md:text-2xl leading-tight">
+                        {offer.title}
+                      </h3>
                     </div>
-                    <div className="p-6">
-                      <h3 className="font-display text-lg text-foreground mb-1 leading-snug">{offer.title}</h3>
-                      <p className="text-xs text-muted-foreground tracking-wider uppercase mb-5">{offer.date}</p>
-                      <span className="inline-flex items-center gap-2 text-xs text-primary tracking-wider uppercase group-hover:gap-3 transition-all">
-                        Boka <ArrowRight className="h-3.5 w-3.5" />
-                      </span>
+                    <div className="p-5">
+                      <p className="text-xs text-foreground/60 mb-1">{offer.days}</p>
+                      <p className="font-sans font-semibold text-foreground text-base mb-5 leading-snug">
+                        {offer.tag} · {offer.date}
+                      </p>
+                      <div className="border-t border-border/60 pt-4 text-right text-sm">
+                        <span className="text-foreground/50">Från </span>
+                        <span className="text-foreground/40 line-through mr-1">{offer.oldPrice} SEK</span>
+                        <span className="font-bold text-foreground">{offer.fromPrice} SEK</span>
+                      </div>
                     </div>
                   </Link>
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="hidden md:flex -left-5 h-10 w-10" />
-            <CarouselNext className="hidden md:flex -right-5 h-10 w-10" />
+            <CarouselPrevious className="hidden md:flex -left-5 h-10 w-10 bg-white border-border shadow-md" />
+            <CarouselNext className="hidden md:flex -right-5 h-10 w-10 bg-white border-border shadow-md" />
           </Carousel>
         </div>
+
       </section>
 
       {/* Längre erbjudanden — service cards carousel */}
