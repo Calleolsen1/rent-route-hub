@@ -230,3 +230,82 @@ export default function AdminTickets() {
     </div>
   );
 }
+
+function CategoryRow({
+  c,
+  busy,
+  onSync,
+  onSaveMarkup,
+}: {
+  c: Category;
+  busy: string | null;
+  onSync: (id: string) => void;
+  onSaveMarkup: (id: string, pct: number, fixed: number) => void;
+}) {
+  const [pct, setPct] = useState<string>(String(c.markup_pct ?? 0));
+  const [fixed, setFixed] = useState<string>(String(c.markup_fixed_sek ?? 0));
+  const dirty = Number(pct) !== Number(c.markup_pct) || Number(fixed) !== Number(c.markup_fixed_sek);
+
+  return (
+    <div className="border-t border-border pt-3 space-y-3">
+      <div className="flex items-start justify-between text-sm">
+        <div>
+          <p className="font-medium">{c.name}</p>
+          <p className="text-xs text-muted-foreground">
+            Senast visat pris: {formatSek(c.unit_price_sek)} · {c.qty_available} biljetter kvar
+          </p>
+          <p className="text-[11px] text-muted-foreground font-mono mt-1">
+            lookup_key: {c.stripe_price_id ?? "–"}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          {c.stripe_price_id ? (
+            <CheckCircle2 className="h-4 w-4 text-green-600" />
+          ) : (
+            <AlertCircle className="h-4 w-4 text-amber-600" />
+          )}
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={busy === c.id}
+            onClick={() => onSync(c.id)}
+          >
+            {busy === c.id ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : null}
+            {c.stripe_price_id ? "Uppdatera Stripe-pris" : "Skapa Stripe-pris"}
+          </Button>
+        </div>
+      </div>
+      <div className="flex items-end gap-3">
+        <div className="flex-1 max-w-[140px]">
+          <label className="text-[11px] uppercase tracking-wider text-muted-foreground">Påslag %</label>
+          <Input
+            type="number"
+            step="0.01"
+            value={pct}
+            onChange={(e) => setPct(e.target.value)}
+            className="h-9"
+          />
+        </div>
+        <div className="flex-1 max-w-[140px]">
+          <label className="text-[11px] uppercase tracking-wider text-muted-foreground">Påslag SEK</label>
+          <Input
+            type="number"
+            step="1"
+            value={fixed}
+            onChange={(e) => setFixed(e.target.value)}
+            className="h-9"
+          />
+        </div>
+        <Button
+          size="sm"
+          variant={dirty ? "default" : "outline"}
+          disabled={!dirty || busy === c.id}
+          onClick={() => onSaveMarkup(c.id, Number(pct) || 0, Number(fixed) || 0)}
+        >
+          <Save className="h-3 w-3 mr-1" />
+          Spara påslag
+        </Button>
+      </div>
+    </div>
+  );
+}
