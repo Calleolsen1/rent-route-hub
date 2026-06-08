@@ -243,33 +243,33 @@ const Home = () => {
         <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10 pt-6 md:pt-8 pb-4">
           <form
             onSubmit={handleHeroSearch}
-            className="flex flex-col md:flex-row items-stretch gap-2 md:gap-0 bg-card border border-border md:rounded-full rounded-2xl shadow-sm overflow-hidden p-2 md:pl-6 md:pr-2"
+            className="flex items-stretch bg-white border border-border rounded-full shadow-sm p-1.5 md:p-2"
           >
             {/* Search input */}
-            <div className="relative flex items-center flex-1 md:pr-6">
-              <Search className="absolute left-3 md:left-0 top-1/2 -translate-y-1/2 h-5 w-5 text-primary" />
+            <div className="relative flex items-center flex-1 pl-4 md:pl-5">
+              <MapPin className="h-5 w-5 text-muted-foreground flex-shrink-0" strokeWidth={2} />
               <Input
                 type="search"
                 value={heroQuery}
                 onChange={(e) => setHeroQuery(e.target.value)}
                 placeholder="Sök destination, lag, race eller resetyp..."
-                className="h-12 md:h-14 border-0 bg-transparent pl-11 md:pl-9 text-base focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
+                className="h-11 md:h-12 border-0 bg-transparent pl-3 text-base focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none placeholder:text-muted-foreground"
               />
             </div>
 
             {/* Divider */}
-            <div className="hidden md:block w-px bg-border my-3" />
+            <div className="hidden md:block w-px bg-border my-2.5" />
 
             {/* Date range */}
-            <div className="hidden md:flex items-center gap-2 px-6">
-              <Calendar className="h-5 w-5 text-primary flex-shrink-0" />
+            <div className="hidden md:flex items-center gap-2 px-5">
+              <Calendar className="h-5 w-5 text-muted-foreground flex-shrink-0" strokeWidth={2} />
               <Input
                 type="text"
                 aria-label="Startdatum"
                 placeholder="Startdatum"
                 onFocus={(e) => (e.currentTarget.type = "date")}
                 onBlur={(e) => { if (!e.currentTarget.value) e.currentTarget.type = "text"; }}
-                className="h-12 md:h-14 w-[140px] border-0 bg-transparent px-2 text-sm focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none text-muted-foreground"
+                className="h-11 md:h-12 w-[120px] border-0 bg-transparent px-1 text-sm focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
               />
               <span className="text-muted-foreground">—</span>
               <Input
@@ -278,14 +278,13 @@ const Home = () => {
                 placeholder="Slutdatum"
                 onFocus={(e) => (e.currentTarget.type = "date")}
                 onBlur={(e) => { if (!e.currentTarget.value) e.currentTarget.type = "text"; }}
-                className="h-12 md:h-14 w-[140px] border-0 bg-transparent px-2 text-sm focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none text-muted-foreground"
+                className="h-11 md:h-12 w-[120px] border-0 bg-transparent px-1 text-sm focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
               />
             </div>
 
             <Button
               type="submit"
-              size="lg"
-              className="h-12 md:h-14 md:rounded-full rounded-xl bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm font-medium"
+              className="h-11 md:h-12 rounded-full bg-primary hover:bg-primary/90 px-7 text-sm font-medium flex-shrink-0"
             >
               Sök
               <Search className="ml-2 h-4 w-4" />
