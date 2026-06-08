@@ -14,7 +14,7 @@ const experiences = [
     icon: Trophy,
     title: "Sport på riktigt",
     tagline: "Fotboll i London · F1 i Monaco · Golf i Skottland",
-    desc: "Biljetter, boende och transfer — för hela gänget. Inte en enda pappa ska behöva "fixa allt".",
+    desc: "Biljetter, boende och transfer — för hela gänget. Inte en enda pappa ska behöva \u201cfixa allt\u201d.",
   },
   {
     icon: PartyPopper,
