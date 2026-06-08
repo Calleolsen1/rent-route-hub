@@ -95,6 +95,14 @@ export default function Traningslager() {
  <p className="text-white/70 mt-4 text-lg font-light max-w-xl">
  Träningsläger för fotboll, simning och friidrott — för föreningar, lag och grupper som vill ta träningen till nästa nivå.
  </p>
+ <div className="mt-6 flex flex-wrap gap-3">
+ <a href="#forfragan">
+ <Button className="rounded-full bg-primary hover:bg-primary/90 px-7 py-6 text-sm tracking-wider">
+ <MessageSquare className="mr-2 h-4 w-4" />
+ Skicka förfrågan
+ </Button>
+ </a>
+ </div>
  </div>
  </section>
 
