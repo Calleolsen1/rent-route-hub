@@ -11,7 +11,7 @@ const Footer = () => {
         {/* Newsletter */}
         <div className="grid md:grid-cols-2 gap-6 md:gap-10 items-start pb-6">
           <div>
-            <h2 className="font-sans font-semibold text-xl md:text-2xl text-white">
+            <h2 className="font-sans font-semibold text-2xl md:text-3xl text-white">
               Anmäl dig och håll dig uppdaterad!
             </h2>
           </div>
@@ -26,16 +26,17 @@ const Footer = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Ange din e-postadress...*"
-                className="flex-1 bg-transparent text-white placeholder:text-white/60 text-sm focus:outline-none py-1.5"
+                className="flex-1 bg-transparent text-white placeholder:text-white/60 text-base focus:outline-none py-2"
               />
               <button
                 type="submit"
-                className="border border-white text-white text-xs font-medium px-5 py-1.5 rounded-full hover:bg-white hover:text-navy transition-colors"
+                className="border border-white text-white text-sm font-medium px-6 py-2 rounded-full hover:bg-white hover:text-navy transition-colors"
               >
                 Anmäl
               </button>
             </form>
-            <p className="text-[11px] text-white/60 mt-3 leading-relaxed">
+            <p className="text-sm text-white/70 mt-3 leading-relaxed">
+
               Genom att skicka in detta formulär godkänner jag att Kaisen Travel Group lagrar och behandlar mina personuppgifter enligt våra{" "}
               <Link to="/faq" className="underline hover:text-white">Allmänna villkor</Link>{" "}
               &amp;{" "}
@@ -48,7 +49,7 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pt-1 pb-5">
           <Link to="/" className="inline-block">
             <div className="font-display text-2xl md:text-3xl font-semibold text-white tracking-[0.25em]">KAISEN</div>
-            <div className="text-[10px] tracking-[0.3em] text-white/70 font-sans uppercase mt-1">Travel Group</div>
+            <div className="text-xs tracking-[0.3em] text-white/70 font-sans uppercase mt-1">Travel Group</div>
           </Link>
           <div className="flex gap-4 text-white">
             <a href="#" aria-label="Facebook" className="hover:text-gold transition-colors"><Facebook className="h-4 w-4" /></a>
@@ -63,8 +64,9 @@ const Footer = () => {
         {/* Link columns */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 py-7">
           <div>
-            <h3 className="text-white font-sans font-semibold text-sm mb-3">Tjänster</h3>
-            <ul className="space-y-2 text-xs text-white/80">
+            <h3 className="text-white font-sans font-semibold text-base mb-4">Tjänster</h3>
+            <ul className="space-y-2.5 text-sm text-white/80">
+
 
               <li><Link to="/services/sportresor" className="hover:text-gold transition-colors">Sportresor</Link></li>
               <li><Link to="/group-travel" className="hover:text-gold transition-colors">Gruppresor</Link></li>
@@ -76,8 +78,9 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="text-white font-sans font-semibold text-sm mb-3">Företaget</h3>
-            <ul className="space-y-2 text-xs text-white/80">
+            <h3 className="text-white font-sans font-semibold text-base mb-4">Företaget</h3>
+            <ul className="space-y-2.5 text-sm text-white/80">
+
               <li><Link to="/about" className="hover:text-gold transition-colors">Om oss</Link></li>
               <li><Link to="/contact" className="hover:text-gold transition-colors">Planera din resa</Link></li>
               <li><Link to="/faq" className="hover:text-gold transition-colors">FAQ</Link></li>
@@ -87,8 +90,9 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="text-white font-sans font-semibold text-sm mb-3">Kontakt</h3>
-            <ul className="space-y-2 text-xs text-white/80">
+            <h3 className="text-white font-sans font-semibold text-base mb-4">Kontakt</h3>
+            <ul className="space-y-2.5 text-sm text-white/80">
+
               <li>123 Mayfair Lane,<br />London, UK W1K 2AB</li>
               <li><a href="tel:+442012345678" className="hover:text-gold transition-colors">+44 20 1234 5678</a></li>
               <li><a href="mailto:hello@kaisentravel.com" className="hover:text-gold transition-colors">hello@kaisentravel.com</a></li>
@@ -99,7 +103,7 @@ const Footer = () => {
         <div className="border-t border-white/20" />
 
         {/* Bottom row */}
-        <div className="pt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-[11px] text-white/70">
+        <div className="pt-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-sm text-white/70">
 
           <p>© {new Date().getFullYear()} Kaisen Travel Group. Alla rättigheter förbehållna.</p>
           <div className="flex flex-wrap gap-x-5 gap-y-2">
