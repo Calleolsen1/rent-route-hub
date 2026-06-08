@@ -88,17 +88,19 @@ const BecomeHost = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative py-20">
+      <section className="relative bg-navy py-16 md:py-24 border-b border-white/10">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-5xl font-bold mb-6">Earn money as a Host</h1>
-            <p className="text-xl text-muted-foreground mb-8">
+            <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Bli Arrangör</p>
+            <h1 className="font-sans font-semibold text-3xl md:text-5xl text-white mb-6">Earn money as a Host</h1>
+            <p className="text-base md:text-lg text-white/70 mb-8 leading-relaxed">
               Share your space and earn extra income by hosting guests from around the world. Join thousands of hosts making money on their terms.
             </p>
             <Button 
               size="lg" 
               onClick={handleBecomeHost}
               disabled={isLoading}
+              className="rounded-full bg-white hover:bg-white/90 text-navy font-semibold px-10 py-6 text-base shadow-lg"
             >
               {isLoading ? (
                 <>
@@ -112,6 +114,7 @@ const BecomeHost = () => {
           </div>
         </div>
       </section>
+
 
       {/* Benefits Section */}
       <section className="py-16 container mx-auto px-4">
