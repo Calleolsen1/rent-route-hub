@@ -481,7 +481,7 @@ const Home = () => {
           <Carousel opts={{ align: "start" }}>
             <CarouselContent className="-ml-4">
               {services.map((service) => (
-                <CarouselItem key={service.title} className="pl-4 basis-[70%] sm:basis-1/2 lg:basis-1/4">
+                <CarouselItem key={service.title} className="pl-4 basis-[60%] sm:basis-1/3 lg:basis-1/5">
                   <Link to={service.href} className="group block h-full">
                     <div className="relative overflow-hidden rounded-lg aspect-[4/5] mb-3">
                       <img
