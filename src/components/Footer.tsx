@@ -76,8 +76,8 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="text-white font-sans font-semibold text-lg mb-5">Företaget</h3>
-            <ul className="space-y-3 text-sm text-white/80">
+            <h3 className="text-white font-sans font-semibold text-sm mb-3">Företaget</h3>
+            <ul className="space-y-2 text-xs text-white/80">
               <li><Link to="/about" className="hover:text-gold transition-colors">Om oss</Link></li>
               <li><Link to="/contact" className="hover:text-gold transition-colors">Planera din resa</Link></li>
               <li><Link to="/faq" className="hover:text-gold transition-colors">FAQ</Link></li>
@@ -87,8 +87,8 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="text-white font-sans font-semibold text-lg mb-5">Kontakt</h3>
-            <ul className="space-y-3 text-sm text-white/80">
+            <h3 className="text-white font-sans font-semibold text-sm mb-3">Kontakt</h3>
+            <ul className="space-y-2 text-xs text-white/80">
               <li>123 Mayfair Lane,<br />London, UK W1K 2AB</li>
               <li><a href="tel:+442012345678" className="hover:text-gold transition-colors">+44 20 1234 5678</a></li>
               <li><a href="mailto:hello@kaisentravel.com" className="hover:text-gold transition-colors">hello@kaisentravel.com</a></li>
@@ -99,7 +99,8 @@ const Footer = () => {
         <div className="border-t border-white/20" />
 
         {/* Bottom row */}
-        <div className="pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs text-white/70">
+        <div className="pt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-[11px] text-white/70">
+
           <p>© {new Date().getFullYear()} Kaisen Travel Group. Alla rättigheter förbehållna.</p>
           <div className="flex flex-wrap gap-x-5 gap-y-2">
             <Link to="/faq" className="hover:text-white transition-colors">Integritetspolicy</Link>
