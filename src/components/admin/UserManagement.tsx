@@ -15,7 +15,7 @@ import { Search, UserPlus } from "lucide-react";
 import { useDebounce } from "@/hooks/useDebounce";
 import { UsersTable } from "./UsersTable";
 import { UsersFiltersSheet } from "./UsersFiltersSheet";
-import ReviewsManagement from "./ReviewsManagement";
+
 import { useDemoData } from "@/hooks/useDemoData";
 import { CreateClientDialog } from "./CreateClientDialog";
 import { Button } from "@/components/ui/button";
@@ -63,7 +63,6 @@ const UserManagement = () => {
         <Tabs defaultValue="users" className="w-full">
           <TabsList className="mb-6">
             <TabsTrigger value="users">Users</TabsTrigger>
-            <TabsTrigger value="reviews">Reviews</TabsTrigger>
           </TabsList>
 
           <TabsContent value="users" className="space-y-6">
@@ -119,9 +118,6 @@ const UserManagement = () => {
             />
           </TabsContent>
 
-          <TabsContent value="reviews">
-            <ReviewsManagement />
-          </TabsContent>
         </Tabs>
       </CardContent>
 
