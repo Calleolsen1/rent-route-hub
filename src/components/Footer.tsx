@@ -13,17 +13,17 @@ const Footer = () => {
               <div className="text-[10px] tracking-[0.25em] text-primary-foreground/80 font-sans uppercase mt-0.5">Travel Group</div>
 
             </div>
-            <p className="text-sm leading-relaxed text-foreground/60 mb-5">
+            <p className="text-sm leading-relaxed text-white/60 mb-5">
               Personlig reseservice skapad för dig. Gruppresor, sportevent och skräddarsydda upplevelser — levererade med hjärta och expertis i 25+ år.
             </p>
             <div className="flex gap-4">
-              <a href="#" aria-label="Instagram" className="text-foreground/50 hover:text-primary transition-colors">
+              <a href="#" aria-label="Instagram" className="text-white/50 hover:text-primary transition-colors">
                 <Instagram className="h-4 w-4" />
               </a>
-              <a href="#" aria-label="Facebook" className="text-foreground/50 hover:text-primary transition-colors">
+              <a href="#" aria-label="Facebook" className="text-white/50 hover:text-primary transition-colors">
                 <Facebook className="h-4 w-4" />
               </a>
-              <a href="#" aria-label="LinkedIn" className="text-foreground/50 hover:text-primary transition-colors">
+              <a href="#" aria-label="LinkedIn" className="text-white/50 hover:text-primary transition-colors">
                 <Linkedin className="h-4 w-4" />
               </a>
             </div>
@@ -31,8 +31,8 @@ const Footer = () => {
 
           {/* Tjänster */}
           <div>
-            <h3 className="text-foreground font-sans font-semibold text-sm mb-4">Tjänster</h3>
-            <ul className="space-y-2.5 text-sm text-foreground/70">
+            <h3 className="text-white font-sans font-semibold text-sm mb-4">Tjänster</h3>
+            <ul className="space-y-2.5 text-sm text-white/70">
               <li><Link to="/services/sportresor" className="hover:text-primary transition-colors">Sportresor</Link></li>
               <li><Link to="/group-travel" className="hover:text-primary transition-colors">Gruppresor</Link></li>
               <li><Link to="/services/weekend-getaway" className="hover:text-primary transition-colors">Weekendresor</Link></li>
@@ -44,8 +44,8 @@ const Footer = () => {
 
           {/* Företaget */}
           <div>
-            <h3 className="text-foreground font-sans font-semibold text-sm mb-4">Företaget</h3>
-            <ul className="space-y-2.5 text-sm text-foreground/70">
+            <h3 className="text-white font-sans font-semibold text-sm mb-4">Företaget</h3>
+            <ul className="space-y-2.5 text-sm text-white/70">
               <li><Link to="/about" className="hover:text-primary transition-colors">Om oss</Link></li>
               <li><Link to="/contact" className="hover:text-primary transition-colors">Planera din resa</Link></li>
               <li><Link to="/faq" className="hover:text-primary transition-colors">FAQ</Link></li>
@@ -56,8 +56,8 @@ const Footer = () => {
 
           {/* Kontakt */}
           <div>
-            <h3 className="text-foreground font-sans font-semibold text-sm mb-4">Kontakt</h3>
-            <ul className="space-y-2.5 text-sm text-foreground/70">
+            <h3 className="text-white font-sans font-semibold text-sm mb-4">Kontakt</h3>
+            <ul className="space-y-2.5 text-sm text-white/70">
               <li>123 Mayfair Lane,<br />London, UK W1K 2AB</li>
               <li><a href="tel:+442012345678" className="hover:text-primary transition-colors">+44 20 1234 5678</a></li>
               <li><a href="mailto:hello@kaisentravel.com" className="hover:text-primary transition-colors">hello@kaisentravel.com</a></li>
@@ -65,7 +65,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-border/60 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-foreground/50">
+        <div className="border-t border-white/15 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-white/50">
           <p>© {new Date().getFullYear()} Kaisen Travel Group. Alla rättigheter förbehållna.</p>
           <div className="flex gap-6">
             <Link to="/faq" className="hover:text-primary transition-colors">Integritetspolicy</Link>
