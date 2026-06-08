@@ -294,7 +294,7 @@ const Home = () => {
       </section>
 
       {/* Hero carousel — contained rounded card, Intrepid-style */}
-      <section className="relative bg-background pb-12 md:pb-16">
+      <section className="relative bg-background pb-4 md:pb-6">
         <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
           <div className="relative rounded-2xl md:rounded-3xl overflow-hidden">
             <Carousel
