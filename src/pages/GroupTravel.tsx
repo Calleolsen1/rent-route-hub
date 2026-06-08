@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Users, Trophy, Briefcase, Heart, Mountain, Utensils, Check } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import InquiryForm from "@/components/InquiryForm";
 import groupImage from "@/assets/kaisen-group.jpg";
 import groupAdventure from "@/assets/group-adventure.jpg";
 import groupCorporate from "@/assets/group-corporate.jpg";
