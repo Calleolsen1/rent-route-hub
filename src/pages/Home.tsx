@@ -421,13 +421,13 @@ const Home = () => {
               {filteredOffers.map((offer) => (
                 <CarouselItem
                   key={offer.title}
-                  className="pl-5 basis-[80%] sm:basis-1/2 md:basis-[38%] lg:basis-[22%]"
+                  className="pl-5 basis-[80%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
                 >
                   <Link
                     to={offer.href}
                     className="group block h-full bg-card rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.10)] transition-shadow"
                   >
-                    <div className="relative aspect-[4/5] overflow-hidden">
+                    <div className="relative aspect-[4/3] overflow-hidden">
                       <img
                         src={offer.image}
                         alt={offer.title}
@@ -440,7 +440,7 @@ const Home = () => {
                           Ny
                         </span>
                       )}
-                      <h3 className="absolute inset-x-0 bottom-0 p-5 font-sans font-bold text-white text-xl md:text-2xl leading-tight">
+                      <h3 className="absolute inset-x-0 bottom-0 p-4 font-sans font-bold text-white text-lg md:text-xl leading-tight">
                         {offer.title}
                       </h3>
                     </div>
