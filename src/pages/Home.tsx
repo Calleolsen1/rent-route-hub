@@ -590,21 +590,24 @@ const Home = () => {
       </section>
 
       {/* Kontakta oss CTA */}
-      <section className="py-16 md:py-20 bg-cream border-t border-border/60">
+      <section className="py-16 md:py-24 bg-background">
         <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
-          <div className="bg-background rounded-2xl p-8 md:p-12 grid md:grid-cols-[1fr_auto] gap-8 items-center shadow-sm border border-border/60">
+          <div className="relative overflow-hidden rounded-3xl bg-navy p-10 md:p-16 grid md:grid-cols-[1fr_auto] gap-10 items-center">
+            {/* Decorative blurred gold orbs */}
+            <div className="pointer-events-none absolute -top-24 -right-16 w-80 h-80 rounded-full bg-gold/30 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-32 -left-20 w-96 h-96 rounded-full bg-primary/40 blur-3xl" />
 
-            <div className="max-w-xl">
-              <p className="text-[11px] tracking-[0.25em] text-primary uppercase mb-3 font-sans">Kontakta oss</p>
-              <h2 className="font-sans text-2xl md:text-3xl font-semibold text-foreground mb-3">
-                Ditt nästa äventyr börjar med ett samtal
+            <div className="relative max-w-2xl">
+              <p className="text-[11px] tracking-[0.3em] text-gold uppercase mb-4 font-sans font-semibold">Kontakta oss</p>
+              <h2 className="font-sans text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">
+                Ditt nästa äventyr börjar med ett <em className="italic font-light text-gold-light">samtal</em>
               </h2>
-              <p className="text-sm text-foreground/70 leading-relaxed">
+              <p className="text-base text-white/70 leading-relaxed">
                 Prata med en Kaisen-konsult idag. Inga mallar, inga algoritmer — bara genuin expertis dedikerad till din perfekta resa.
               </p>
             </div>
-            <Link to="/contact" className="md:justify-self-end">
-              <Button size="lg" className="rounded-full bg-foreground hover:bg-foreground/90 text-background px-8 text-sm">
+            <Link to="/contact" className="relative md:justify-self-end">
+              <Button size="lg" className="rounded-full bg-gold hover:bg-gold/90 text-navy font-semibold px-8 text-sm shadow-lg">
                 Börja planera nu
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -612,6 +615,7 @@ const Home = () => {
           </div>
         </div>
       </section>
+
 
       <Footer />
     </div>
