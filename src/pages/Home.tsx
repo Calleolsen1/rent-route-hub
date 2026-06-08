@@ -429,15 +429,12 @@ const Home = () => {
       {/* Längre erbjudanden — service cards carousel */}
       <section className="py-16 md:py-24 bg-cream">
         <div className="container mx-auto px-4">
-          <div className="flex items-end justify-between mb-10 gap-6">
-            <div>
-              <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Våra specialområden</p>
-              <h2 className="font-display text-3xl md:text-4xl text-foreground">
-                Upplevelser som <em className="italic font-light">formar minnen</em>
-              </h2>
-            </div>
-            <Link to="/services" className="hidden md:inline-flex items-center gap-2 text-sm text-primary tracking-wider uppercase hover:gap-3 transition-all">
-              Se alla <ArrowRight className="h-4 w-4" />
+          <div className="flex items-center justify-between mb-8 gap-6">
+            <h2 className="font-sans font-semibold text-xl md:text-2xl text-foreground relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-16 after:h-[2px] after:bg-primary">
+              Upplevelser som formar minnen
+            </h2>
+            <Link to="/services" className="hidden md:inline-flex items-center gap-2 text-sm font-semibold text-primary border border-primary/30 px-5 py-2.5 rounded-full hover:bg-primary hover:text-primary-foreground transition-colors">
+              Se alla
             </Link>
           </div>
 
