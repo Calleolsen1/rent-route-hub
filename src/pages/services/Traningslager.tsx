@@ -19,6 +19,7 @@ const camps = [
  location: "La Manga, Spanien",
  title: "Klassisk fotbollsdestination",
  desc: "Toppmoderna gräs- och konstgräsplaner, milt klimat året runt och ett av Europas mest etablerade träningsläger för fotbollslag på alla nivåer.",
+ price: "från 6 900 kr / person",
  },
  {
  image: algarveImg,
@@ -26,6 +27,7 @@ const camps = [
  location: "Algarve, Portugal",
  title: "Vinterläger vid Atlanten",
  desc: "Solsäkra vintrar, professionella anläggningar och ett brett utbud av planer. Populärt bland både ungdomslag och seniorlag i förberedelseperioden.",
+ price: "från 7 500 kr / person",
  },
  {
  image: belekImg,
@@ -33,6 +35,7 @@ const camps = [
  location: "Belek, Turkiet",
  title: "Allt-inkluderat i förstklassig miljö",
  desc: "Stora hotellanläggningar med flera planer på samma område, träningstider efter behov och full service. Perfekt för läger med kort framförhållning.",
+ price: "från 8 200 kr / person",
  },
  {
  image: italyImg,
@@ -40,6 +43,7 @@ const camps = [
  location: "Norra Italien",
  title: "Träning i bergslandskap",
  desc: "Välskötta planer i lugn miljö, högkvalitativ italiensk gastronomi och nära till sjöar och berg för aktiv återhämtning mellan passen.",
+ price: "från 7 900 kr / person",
  },
  {
  image: mallorcaSwimImg,
@@ -47,6 +51,7 @@ const camps = [
  location: "Mallorca, Spanien",
  title: "50-metersbassäng under öppen himmel",
  desc: "Olympisk utomhusbassäng med hela banor till förfogande, varma morgnar och boenden direkt vid anläggningen. Ideal för seriösa simläger.",
+ price: "från 8 900 kr / person",
  },
  {
  image: monteGordoImg,
@@ -54,6 +59,7 @@ const camps = [
  location: "Monte Gordo, Portugal",
  title: "Tartanbana med havet runt hörnet",
  desc: "Fullstor friidrottsanläggning med kastbur, längdhoppsgrop och milt vinterklimat. En favorit för svenska friidrottsklubbar i februari–mars.",
+ price: "från 7 200 kr / person",
  },
 ];
 
@@ -130,6 +136,7 @@ export default function Traningslager() {
  <h3 className="font-display text-xl text-foreground mb-2">{camp.title}</h3>
  <div className="w-8 h-px bg-primary mb-3" />
  <p className="text-muted-foreground text-sm leading-relaxed flex-1">{camp.desc}</p>
+ <p className="mt-4 pt-4 border-t border-border text-sm font-sans text-navy font-medium">{camp.price}</p>
  </div>
  </article>
  ))}
