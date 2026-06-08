@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, Users, Trophy, Star, Shield, Globe, Calendar, MapPin, Flag, Search } from "lucide-react";
@@ -194,7 +194,6 @@ const whyUs = [
 
 const Home = () => {
   const [activeHero, setActiveHero] = useState(0);
-  const [heroQuery, setHeroQuery] = useState("");
   const [offerTab, setOfferTab] = useState<"alla" | "nya" | "populara">("alla");
 
   const offerTabs = [
@@ -210,73 +209,14 @@ const Home = () => {
       ? quickOffers.slice(0, 5)
       : quickOffers;
 
-  const navigate = useNavigate();
 
-  const handleHeroSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    const q = heroQuery.trim();
-    navigate(q ? `/search?q=${encodeURIComponent(q)}` : "/search");
-  };
+
 
 
   return (
     <div className="min-h-screen">
       <Navbar />
 
-      {/* Search bar — full width, above hero (Intrepid-style with date range) */}
-      <section className="bg-background">
-        <div className="w-full max-w-4xl mx-auto px-6 md:px-10 pt-6 md:pt-8 pb-4">
-          <form
-            onSubmit={handleHeroSearch}
-            className="flex items-stretch bg-white border border-border rounded-full shadow-sm p-1.5 md:p-2"
-          >
-            {/* Search input */}
-            <div className="relative flex items-center flex-1 pl-4 md:pl-5">
-              <MapPin className="h-5 w-5 text-muted-foreground flex-shrink-0" strokeWidth={2} />
-              <Input
-                type="search"
-                value={heroQuery}
-                onChange={(e) => setHeroQuery(e.target.value)}
-                placeholder="Sök destination, lag, race eller resetyp..."
-                className="h-11 md:h-12 border-0 bg-transparent pl-3 text-base focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none placeholder:text-muted-foreground"
-              />
-            </div>
-
-            {/* Divider */}
-            <div className="hidden md:block w-px bg-border my-2.5" />
-
-            {/* Date range */}
-            <div className="hidden md:flex items-center gap-2 px-5">
-              <Calendar className="h-5 w-5 text-muted-foreground flex-shrink-0" strokeWidth={2} />
-              <Input
-                type="text"
-                aria-label="Startdatum"
-                placeholder="Startdatum"
-                onFocus={(e) => (e.currentTarget.type = "date")}
-                onBlur={(e) => { if (!e.currentTarget.value) e.currentTarget.type = "text"; }}
-                className="h-11 md:h-12 w-[120px] border-0 bg-transparent px-1 text-sm focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
-              />
-              <span className="text-muted-foreground">—</span>
-              <Input
-                type="text"
-                aria-label="Slutdatum"
-                placeholder="Slutdatum"
-                onFocus={(e) => (e.currentTarget.type = "date")}
-                onBlur={(e) => { if (!e.currentTarget.value) e.currentTarget.type = "text"; }}
-                className="h-11 md:h-12 w-[120px] border-0 bg-transparent px-1 text-sm focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
-              />
-            </div>
-
-            <Button
-              type="submit"
-              className="h-11 md:h-12 rounded-full bg-primary hover:bg-primary/90 px-7 text-sm font-medium flex-shrink-0"
-            >
-              Sök
-              <Search className="ml-2 h-4 w-4" />
-            </Button>
-          </form>
-        </div>
-      </section>
 
       {/* Hero carousel — contained rounded card, Intrepid-style */}
       <section className="relative bg-background pb-4 md:pb-6">

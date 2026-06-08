@@ -177,13 +177,8 @@ const Navbar = () => {
                     <DropdownMenuLabel>Mitt konto</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link to="/guest/dashboard">Mina resor</Link>
+                      <Link to="/mitt-kaisen/dashboard">Mitt Kaisen</Link>
                     </DropdownMenuItem>
-                    {isHost && (
-                      <DropdownMenuItem asChild>
-                        <Link to="/host/dashboard">Host-panel</Link>
-                      </DropdownMenuItem>
-                    )}
                     {isAdmin && (
                       <DropdownMenuItem asChild>
                         <Link to="/admin/dashboard">Admin-panel</Link>
@@ -302,8 +297,8 @@ const Navbar = () => {
             <div className="pt-4 space-y-3 border-t border-border/40">
               {user ? (
                 <>
-                  <Link to="/guest/dashboard" onClick={() => setMobileOpen(false)}>
-                    <Button variant="outline" className="w-full rounded-none">Mitt konto</Button>
+                  <Link to="/mitt-kaisen/dashboard" onClick={() => setMobileOpen(false)}>
+                    <Button variant="outline" className="w-full rounded-none">Mitt Kaisen</Button>
                   </Link>
                   <Button variant="ghost" className="w-full rounded-none" onClick={signOut}>
                     <LogOut className="h-4 w-4 mr-2" /> Logga ut

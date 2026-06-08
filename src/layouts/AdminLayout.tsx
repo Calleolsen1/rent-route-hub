@@ -1,81 +1,87 @@
 import { useEffect } from "react";
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import { Outlet, NavLink, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
-import { HostSidebar, NavigationItem } from "@/components/host/HostSidebar";
-import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
-import {
-  LayoutDashboard,
-  Users,
-  Plane,
-  FileText,
-  MessageSquare,
-  Loader2,
-  UsersRound,
-} from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { LayoutDashboard, Inbox, ShoppingBag, Users, MessageSquare, FileText, LogOut } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-const adminNavigationItems: NavigationItem[] = [
-  { name: "Översikt", href: "/admin/dashboard", icon: LayoutDashboard },
-  { name: "Gruppresor", href: "/admin/trips", icon: UsersRound },
-  { name: "Resenärer", href: "/admin/users", icon: Users },
-  { name: "Fakturering", href: "/admin/invoices", icon: FileText },
-  { name: "Meddelanden", href: "/admin/support", icon: MessageSquare },
+const navItems = [
+  { to: "/admin/dashboard", label: "Översikt", icon: LayoutDashboard },
+  { to: "/admin/inquiries", label: "Förfrågningar", icon: Inbox },
+  { to: "/admin/orders", label: "Beställningar", icon: ShoppingBag },
+  { to: "/admin/users", label: "Användare", icon: Users },
+  { to: "/admin/support", label: "Support", icon: MessageSquare },
+  { to: "/admin/content", label: "Innehåll", icon: FileText },
 ];
 
-const getPageTitle = (pathname: string): string => {
-  if (pathname === "/admin/dashboard") return "Översikt";
-  if (pathname === "/admin/trips") return "Gruppresor";
-  if (pathname === "/admin/users") return "Resenärer";
-  if (pathname === "/admin/invoices") return "Fakturering";
-  if (pathname === "/admin/support") return "Meddelanden";
-  return "Admin";
-};
-
 export default function AdminLayout() {
-  const { user } = useAuth();
-  const { isAdmin, loading } = useUserRole();
+  const { user, loading } = useAuth();
+  const { isAdmin, loading: roleLoading } = useUserRole();
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const pageTitle = getPageTitle(location.pathname);
 
   useEffect(() => {
-    if (!loading) {
-      if (!user) {
-        navigate("/");
-      } else if (!isAdmin) {
-        navigate("/");
-      }
-    }
-  }, [user, isAdmin, loading, navigate]);
+    if (!loading && !user) navigate("/mitt-kaisen");
+  }, [user, loading, navigate]);
 
-  if (loading) {
+  useEffect(() => {
+    if (!loading && !roleLoading && user && !isAdmin) navigate("/");
+  }, [user, isAdmin, loading, roleLoading, navigate]);
+
+  if (loading || roleLoading || !user || !isAdmin) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-muted-foreground text-sm">Laddar…</div>
       </div>
     );
   }
 
-  if (!isAdmin) {
-    return null;
-  }
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/");
+  };
 
   return (
-    <div className="flex min-h-screen bg-background w-full">
-      <HostSidebar
-        navigationItems={adminNavigationItems}
-        logoText="KAISEN"
-      />
-      <div className="flex-1">
-        <div className="container mx-auto pt-8 px-4 lg:px-8">
-          <AdminPageHeader
-            title={pageTitle}
-            navigationItems={adminNavigationItems}
-          />
-          <Outlet />
+    <div className="min-h-screen flex bg-background">
+      <aside className="hidden md:flex flex-col w-64 border-r border-border bg-card">
+        <div className="p-6 border-b border-border">
+          <Link to="/" className="block">
+            <span className="text-xl font-light tracking-widest text-primary font-display">
+              KAISEN
+            </span>
+            <p className="text-xs text-muted-foreground mt-1">Admin</p>
+          </Link>
         </div>
-      </div>
+        <nav className="flex-1 p-3 space-y-1">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) =>
+                cn(
+                  "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+                  isActive
+                    ? "bg-primary text-primary-foreground"
+                    : "text-foreground hover:bg-accent"
+                )
+              }
+            >
+              <item.icon className="h-4 w-4" />
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-3 m-3 px-3 py-2 rounded-md text-sm text-muted-foreground hover:text-foreground hover:bg-accent"
+        >
+          <LogOut className="h-4 w-4" />
+          Logga ut
+        </button>
+      </aside>
+      <main className="flex-1 overflow-auto">
+        <Outlet />
+      </main>
     </div>
   );
 }
