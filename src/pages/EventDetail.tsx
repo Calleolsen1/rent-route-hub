@@ -8,6 +8,7 @@ import { ArrowLeft, ArrowRight, Calendar, MapPin, Minus, Plus, Ticket, Users } f
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { formatEventDateTime, formatSek } from "@/lib/formatSek";
+import { getStripeEnvironment } from "@/lib/stripe";
 
 type EventRow = {
   id: string;
@@ -43,6 +44,8 @@ export default function EventDetail() {
   const { user } = useAuth();
   const [event, setEvent] = useState<EventRow | null>(null);
   const [categories, setCategories] = useState<CategoryRow[]>([]);
+  const [livePrices, setLivePrices] = useState<Record<string, number>>({});
+  const [pricesLoading, setPricesLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const [selectedCatId, setSelectedCatId] = useState<string | null>(null);
   const [qty, setQty] = useState(2);
@@ -63,23 +66,47 @@ export default function EventDetail() {
       setCategories((cats as CategoryRow[]) ?? []);
       if (cats && cats.length) setSelectedCatId((cats[0] as CategoryRow).id);
       setLoading(false);
+
+      // Fetch live prices from Stripe (with markup applied)
+      if (cats && cats.length) {
+        try {
+          const { data: pr } = await supabase.functions.invoke("get-ticket-prices", {
+            body: { event_id: id, environment: getStripeEnvironment() },
+          });
+          const map: Record<string, number> = {};
+          for (const p of (pr?.prices ?? [])) map[p.category_id] = p.final_sek;
+          setLivePrices(map);
+        } catch (e) {
+          console.error("price fetch failed", e);
+        } finally {
+          setPricesLoading(false);
+        }
+      } else {
+        setPricesLoading(false);
+      }
     })();
   }, [id]);
+
+  const priceFor = (c: CategoryRow) => livePrices[c.id] ?? Number(c.unit_price_sek);
+
 
   const selectedCat = useMemo(
     () => categories.find((c) => c.id === selectedCatId) ?? null,
     [categories, selectedCatId],
   );
-  const total = selectedCat ? Number(selectedCat.unit_price_sek) * qty : 0;
+  const total = selectedCat ? priceFor(selectedCat) * qty : 0;
 
   const handleCheckout = async () => {
     if (!event || !selectedCat) return;
     setBusy(true);
     try {
+      const unitPrice = priceFor(selectedCat);
+      if (!unitPrice || unitPrice <= 0) throw new Error("Pris ej tillgängligt");
       const { data: orderId, error } = await supabase.rpc("create_order_with_items", {
         p_event_id: event.id,
         p_category_id: selectedCat.id,
         p_qty: qty,
+        p_unit_price_sek: unitPrice,
         p_customer_email: user?.email ?? "",
       });
       if (error || !orderId) throw error ?? new Error("Kunde inte skapa order");
@@ -226,7 +253,7 @@ export default function EventDetail() {
                         </div>
                         <div className="text-right">
                           <p className="font-display text-xl">
-                            {formatSek(c.unit_price_sek)}
+                            {pricesLoading ? "…" : formatSek(priceFor(c))}
                           </p>
                           <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
                             per biljett
@@ -255,7 +282,7 @@ export default function EventDetail() {
                 <>
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-sm">{selectedCat.name}</span>
-                    <span className="text-sm">{formatSek(selectedCat.unit_price_sek)}</span>
+                    <span className="text-sm">{pricesLoading ? "…" : formatSek(priceFor(selectedCat))}</span>
                   </div>
 
                   <div className="flex items-center justify-between mb-6">

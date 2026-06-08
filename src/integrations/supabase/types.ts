@@ -493,6 +493,8 @@ export type Database = {
           external_sub_category: string | null
           id: string
           last_synced_at: string | null
+          markup_fixed_sek: number
+          markup_pct: number
           name: string
           party_size_together: number
           qty_available: number
@@ -509,6 +511,8 @@ export type Database = {
           external_sub_category?: string | null
           id?: string
           last_synced_at?: string | null
+          markup_fixed_sek?: number
+          markup_pct?: number
           name: string
           party_size_together?: number
           qty_available?: number
@@ -525,6 +529,8 @@ export type Database = {
           external_sub_category?: string | null
           id?: string
           last_synced_at?: string | null
+          markup_fixed_sek?: number
+          markup_pct?: number
           name?: string
           party_size_together?: number
           qty_available?: number
@@ -693,27 +699,18 @@ export type Database = {
         Args: { p_admin_user_id: string; p_user_id: string }
         Returns: Json
       }
-      create_order_with_items:
-        | {
-            Args: {
-              p_category_id: string
-              p_customer_email?: string
-              p_event_id: string
-              p_qty: number
-            }
-            Returns: string
-          }
-        | {
-            Args: {
-              p_category_id: string
-              p_customer_email?: string
-              p_customer_name?: string
-              p_customer_phone?: string
-              p_event_id: string
-              p_qty: number
-            }
-            Returns: string
-          }
+      create_order_with_items: {
+        Args: {
+          p_category_id: string
+          p_customer_email?: string
+          p_customer_name?: string
+          p_customer_phone?: string
+          p_event_id: string
+          p_qty: number
+          p_unit_price_sek: number
+        }
+        Returns: string
+      }
       decrement_ticket_qty: {
         Args: { p_category_id: string; p_qty: number }
         Returns: undefined
