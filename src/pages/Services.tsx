@@ -68,7 +68,7 @@ export default function Services() {
  <Navbar />
 
  {/* Hero */}
- <section className="relative h-[50vh] min-h-[360px] flex items-end">
+ <section className="relative h-[38vh] min-h-[280px] flex items-end">
  <div className="absolute inset-0">
  <img src={heroImage} alt="Kaisen Experiences" className="w-full h-full object-cover" />
  <div className="absolute inset-0 bg-navy/70" />

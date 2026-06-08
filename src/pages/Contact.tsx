@@ -17,7 +17,7 @@ export default function Contact() {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative h-[40vh] min-h-[280px] flex items-end">
+      <section className="relative h-[32vh] min-h-[220px] flex items-end">
         <div className="absolute inset-0">
           <img src={heroImage} alt="Kontakta Kaisen" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-navy/70" />
