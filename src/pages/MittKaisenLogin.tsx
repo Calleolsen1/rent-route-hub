@@ -65,16 +65,16 @@ export default function MittKaisenLogin() {
  <div className="hidden lg:flex lg:w-1/2 flex-col justify-between p-16" style={{ backgroundColor: "hsl(222 50% 9%)" }}>
  <div>
  <div className="flex items-center gap-3 mb-16">
- <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "hsl(38 65% 38%)" }}>
+ <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "hsl(201 100% 35%)" }}>
  <span className="text-white font-bold text-lg">K</span>
  </div>
- <span className="text-2xl font-light tracking-widest" style={{ color: "hsl(38 80% 85%)", fontFamily: "'Cormorant Garamond', serif" }}>
+ <span className="text-2xl font-light tracking-widest" style={{ color: "hsl(210 30% 92%)", fontFamily: "'Cormorant Garamond', serif" }}>
  MITT KAISEN
  </span>
  </div>
 
  <div className="mt-8">
- <h1 className="text-5xl font-light leading-tight mb-6" style={{ color: "hsl(38 80% 85%)", fontFamily: "'Cormorant Garamond', serif" }}>
+ <h1 className="text-5xl font-light leading-tight mb-6" style={{ color: "hsl(210 30% 92%)", fontFamily: "'Cormorant Garamond', serif" }}>
  Din personliga<br />reseportal
  </h1>
  <p className="text-lg font-light leading-relaxed" style={{ color: "hsl(215 15% 65%)" }}>
@@ -95,17 +95,17 @@ export default function MittKaisenLogin() {
  <div className="w-full max-w-md">
  {/* Mobile logo */}
  <div className="flex items-center gap-3 mb-12 lg:hidden">
- <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ backgroundColor: "hsl(38 65% 38%)" }}>
+ <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ backgroundColor: "hsl(201 100% 35%)" }}>
  <span className="text-white font-bold">K</span>
  </div>
- <span className="text-xl font-light tracking-widest" style={{ color: "hsl(38 80% 85%)", fontFamily: "'Cormorant Garamond', serif" }}>
+ <span className="text-xl font-light tracking-widest" style={{ color: "hsl(210 30% 92%)", fontFamily: "'Cormorant Garamond', serif" }}>
  MITT KAISEN
  </span>
  </div>
 
  {!resetMode ? (
  <>
- <h2 className="text-3xl font-light mb-2" style={{ color: "hsl(38 80% 85%)", fontFamily: "'Cormorant Garamond', serif" }}>
+ <h2 className="text-3xl font-light mb-2" style={{ color: "hsl(210 30% 92%)", fontFamily: "'Cormorant Garamond', serif" }}>
  Välkommen tillbaka
  </h2>
  <p className="text-sm mb-10" style={{ color: "hsl(215 15% 55%)" }}>
@@ -129,7 +129,7 @@ export default function MittKaisenLogin() {
  className="pl-10 border-0 focus-visible:ring-1"
  style={{
  backgroundColor: "hsl(222 40% 18%)",
- color: "hsl(38 80% 85%)",
+ color: "hsl(210 30% 92%)",
  borderColor: "hsl(222 35% 22%)",
  }}
  />
@@ -152,7 +152,7 @@ export default function MittKaisenLogin() {
  className="pl-10 border-0 focus-visible:ring-1"
  style={{
  backgroundColor: "hsl(222 40% 18%)",
- color: "hsl(38 80% 85%)",
+ color: "hsl(210 30% 92%)",
  borderColor: "hsl(222 35% 22%)",
  }}
  />
@@ -163,7 +163,7 @@ export default function MittKaisenLogin() {
  type="submit"
  disabled={loading}
  className="w-full h-11 text-sm font-medium tracking-wide"
- style={{ backgroundColor: "hsl(38 65% 38%)", color: "white" }}
+ style={{ backgroundColor: "hsl(201 100% 35%)", color: "white" }}
  >
  {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
  {loading ? "Loggar in..." : "Logga in"}
@@ -174,7 +174,7 @@ export default function MittKaisenLogin() {
  <button
  onClick={() => setResetMode(true)}
  className="text-sm hover:underline transition-all"
- style={{ color: "hsl(38 65% 58%)" }}
+ style={{ color: "hsl(201 100% 55%)" }}
  >
  Glömt lösenord?
  </button>
@@ -186,20 +186,20 @@ export default function MittKaisenLogin() {
  </>
  ) : (
  <>
- <h2 className="text-3xl font-light mb-2" style={{ color: "hsl(38 80% 85%)", fontFamily: "'Cormorant Garamond', serif" }}>
+ <h2 className="text-3xl font-light mb-2" style={{ color: "hsl(210 30% 92%)", fontFamily: "'Cormorant Garamond', serif" }}>
  {resetSent ? "Mejl skickat!" : "Återställ lösenord"}
  </h2>
 
  {resetSent ? (
  <div className="mt-6">
  <p className="text-sm leading-relaxed mb-8" style={{ color: "hsl(215 15% 65%)" }}>
- Vi har skickat ett återställningsmail till <strong style={{ color: "hsl(38 80% 85%)" }}>{email}</strong>.
+ Vi har skickat ett återställningsmail till <strong style={{ color: "hsl(210 30% 92%)" }}>{email}</strong>.
  Klicka på länken i mejlet för att sätta ett nytt lösenord.
  </p>
  <button
  onClick={() => { setResetMode(false); setResetSent(false); }}
  className="text-sm hover:underline"
- style={{ color: "hsl(38 65% 58%)" }}
+ style={{ color: "hsl(201 100% 55%)" }}
  >
  ← Tillbaka till inloggning
  </button>
@@ -226,7 +226,7 @@ export default function MittKaisenLogin() {
  className="pl-10 border-0 focus-visible:ring-1"
  style={{
  backgroundColor: "hsl(222 40% 18%)",
- color: "hsl(38 80% 85%)",
+ color: "hsl(210 30% 92%)",
  borderColor: "hsl(222 35% 22%)",
  }}
  />
@@ -237,7 +237,7 @@ export default function MittKaisenLogin() {
  type="submit"
  disabled={loading}
  className="w-full h-11"
- style={{ backgroundColor: "hsl(38 65% 38%)", color: "white" }}
+ style={{ backgroundColor: "hsl(201 100% 35%)", color: "white" }}
  >
  {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
  Skicka återställningslänk
@@ -248,7 +248,7 @@ export default function MittKaisenLogin() {
  <button
  onClick={() => setResetMode(false)}
  className="text-sm hover:underline"
- style={{ color: "hsl(38 65% 58%)" }}
+ style={{ color: "hsl(201 100% 55%)" }}
  >
  ← Tillbaka till inloggning
  </button>

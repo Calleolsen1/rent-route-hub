@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* Kaisen Travel Group Design System
-   Palette: Deep Navy, Warm Gold, Cream, Terracotta
+   Palette: Deep Navy + Neutrals. NO GOLD anywhere on the site.
    All colors MUST be HSL.
 */
 
@@ -52,8 +52,8 @@
     --navy: 201 100% 21%;
     --navy-foreground: 0 0% 100%;
 
-    /* "Gold" tokens now mapped to muted blue accent for brand consistency */
-    --gold: 210 39% 45%; /* #4673A0 */
+    /* Legacy "gold" tokens remapped to navy/neutrals — DO NOT use gold hues here */
+    --gold: 210 39% 45%; /* muted navy-blue accent */
     --gold-light: 210 39% 65%;
     --gold-pale: 210 50% 95%;
 
@@ -61,66 +61,67 @@
     --cream: 220 14% 94%;
     --cream-dark: 220 13% 88%;
 
-    /* Terracotta accent */
+    /* Terracotta accent (kept for warm contrast, used sparingly) */
     --terracotta: 18 55% 52%;
     --terracotta-light: 18 45% 88%;
 
+    /* Sidebar — navy palette, no gold */
     --sidebar-background: 222 50% 10%;
-    --sidebar-foreground: 38 60% 85%;
-    --sidebar-primary: 38 65% 38%;
+    --sidebar-foreground: 210 20% 92%;
+    --sidebar-primary: 201 100% 35%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 222 40% 18%;
-    --sidebar-accent-foreground: 38 60% 85%;
+    --sidebar-accent-foreground: 210 20% 92%;
     --sidebar-border: 222 35% 22%;
-    --sidebar-ring: 38 65% 38%;
+    --sidebar-ring: 201 100% 35%;
 
     --calendar-available: 142 59% 49%;
     --calendar-blocked: 346 100% 64%;
     --calendar-booked: 220 33% 87%;
-    --calendar-selected: 38 65% 38%;
+    --calendar-selected: 201 100% 35%;
   }
 
   .dark {
     --background: 222 50% 8%;
-    --foreground: 40 30% 90%;
+    --foreground: 210 20% 92%;
     --card: 222 40% 12%;
-    --card-foreground: 40 30% 90%;
+    --card-foreground: 210 20% 92%;
     --popover: 222 40% 12%;
-    --popover-foreground: 40 30% 90%;
-    --primary: 38 65% 55%;
+    --popover-foreground: 210 20% 92%;
+    --primary: 201 100% 55%;
     --primary-foreground: 222 50% 8%;
     --secondary: 222 35% 18%;
-    --secondary-foreground: 40 30% 90%;
+    --secondary-foreground: 210 20% 92%;
     --muted: 222 35% 18%;
     --muted-foreground: 215 15% 60%;
-    --accent: 38 30% 22%;
-    --accent-foreground: 38 65% 75%;
+    --accent: 210 50% 22%;
+    --accent-foreground: 210 60% 85%;
     --destructive: 0 62% 30%;
-    --destructive-foreground: 40 30% 90%;
+    --destructive-foreground: 210 20% 92%;
     --border: 222 30% 25%;
     --input: 222 30% 25%;
-    --ring: 38 65% 55%;
+    --ring: 201 100% 55%;
     --navy: 222 50% 6%;
-    --navy-foreground: 38 80% 85%;
-    --gold: 38 65% 55%;
-    --gold-light: 38 70% 68%;
-    --gold-pale: 38 30% 20%;
-    --cream: 40 20% 15%;
-    --cream-dark: 35 15% 20%;
+    --navy-foreground: 210 20% 92%;
+    --gold: 210 39% 60%;
+    --gold-light: 210 39% 75%;
+    --gold-pale: 210 30% 22%;
+    --cream: 222 30% 14%;
+    --cream-dark: 222 25% 18%;
     --terracotta: 18 55% 52%;
     --terracotta-light: 18 30% 22%;
     --sidebar-background: 222 50% 6%;
-    --sidebar-foreground: 38 60% 85%;
-    --sidebar-primary: 38 65% 55%;
+    --sidebar-foreground: 210 20% 92%;
+    --sidebar-primary: 201 100% 55%;
     --sidebar-primary-foreground: 222 50% 8%;
     --sidebar-accent: 222 40% 14%;
-    --sidebar-accent-foreground: 38 60% 85%;
+    --sidebar-accent-foreground: 210 20% 92%;
     --sidebar-border: 222 35% 18%;
-    --sidebar-ring: 38 65% 55%;
+    --sidebar-ring: 201 100% 55%;
     --calendar-available: 142 59% 49%;
     --calendar-blocked: 346 100% 64%;
     --calendar-booked: 220 33% 87%;
-    --calendar-selected: 38 65% 55%;
+    --calendar-selected: 201 100% 55%;
   }
 }
 
@@ -180,9 +181,9 @@
   }
 
   @keyframes highlight-pulse {
-    0% { box-shadow: 0 0 0 0 hsla(38, 65%, 38%, 0.4); }
-    30% { box-shadow: 0 0 0 10px hsla(38, 65%, 38%, 0.15); }
-    100% { box-shadow: 0 0 0 0 hsla(38, 65%, 38%, 0); }
+    0% { box-shadow: 0 0 0 0 hsla(201, 100%, 35%, 0.4); }
+    30% { box-shadow: 0 0 0 10px hsla(201, 100%, 35%, 0.15); }
+    100% { box-shadow: 0 0 0 0 hsla(201, 100%, 35%, 0); }
   }
 
   @keyframes fade-in-up {
