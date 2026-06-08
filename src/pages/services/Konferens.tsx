@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, Users, Projector, Utensils, Wifi, Car, Award } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import InquiryForm from "@/components/InquiryForm";
 import konferensHero from "@/assets/konferens-hero.jpg";
 import konferens1 from "@/assets/konferens-dinner.jpg";
 import konferens2 from "@/assets/konferens-event.jpg";
