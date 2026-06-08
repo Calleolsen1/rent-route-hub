@@ -248,9 +248,13 @@ Deno.serve(async (req) => {
 
     // Send email via Resend
     if (resendApiKey && actionLink) {
-      const emailRes = await fetch("https://api.resend.com/emails", {
+      const emailRes = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
         method: "POST",
-        headers: { Authorization: `Bearer ${resendApiKey}`, "Content-Type": "application/json" },
+        headers: {
+          Authorization: `Bearer ${Deno.env.get("LOVABLE_API_KEY")}`,
+          "X-Connection-Api-Key": resendApiKey,
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           from: FROM_EMAIL,
           to: [email.toLowerCase().trim()],
@@ -261,9 +265,9 @@ Deno.serve(async (req) => {
 
       if (!emailRes.ok) {
         const emailErr = await emailRes.json();
-        console.error("Resend error:", emailErr);
+        console.error("Resend gateway error:", emailErr);
         return new Response(
-          JSON.stringify({ success: true, user_id: newUserId, warning: "Konto skapat men mejlet kunde inte skickas via Resend." }),
+          JSON.stringify({ success: true, user_id: newUserId, warning: "Konto skapat men mejlet kunde inte skickas." }),
           { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
