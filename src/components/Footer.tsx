@@ -49,7 +49,7 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pt-1 pb-5">
           <Link to="/" className="inline-block">
             <div className="font-display text-2xl md:text-3xl font-semibold text-white tracking-[0.25em]">KAISEN</div>
-            <div className="text-[10px] tracking-[0.3em] text-white/70 font-sans uppercase mt-1">Travel Group</div>
+            <div className="text-xs tracking-[0.3em] text-white/70 font-sans uppercase mt-1">Travel Group</div>
           </Link>
           <div className="flex gap-4 text-white">
             <a href="#" aria-label="Facebook" className="hover:text-gold transition-colors"><Facebook className="h-4 w-4" /></a>
