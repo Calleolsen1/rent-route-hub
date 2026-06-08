@@ -27,6 +27,7 @@ import AdminOrders from "./pages/admin/Orders";
 import UsersManagement from "./pages/admin/UsersManagement";
 import AdminSupport from "./pages/admin/Support";
 import ContentManagementPage from "./pages/admin/ContentManagement";
+import AdminTickets from "./pages/admin/Tickets";
 import NotFound from "./pages/NotFound";
 import Services from "./pages/Services";
 import GroupTravel from "./pages/GroupTravel";
@@ -87,6 +88,7 @@ const App = () => (
                 <Route path="dashboard" element={<AdminOverview />} />
                 <Route path="inquiries" element={<AdminInquiries />} />
                 <Route path="orders" element={<AdminOrders />} />
+                <Route path="tickets" element={<AdminTickets />} />
                 <Route path="users" element={<UsersManagement />} />
                 <Route path="support" element={<AdminSupport />} />
                 <Route path="content" element={<ContentManagementPage />} />
