@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import f1Image from "@/assets/sport-f1.jpg";
 import { RACES, type RaceInfo } from "@/data/sports";
+import UpcomingEventsList from "@/components/UpcomingEventsList";
 
 export default function F1RacePage() {
   const { race } = useParams<{ race: string }>();
