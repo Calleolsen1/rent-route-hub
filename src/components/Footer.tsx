@@ -90,8 +90,9 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="text-white font-sans font-semibold text-sm mb-3">Kontakt</h3>
-            <ul className="space-y-2 text-xs text-white/80">
+            <h3 className="text-white font-sans font-semibold text-base mb-4">Kontakt</h3>
+            <ul className="space-y-2.5 text-sm text-white/80">
+
               <li>123 Mayfair Lane,<br />London, UK W1K 2AB</li>
               <li><a href="tel:+442012345678" className="hover:text-gold transition-colors">+44 20 1234 5678</a></li>
               <li><a href="mailto:hello@kaisentravel.com" className="hover:text-gold transition-colors">hello@kaisentravel.com</a></li>
