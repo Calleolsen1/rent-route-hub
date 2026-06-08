@@ -67,25 +67,25 @@ export default function MittKaisenResetPassword() {
  <div className="min-h-screen flex items-center justify-center p-8" style={{ backgroundColor: "hsl(222 50% 12%)" }}>
  <div className="w-full max-w-md">
  <div className="flex items-center gap-3 mb-12">
- <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ backgroundColor: "hsl(38 65% 38%)" }}>
+ <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ backgroundColor: "hsl(201 100% 35%)" }}>
  <span className="text-white font-bold">K</span>
  </div>
- <span className="text-xl font-light tracking-widest" style={{ color: "hsl(38 80% 85%)", fontFamily: "'Cormorant Garamond', serif" }}>
+ <span className="text-xl font-light tracking-widest" style={{ color: "hsl(210 30% 92%)", fontFamily: "'Cormorant Garamond', serif" }}>
  MITT KAISEN
  </span>
  </div>
 
  {done ? (
  <div className="text-center">
- <CheckCircle className="h-16 w-16 mx-auto mb-6" style={{ color: "hsl(38 65% 38%)" }} />
- <h2 className="text-3xl font-light mb-3" style={{ color: "hsl(38 80% 85%)", fontFamily: "'Cormorant Garamond', serif" }}>
+ <CheckCircle className="h-16 w-16 mx-auto mb-6" style={{ color: "hsl(201 100% 35%)" }} />
+ <h2 className="text-3xl font-light mb-3" style={{ color: "hsl(210 30% 92%)", fontFamily: "'Cormorant Garamond', serif" }}>
  Lösenord uppdaterat!
  </h2>
  <p style={{ color: "hsl(215 15% 55%)" }}>Du skickas nu till din portal...</p>
  </div>
  ) : (
  <>
- <h2 className="text-3xl font-light mb-2" style={{ color: "hsl(38 80% 85%)", fontFamily: "'Cormorant Garamond', serif" }}>
+ <h2 className="text-3xl font-light mb-2" style={{ color: "hsl(210 30% 92%)", fontFamily: "'Cormorant Garamond', serif" }}>
  Sätt ditt lösenord
  </h2>
  <p className="text-sm mb-10" style={{ color: "hsl(215 15% 55%)" }}>
@@ -114,7 +114,7 @@ export default function MittKaisenResetPassword() {
  required
  minLength={8}
  className="pl-10 border-0"
- style={{ backgroundColor: "hsl(222 40% 18%)", color: "hsl(38 80% 85%)" }}
+ style={{ backgroundColor: "hsl(222 40% 18%)", color: "hsl(210 30% 92%)" }}
  />
  </div>
  </div>
@@ -134,7 +134,7 @@ export default function MittKaisenResetPassword() {
  required
  minLength={8}
  className="pl-10 border-0"
- style={{ backgroundColor: "hsl(222 40% 18%)", color: "hsl(38 80% 85%)" }}
+ style={{ backgroundColor: "hsl(222 40% 18%)", color: "hsl(210 30% 92%)" }}
  />
  </div>
  </div>
@@ -143,7 +143,7 @@ export default function MittKaisenResetPassword() {
  type="submit"
  disabled={loading || !sessionReady}
  className="w-full h-11 font-medium"
- style={{ backgroundColor: "hsl(38 65% 38%)", color: "white" }}
+ style={{ backgroundColor: "hsl(201 100% 35%)", color: "white" }}
  >
  {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
  {loading ? "Sparar..." : "Spara lösenord"}

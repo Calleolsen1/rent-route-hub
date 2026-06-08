@@ -51,7 +51,7 @@ export default function MittKaisenDashboard() {
   const firstName = profile?.first_name || user?.email?.split("@")[0] || "Resenär";
 
   const stats = [
-    { label: "Kommande resor", value: upcoming.length, icon: CalendarDays, color: "hsl(38 65% 38%)" },
+    { label: "Kommande resor", value: upcoming.length, icon: CalendarDays, color: "hsl(201 100% 35%)" },
     { label: "Genomförda resor", value: bookings.filter((b) => b.status === "completed").length, icon: MapPin, color: "hsl(142 71% 45%)" },
     { label: "Aktiva bokningar", value: active.length + upcoming.length, icon: FileText, color: "hsl(217 91% 60%)" },
   ];
@@ -101,12 +101,12 @@ export default function MittKaisenDashboard() {
             )}
             <div className="absolute inset-0 flex flex-col justify-end p-6">
               <div className="flex items-center gap-2 mb-1">
-                <Clock className="h-3 w-3" style={{ color: "hsl(38 65% 58%)" }} />
-                <span className="text-xs font-medium" style={{ color: "hsl(38 65% 58%)" }}>
+                <Clock className="h-3 w-3" style={{ color: "hsl(201 100% 55%)" }} />
+                <span className="text-xs font-medium" style={{ color: "hsl(201 100% 55%)" }}>
                   {daysUntil !== null && daysUntil > 0 ? `Om ${daysUntil} dagar` : "Pågår nu"}
                 </span>
               </div>
-              <h2 className="text-2xl font-light" style={{ color: "hsl(38 80% 85%)", fontFamily: "'Cormorant Garamond', serif" }}>
+              <h2 className="text-2xl font-light" style={{ color: "hsl(210 30% 92%)", fontFamily: "'Cormorant Garamond', serif" }}>
                 {(nextTrip.listings as any)?.title || "Din nästa resa"}
               </h2>
               <p className="text-sm" style={{ color: "hsl(215 15% 65%)" }}>
@@ -117,25 +117,25 @@ export default function MittKaisenDashboard() {
           <div className="p-6 flex items-center justify-between">
             <div>
               <p className="text-xs mb-1" style={{ color: "hsl(215 15% 50%)" }}>Datum</p>
-              <p className="text-sm font-light" style={{ color: "hsl(38 80% 85%)" }}>
+              <p className="text-sm font-light" style={{ color: "hsl(210 30% 92%)" }}>
                 {format(new Date(nextTrip.checkin_date), "d MMM", { locale: sv })} –{" "}
                 {format(new Date(nextTrip.checkout_date), "d MMM yyyy", { locale: sv })}
               </p>
             </div>
             <div>
               <p className="text-xs mb-1" style={{ color: "hsl(215 15% 50%)" }}>Nätter</p>
-              <p className="text-sm font-light" style={{ color: "hsl(38 80% 85%)" }}>{nextTrip.nights}</p>
+              <p className="text-sm font-light" style={{ color: "hsl(210 30% 92%)" }}>{nextTrip.nights}</p>
             </div>
             <div>
               <p className="text-xs mb-1" style={{ color: "hsl(215 15% 50%)" }}>Totalt</p>
-              <p className="text-sm font-light" style={{ color: "hsl(38 80% 85%)" }}>
+              <p className="text-sm font-light" style={{ color: "hsl(210 30% 92%)" }}>
                 {new Intl.NumberFormat("sv-SE", { style: "currency", currency: "SEK" }).format(nextTrip.total_price)}
               </p>
             </div>
             <Link
               to="/mitt-kaisen/resor"
               className="px-4 py-2 rounded-lg text-xs font-medium"
-              style={{ backgroundColor: "hsl(38 65% 38%)", color: "white" }}
+              style={{ backgroundColor: "hsl(201 100% 35%)", color: "white" }}
             >
               Se detaljer
             </Link>
@@ -159,7 +159,7 @@ export default function MittKaisenDashboard() {
           className="rounded-xl p-5 flex items-center gap-3 bg-white border hover:shadow-sm transition-shadow"
           style={{ borderColor: "hsl(215 20% 87%)" }}
         >
-          <MapPin className="h-5 w-5" style={{ color: "hsl(38 65% 38%)" }} />
+          <MapPin className="h-5 w-5" style={{ color: "hsl(201 100% 35%)" }} />
           <span className="text-sm font-light" style={{ color: "hsl(222 35% 15%)" }}>Alla mina resor</span>
         </Link>
         <Link
@@ -167,7 +167,7 @@ export default function MittKaisenDashboard() {
           className="rounded-xl p-5 flex items-center gap-3 bg-white border hover:shadow-sm transition-shadow"
           style={{ borderColor: "hsl(215 20% 87%)" }}
         >
-          <FileText className="h-5 w-5" style={{ color: "hsl(38 65% 38%)" }} />
+          <FileText className="h-5 w-5" style={{ color: "hsl(201 100% 35%)" }} />
           <span className="text-sm font-light" style={{ color: "hsl(222 35% 15%)" }}>Fakturor & betalningar</span>
         </Link>
       </div>

@@ -42,7 +42,7 @@ export default function MittKaisenLayout() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "hsl(222 50% 12%)" }}>
-        <Loader2 className="h-8 w-8 animate-spin" style={{ color: "hsl(38 65% 38%)" }} />
+        <Loader2 className="h-8 w-8 animate-spin" style={{ color: "hsl(201 100% 35%)" }} />
       </div>
     );
   }
@@ -53,10 +53,10 @@ export default function MittKaisenLayout() {
     <div className={cn("flex flex-col h-full", mobile && "pt-8")}>
       {/* Logo */}
       <div className="px-6 py-8 flex items-center gap-3">
-        <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: "hsl(38 65% 38%)" }}>
+        <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: "hsl(201 100% 35%)" }}>
           <span className="text-white font-bold">K</span>
         </div>
-        <span className="text-lg font-light tracking-widest" style={{ color: "hsl(38 80% 85%)", fontFamily: "'Cormorant Garamond', serif" }}>
+        <span className="text-lg font-light tracking-widest" style={{ color: "hsl(210 30% 92%)", fontFamily: "'Cormorant Garamond', serif" }}>
           MITT KAISEN
         </span>
       </div>
@@ -78,7 +78,7 @@ export default function MittKaisenLayout() {
               )}
               style={
                 active
-                  ? { backgroundColor: "hsl(38 65% 38%)", color: "white" }
+                  ? { backgroundColor: "hsl(201 100% 35%)", color: "white" }
                   : { color: "hsl(215 15% 65%)" }
               }
             >
@@ -132,14 +132,14 @@ export default function MittKaisenLayout() {
         style={{ backgroundColor: "hsl(222 50% 10%)" }}
       >
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-full flex items-center justify-center" style={{ backgroundColor: "hsl(38 65% 38%)" }}>
+          <div className="w-7 h-7 rounded-full flex items-center justify-center" style={{ backgroundColor: "hsl(201 100% 35%)" }}>
             <span className="text-white font-bold text-sm">K</span>
           </div>
-          <span className="text-base font-light tracking-widest" style={{ color: "hsl(38 80% 85%)", fontFamily: "'Cormorant Garamond', serif" }}>
+          <span className="text-base font-light tracking-widest" style={{ color: "hsl(210 30% 92%)", fontFamily: "'Cormorant Garamond', serif" }}>
             MITT KAISEN
           </span>
         </div>
-        <button onClick={() => setMobileOpen(!mobileOpen)} style={{ color: "hsl(38 80% 85%)" }}>
+        <button onClick={() => setMobileOpen(!mobileOpen)} style={{ color: "hsl(210 30% 92%)" }}>
           {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
       </header>
