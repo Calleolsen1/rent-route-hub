@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import fotbollImage from "@/assets/sport-fotboll.jpg";
 import { TEAMS, type TeamInfo } from "@/data/sports";
+import UpcomingEventsList from "@/components/UpcomingEventsList";
 
 export default function TeamPage() {
   const { team } = useParams<{ team: string }>();
