@@ -143,14 +143,14 @@ export default function TeamPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-navy py-16">
+      <section className="bg-cream py-16 border-t border-border">
         <div className="container mx-auto px-4 text-center">
           <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Boka din {info.name}-resa</p>
-          <h2 className="font-display text-3xl md:text-5xl text-white mb-6">
+          <h2 className="font-display text-3xl md:text-5xl text-foreground mb-6">
             Redo att uppleva {info.stadium}?
           </h2>
           <Link to="/contact">
-            <Button size="lg" className="rounded-full bg-primary hover:bg-primary/90 px-10 tracking-wider text-sm">
+            <Button size="lg" className="rounded-full bg-navy hover:bg-navy/90 text-white px-10 tracking-wider text-sm">
               Kontakta oss <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
