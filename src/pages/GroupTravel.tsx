@@ -257,6 +257,18 @@ export default function GroupTravel() {
  </div>
  </section>
 
+ {/* Inquiry form */}
+ <section id="forfragan" className="py-16 md:py-24 bg-cream">
+ <div className="container mx-auto px-4 max-w-3xl">
+ <InquiryForm
+ type="group"
+ eyebrow="Skicka förfrågan"
+ heading="Berätta om er gruppresa"
+ intro="Antal personer, ungefärliga datum, destination och budget — vi återkommer med ett skräddarsytt förslag inom 24 timmar på vardagar."
+ />
+ </div>
+ </section>
+
  <Footer />
  </div>
  );
