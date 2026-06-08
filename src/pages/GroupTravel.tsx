@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Users, Trophy, Briefcase, Heart, Mountain, Utensils, Check, PartyPopper, Waves, Wine, Bus } from "lucide-react";
+import { ArrowRight, Users, Trophy, Briefcase, Heart, Mountain, Utensils, Check, PartyPopper, Waves, Wine, Bus, MessageSquare } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import InquiryForm from "@/components/InquiryForm";
+import FloatingInquiryButton from "@/components/FloatingInquiryButton";
 import groupImage from "@/assets/kaisen-group.jpg";
 import groupSports from "@/assets/group-sports.jpg";
 import groupCorporate from "@/assets/group-corporate.jpg";
@@ -77,6 +78,14 @@ export default function GroupTravel() {
           <p className="text-white/70 mt-4 text-lg font-light max-w-lg">
             Sport, äventyr eller fest — vi planerar, ni upplever.
           </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <a href="#forfragan">
+              <Button className="rounded-full bg-primary hover:bg-primary/90 px-7 py-6 text-sm tracking-wider">
+                <MessageSquare className="mr-2 h-4 w-4" />
+                Skicka förfrågan
+              </Button>
+            </a>
+          </div>
         </div>
       </section>
 
@@ -129,12 +138,12 @@ export default function GroupTravel() {
                   </div>
                 ))}
               </div>
-              <Link to="/contact">
+              <a href="#forfragan">
                 <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
                   Planera er sportresa
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
-              </Link>
+              </a>
             </div>
             <div className="aspect-[4/3] overflow-hidden">
               <img
@@ -177,12 +186,12 @@ export default function GroupTravel() {
                   </div>
                 ))}
               </div>
-              <Link to="/contact">
+              <a href="#forfragan">
                 <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
                   Offert för företagsresa
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
-              </Link>
+              </a>
             </div>
           </div>
         </div>
@@ -237,6 +246,7 @@ export default function GroupTravel() {
         </div>
       </section>
 
+      <FloatingInquiryButton />
       <Footer />
     </div>
   );
