@@ -26,16 +26,17 @@ const Footer = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Ange din e-postadress...*"
-                className="flex-1 bg-transparent text-white placeholder:text-white/60 text-sm focus:outline-none py-1.5"
+                className="flex-1 bg-transparent text-white placeholder:text-white/60 text-base focus:outline-none py-2"
               />
               <button
                 type="submit"
-                className="border border-white text-white text-xs font-medium px-5 py-1.5 rounded-full hover:bg-white hover:text-navy transition-colors"
+                className="border border-white text-white text-sm font-medium px-6 py-2 rounded-full hover:bg-white hover:text-navy transition-colors"
               >
                 Anmäl
               </button>
             </form>
-            <p className="text-[11px] text-white/60 mt-3 leading-relaxed">
+            <p className="text-sm text-white/70 mt-3 leading-relaxed">
+
               Genom att skicka in detta formulär godkänner jag att Kaisen Travel Group lagrar och behandlar mina personuppgifter enligt våra{" "}
               <Link to="/faq" className="underline hover:text-white">Allmänna villkor</Link>{" "}
               &amp;{" "}
