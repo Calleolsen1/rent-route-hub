@@ -518,7 +518,7 @@ const Home = () => {
       <section className="py-16 md:py-24 bg-background">
         <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
           <div className="relative overflow-hidden rounded-3xl bg-navy p-10 md:p-16 grid md:grid-cols-[1fr_auto] gap-10 items-center">
-            {/* Decorative blurred gold orbs */}
+            {/* Decorative blurred orbs */}
             <div className="pointer-events-none absolute -top-24 -right-16 w-80 h-80 rounded-full bg-primary/30 blur-3xl" />
             <div className="pointer-events-none absolute -bottom-32 -left-20 w-96 h-96 rounded-full bg-primary/40 blur-3xl" />
 
