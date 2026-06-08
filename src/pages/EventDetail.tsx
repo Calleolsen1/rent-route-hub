@@ -94,16 +94,19 @@ export default function EventDetail() {
     () => categories.find((c) => c.id === selectedCatId) ?? null,
     [categories, selectedCatId],
   );
-  const total = selectedCat ? Number(selectedCat.unit_price_sek) * qty : 0;
+  const total = selectedCat ? priceFor(selectedCat) * qty : 0;
 
   const handleCheckout = async () => {
     if (!event || !selectedCat) return;
     setBusy(true);
     try {
+      const unitPrice = priceFor(selectedCat);
+      if (!unitPrice || unitPrice <= 0) throw new Error("Pris ej tillgängligt");
       const { data: orderId, error } = await supabase.rpc("create_order_with_items", {
         p_event_id: event.id,
         p_category_id: selectedCat.id,
         p_qty: qty,
+        p_unit_price_sek: unitPrice,
         p_customer_email: user?.email ?? "",
       });
       if (error || !orderId) throw error ?? new Error("Kunde inte skapa order");
