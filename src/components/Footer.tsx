@@ -64,8 +64,9 @@ const Footer = () => {
         {/* Link columns */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 py-7">
           <div>
-            <h3 className="text-white font-sans font-semibold text-sm mb-3">Tjänster</h3>
-            <ul className="space-y-2 text-xs text-white/80">
+            <h3 className="text-white font-sans font-semibold text-base mb-4">Tjänster</h3>
+            <ul className="space-y-2.5 text-sm text-white/80">
+
 
               <li><Link to="/services/sportresor" className="hover:text-gold transition-colors">Sportresor</Link></li>
               <li><Link to="/group-travel" className="hover:text-gold transition-colors">Gruppresor</Link></li>
