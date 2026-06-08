@@ -9,52 +9,24 @@ import { SuspendedUserListener } from "./components/SuspendedUserListener";
 import ScrollToTop from "./components/ScrollToTop";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
-import Search from "./pages/Search";
 import ForgotPassword from "./pages/ForgotPassword";
 import MittKaisenLogin from "./pages/MittKaisenLogin";
 import MittKaisenResetPassword from "./pages/MittKaisenResetPassword";
 import MittKaisenLayout from "./layouts/MittKaisenLayout";
 import MittKaisenDashboard from "./pages/mitt-kaisen/Dashboard";
-import BecomeHost from "./pages/BecomeHost";
+import MittKaisenBiljetter from "./pages/mitt-kaisen/Biljetter";
+import MittKaisenFakturor from "./pages/mitt-kaisen/Fakturor";
+import MittKaisenProfil from "./pages/mitt-kaisen/Profil";
 import FAQ from "./pages/FAQ";
 import HelpCenter from "./pages/HelpCenter";
 import Support from "./pages/Support";
-import HostDashboard from "./pages/host/Dashboard";
-import GroupView from "./pages/host/GroupView";
-import InvoicingView from "./pages/host/InvoicingView";
-import CreateListing from "./pages/host/CreateListing";
-import EditListing from "./pages/host/EditListing";
-import ListingsManagement from "./pages/host/ListingsManagement";
-import HostBookings from "./pages/host/Bookings";
-import HostPayouts from "./pages/host/Payouts";
-import EarningsReport from "./pages/host/EarningsReport";
-import ListingDetail from "./pages/ListingDetail";
-import BookingConfirmation from "./pages/BookingConfirmation";
-import Checkout from "./pages/Checkout";
 import AdminLayout from "./layouts/AdminLayout";
-import HostLayout from "./layouts/HostLayout";
-import GuestLayout from "./layouts/GuestLayout";
-import Overview from "./pages/admin/Overview";
-import GuestDashboard from "./pages/guest/Dashboard";
-import GuestTrips from "./pages/guest/Trips";
-import GuestBookings from "./pages/guest/Bookings";
-import GuestPayments from "./pages/guest/Payments";
-import GuestInbox from "./pages/guest/Inbox";
-import HostInbox from "./pages/host/Inbox";
-import GuestProfile from "./pages/guest/Profile";
-import GuestSettings from "./pages/guest/Settings";
-import AdminListingsManagement from "./pages/admin/ListingsManagement";
-import ReviewListing from "./pages/admin/ReviewListing";
+import AdminOverview from "./pages/admin/Overview";
+import AdminInquiries from "./pages/admin/Inquiries";
+import AdminOrders from "./pages/admin/Orders";
 import UsersManagement from "./pages/admin/UsersManagement";
-import Transactions from "./pages/admin/Transactions";
-import Commissions from "./pages/admin/Commissions";
-import Reports from "./pages/admin/Reports";
-import AdminBookingsManagement from "./pages/admin/BookingsManagement";
-import AdminDisputesManagement from "./pages/admin/DisputesManagement";
 import AdminSupport from "./pages/admin/Support";
 import ContentManagementPage from "./pages/admin/ContentManagement";
-import AdminTrips from "./pages/admin/Trips";
-import AdminInvoices from "./pages/admin/AdminInvoices";
 import NotFound from "./pages/NotFound";
 import Services from "./pages/Services";
 import GroupTravel from "./pages/GroupTravel";
@@ -82,77 +54,48 @@ const App = () => (
             <SuspendedUserListener />
             <ScrollToTop />
             <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/services/sportresor" element={<Sportresor />} />
-            <Route path="/services/sportresor/fotboll/:team" element={<TeamPage />} />
-            <Route path="/services/sportresor/f1/:race" element={<F1RacePage />} />
-            <Route path="/services/traningslager" element={<Traningslager />} />
-            <Route path="/services/affarsresor" element={<Affarsresor />} />
-            <Route path="/services/weekend-getaway" element={<WeekendGetaway />} />
-            <Route path="/services/konferens" element={<Konferens />} />
-            <Route path="/services/vip-service" element={<VIPService />} />
-            <Route path="/group-travel" element={<GroupTravel />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/search" element={<Search />} />
-            <Route path="/faq" element={<FAQ />} />
-            <Route path="/help-center" element={<HelpCenter />} />
-            <Route path="/support" element={<Support />} />
-            <Route path="/forgot-password" element={<><Navbar /><ForgotPassword /></>} />
-            <Route path="/become-host" element={<><Navbar /><BecomeHost /></>} />
-            <Route path="/host" element={<HostLayout />}>
-              <Route path="dashboard" element={<HostDashboard />} />
-              <Route path="group" element={<GroupView />} />
-              <Route path="invoicing" element={<InvoicingView />} />
-              <Route path="inbox" element={<HostInbox />} />
-              <Route path="listings" element={<ListingsManagement />} />
-              <Route path="bookings" element={<HostBookings />} />
-              <Route path="payouts" element={<HostPayouts />} />
-              <Route path="earnings-report" element={<EarningsReport />} />
-              <Route path="create-listing" element={<CreateListing />} />
-              <Route path="edit-listing/:id" element={<EditListing />} />
-            </Route>
-            <Route path="/listing/:id" element={<><Navbar /><ListingDetail /></>} />
-            <Route path="/checkout" element={<><Navbar /><Checkout /></>} />
-            <Route path="/booking-confirmation/:id" element={<><Navbar /><BookingConfirmation /></>} />
-            <Route path="/guest" element={<GuestLayout />}>
-              <Route path="dashboard" element={<GuestTrips />} />
-              <Route path="trips" element={<GuestTrips />} />
-              <Route path="bookings" element={<GuestBookings />} />
-              <Route path="payments" element={<GuestPayments />} />
-              <Route path="inbox" element={<GuestInbox />} />
-              <Route path="profile" element={<GuestProfile />} />
-              <Route path="settings" element={<GuestSettings />} />
-            </Route>
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<Navigate to="/admin/dashboard" replace />} />
-              <Route path="dashboard" element={<Overview />} />
-              <Route path="listings" element={<AdminListingsManagement />} />
-              <Route path="bookings" element={<AdminBookingsManagement />} />
-              <Route path="disputes" element={<AdminDisputesManagement />} />
-              <Route path="review-listing/:id" element={<ReviewListing />} />
-              <Route path="users" element={<UsersManagement />} />
-              <Route path="transactions" element={<Transactions />} />
-              <Route path="commissions" element={<Commissions />} />
-              <Route path="reports" element={<Reports />} />
-              <Route path="support" element={<AdminSupport />} />
-              <Route path="content" element={<ContentManagementPage />} />
-              <Route path="trips" element={<AdminTrips />} />
-              <Route path="invoices" element={<AdminInvoices />} />
-            </Route>
-            {/* Mitt Kaisen portal — public routes */}
-            <Route path="/mitt-kaisen" element={<MittKaisenLogin />} />
-            <Route path="/mitt-kaisen/aterstall-losenord" element={<MittKaisenResetPassword />} />
-            {/* Mitt Kaisen portal — protected routes */}
-            <Route path="/mitt-kaisen" element={<MittKaisenLayout />}>
-              <Route path="dashboard" element={<MittKaisenDashboard />} />
-              <Route path="resor" element={<GuestBookings />} />
-              <Route path="fakturor" element={<GuestPayments />} />
-              <Route path="profil" element={<GuestProfile />} />
-            </Route>
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<><Navbar /><NotFound /></>} />
+              <Route path="/" element={<Home />} />
+              <Route path="/services" element={<Services />} />
+              <Route path="/services/sportresor" element={<Sportresor />} />
+              <Route path="/services/sportresor/fotboll/:team" element={<TeamPage />} />
+              <Route path="/services/sportresor/f1/:race" element={<F1RacePage />} />
+              <Route path="/services/traningslager" element={<Traningslager />} />
+              <Route path="/services/affarsresor" element={<Affarsresor />} />
+              <Route path="/services/weekend-getaway" element={<WeekendGetaway />} />
+              <Route path="/services/konferens" element={<Konferens />} />
+              <Route path="/services/vip-service" element={<VIPService />} />
+              <Route path="/group-travel" element={<GroupTravel />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/help-center" element={<HelpCenter />} />
+              <Route path="/support" element={<Support />} />
+              <Route path="/forgot-password" element={<><Navbar /><ForgotPassword /></>} />
+
+              {/* Admin portal */}
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<Navigate to="/admin/dashboard" replace />} />
+                <Route path="dashboard" element={<AdminOverview />} />
+                <Route path="inquiries" element={<AdminInquiries />} />
+                <Route path="orders" element={<AdminOrders />} />
+                <Route path="users" element={<UsersManagement />} />
+                <Route path="support" element={<AdminSupport />} />
+                <Route path="content" element={<ContentManagementPage />} />
+              </Route>
+
+              {/* Mitt Kaisen — public routes */}
+              <Route path="/mitt-kaisen" element={<MittKaisenLogin />} />
+              <Route path="/mitt-kaisen/aterstall-losenord" element={<MittKaisenResetPassword />} />
+              {/* Mitt Kaisen — protected routes */}
+              <Route path="/mitt-kaisen" element={<MittKaisenLayout />}>
+                <Route path="dashboard" element={<MittKaisenDashboard />} />
+                <Route path="biljetter" element={<MittKaisenBiljetter />} />
+                <Route path="fakturor" element={<MittKaisenFakturor />} />
+                <Route path="profil" element={<MittKaisenProfil />} />
+              </Route>
+
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<><Navbar /><NotFound /></>} />
             </Routes>
           </DemoProvider>
         </AuthProvider>
