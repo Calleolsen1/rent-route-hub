@@ -361,11 +361,12 @@ const Home = () => {
       </section>
 
       {/* Stats highlights — Intrepid-style, 3 columns with vertical dividers */}
-      <section className="bg-background py-16 md:py-20">
+      <section className="bg-background pt-10 md:pt-12 pb-8 md:pb-10">
         <div className="container mx-auto px-4 max-w-5xl">
-          <h2 className="text-center font-sans font-semibold text-2xl md:text-[2rem] leading-tight text-foreground mb-12 md:mb-14">
+          <h2 className="text-center font-sans font-semibold text-xl md:text-2xl leading-tight text-foreground mb-8">
             Personlig reseservice — för riktiga upplevelser, världen över
           </h2>
+
           <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border/60">
             <div className="px-6 py-4 md:py-2 text-center">
               <p className="font-sans font-semibold text-lg md:text-xl text-foreground leading-snug">
@@ -389,7 +390,7 @@ const Home = () => {
 
 
       {/* Konkreta reseerbjudanden — Intrepid-style cards */}
-      <section className="py-16 md:py-20 bg-background">
+      <section className="pt-4 pb-16 md:pb-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
             <div className="flex flex-wrap items-end gap-x-8 gap-y-3">
