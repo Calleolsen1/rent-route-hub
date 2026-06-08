@@ -515,7 +515,7 @@ const Home = () => {
       </section>
 
       {/* Om oss */}
-      <section className="py-20 md:py-28 bg-background">
+      <section className="py-10 md:py-14 bg-background">
         <div className="w-full max-w-[1400px] mx-auto px-6 md:px-10">
           <h2 className="font-sans font-semibold text-3xl md:text-5xl text-foreground text-center mb-16 md:mb-20">
             Vad gör oss annorlunda
@@ -552,7 +552,7 @@ const Home = () => {
 
 
       {/* Referenser — testimonials carousel */}
-      <section className="kaisen-section bg-cream">
+      <section className="py-10 md:py-14 bg-cream">
         <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
           <div className="text-center mb-14">
             <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Referenser</p>
