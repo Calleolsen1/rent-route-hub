@@ -373,7 +373,8 @@ const Home = () => {
 
 
       {/* Konkreta reseerbjudanden — swipeable icon cards */}
-      <section className="py-16 md:py-20 bg-background">
+      <section className="py-16 md:py-20 bg-cream">
+
         <div className="container mx-auto px-4">
           <div className="flex items-end justify-between mb-10 gap-6">
             <div>
@@ -427,7 +428,7 @@ const Home = () => {
       </section>
 
       {/* Längre erbjudanden — service cards carousel */}
-      <section className="py-16 md:py-24 bg-cream">
+      <section className="py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-8 gap-6">
             <h2 className="font-sans font-semibold text-xl md:text-2xl text-foreground relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-16 after:h-[2px] after:bg-primary">
@@ -475,9 +476,10 @@ const Home = () => {
       </section>
 
       {/* Om oss */}
-      <section className="py-16 md:py-20 bg-background">
+      <section className="py-16 md:py-20 bg-cream">
         <div className="container mx-auto px-4">
-          <div className="bg-cream rounded-2xl p-6 md:p-10">
+          <div className="p-0 md:p-4">
+
             <div className="grid md:grid-cols-[280px_1fr] lg:grid-cols-[360px_1fr] gap-6 md:gap-10 items-center">
               <div className="relative rounded-xl overflow-hidden aspect-[4/3] md:aspect-[4/5]">
                 <img
@@ -522,7 +524,7 @@ const Home = () => {
 
 
       {/* Referenser — testimonials carousel */}
-      <section className="kaisen-section bg-cream">
+      <section className="kaisen-section bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-14">
             <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Referenser</p>
@@ -560,9 +562,10 @@ const Home = () => {
       </section>
 
       {/* Kontakta oss CTA */}
-      <section className="py-16 md:py-20 bg-background">
+      <section className="py-16 md:py-20 bg-cream border-t border-border/60">
         <div className="container mx-auto px-4">
-          <div className="bg-cream rounded-2xl p-8 md:p-12 grid md:grid-cols-[1fr_auto] gap-8 items-center">
+          <div className="bg-background rounded-2xl p-8 md:p-12 grid md:grid-cols-[1fr_auto] gap-8 items-center shadow-sm border border-border/60">
+
             <div className="max-w-xl">
               <p className="text-[11px] tracking-[0.25em] text-primary uppercase mb-3 font-sans">Kontakta oss</p>
               <h2 className="font-sans text-2xl md:text-3xl font-semibold text-foreground mb-3">

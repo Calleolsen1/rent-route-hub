@@ -3,14 +3,15 @@ import { Instagram, Facebook, Linkedin } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="bg-cream text-foreground border-t border-border/60">
+    <footer className="bg-navy text-white/80 border-t-4 border-primary">
       <div className="container mx-auto px-4 py-14 md:py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-10 mb-12">
           {/* Brand */}
           <div className="col-span-2 lg:col-span-2 max-w-sm">
             <div className="mb-4">
-              <div className="font-display text-xl font-semibold text-foreground tracking-wide">KAISEN</div>
-              <div className="text-[10px] tracking-[0.25em] text-primary font-sans uppercase mt-0.5">Travel Group</div>
+              <div className="font-display text-xl font-semibold text-white tracking-wide">KAISEN</div>
+              <div className="text-[10px] tracking-[0.25em] text-primary-foreground/80 font-sans uppercase mt-0.5">Travel Group</div>
+
             </div>
             <p className="text-sm leading-relaxed text-foreground/60 mb-5">
               Personlig reseservice skapad för dig. Gruppresor, sportevent och skräddarsydda upplevelser — levererade med hjärta och expertis i 25+ år.
