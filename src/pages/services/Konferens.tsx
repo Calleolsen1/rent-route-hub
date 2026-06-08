@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Check, Users, Projector, Utensils, Wifi, Car, Award, Mic2, Coffee, Palette } from "lucide-react";
+import { ArrowRight, Check, Users, Projector, Utensils, Wifi, Car, Award, Mic2, Coffee, Palette, MessageSquare } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import InquiryForm from "@/components/InquiryForm";
+import FloatingInquiryButton from "@/components/FloatingInquiryButton";
 import konferensHero from "@/assets/konferens-hero.jpg";
 import konferens1 from "@/assets/konferens-dinner.jpg";
 import konferens2 from "@/assets/konferens-event.jpg";
@@ -73,6 +74,14 @@ export default function Konferens() {
           <p className="text-white/70 mt-4 text-lg font-light max-w-lg">
             Vi sköter detaljerna. Du fokuserar på innehållet.
           </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <a href="#forfragan">
+              <Button className="rounded-full bg-primary hover:bg-primary/90 px-7 py-6 text-sm tracking-wider">
+                <MessageSquare className="mr-2 h-4 w-4" />
+                Begär offert
+              </Button>
+            </a>
+          </div>
         </div>
       </section>
 
@@ -164,12 +173,12 @@ export default function Konferens() {
                   </div>
                 ))}
               </div>
-              <Link to="/contact">
+              <a href="#forfragan">
                 <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
                   Begär offert
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
-              </Link>
+              </a>
             </div>
           </div>
         </div>
@@ -187,6 +196,7 @@ export default function Konferens() {
         </div>
       </section>
 
+      <FloatingInquiryButton label="Begär offert" />
       <Footer />
     </div>
   );
