@@ -481,28 +481,28 @@ const Home = () => {
           <Carousel opts={{ align: "start" }}>
             <CarouselContent className="-ml-6">
               {services.map((service) => (
-                <CarouselItem key={service.title} className="pl-6 basis-[85%] sm:basis-1/2 lg:basis-1/3">
+                <CarouselItem key={service.title} className="pl-4 basis-[70%] sm:basis-1/2 lg:basis-1/4">
                   <Link to={service.href} className="group block h-full">
-                    <div className="relative overflow-hidden aspect-[3/4] mb-5">
+                    <div className="relative overflow-hidden rounded-lg aspect-[4/5] mb-3">
                       <img
                         src={service.image}
                         alt={service.title}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/20 to-transparent" />
-                      <div className="absolute top-4 left-4">
-                        <span className="text-[10px] tracking-[0.2em] uppercase bg-primary text-primary-foreground px-3 py-1 font-sans">
+                      <div className="absolute top-3 left-3">
+                        <span className="text-[9px] tracking-[0.2em] uppercase bg-primary text-primary-foreground px-2.5 py-1 font-sans">
                           {service.tag}
                         </span>
                       </div>
-                      <div className="absolute bottom-0 left-0 right-0 p-6">
-                        <h3 className="font-display text-2xl text-white mb-1">{service.title}</h3>
-                        <p className="text-xs tracking-wider text-gold-light uppercase font-sans">{service.subtitle}</p>
+                      <div className="absolute bottom-0 left-0 right-0 p-4">
+                        <h3 className="font-display text-lg text-white mb-0.5">{service.title}</h3>
+                        <p className="text-[10px] tracking-wider text-gold-light uppercase font-sans">{service.subtitle}</p>
                       </div>
                     </div>
-                    <p className="text-muted-foreground text-sm leading-relaxed mb-3">{service.description}</p>
-                    <span className="text-primary text-sm font-medium tracking-wide flex items-center gap-2 transition-all group-hover:gap-3">
-                      Läs mer <ArrowRight className="h-3.5 w-3.5" />
+                    <p className="text-muted-foreground text-xs leading-relaxed mb-2">{service.description}</p>
+                    <span className="text-primary text-xs font-medium tracking-wide flex items-center gap-2 transition-all group-hover:gap-3">
+                      Läs mer <ArrowRight className="h-3 w-3" />
                     </span>
                   </Link>
                 </CarouselItem>
