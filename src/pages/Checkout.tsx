@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe-js";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
@@ -9,6 +10,8 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, CreditCard, ShieldCheck } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
+import { getStripe, getStripeEnvironment } from "@/lib/stripe";
 import { formatEventDateTime, formatSek } from "@/lib/formatSek";
 
 type OrderRow = {
@@ -51,6 +54,7 @@ export default function Checkout() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);
 
   useEffect(() => {
     if (authLoading) return;
@@ -80,7 +84,7 @@ export default function Checkout() {
     })();
   }, [orderId, user, authLoading, navigate]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleStartPayment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!order) return;
     setSubmitting(true);
@@ -94,15 +98,22 @@ export default function Checkout() {
         })
         .eq("id", order.id);
       if (error) throw error;
-      toast.info(
-        "Stripe-betalning kopplas på i Fas 4. Din order är sparad som pågående.",
-      );
-      navigate(`/order/${order.id}`);
+      setShowCheckout(true);
     } catch (err: any) {
       toast.error(err.message ?? "Något gick fel");
-    } finally {
       setSubmitting(false);
     }
+  };
+
+  const fetchClientSecret = async (): Promise<string> => {
+    const returnUrl = `${window.location.origin}/order/${order!.id}?session_id={CHECKOUT_SESSION_ID}`;
+    const { data, error } = await supabase.functions.invoke("create-checkout", {
+      body: { orderId: order!.id, environment: getStripeEnvironment(), returnUrl },
+    });
+    if (error || !data?.clientSecret) {
+      throw new Error(error?.message || "Kunde inte starta betalningen");
+    }
+    return data.clientSecret as string;
   };
 
   if (loading) {
@@ -133,6 +144,7 @@ export default function Checkout() {
 
   return (
     <div className="min-h-screen">
+      <PaymentTestModeBanner />
       <Navbar />
       <section className="bg-cream py-12">
         <div className="container mx-auto px-4 max-w-2xl text-center">
@@ -145,79 +157,67 @@ export default function Checkout() {
 
       <section className="py-12 bg-background">
         <div className="container mx-auto px-4 max-w-5xl grid lg:grid-cols-3 gap-8">
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="lg:col-span-2 space-y-6">
-            <div className="rounded-xl border border-border bg-card p-6">
-              <h2 className="font-display text-2xl mb-1">Kontaktuppgifter</h2>
-              <p className="text-sm text-muted-foreground mb-6">
-                Vi skickar biljetter och kvitto till din e-post.
-              </p>
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="name">Namn</Label>
-                  <Input
-                    id="name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                    className="mt-1"
-                  />
+          <div className="lg:col-span-2 space-y-6">
+            {!showCheckout ? (
+              <form onSubmit={handleStartPayment} className="space-y-6">
+                <div className="rounded-xl border border-border bg-card p-6">
+                  <h2 className="font-display text-2xl mb-1">Kontaktuppgifter</h2>
+                  <p className="text-sm text-muted-foreground mb-6">
+                    Vi skickar biljetter och kvitto till din e-post.
+                  </p>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="name">Namn</Label>
+                      <Input id="name" value={name} onChange={(e) => setName(e.target.value)} required className="mt-1" />
+                    </div>
+                    <div>
+                      <Label htmlFor="email">E-post</Label>
+                      <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="mt-1" />
+                    </div>
+                    <div className="sm:col-span-2">
+                      <Label htmlFor="phone">Telefon</Label>
+                      <Input id="phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required className="mt-1" />
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <Label htmlFor="email">E-post</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className="mt-1"
-                  />
+
+                <div className="rounded-xl border border-border bg-card p-6">
+                  <h2 className="font-display text-2xl mb-1">Betalning</h2>
+                  <p className="text-sm text-muted-foreground mb-6">
+                    Säker betalning hanteras av Stripe. Du kan betala med kort eller annan tillgänglig betalmetod.
+                  </p>
+                  <div className="flex items-start gap-3 bg-accent/40 rounded-lg p-4 text-xs text-muted-foreground">
+                    <ShieldCheck className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span>Säljare och fakturautställare: Kaisen Travel Group.</span>
+                  </div>
+                  <Button
+                    type="submit"
+                    disabled={submitting}
+                    className="w-full mt-6 rounded-full bg-primary hover:bg-primary/90 tracking-wider text-sm"
+                  >
+                    <CreditCard className="mr-2 h-4 w-4" />
+                    {submitting ? "Förbereder..." : `Gå till betalning (${formatSek(order.total_sek)})`}
+                  </Button>
                 </div>
-                <div className="sm:col-span-2">
-                  <Label htmlFor="phone">Telefon</Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    required
-                    className="mt-1"
-                  />
+
+                <Link
+                  to="/services/sportresor"
+                  className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+                >
+                  <ArrowLeft className="h-3 w-3" /> Fortsätt handla
+                </Link>
+              </form>
+            ) : (
+              <div className="rounded-xl border border-border bg-card p-6">
+                <h2 className="font-display text-2xl mb-4">Betala säkert med Stripe</h2>
+                <div id="checkout">
+                  <EmbeddedCheckoutProvider stripe={getStripe()} options={{ fetchClientSecret }}>
+                    <EmbeddedCheckout />
+                  </EmbeddedCheckoutProvider>
                 </div>
               </div>
-            </div>
-
-            <div className="rounded-xl border border-border bg-card p-6">
-              <h2 className="font-display text-2xl mb-1">Betalning</h2>
-              <p className="text-sm text-muted-foreground mb-6">
-                Stripe Payments kopplas på i nästa fas. Tryck nedan för att bekräfta
-                din beställning som "pågående" så återkommer vi med betalningslänk.
-              </p>
-              <div className="flex items-start gap-3 bg-accent/40 rounded-lg p-4 text-xs text-muted-foreground">
-                <ShieldCheck className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                <span>
-                  Säljare och fakturautställare: Kaisen Travel Group. Betalning
-                  sker via Stripe.
-                </span>
-              </div>
-              <Button
-                type="submit"
-                disabled={submitting}
-                className="w-full mt-6 rounded-full bg-primary hover:bg-primary/90 tracking-wider text-sm"
-              >
-                <CreditCard className="mr-2 h-4 w-4" />
-                {submitting ? "Sparar..." : `Bekräfta beställning (${formatSek(order.total_sek)})`}
-              </Button>
-            </div>
-
-            <Link
-              to="/services/sportresor"
-              className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
-            >
-              <ArrowLeft className="h-3 w-3" /> Fortsätt handla
-            </Link>
-          </form>
+            )}
+          </div>
 
           {/* Summary */}
           <aside className="rounded-xl border border-border bg-card p-6 h-fit">
