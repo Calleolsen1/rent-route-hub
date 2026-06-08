@@ -79,14 +79,14 @@ const stats = [
 ];
 
 const quickOffers = [
-  { icon: Flag, title: "F1 Monza", date: "6 sep 2026", tag: "F1", href: "/services/sportresor?f1=italien-monza" },
-  { icon: Trophy, title: "Real Madrid – Barça", date: "26 okt 2026", tag: "Fotboll", href: "/services/sportresor?league=la-liga&team=real-madrid" },
-  { icon: Users, title: "Gruppresa Lissabon", date: "Q1 2027", tag: "Grupp", href: "/group-travel" },
-  { icon: MapPin, title: "Träningsläger La Manga", date: "Mars 2027", tag: "Träning", href: "/services/traningslager" },
-  { icon: Flag, title: "F1 Las Vegas", date: "21 nov 2026", tag: "F1", href: "/services/sportresor?f1=las-vegas" },
-  { icon: Trophy, title: "Premier League – Liverpool", date: "Nov 2026", tag: "Fotboll", href: "/services/sportresor?league=premier-league&team=liverpool" },
-  { icon: Calendar, title: "Konferens Mallorca", date: "Maj 2027", tag: "Konferens", href: "/group-travel" },
-  { icon: Flag, title: "F1 Abu Dhabi", date: "6 dec 2026", tag: "F1", href: "/services/sportresor?f1=abu-dhabi" },
+  { image: offerF1Monza, title: "F1 Monza", date: "6 sep 2026", tag: "F1", href: "/services/sportresor?f1=italien-monza" },
+  { image: offerRealBarca, title: "Real Madrid – Barça", date: "26 okt 2026", tag: "Fotboll", href: "/services/sportresor?league=la-liga&team=real-madrid" },
+  { image: offerLisbon, title: "Gruppresa Lissabon", date: "Q1 2027", tag: "Grupp", href: "/group-travel" },
+  { image: offerLaManga, title: "Träningsläger La Manga", date: "Mars 2027", tag: "Träning", href: "/services/traningslager" },
+  { image: offerF1Vegas, title: "F1 Las Vegas", date: "21 nov 2026", tag: "F1", href: "/services/sportresor?f1=las-vegas" },
+  { image: offerLiverpool, title: "Premier League – Liverpool", date: "Nov 2026", tag: "Fotboll", href: "/services/sportresor?league=premier-league&team=liverpool" },
+  { image: offerMallorca, title: "Konferens Mallorca", date: "Maj 2027", tag: "Konferens", href: "/group-travel" },
+  { image: offerF1AbuDhabi, title: "F1 Abu Dhabi", date: "6 dec 2026", tag: "F1", href: "/services/sportresor?f1=abu-dhabi" },
 ];
 
 const services = [
