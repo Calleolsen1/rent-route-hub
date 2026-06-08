@@ -49,6 +49,18 @@ export default function TeamPage() {
         </div>
       </section>
 
+      {/* Live tickets — visible on entry */}
+      <section className="py-10 md:py-14 bg-background">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <UpcomingEventsList
+            team={info.name}
+            limit={6}
+            eyebrow="Köp biljett direkt"
+            title={`Biljetter till ${info.name}`}
+          />
+        </div>
+      </section>
+
       {/* Intro */}
       <section className="bg-cream py-16">
         <div className="container mx-auto px-4 max-w-3xl">
@@ -78,18 +90,6 @@ export default function TeamPage() {
           <p className="font-display text-xl md:text-2xl text-foreground italic font-light leading-relaxed text-center">
             "{info.description}"
           </p>
-        </div>
-      </section>
-
-      {/* Live tickets */}
-      <section className="py-12 md:py-16 bg-background">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <UpcomingEventsList
-            team={info.name}
-            limit={6}
-            eyebrow="Köp biljett direkt"
-            title={`Biljetter till ${info.name}`}
-          />
         </div>
       </section>
 
