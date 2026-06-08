@@ -19,6 +19,14 @@ import incomingImage from "@/assets/kaisen-incoming.jpg";
 import weekendImage from "@/assets/kaisen-weekend.jpg";
 import vipImage from "@/assets/kaisen-vip.jpg";
 import luxuryImage from "@/assets/kaisen-luxury.jpg";
+import offerF1Monza from "@/assets/offer-f1-monza.jpg";
+import offerRealBarca from "@/assets/offer-real-barca.jpg";
+import offerLisbon from "@/assets/offer-lisbon.jpg";
+import offerLaManga from "@/assets/offer-lamanga.jpg";
+import offerF1Vegas from "@/assets/offer-f1-vegas.jpg";
+import offerLiverpool from "@/assets/offer-liverpool.jpg";
+import offerMallorca from "@/assets/offer-mallorca.jpg";
+import offerF1AbuDhabi from "@/assets/offer-f1-abudhabi.jpg";
 
 const heroSlides = [
   {
