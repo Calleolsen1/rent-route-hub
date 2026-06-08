@@ -19,6 +19,14 @@ import incomingImage from "@/assets/kaisen-incoming.jpg";
 import weekendImage from "@/assets/kaisen-weekend.jpg";
 import vipImage from "@/assets/kaisen-vip.jpg";
 import luxuryImage from "@/assets/kaisen-luxury.jpg";
+import offerF1Monza from "@/assets/offer-f1-monza.jpg";
+import offerRealBarca from "@/assets/offer-real-barca.jpg";
+import offerLisbon from "@/assets/offer-lisbon.jpg";
+import offerLaManga from "@/assets/offer-lamanga.jpg";
+import offerF1Vegas from "@/assets/offer-f1-vegas.jpg";
+import offerLiverpool from "@/assets/offer-liverpool.jpg";
+import offerMallorca from "@/assets/offer-mallorca.jpg";
+import offerF1AbuDhabi from "@/assets/offer-f1-abudhabi.jpg";
 
 const heroSlides = [
   {
@@ -71,14 +79,14 @@ const stats = [
 ];
 
 const quickOffers = [
-  { icon: Flag, title: "F1 Monza", date: "6 sep 2026", tag: "F1", href: "/services/sportresor?f1=italien-monza" },
-  { icon: Trophy, title: "Real Madrid – Barça", date: "26 okt 2026", tag: "Fotboll", href: "/services/sportresor?league=la-liga&team=real-madrid" },
-  { icon: Users, title: "Gruppresa Lissabon", date: "Q1 2027", tag: "Grupp", href: "/group-travel" },
-  { icon: MapPin, title: "Träningsläger La Manga", date: "Mars 2027", tag: "Träning", href: "/services/traningslager" },
-  { icon: Flag, title: "F1 Las Vegas", date: "21 nov 2026", tag: "F1", href: "/services/sportresor?f1=las-vegas" },
-  { icon: Trophy, title: "Premier League – Liverpool", date: "Nov 2026", tag: "Fotboll", href: "/services/sportresor?league=premier-league&team=liverpool" },
-  { icon: Calendar, title: "Konferens Mallorca", date: "Maj 2027", tag: "Konferens", href: "/group-travel" },
-  { icon: Flag, title: "F1 Abu Dhabi", date: "6 dec 2026", tag: "F1", href: "/services/sportresor?f1=abu-dhabi" },
+  { image: offerF1Monza, title: "F1 Monza", date: "6 sep 2026", tag: "F1", href: "/services/sportresor?f1=italien-monza" },
+  { image: offerRealBarca, title: "Real Madrid – Barça", date: "26 okt 2026", tag: "Fotboll", href: "/services/sportresor?league=la-liga&team=real-madrid" },
+  { image: offerLisbon, title: "Gruppresa Lissabon", date: "Q1 2027", tag: "Grupp", href: "/group-travel" },
+  { image: offerLaManga, title: "Träningsläger La Manga", date: "Mars 2027", tag: "Träning", href: "/services/traningslager" },
+  { image: offerF1Vegas, title: "F1 Las Vegas", date: "21 nov 2026", tag: "F1", href: "/services/sportresor?f1=las-vegas" },
+  { image: offerLiverpool, title: "Premier League – Liverpool", date: "Nov 2026", tag: "Fotboll", href: "/services/sportresor?league=premier-league&team=liverpool" },
+  { image: offerMallorca, title: "Konferens Mallorca", date: "Maj 2027", tag: "Konferens", href: "/group-travel" },
+  { image: offerF1AbuDhabi, title: "F1 Abu Dhabi", date: "6 dec 2026", tag: "F1", href: "/services/sportresor?f1=abu-dhabi" },
 ];
 
 const services = [
@@ -376,21 +384,29 @@ const Home = () => {
                 <CarouselItem key={offer.title} className="pl-4 basis-[78%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
                   <Link
                     to={offer.href}
-                    className="group block border border-border bg-card p-6 h-full hover:border-primary transition-colors"
+                    className="group block bg-card border border-border h-full hover:border-primary transition-colors overflow-hidden"
                   >
-                    <div className="flex items-start justify-between mb-6">
-                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                        <offer.icon className="h-5 w-5" />
-                      </div>
-                      <span className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground font-sans">
+                    <div className="relative aspect-[4/3] overflow-hidden">
+                      <img
+                        src={offer.image}
+                        alt={offer.title}
+                        loading="lazy"
+                        width={800}
+                        height={600}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent" />
+                      <span className="absolute top-3 right-3 text-[10px] tracking-[0.2em] uppercase bg-white/90 text-primary px-2.5 py-1 font-sans">
                         {offer.tag}
                       </span>
                     </div>
-                    <h3 className="font-display text-lg text-foreground mb-1 leading-snug">{offer.title}</h3>
-                    <p className="text-xs text-muted-foreground tracking-wider uppercase mb-6">{offer.date}</p>
-                    <span className="inline-flex items-center gap-2 text-xs text-primary tracking-wider uppercase group-hover:gap-3 transition-all">
-                      Boka <ArrowRight className="h-3.5 w-3.5" />
-                    </span>
+                    <div className="p-6">
+                      <h3 className="font-display text-lg text-foreground mb-1 leading-snug">{offer.title}</h3>
+                      <p className="text-xs text-muted-foreground tracking-wider uppercase mb-5">{offer.date}</p>
+                      <span className="inline-flex items-center gap-2 text-xs text-primary tracking-wider uppercase group-hover:gap-3 transition-all">
+                        Boka <ArrowRight className="h-3.5 w-3.5" />
+                      </span>
+                    </div>
                   </Link>
                 </CarouselItem>
               ))}
