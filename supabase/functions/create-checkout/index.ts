@@ -2,6 +2,11 @@ import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { type StripeEnv, createStripeClient } from "../_shared/stripe.ts";
 
+function computeFinalSek(baseSek: number, markupPct: number, markupFixed: number): number {
+  const withPct = baseSek * (1 + (Number(markupPct) || 0) / 100);
+  return Math.round(withPct + (Number(markupFixed) || 0));
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") {
@@ -24,7 +29,7 @@ Deno.serve(async (req) => {
 
     const { data: order, error: orderErr } = await supabase
       .from("orders")
-      .select("id, user_id, customer_email, customer_name, status")
+      .select("id, user_id, customer_email, customer_name, status, currency")
       .eq("id", orderId)
       .maybeSingle();
     if (orderErr || !order) throw new Error("Order not found");
@@ -32,25 +37,44 @@ Deno.serve(async (req) => {
 
     const { data: items, error: itemsErr } = await supabase
       .from("order_items")
-      .select("qty, ticket_categories(stripe_price_id, name)")
+      .select("qty, ticket_categories(id, name, stripe_price_id, markup_pct, markup_fixed_sek)")
       .eq("order_id", orderId);
     if (itemsErr || !items?.length) throw new Error("No items on order");
 
     const stripe = createStripeClient(env);
 
-    // Resolve lookup_keys → Stripe price IDs
-    const lookupKeys = items
-      .map((i: any) => i.ticket_categories?.stripe_price_id)
-      .filter(Boolean);
+    // Resolve lookup_keys → Stripe prices (need amount + product for each)
+    const lookupKeys = Array.from(
+      new Set(items.map((i: any) => i.ticket_categories?.stripe_price_id).filter(Boolean)),
+    ) as string[];
     if (lookupKeys.length === 0) throw new Error("Missing stripe price mapping");
-    const prices = await stripe.prices.list({ lookup_keys: lookupKeys, limit: 100 });
-    const priceByKey = new Map(prices.data.map((p) => [p.lookup_key as string, p.id]));
+    const stripePrices = await stripe.prices.list({ lookup_keys: lookupKeys, limit: 100 });
+    const priceByKey = new Map(stripePrices.data.map((p) => [p.lookup_key as string, p]));
+
+    const currency = ((order.currency ?? "sek") as string).toLowerCase();
+    let newOrderTotal = 0;
 
     const line_items = items.map((i: any) => {
-      const key = i.ticket_categories?.stripe_price_id;
-      const priceId = priceByKey.get(key);
-      if (!priceId) throw new Error(`Price not found for ${key}`);
-      return { price: priceId, quantity: i.qty };
+      const cat = i.ticket_categories;
+      const stripePrice = priceByKey.get(cat?.stripe_price_id);
+      if (!stripePrice || stripePrice.unit_amount == null) {
+        throw new Error(`Price not found for ${cat?.stripe_price_id}`);
+      }
+      const baseSek = stripePrice.unit_amount / 100;
+      const finalSek = computeFinalSek(baseSek, cat.markup_pct ?? 0, cat.markup_fixed_sek ?? 0);
+      newOrderTotal += finalSek * i.qty;
+      const productId = typeof stripePrice.product === "string"
+        ? stripePrice.product
+        : (stripePrice.product as any)?.id;
+      return {
+        price_data: {
+          currency,
+          product: productId,
+          unit_amount: finalSek * 100,
+          tax_behavior: "inclusive" as const,
+        },
+        quantity: i.qty,
+      };
     });
 
     // Resolve / create customer with userId metadata
@@ -95,10 +119,14 @@ Deno.serve(async (req) => {
       metadata: { orderId, ...(order.user_id && { userId: order.user_id }) },
     });
 
-    // Save session id on order for tracking
+    // Persist freshly computed total + session id so the summary stays consistent
     await supabase
       .from("orders")
-      .update({ stripe_checkout_session_id: session.id, status: "awaiting_payment" })
+      .update({
+        stripe_checkout_session_id: session.id,
+        status: "awaiting_payment",
+        total_sek: newOrderTotal,
+      })
       .eq("id", orderId);
 
     return new Response(JSON.stringify({ clientSecret: session.client_secret }), {
