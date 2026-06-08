@@ -681,6 +681,10 @@ export type Database = {
           user_display_id: string
         }[]
       }
+      admin_set_ticket_stripe_price: {
+        Args: { p_category_id: string; p_lookup_key: string }
+        Returns: undefined
+      }
       admin_suspend_user: {
         Args: { p_admin_user_id: string; p_user_id: string }
         Returns: Json
@@ -688,6 +692,19 @@ export type Database = {
       admin_unsuspend_user: {
         Args: { p_admin_user_id: string; p_user_id: string }
         Returns: Json
+      }
+      create_order_with_items: {
+        Args: {
+          p_category_id: string
+          p_customer_email?: string
+          p_event_id: string
+          p_qty: number
+        }
+        Returns: string
+      }
+      decrement_ticket_qty: {
+        Args: { p_category_id: string; p_qty: number }
+        Returns: undefined
       }
       get_demo_credentials: {
         Args: never
