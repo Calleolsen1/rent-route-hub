@@ -79,15 +79,16 @@ const stats = [
 ];
 
 const quickOffers = [
-  { image: offerF1Monza, title: "F1 Monza", date: "6 sep 2026", tag: "F1", href: "/services/sportresor?f1=italien-monza" },
-  { image: offerRealBarca, title: "Real Madrid – Barça", date: "26 okt 2026", tag: "Fotboll", href: "/services/sportresor?league=la-liga&team=real-madrid" },
-  { image: offerLisbon, title: "Gruppresa Lissabon", date: "Q1 2027", tag: "Grupp", href: "/group-travel" },
-  { image: offerLaManga, title: "Träningsläger La Manga", date: "Mars 2027", tag: "Träning", href: "/services/traningslager" },
-  { image: offerF1Vegas, title: "F1 Las Vegas", date: "21 nov 2026", tag: "F1", href: "/services/sportresor?f1=las-vegas" },
-  { image: offerLiverpool, title: "Premier League – Liverpool", date: "Nov 2026", tag: "Fotboll", href: "/services/sportresor?league=premier-league&team=liverpool" },
-  { image: offerMallorca, title: "Konferens Mallorca", date: "Maj 2027", tag: "Konferens", href: "/group-travel" },
-  { image: offerF1AbuDhabi, title: "F1 Abu Dhabi", date: "6 dec 2026", tag: "F1", href: "/services/sportresor?f1=abu-dhabi" },
+  { image: offerF1Monza, title: "F1 Monza", date: "6 sep 2026", tag: "F1", days: "4 dagar", fromPrice: "24 900", oldPrice: "29 900", href: "/services/sportresor?f1=italien-monza", isNew: false },
+  { image: offerRealBarca, title: "Real Madrid – Barça", date: "26 okt 2026", tag: "Fotboll", days: "3 dagar", fromPrice: "18 400", oldPrice: "22 000", href: "/services/sportresor?league=la-liga&team=real-madrid", isNew: true },
+  { image: offerLisbon, title: "Gruppresa Lissabon", date: "Q1 2027", tag: "Grupp", days: "5 dagar", fromPrice: "9 800", oldPrice: "12 500", href: "/group-travel", isNew: false },
+  { image: offerLaManga, title: "Träningsläger La Manga", date: "Mars 2027", tag: "Träning", days: "7 dagar", fromPrice: "14 200", oldPrice: "17 000", href: "/services/traningslager", isNew: false },
+  { image: offerF1Vegas, title: "F1 Las Vegas", date: "21 nov 2026", tag: "F1", days: "6 dagar", fromPrice: "42 000", oldPrice: "48 500", href: "/services/sportresor?f1=las-vegas", isNew: true },
+  { image: offerLiverpool, title: "Premier League – Liverpool", date: "Nov 2026", tag: "Fotboll", days: "3 dagar", fromPrice: "16 900", oldPrice: "19 500", href: "/services/sportresor?league=premier-league&team=liverpool", isNew: false },
+  { image: offerMallorca, title: "Konferens Mallorca", date: "Maj 2027", tag: "Konferens", days: "4 dagar", fromPrice: "11 500", oldPrice: "14 000", href: "/group-travel", isNew: false },
+  { image: offerF1AbuDhabi, title: "F1 Abu Dhabi", date: "6 dec 2026", tag: "F1", days: "5 dagar", fromPrice: "32 500", oldPrice: "38 000", href: "/services/sportresor?f1=abu-dhabi", isNew: false },
 ];
+
 
 const services = [
   {
