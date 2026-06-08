@@ -50,6 +50,72 @@ export type Database = {
         }
         Relationships: []
       }
+      inquiries: {
+        Row: {
+          admin_notes: string | null
+          assigned_admin_id: string | null
+          budget_sek: number | null
+          company: string | null
+          created_at: string
+          destination: string | null
+          email: string
+          group_size: number | null
+          id: string
+          message: string
+          name: string
+          phone: string
+          preferred_dates_end: string | null
+          preferred_dates_start: string | null
+          source_page: string | null
+          sport_or_topic: string | null
+          status: Database["public"]["Enums"]["inquiry_status"]
+          type: Database["public"]["Enums"]["inquiry_type"]
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          assigned_admin_id?: string | null
+          budget_sek?: number | null
+          company?: string | null
+          created_at?: string
+          destination?: string | null
+          email: string
+          group_size?: number | null
+          id?: string
+          message: string
+          name: string
+          phone: string
+          preferred_dates_end?: string | null
+          preferred_dates_start?: string | null
+          source_page?: string | null
+          sport_or_topic?: string | null
+          status?: Database["public"]["Enums"]["inquiry_status"]
+          type: Database["public"]["Enums"]["inquiry_type"]
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          assigned_admin_id?: string | null
+          budget_sek?: number | null
+          company?: string | null
+          created_at?: string
+          destination?: string | null
+          email?: string
+          group_size?: number | null
+          id?: string
+          message?: string
+          name?: string
+          phone?: string
+          preferred_dates_end?: string | null
+          preferred_dates_start?: string | null
+          source_page?: string | null
+          sport_or_topic?: string | null
+          status?: Database["public"]["Enums"]["inquiry_status"]
+          type?: Database["public"]["Enums"]["inquiry_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       message_threads: {
         Row: {
           booking_id: string | null
@@ -515,6 +581,8 @@ export type Database = {
         | "on_hold"
         | "resolved_approved"
         | "resolved_declined"
+      inquiry_status: "new" | "in_progress" | "quoted" | "won" | "lost"
+      inquiry_type: "group" | "conference" | "training_camp" | "vip" | "contact"
       listing_status: "draft" | "pending" | "approved" | "rejected" | "blocked"
       payout_status_enum: "pending" | "completed" | "failed" | "cancelled"
       property_type: "apartment" | "villa" | "room" | "house" | "condo"
@@ -679,6 +747,8 @@ export const Constants = {
         "resolved_approved",
         "resolved_declined",
       ],
+      inquiry_status: ["new", "in_progress", "quoted", "won", "lost"],
+      inquiry_type: ["group", "conference", "training_camp", "vip", "contact"],
       listing_status: ["draft", "pending", "approved", "rejected", "blocked"],
       payout_status_enum: ["pending", "completed", "failed", "cancelled"],
       property_type: ["apartment", "villa", "room", "house", "condo"],
