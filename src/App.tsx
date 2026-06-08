@@ -40,6 +40,9 @@ import VIPService from "./pages/services/VIPService";
 import Traningslager from "./pages/services/Traningslager";
 import TeamPage from "./pages/services/TeamPage";
 import F1RacePage from "./pages/services/F1RacePage";
+import EventDetail from "./pages/EventDetail";
+import Checkout from "./pages/Checkout";
+import OrderConfirmation from "./pages/OrderConfirmation";
 
 const queryClient = new QueryClient();
 
