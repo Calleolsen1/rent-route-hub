@@ -475,51 +475,51 @@ const Home = () => {
       </section>
 
       {/* Om oss */}
-      <section className="kaisen-section bg-navy">
+      <section className="py-16 md:py-20 bg-background">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div>
-              <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Om oss</p>
-              <h2 className="font-display text-4xl md:text-5xl text-white mb-6 leading-tight">
-                Resor designade<br />
-                <em className="italic font-light text-gold-light">kring dig</em>
-              </h2>
-              <p className="text-white/60 leading-relaxed mb-10 text-base">
-                I en värld av automatiserade bokningar och standardpaket sticker Kaisen Travel Group ut. Vi tror att de bästa reseupplevelserna börjar med en riktig mänsklig kontakt — ett samtal, en gemensam vision och ett åtagande att få varje detalj att stämma.
-              </p>
-              <div className="grid sm:grid-cols-2 gap-8">
-                {whyUs.map((item) => (
-                  <div key={item.title} className="flex gap-4">
-                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                      <item.icon className="h-4 w-4 text-gold" />
-                    </div>
-                    <div>
-                      <h4 className="font-display text-lg text-white mb-1">{item.title}</h4>
-                      <p className="text-white/50 text-sm leading-relaxed">{item.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <Link to="/about" className="inline-flex items-center gap-2 mt-10 text-sm text-gold-light tracking-wider uppercase hover:gap-3 transition-all">
-                Läs mer om oss <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-            <div className="relative">
-              <div className="aspect-[4/5] overflow-hidden">
+          <div className="bg-cream rounded-2xl p-6 md:p-10">
+            <div className="grid md:grid-cols-[280px_1fr] lg:grid-cols-[360px_1fr] gap-6 md:gap-10 items-center">
+              <div className="relative rounded-xl overflow-hidden aspect-[4/3] md:aspect-[4/5]">
                 <img
                   src={luxuryImage}
                   alt="Glad resenär i vackert landskap"
                   className="w-full h-full object-cover"
+                  loading="lazy"
                 />
               </div>
-              <div className="absolute -bottom-6 -left-6 bg-primary p-6 max-w-[200px]">
-                <div className="font-display text-3xl text-primary-foreground mb-1">25+</div>
-                <div className="text-[10px] tracking-[0.2em] uppercase text-primary-foreground/70 font-sans">År av extraordinära resor</div>
+              <div>
+                <p className="text-[11px] tracking-[0.25em] text-primary uppercase mb-2 font-sans font-semibold">Om oss</p>
+                <h2 className="font-sans font-bold text-2xl md:text-3xl text-foreground mb-3 leading-tight">
+                  Resor designade kring dig
+                </h2>
+                <p className="text-foreground/70 text-sm md:text-base leading-relaxed mb-6 max-w-2xl">
+                  I en värld av automatiserade bokningar och standardpaket sticker Kaisen Travel Group ut. Vi tror att de bästa reseupplevelserna börjar med en riktig mänsklig kontakt — ett samtal, en gemensam vision och ett åtagande att få varje detalj att stämma.
+                </p>
+                <div className="grid sm:grid-cols-2 gap-x-8 gap-y-5 mb-6">
+                  {whyUs.map((item) => (
+                    <div key={item.title} className="flex gap-3">
+                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                        <item.icon className="h-3.5 w-3.5 text-primary" />
+                      </div>
+                      <div>
+                        <h4 className="font-sans font-semibold text-sm text-foreground mb-0.5">{item.title}</h4>
+                        <p className="text-foreground/60 text-xs leading-relaxed">{item.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <Link
+                  to="/about"
+                  className="inline-flex items-center gap-2 bg-foreground text-background text-sm font-semibold px-6 py-2.5 rounded-full hover:bg-primary transition-colors"
+                >
+                  Läs mer om oss
+                </Link>
               </div>
             </div>
           </div>
         </div>
       </section>
+
 
       {/* Referenser — testimonials carousel */}
       <section className="kaisen-section bg-cream">
