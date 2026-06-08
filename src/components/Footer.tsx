@@ -7,18 +7,18 @@ const Footer = () => {
 
   return (
     <footer className="bg-navy text-white">
-      <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10 py-14 md:py-16">
+      <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10 py-8 md:py-10">
         {/* Newsletter */}
-        <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-start pb-12">
+        <div className="grid md:grid-cols-2 gap-6 md:gap-10 items-start pb-6">
           <div>
-            <h2 className="font-sans font-semibold text-2xl md:text-3xl text-white">
+            <h2 className="font-sans font-semibold text-xl md:text-2xl text-white">
               Anmäl dig och håll dig uppdaterad!
             </h2>
           </div>
           <div>
             <form
               onSubmit={(e) => e.preventDefault()}
-              className="flex items-end gap-4 border-b border-white/40 pb-2"
+              className="flex items-end gap-3 border-b border-white/40 pb-1.5"
             >
               <input
                 type="email"
@@ -26,16 +26,16 @@ const Footer = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Ange din e-postadress...*"
-                className="flex-1 bg-transparent text-white placeholder:text-white/60 text-base focus:outline-none py-2"
+                className="flex-1 bg-transparent text-white placeholder:text-white/60 text-sm focus:outline-none py-1.5"
               />
               <button
                 type="submit"
-                className="border border-white text-white text-sm font-medium px-6 py-2 rounded-full hover:bg-white hover:text-navy transition-colors"
+                className="border border-white text-white text-xs font-medium px-5 py-1.5 rounded-full hover:bg-white hover:text-navy transition-colors"
               >
                 Anmäl
               </button>
             </form>
-            <p className="text-xs text-white/60 mt-4 leading-relaxed">
+            <p className="text-[11px] text-white/60 mt-3 leading-relaxed">
               Genom att skicka in detta formulär godkänner jag att Kaisen Travel Group lagrar och behandlar mina personuppgifter enligt våra{" "}
               <Link to="/faq" className="underline hover:text-white">Allmänna villkor</Link>{" "}
               &amp;{" "}
@@ -45,26 +45,27 @@ const Footer = () => {
         </div>
 
         {/* Logo + social */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 pt-2 pb-8">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pt-1 pb-5">
           <Link to="/" className="inline-block">
-            <div className="font-display text-3xl md:text-4xl font-semibold text-white tracking-[0.25em]">KAISEN</div>
-            <div className="text-[11px] tracking-[0.3em] text-white/70 font-sans uppercase mt-1">Travel Group</div>
+            <div className="font-display text-2xl md:text-3xl font-semibold text-white tracking-[0.25em]">KAISEN</div>
+            <div className="text-[10px] tracking-[0.3em] text-white/70 font-sans uppercase mt-1">Travel Group</div>
           </Link>
-          <div className="flex gap-5 text-white">
-            <a href="#" aria-label="Facebook" className="hover:text-gold transition-colors"><Facebook className="h-5 w-5" /></a>
-            <a href="#" aria-label="Twitter" className="hover:text-gold transition-colors"><Twitter className="h-5 w-5" /></a>
-            <a href="#" aria-label="Instagram" className="hover:text-gold transition-colors"><Instagram className="h-5 w-5" /></a>
-            <a href="#" aria-label="LinkedIn" className="hover:text-gold transition-colors"><Linkedin className="h-5 w-5" /></a>
+          <div className="flex gap-4 text-white">
+            <a href="#" aria-label="Facebook" className="hover:text-gold transition-colors"><Facebook className="h-4 w-4" /></a>
+            <a href="#" aria-label="Twitter" className="hover:text-gold transition-colors"><Twitter className="h-4 w-4" /></a>
+            <a href="#" aria-label="Instagram" className="hover:text-gold transition-colors"><Instagram className="h-4 w-4" /></a>
+            <a href="#" aria-label="LinkedIn" className="hover:text-gold transition-colors"><Linkedin className="h-4 w-4" /></a>
           </div>
         </div>
 
         <div className="border-t border-white/20" />
 
         {/* Link columns */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 py-7">
           <div>
-            <h3 className="text-white font-sans font-semibold text-lg mb-5">Tjänster</h3>
-            <ul className="space-y-3 text-sm text-white/80">
+            <h3 className="text-white font-sans font-semibold text-sm mb-3">Tjänster</h3>
+            <ul className="space-y-2 text-xs text-white/80">
+
               <li><Link to="/services/sportresor" className="hover:text-gold transition-colors">Sportresor</Link></li>
               <li><Link to="/group-travel" className="hover:text-gold transition-colors">Gruppresor</Link></li>
               <li><Link to="/services/weekend-getaway" className="hover:text-gold transition-colors">Weekendresor</Link></li>
