@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, MapPin } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import InquiryForm from "@/components/InquiryForm";
 import heroImage from "@/assets/camps-hero.jpg";
 import laMangaImg from "@/assets/camp-lamanga.jpg";
 import algarveImg from "@/assets/camp-algarve.jpg";
@@ -203,25 +204,15 @@ export default function Traningslager() {
  </div>
  </section>
 
- {/* CTA */}
- <section className="bg-navy py-20">
- <div className="container mx-auto px-4 text-center">
- <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Hör av er</p>
- <h2 className="font-display text-3xl md:text-5xl text-white mb-6">
- Låt oss skapa ert nästa <em className="italic font-light text-white">träningsläger</em>
- </h2>
- <p className="text-white/60 max-w-lg mx-auto mb-10 leading-relaxed">
- Berätta om era idéer, mål och behov — så tar vi fram ett upplägg som passar just ert lag.
- </p>
- <Link to="/contact">
- <Button
- size="lg"
- className="rounded-full bg-primary hover:bg-primary/90 px-10 tracking-wider text-sm"
- >
- Kontakta oss
- <ArrowRight className="ml-2 h-4 w-4" />
- </Button>
- </Link>
+ {/* Inquiry form */}
+ <section id="forfragan" className="bg-cream py-16 md:py-24">
+ <div className="container mx-auto px-4 max-w-3xl">
+ <InquiryForm
+ type="training_camp"
+ eyebrow="Förfrågan träningsläger"
+ heading="Berätta om ert lag"
+ intro="Sport, antal spelare och stab, önskad period och destination — vi tar fram ett upplägg som passar just ert lag."
+ />
  </div>
  </section>
 

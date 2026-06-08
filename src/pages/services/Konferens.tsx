@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, Users, Projector, Utensils, Wifi, Car, Award } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import InquiryForm from "@/components/InquiryForm";
 import konferensHero from "@/assets/konferens-hero.jpg";
 import konferens1 from "@/assets/konferens-dinner.jpg";
 import konferens2 from "@/assets/konferens-event.jpg";
@@ -184,21 +185,15 @@ export default function Konferens() {
  </div>
  </section>
 
- {/* CTA */}
- <section className="bg-navy py-20">
- <div className="container mx-auto px-4 text-center">
- <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Begär offert</p>
- <h2 className="font-display text-3xl md:text-5xl text-white mb-6">
- Dags att planera nästa event?
- </h2>
- <p className="text-white/60 max-w-lg mx-auto mb-10 leading-relaxed">
- Berätta om era önskemål och vi återkommer med ett komplett förslag.
- </p>
- <Link to="/contact">
- <Button size="lg" className="rounded-full bg-primary hover:bg-primary/90 px-10 tracking-wider text-sm">
- Begär offert <ArrowRight className="ml-2 h-4 w-4" />
- </Button>
- </Link>
+ {/* Inquiry form */}
+ <section id="forfragan" className="bg-cream py-16 md:py-24">
+ <div className="container mx-auto px-4 max-w-3xl">
+ <InquiryForm
+ type="conference"
+ eyebrow="Begär offert"
+ heading="Berätta om er konferens"
+ intro="Antal deltagare, ungefärliga datum, destination och budget. Vi återkommer med ett komplett förslag."
+ />
  </div>
  </section>
 

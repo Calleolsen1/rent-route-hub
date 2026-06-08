@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Users, Trophy, Briefcase, Heart, Mountain, Utensils, Check } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import InquiryForm from "@/components/InquiryForm";
 import groupImage from "@/assets/kaisen-group.jpg";
 import groupAdventure from "@/assets/group-adventure.jpg";
 import groupCorporate from "@/assets/group-corporate.jpg";
@@ -254,6 +255,18 @@ export default function GroupTravel() {
  </div>
  </div>
  </div>
+ </div>
+ </section>
+
+ {/* Inquiry form */}
+ <section id="forfragan" className="py-16 md:py-24 bg-cream">
+ <div className="container mx-auto px-4 max-w-3xl">
+ <InquiryForm
+ type="group"
+ eyebrow="Skicka förfrågan"
+ heading="Berätta om er gruppresa"
+ intro="Antal personer, ungefärliga datum, destination och budget — vi återkommer med ett skräddarsytt förslag inom 24 timmar på vardagar."
+ />
  </div>
  </section>
 
