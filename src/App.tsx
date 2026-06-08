@@ -75,6 +75,12 @@ const App = () => (
               <Route path="/support" element={<Support />} />
               <Route path="/forgot-password" element={<><Navbar /><ForgotPassword /></>} />
 
+              {/* Ticket flow */}
+              <Route path="/sport/event/:id" element={<EventDetail />} />
+              <Route path="/checkout/:orderId" element={<Checkout />} />
+              <Route path="/order/:orderId" element={<OrderConfirmation />} />
+
+
               {/* Admin portal */}
               <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<Navigate to="/admin/dashboard" replace />} />
