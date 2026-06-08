@@ -1,197 +1,80 @@
+## Goal
 
-# Kaisen — what we'll do before plugging in the XS2Event API
+Make Stripe the single source of truth for ticket prices. Fetch the price live every time an event page is viewed, then add a per-category markup (percentage + fixed SEK). The customer sees one all-in price; the markup is hidden.
 
-Locked decisions:
-- **Visual identity:** Navy + neutrals. **No gold anywhere** (will be saved as a permanent project rule).
-- **Tickets:** Fotboll + F1 only at launch, ticket-only (no hotel bundle).
-- **Inquiries:** Grupp & Konferens + Träningsläger are inbound forms — no online purchase.
-- **Merchant of record:** Kaisen, via Stripe (Lovable's built-in seamless Stripe Payments).
-- **Ticket provider:** XS2Event (`docs.xs2event.com`). Their model: Tournament → Event → Tickets (grouped by `event_id` + `category_id` + `sub_category`). Tickets data changes constantly — never cache it.
-- **Legacy cleanup:** Delete the entire property-rental product (listings, hosts, search, checkout, become-host, marketplace admin pages).
+## What changes for the admin
 
-Total estimated build: 5 phases. Phases 1–4 are pre-API; Phase 5 is the integration itself.
+In **Admin → Trips → Tickets** (the category editor), the price field is replaced by:
 
----
+- **Stripe lookup_key** (read-only once "Skapa Stripe-pris" has been clicked) — this is the source of truth for the base price
+- **Påslag %** (markup percentage, e.g. `10` for +10%)
+- **Påslag SEK** (fixed markup amount, e.g. `25`)
 
-## Phase 1 — Cleanup & de-gold (foundation)
+The `unit_price_sek` column stays in the DB but is no longer authoritative — it becomes a cached "last seen" value only, refreshed on every fetch. Admin can no longer edit it directly.
 
-**1.1 Remove gold from the design system**
-- `index.css` + `tailwind.config.ts`: drop `--gold`, `--gold-light`, `--gold-pale` tokens (replace with neutrals).
-- Replace every `text-gold*`, `bg-gold*`, gold gradients/orbs across all `src/pages/**`, `src/components/**`.
-- Italic accent words in hero headlines → `text-primary` (navy) or muted.
-- Eyebrow labels → `text-primary` instead of `text-gold`.
+## What the customer sees
 
-**1.2 Delete the property-rental product**
-Files to remove:
-- Pages: `Search.tsx`, `ListingDetail.tsx`, `Checkout.tsx`, `BookingConfirmation.tsx`, `BecomeHost.tsx`, `GuestDashboard.tsx` (old)
-- All of `src/pages/host/**` and `src/components/host/**`
-- Marketplace admin pages: `admin/ListingsManagement.tsx`, `ReviewListing.tsx`, `Commissions.tsx`, `Transactions.tsx`, `DisputesManagement.tsx`, `BookingsManagement.tsx`
-- Components: `BookingWidget`, `listing/**`, `search/**`, `dispute/**`, `guest/CancelBookingDialog`, `DashboardPaymentsSummary`, etc. (full list discovered while removing routes)
-- Layouts: `HostLayout`, old `GuestLayout` if marketplace-only
-- Hooks: `useBookingDispute`, `useDisputeDetails`, `useFeaturedDestinations` (if listing-bound)
-- Routes in `App.tsx`: `/search`, `/listing/:id`, `/checkout`, `/booking-confirmation/:id`, `/become-host`, `/host/**`, the property admin routes
-- Edge functions no longer used: `search-listings`, `cancel-expired-bookings`, `mark-completed-bookings`, `process-pending-payouts` — delete with the function delete tool
-- DB tables to drop (separate migration, after code is gone): `listings`, `listing_availability`, `listing_moderation_feedback`, `bookings`, `cancellation_policies`, `disputes`, `guest_debts`, `payouts`, `reviews`, `trip_groups`, `trip_members`, `transactions`, `cities`, `countries`, `states_regions`. Keep: `profiles`, `user_roles`, `messages`, `message_threads`, `faqs`, `platform_settings`.
+- Event page, cart, order summary, invoice: one final price per ticket = `stripe_amount + (stripe_amount × markup_pct) + markup_fixed`, rounded to whole SEK
+- No "booking fee" line, no breakdown
+- Stripe Checkout charges that same final amount (not the raw Stripe price)
 
-**1.3 Restyle the surviving public pages to match Home**
-Each gets the same hero pattern (navy overlay, eyebrow label, serif headline with italic navy accent word), `bg-cream` section bands, pill buttons, generous spacing:
-- `About.tsx`, `Contact.tsx`, `FAQ.tsx`, `HelpCenter.tsx`, `Support.tsx`
-- `Services.tsx`, `GroupTravel.tsx`
-- `services/Sportresor.tsx`, `services/TeamPage.tsx`, `services/F1RacePage.tsx`, `services/Traningslager.tsx`
-- `services/Affarsresor.tsx`, `services/Konferens.tsx`, `services/VIPService.tsx`, `services/WeekendGetaway.tsx`
-- Footer + Navbar de-gold pass
+## Technical implementation
 
-**1.4 Move hardcoded data out of Navbar/TeamPage/F1RacePage**
-Create `src/data/sports.ts` (or DB tables in Phase 2) so the menu, team pages, and F1 pages all read from one source. Lets us swap to API data in Phase 5 without touching UI.
+### 1. Database migration
 
----
+Add two columns to `ticket_categories`:
 
-## Phase 2 — Inquiry funnel (Grupp/Konferens/Träningsläger/Kontakt)
-
-**2.1 DB**
 ```text
-inquiries
-  id, type ('group'|'conference'|'training_camp'|'contact'|'vip')
-  status ('new'|'in_progress'|'quoted'|'won'|'lost')
-  name, email, phone, company
-  group_size, preferred_dates_start, preferred_dates_end
-  destination, budget_sek, sport_or_topic
-  message, source_page
-  assigned_admin_id, created_at, updated_at
+markup_pct       numeric(5,2) NOT NULL DEFAULT 0   -- e.g. 10.00 = +10%
+markup_fixed_sek numeric(10,2) NOT NULL DEFAULT 0  -- e.g. 25.00 = +25 SEK
 ```
-RLS: anyone can INSERT (anon allowed for the form); only admins can SELECT/UPDATE.
 
-**2.2 Edge function `submit-inquiry`**
-- Validates with Zod
-- Stores row
-- Emails `info@kaisengroup.se` via Resend (already wired)
-- Auto-reply to customer
-- Returns `{ ok, inquiry_id }`
+Update `create_order_with_items` RPC to recompute total from a passed-in `p_unit_price_sek` (the live price + markup, computed server-side in the edge function) rather than reading the stale `unit_price_sek` column.
 
-**2.3 UI**
-- Reusable `<InquiryForm type="…" />` component
-- Embedded on `/group-travel`, `/services/konferens`, `/services/traningslager`, `/services/vip-service`, `/contact`
-- Each page passes its `type` and any pre-set fields
-- Success screen + confirmation copy
+### 2. New edge function: `get-ticket-prices`
 
-**2.4 Admin "Förfrågningar"**
-- `/admin/inquiries` list with filters (type, status, assigned)
-- Detail drawer: full info + status changer + assign-to + notes
-- Reply button → opens existing Mitt Kaisen messaging or mailto
+Input: `{ event_id }` (or `{ category_ids: [...] }`)
+Logic:
+1. Read all `ticket_categories` rows for the event (lookup_key, markup_pct, markup_fixed_sek)
+2. Batch-fetch Stripe prices via `stripe.prices.list({ lookup_keys: [...] })`
+3. For each category: `final = round(stripe_amount_sek × (1 + markup_pct/100) + markup_fixed_sek)`
+4. Return `[{ category_id, base_sek, final_sek, currency }]`
+5. Side effect: write `final_sek` back into `ticket_categories.unit_price_sek` so DB stays roughly in sync (best-effort, non-blocking)
 
----
+`verify_jwt = false`, public (anyone viewing an event page calls it).
 
-## Phase 3 — Ticket-flow scaffolding (mock data, no API yet)
+### 3. Update `create-checkout`
 
-**3.1 DB**
-```text
-events
-  id, source ('xs2event'), external_event_id, external_tournament_id
-  sport ('soccer'|'formula1'), tournament_name
-  home_team, away_team, race_name
-  venue_name, city, country
-  starts_at, ends_at
-  cover_image_url, status ('upcoming'|'sold_out'|'completed')
-  last_synced_at
+Already resolves Stripe price via lookup_key. Change it to:
+- Compute `final_sek` exactly like `get-ticket-prices` (same formula, same rounding)
+- Pass that amount to Stripe via `price_data` (inline price), NOT the raw `price` id — so the customer pays the marked-up amount
+- Use the original Stripe product so the dashboard still shows the right product name
 
-ticket_categories
-  id, event_id, external_category_id, external_sub_category
-  name, description, party_size_together
-  unit_price_sek, currency, qty_available
-  last_synced_at
+### 4. Frontend changes
 
-orders
-  id, user_id, status ('pending'|'paid'|'fulfilled'|'failed'|'refunded')
-  stripe_payment_intent_id, total_sek, currency, customer_email,
-  invoice_number, created_at
+- `EventDetail.tsx`, `Checkout.tsx`, `UpcomingEventsList.tsx`, order summary: replace direct reads of `unit_price_sek` with a call to `get-ticket-prices` on mount. Show a small skeleton while loading.
+- Admin tickets editor: remove "Pris SEK" input, add "Påslag %" and "Påslag SEK" inputs. Show a read-only "Aktuellt Stripe-pris" line that calls `get-ticket-prices` so admin can preview the final amount.
 
-order_items
-  id, order_id, event_id, category_id
-  qty, unit_price_sek, sub_category
-  external_ticket_ids (jsonb, filled after upstream purchase)
+### 5. Order/invoice integrity
 
-ticket_deliveries
-  id, order_item_id, file_url, delivery_method, delivered_at
-```
-RLS: events + categories readable by `anon`; orders/items/deliveries scoped to `auth.uid()`; admin via `has_role`.
+When a guest places an order, the `order_items.unit_price_sek` is written from the freshly computed `final_sek` at order creation time. That row is immutable — invoices and order history always show what the customer actually paid, even if Stripe prices later change.
 
-**3.2 New ticket UI (replaces old listing/checkout)**
-- `/sport/event/:id` — event detail page (hero, venue info, kickoff, category picker, "Vad ingår" panel, sticky CTA)
-- `/checkout/:orderId` — Kaisen ticket checkout (name, email, phone, optional passport, Stripe payment element)
-- `/order/:orderId` — confirmation + ticket download
-- `Sportresor`, `TeamPage`, `F1RacePage` get refreshed to read events from DB and link to event-detail pages
-- Home's offer carousel becomes data-driven from `events`
+## Out of scope (your call later)
 
-**3.3 Mitt Kaisen "Mina biljetter"**
-- New tab under `/mitt-kaisen/biljetter`
-- Lists orders, lets user re-download tickets, view invoice
+- Webhook on `price.updated` → DB sync (you said "build later")
+- Showing markup as a separate "Bokningsavgift" line
+- Bulk markup defaults (global / per event)
 
-**3.4 Mock seeding**
-- Seed a handful of events/categories so the entire flow can be clicked through end-to-end before any API work
+## Testing in the preview
 
----
-
-## Phase 4 — Payments & emails
-
-**4.1 Stripe (built-in seamless Payments)**
-- Enable via `enable_stripe_payments`
-- Edge function `create-checkout-session`: validates cart, reserves seats via a soft hold, creates Stripe session
-- Webhook `stripe-webhook`: on `payment_intent.succeeded` mark order `paid`, trigger fulfilment
-
-**4.2 Resend transactional emails**
-- Order confirmation (with invoice PDF/HTML link)
-- Ticket delivery (file or carrier instructions)
-- Refund/cancellation notice
-- Auto-reply for inquiries (Phase 2)
-- All from `info@kaisengroup.se`, navy templates, no gold
-
-**4.3 Invoicing**
-- Reuse existing HTML-invoice pattern, restyled navy
-- Auto-generated invoice number per order, downloadable from order detail and Mitt Kaisen
-
----
-
-## Phase 5 — XS2Event integration
-
-**5.1 Secret**
-- Add `XS2EVENT_API_KEY` via the secrets tool
-
-**5.2 Edge function `xs2event-sync`** (cron: hourly for events, daily for tournaments/venues/teams)
-- Pulls Premier League, La Liga, Bundesliga, Serie A, F1 — only the leagues/races in our menu
-- Upserts into `events` (`date_stop=ge:now()`)
-- Does **not** cache tickets (per XS2Event docs — too volatile)
-
-**5.3 Edge function `xs2event-tickets`** (called live from event-detail page)
-- `GET /v1/tickets?event_id=…&ticket_status=available&stock:gt:0`
-- Groups by `event_id` + `category_id` + `sub_category`
-- Returns cheapest ticket per group + party-size-together info
-- Server caches response for ~60 s to soften load
-
-**5.4 Edge function `xs2event-purchase`** (called from Stripe webhook on `paid`)
-- Reserves + purchases tickets upstream
-- Writes `external_ticket_ids` + delivery info onto `order_items` / `ticket_deliveries`
-- On upstream failure → mark order `failed`, fire refund, email customer + admin
-
-**5.5 Admin "Beställningar"**
-- `/admin/orders` list with status, payment, fulfilment, customer
-- Detail view with re-trigger fulfilment, manual refund, resend ticket email
-
----
-
-## Phase 6 — Launch polish
-
-- SEO: page titles, meta descriptions, JSON-LD `SportsEvent` per event page, sitemap, robots
-- Legal: ticket-purchase terms, privacy, cookie banner
-- Analytics + error tracking
-- Soft launch: one team + one race → expand once stable
-
----
-
-## What I need from you before starting build mode
-
-Nothing blocking — all decisions are made. Two small confirmations would speed things up:
-
-1. **OK to fully drop the property-rental DB tables in Phase 1.2?** This is irreversible — once dropped, any data in `listings`, `bookings`, `payouts`, etc. is gone. (Demo data only, I assume.)
-2. **Do we keep the existing `messages` / `message_threads` tables** for the admin↔customer inbox, or do you want messaging redesigned around orders/inquiries from scratch? My recommendation: **keep them** and just attach threads to orders/inquiries.
-
-Switch to build mode when ready and I'll start with Phase 1.
+1. **Set up a category**: Admin → Trips → pick a trip → Tickets tab → "Skapa Stripe-pris" (creates a 1000 SEK price in Stripe sandbox, lookup_key written to DB). Set Påslag % = 10, Påslag SEK = 50.
+2. **Verify display**: Open the public event page. Price should show **1150 kr** (1000 × 1.10 + 50). Cart and order summary should match.
+3. **Verify charge**: Click "Till kassan" → fill guest email → Stripe embedded checkout. The amount Stripe shows should also be **1150 kr**.
+4. **Pay with test card**: `4242 4242 4242 4242`, any future expiry (e.g. `12/34`), any CVC (e.g. `123`), any postal code.
+5. **Verify post-payment**:
+   - Order in DB has `total_sek = 1150` and `status = paid`
+   - Invoice email arrives with 1150 kr line
+   - Guest account auto-created, welcome email arrives
+   - `ticket_categories.unit_price_sek` has been updated to 1150
+6. **Change Stripe price**: In Stripe dashboard, archive the price and create a new one at 1200 SEK with the same lookup_key. Reload the event page — price should now show **1370 kr** (1200 × 1.10 + 50) without any admin action.
+7. **Decline test**: Try card `4000 0000 0000 0002` to confirm failed payments don't decrement inventory or create invoices.
