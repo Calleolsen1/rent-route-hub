@@ -552,7 +552,7 @@ const Home = () => {
 
 
       {/* Referenser — testimonials carousel */}
-      <section className="kaisen-section bg-background">
+      <section className="kaisen-section bg-cream">
         <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
           <div className="text-center mb-14">
             <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Referenser</p>
