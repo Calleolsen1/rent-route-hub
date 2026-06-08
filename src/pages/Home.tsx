@@ -384,21 +384,29 @@ const Home = () => {
                 <CarouselItem key={offer.title} className="pl-4 basis-[78%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
                   <Link
                     to={offer.href}
-                    className="group block border border-border bg-card p-6 h-full hover:border-primary transition-colors"
+                    className="group block bg-card border border-border h-full hover:border-primary transition-colors overflow-hidden"
                   >
-                    <div className="flex items-start justify-between mb-6">
-                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                        <offer.icon className="h-5 w-5" />
-                      </div>
-                      <span className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground font-sans">
+                    <div className="relative aspect-[4/3] overflow-hidden">
+                      <img
+                        src={offer.image}
+                        alt={offer.title}
+                        loading="lazy"
+                        width={800}
+                        height={600}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent" />
+                      <span className="absolute top-3 right-3 text-[10px] tracking-[0.2em] uppercase bg-white/90 text-primary px-2.5 py-1 font-sans">
                         {offer.tag}
                       </span>
                     </div>
-                    <h3 className="font-display text-lg text-foreground mb-1 leading-snug">{offer.title}</h3>
-                    <p className="text-xs text-muted-foreground tracking-wider uppercase mb-6">{offer.date}</p>
-                    <span className="inline-flex items-center gap-2 text-xs text-primary tracking-wider uppercase group-hover:gap-3 transition-all">
-                      Boka <ArrowRight className="h-3.5 w-3.5" />
-                    </span>
+                    <div className="p-6">
+                      <h3 className="font-display text-lg text-foreground mb-1 leading-snug">{offer.title}</h3>
+                      <p className="text-xs text-muted-foreground tracking-wider uppercase mb-5">{offer.date}</p>
+                      <span className="inline-flex items-center gap-2 text-xs text-primary tracking-wider uppercase group-hover:gap-3 transition-all">
+                        Boka <ArrowRight className="h-3.5 w-3.5" />
+                      </span>
+                    </div>
                   </Link>
                 </CarouselItem>
               ))}
