@@ -5,178 +5,178 @@ import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 
 const channels = [
-  {
-    icon: Phone,
-    title: "Ring oss",
-    desc: "För akuta ärenden — vi svarar direkt under kontorstid.",
-    detail: "+44 20 1234 5678",
-    href: "tel:+442012345678",
-    cta: "Ring nu",
-  },
-  {
-    icon: Mail,
-    title: "E-post",
-    desc: "Skicka ditt ärende så återkommer vi inom en timme.",
-    detail: "hello@kaisentravel.com",
-    href: "mailto:hello@kaisentravel.com",
-    cta: "Skicka mejl",
-  },
-  {
-    icon: MessageSquare,
-    title: "Kontaktformulär",
-    desc: "Beskriv ditt ärende i detalj — vi tar hand om resten.",
-    detail: "Svar inom 1 timme",
-    href: "/contact",
-    cta: "Öppna formulär",
-    internal: true,
-  },
+ {
+ icon: Phone,
+ title: "Ring oss",
+ desc: "För akuta ärenden — vi svarar direkt under kontorstid.",
+ detail: "+44 20 1234 5678",
+ href: "tel:+442012345678",
+ cta: "Ring nu",
+ },
+ {
+ icon: Mail,
+ title: "E-post",
+ desc: "Skicka ditt ärende så återkommer vi inom en timme.",
+ detail: "hello@kaisentravel.com",
+ href: "mailto:hello@kaisentravel.com",
+ cta: "Skicka mejl",
+ },
+ {
+ icon: MessageSquare,
+ title: "Kontaktformulär",
+ desc: "Beskriv ditt ärende i detalj — vi tar hand om resten.",
+ detail: "Svar inom 1 timme",
+ href: "/contact",
+ cta: "Öppna formulär",
+ internal: true,
+ },
 ];
 
 const supportTypes = [
-  {
-    icon: AlertCircle,
-    color: "text-red-500",
-    bg: "bg-red-50",
-    title: "Akuta ärenden under resa",
-    desc: "Befinner du dig på resa och har ett akut problem? Ring oss direkt på +44 20 1234 5678. Vi har jour för aktiva kunder och svarar även utanför kontorstid.",
-  },
-  {
-    icon: HelpCircle,
-    color: "text-primary",
-    bg: "bg-primary/10",
-    title: "Frågor om bokning",
-    desc: "Har du frågor om en pågående eller kommande bokning? Kontakta oss via e-post eller formulär med ditt bokningsnummer så hjälper vi dig snabbt.",
-  },
-  {
-    icon: CheckCircle,
-    color: "text-green-600",
-    bg: "bg-green-50",
-    title: "Feedback & förbättringar",
-    desc: "Har du rest med oss och vill dela med dig av dina intryck? Vi tar alltid emot feedback — positiv och negativ — för att bli bättre.",
-  },
+ {
+ icon: AlertCircle,
+ color: "text-red-500",
+ bg: "bg-red-50",
+ title: "Akuta ärenden under resa",
+ desc: "Befinner du dig på resa och har ett akut problem? Ring oss direkt på +44 20 1234 5678. Vi har jour för aktiva kunder och svarar även utanför kontorstid.",
+ },
+ {
+ icon: HelpCircle,
+ color: "text-primary",
+ bg: "bg-primary/10",
+ title: "Frågor om bokning",
+ desc: "Har du frågor om en pågående eller kommande bokning? Kontakta oss via e-post eller formulär med ditt bokningsnummer så hjälper vi dig snabbt.",
+ },
+ {
+ icon: CheckCircle,
+ color: "text-green-600",
+ bg: "bg-green-50",
+ title: "Feedback & förbättringar",
+ desc: "Har du rest med oss och vill dela med dig av dina intryck? Vi tar alltid emot feedback — positiv och negativ — för att bli bättre.",
+ },
 ];
 
 export default function Support() {
-  return (
-    <div className="min-h-screen">
-      <Navbar />
+ return (
+ <div className="min-h-screen">
+ <Navbar />
 
-      {/* Hero */}
-      <section className="bg-navy py-20 border-b border-white/10">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Support</p>
-          <h1 className="font-sans font-semibold text-4xl md:text-6xl text-white mb-4">
-            Vi är här för <em className="italic font-light text-gold-light">dig</em>
-          </h1>
-          <p className="text-white/60 max-w-xl mx-auto leading-relaxed">
-            Personlig och snabb hjälp — oavsett om du planerar, packar eller redan är på plats.
-          </p>
-        </div>
-      </section>
+ {/* Hero */}
+ <section className="bg-navy py-20 border-b border-white/10">
+ <div className="container mx-auto px-4 text-center">
+ <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Support</p>
+ <h1 className="font-display text-4xl md:text-6xl text-white mb-4">
+ Vi är här för <em className="italic font-light text-gold-light">dig</em>
+ </h1>
+ <p className="text-white/60 max-w-xl mx-auto leading-relaxed">
+ Personlig och snabb hjälp — oavsett om du planerar, packar eller redan är på plats.
+ </p>
+ </div>
+ </section>
 
-      {/* Office hours banner */}
-      <div className="bg-primary/10 border-b border-primary/20 py-3">
-        <div className="container mx-auto px-4 flex items-center justify-center gap-2 text-sm">
-          <Clock className="h-4 w-4 text-primary" />
-          <span className="text-foreground font-medium">Kontorstid:</span>
-          <span className="text-muted-foreground">Mån–Fre 09:00–18:00 · Lör 10:00–16:00 · Akutlinje dygnet runt för aktiva kunder</span>
-        </div>
-      </div>
+ {/* Office hours banner */}
+ <div className="bg-primary/10 border-b border-primary/20 py-3">
+ <div className="container mx-auto px-4 flex items-center justify-center gap-2 text-sm">
+ <Clock className="h-4 w-4 text-primary" />
+ <span className="text-foreground font-medium">Kontorstid:</span>
+ <span className="text-muted-foreground">Mån–Fre 09:00–18:00 · Lör 10:00–16:00 · Akutlinje dygnet runt för aktiva kunder</span>
+ </div>
+ </div>
 
-      {/* Contact channels */}
-      <section className="py-10 md:py-14 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Kontakta oss</p>
-            <h2 className="font-sans font-semibold text-3xl text-foreground">Välj ditt sätt att nå oss</h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            {channels.map((ch) => (
-              <div key={ch.title} className="border border-border bg-card p-8 text-center hover:border-primary/40 transition-colors">
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <ch.icon className="h-5 w-5 text-primary" />
-                </div>
-                <h3 className="font-sans font-semibold text-xl text-foreground mb-2">{ch.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-3">{ch.desc}</p>
-                <p className="text-sm font-medium text-primary mb-5">{ch.detail}</p>
-                {ch.internal ? (
-                  <Link to={ch.href}>
-                    <Button variant="outline" className="rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground text-xs tracking-wider w-full">
-                      {ch.cta} <ArrowRight className="h-3 w-3 ml-1" />
-                    </Button>
-                  </Link>
-                ) : (
-                  <a href={ch.href}>
-                    <Button variant="outline" className="rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground text-xs tracking-wider w-full">
-                      {ch.cta} <ArrowRight className="h-3 w-3 ml-1" />
-                    </Button>
-                  </a>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+ {/* Contact channels */}
+ <section className="py-10 md:py-14 bg-background">
+ <div className="container mx-auto px-4">
+ <div className="text-center mb-12">
+ <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Kontakta oss</p>
+ <h2 className="font-display text-3xl text-foreground">Välj ditt sätt att nå oss</h2>
+ </div>
+ <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+ {channels.map((ch) => (
+ <div key={ch.title} className="border border-border bg-card p-8 text-center hover:border-primary/40 transition-colors">
+ <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+ <ch.icon className="h-5 w-5 text-primary" />
+ </div>
+ <h3 className="font-display text-xl text-foreground mb-2">{ch.title}</h3>
+ <p className="text-sm text-muted-foreground leading-relaxed mb-3">{ch.desc}</p>
+ <p className="text-sm font-medium text-primary mb-5">{ch.detail}</p>
+ {ch.internal ? (
+ <Link to={ch.href}>
+ <Button variant="outline" className="rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground text-xs tracking-wider w-full">
+ {ch.cta} <ArrowRight className="h-3 w-3 ml-1" />
+ </Button>
+ </Link>
+ ) : (
+ <a href={ch.href}>
+ <Button variant="outline" className="rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground text-xs tracking-wider w-full">
+ {ch.cta} <ArrowRight className="h-3 w-3 ml-1" />
+ </Button>
+ </a>
+ )}
+ </div>
+ ))}
+ </div>
+ </div>
+ </section>
 
-      {/* Support types */}
-      <section className="py-10 md:py-14 bg-cream">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Typer av ärenden</p>
-            <h2 className="font-sans font-semibold text-3xl text-foreground">Hur kan vi hjälpa?</h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            {supportTypes.map((st) => (
-              <div key={st.title} className="border border-border bg-card p-6">
-                <div className={`w-10 h-10 ${st.bg} rounded-full flex items-center justify-center mb-4`}>
-                  <st.icon className={`h-5 w-5 ${st.color}`} />
-                </div>
-                <h3 className="font-sans font-semibold text-lg text-foreground mb-3">{st.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{st.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+ {/* Support types */}
+ <section className="py-10 md:py-14 bg-cream">
+ <div className="container mx-auto px-4">
+ <div className="text-center mb-12">
+ <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Typer av ärenden</p>
+ <h2 className="font-display text-3xl text-foreground">Hur kan vi hjälpa?</h2>
+ </div>
+ <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+ {supportTypes.map((st) => (
+ <div key={st.title} className="border border-border bg-card p-6">
+ <div className={`w-10 h-10 ${st.bg} rounded-full flex items-center justify-center mb-4`}>
+ <st.icon className={`h-5 w-5 ${st.color}`} />
+ </div>
+ <h3 className="font-display text-lg text-foreground mb-3">{st.title}</h3>
+ <p className="text-sm text-muted-foreground leading-relaxed">{st.desc}</p>
+ </div>
+ ))}
+ </div>
+ </div>
+ </section>
 
-      {/* Promise section */}
-      <section className="py-10 md:py-14 bg-navy">
-        <div className="container mx-auto px-4 text-center max-w-2xl">
-          <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Vårt löfte</p>
-          <h2 className="font-sans font-semibold text-3xl text-white mb-6">
-            Vi svarar alltid — <em className="italic font-light text-gold-light">på riktigt</em>
-          </h2>
-          <p className="text-white/60 leading-relaxed mb-8">
-            Hos Kaisen Travel Group pratar du alltid med en riktig människa. Inga automatiserade svar, ingen kö. En dedikerad rådgivare tar hand om ditt ärende från start till mål.
-          </p>
-          <div className="grid grid-cols-3 gap-6 border-t border-white/10 pt-8">
-            {[
-              { value: "1 tim", label: "Svarstid på mejl" },
-              { value: "24/7", label: "Akutlinje under resa" },
-              { value: "100%", label: "Personlig kontakt" },
-            ].map((s) => (
-              <div key={s.label}>
-                <div className="font-sans font-semibold text-2xl text-gold mb-1">{s.value}</div>
-                <div className="text-xs tracking-wider text-white/40 uppercase font-sans">{s.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+ {/* Promise section */}
+ <section className="py-10 md:py-14 bg-navy">
+ <div className="container mx-auto px-4 text-center max-w-2xl">
+ <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Vårt löfte</p>
+ <h2 className="font-display text-3xl text-white mb-6">
+ Vi svarar alltid — <em className="italic font-light text-gold-light">på riktigt</em>
+ </h2>
+ <p className="text-white/60 leading-relaxed mb-8">
+ Hos Kaisen Travel Group pratar du alltid med en riktig människa. Inga automatiserade svar, ingen kö. En dedikerad rådgivare tar hand om ditt ärende från start till mål.
+ </p>
+ <div className="grid grid-cols-3 gap-6 border-t border-white/10 pt-8">
+ {[
+ { value: "1 tim", label: "Svarstid på mejl" },
+ { value: "24/7", label: "Akutlinje under resa" },
+ { value: "100%", label: "Personlig kontakt" },
+ ].map((s) => (
+ <div key={s.label}>
+ <div className="font-display text-2xl text-gold mb-1">{s.value}</div>
+ <div className="text-xs tracking-wider text-white/40 uppercase font-sans">{s.label}</div>
+ </div>
+ ))}
+ </div>
+ </div>
+ </section>
 
-      {/* Also see FAQ */}
-      <section className="py-12 bg-background border-t border-border">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-muted-foreground text-sm mb-4">Letar du efter svar på en specifik fråga?</p>
-          <Link to="/faq">
-            <Button variant="outline" className="rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground tracking-wider text-sm">
-              Gå till FAQ <ArrowRight className="h-4 w-4 ml-2" />
-            </Button>
-          </Link>
-        </div>
-      </section>
+ {/* Also see FAQ */}
+ <section className="py-12 bg-background border-t border-border">
+ <div className="container mx-auto px-4 text-center">
+ <p className="text-muted-foreground text-sm mb-4">Letar du efter svar på en specifik fråga?</p>
+ <Link to="/faq">
+ <Button variant="outline" className="rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground tracking-wider text-sm">
+ Gå till FAQ <ArrowRight className="h-4 w-4 ml-2" />
+ </Button>
+ </Link>
+ </div>
+ </section>
 
-      <Footer />
-    </div>
-  );
+ <Footer />
+ </div>
+ );
 }
