@@ -560,26 +560,25 @@ const Home = () => {
       </section>
 
       {/* Kontakta oss CTA */}
-      <section className="relative py-24 md:py-28 overflow-hidden">
-        <div className="absolute inset-0">
-          <img src={heroImage} alt="Kontakta oss bakgrund" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-navy/80" />
-        </div>
-        <div className="relative container mx-auto px-4 text-center">
-          <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Kontakta oss</p>
-          <h2 className="font-display text-4xl md:text-6xl text-white mb-6">
-            Ditt nästa äventyr<br />
-            <em className="italic font-light text-gold-light">börjar med ett samtal</em>
-          </h2>
-          <p className="text-white/60 max-w-lg mx-auto mb-10 leading-relaxed">
-            Prata med en Kaisen-konsult idag. Inga mallar, inga algoritmer — bara genuin expertis dedikerad till din perfekta resa.
-          </p>
-          <Link to="/contact">
-            <Button size="lg" className="rounded-none bg-primary hover:bg-primary/90 px-10 tracking-widest text-sm">
-              Börja planera nu
-              <ArrowRight className="ml-3 h-4 w-4" />
-            </Button>
-          </Link>
+      <section className="py-16 md:py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="bg-cream rounded-2xl p-8 md:p-12 grid md:grid-cols-[1fr_auto] gap-8 items-center">
+            <div className="max-w-xl">
+              <p className="text-[11px] tracking-[0.25em] text-primary uppercase mb-3 font-sans">Kontakta oss</p>
+              <h2 className="font-sans text-2xl md:text-3xl font-semibold text-foreground mb-3">
+                Ditt nästa äventyr börjar med ett samtal
+              </h2>
+              <p className="text-sm text-foreground/70 leading-relaxed">
+                Prata med en Kaisen-konsult idag. Inga mallar, inga algoritmer — bara genuin expertis dedikerad till din perfekta resa.
+              </p>
+            </div>
+            <Link to="/contact" className="md:justify-self-end">
+              <Button size="lg" className="rounded-full bg-foreground hover:bg-foreground/90 text-background px-8 text-sm">
+                Börja planera nu
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 
