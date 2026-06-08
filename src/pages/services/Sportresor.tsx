@@ -93,7 +93,7 @@ export default function Sportresor() {
           <p className="text-xs tracking-[0.3em] text-gold uppercase mb-3 font-sans">
             Tjänster — Sportresor
           </p>
-          <h1 className="font-display text-4xl md:text-6xl text-white">
+          <h1 className="font-sans font-semibold text-4xl md:text-6xl text-white">
             Resor för <em className="italic font-light text-gold-light">Sportälskare</em>
           </h1>
         </div>
@@ -102,7 +102,7 @@ export default function Sportresor() {
       {/* Intro */}
       <section className="bg-cream py-16">
         <div className="container mx-auto px-4 max-w-3xl text-center">
-          <p className="font-display text-2xl md:text-3xl text-foreground italic font-light leading-relaxed">
+          <p className="font-sans font-semibold text-2xl md:text-3xl text-foreground italic font-light leading-relaxed">
             "Oavsett om det är din första F1-resa eller din tjugonde — vi ser till att du har en bra upplevelse."
           </p>
           <div className="w-8 h-px bg-primary mx-auto mt-8" />
@@ -110,7 +110,7 @@ export default function Sportresor() {
       </section>
 
       {/* Sport Sections */}
-      <section className="py-20 bg-background">
+      <section className="py-12 md:py-16 bg-background">
         <div className="container mx-auto px-4 space-y-24">
           {sports.map((sport, index) => (
             <div
@@ -134,7 +134,7 @@ export default function Sportresor() {
                 <span className="text-[10px] tracking-[0.25em] uppercase bg-accent text-accent-foreground px-3 py-1 font-sans">
                   {sport.title}
                 </span>
-                <h2 className="font-display text-3xl md:text-4xl text-foreground mt-4 mb-2">
+                <h2 className="font-sans font-semibold text-3xl md:text-4xl text-foreground mt-4 mb-2">
                   {sport.title}-resor
                 </h2>
                 <div className="w-10 h-px bg-primary mb-6" />
@@ -150,7 +150,7 @@ export default function Sportresor() {
                   ))}
                 </ul>
                 <Link to="/contact">
-                  <Button className="rounded-none bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
+                  <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
                     Boka nu
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
@@ -165,7 +165,7 @@ export default function Sportresor() {
       <section className="bg-navy py-20">
         <div className="container mx-auto px-4 text-center">
           <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Boka din sportresa</p>
-          <h2 className="font-display text-3xl md:text-5xl text-white mb-6">
+          <h2 className="font-sans font-semibold text-3xl md:text-5xl text-white mb-6">
             Vilken sport vill du uppleva live?
           </h2>
           <p className="text-white/60 max-w-lg mx-auto mb-10 leading-relaxed">
@@ -174,7 +174,7 @@ export default function Sportresor() {
           <Link to="/contact">
             <Button
               size="lg"
-              className="rounded-none bg-primary hover:bg-primary/90 px-10 tracking-wider text-sm"
+              className="rounded-full bg-primary hover:bg-primary/90 px-10 tracking-wider text-sm"
             >
               Kontakta oss
               <ArrowRight className="ml-2 h-4 w-4" />

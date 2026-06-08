@@ -65,7 +65,7 @@ export default function Support() {
       <section className="bg-navy py-20 border-b border-white/10">
         <div className="container mx-auto px-4 text-center">
           <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Support</p>
-          <h1 className="font-display text-4xl md:text-6xl text-white mb-4">
+          <h1 className="font-sans font-semibold text-4xl md:text-6xl text-white mb-4">
             Vi är här för <em className="italic font-light text-gold-light">dig</em>
           </h1>
           <p className="text-white/60 max-w-xl mx-auto leading-relaxed">
@@ -84,11 +84,11 @@ export default function Support() {
       </div>
 
       {/* Contact channels */}
-      <section className="py-16 bg-background">
+      <section className="py-10 md:py-14 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Kontakta oss</p>
-            <h2 className="font-display text-3xl text-foreground">Välj ditt sätt att nå oss</h2>
+            <h2 className="font-sans font-semibold text-3xl text-foreground">Välj ditt sätt att nå oss</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {channels.map((ch) => (
@@ -96,18 +96,18 @@ export default function Support() {
                 <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <ch.icon className="h-5 w-5 text-primary" />
                 </div>
-                <h3 className="font-display text-xl text-foreground mb-2">{ch.title}</h3>
+                <h3 className="font-sans font-semibold text-xl text-foreground mb-2">{ch.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed mb-3">{ch.desc}</p>
                 <p className="text-sm font-medium text-primary mb-5">{ch.detail}</p>
                 {ch.internal ? (
                   <Link to={ch.href}>
-                    <Button variant="outline" className="rounded-none border-primary text-primary hover:bg-primary hover:text-primary-foreground text-xs tracking-wider w-full">
+                    <Button variant="outline" className="rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground text-xs tracking-wider w-full">
                       {ch.cta} <ArrowRight className="h-3 w-3 ml-1" />
                     </Button>
                   </Link>
                 ) : (
                   <a href={ch.href}>
-                    <Button variant="outline" className="rounded-none border-primary text-primary hover:bg-primary hover:text-primary-foreground text-xs tracking-wider w-full">
+                    <Button variant="outline" className="rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground text-xs tracking-wider w-full">
                       {ch.cta} <ArrowRight className="h-3 w-3 ml-1" />
                     </Button>
                   </a>
@@ -119,11 +119,11 @@ export default function Support() {
       </section>
 
       {/* Support types */}
-      <section className="py-16 bg-cream">
+      <section className="py-10 md:py-14 bg-cream">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Typer av ärenden</p>
-            <h2 className="font-display text-3xl text-foreground">Hur kan vi hjälpa?</h2>
+            <h2 className="font-sans font-semibold text-3xl text-foreground">Hur kan vi hjälpa?</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {supportTypes.map((st) => (
@@ -131,7 +131,7 @@ export default function Support() {
                 <div className={`w-10 h-10 ${st.bg} rounded-full flex items-center justify-center mb-4`}>
                   <st.icon className={`h-5 w-5 ${st.color}`} />
                 </div>
-                <h3 className="font-display text-lg text-foreground mb-3">{st.title}</h3>
+                <h3 className="font-sans font-semibold text-lg text-foreground mb-3">{st.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{st.desc}</p>
               </div>
             ))}
@@ -140,10 +140,10 @@ export default function Support() {
       </section>
 
       {/* Promise section */}
-      <section className="py-16 bg-navy">
+      <section className="py-10 md:py-14 bg-navy">
         <div className="container mx-auto px-4 text-center max-w-2xl">
           <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Vårt löfte</p>
-          <h2 className="font-display text-3xl text-white mb-6">
+          <h2 className="font-sans font-semibold text-3xl text-white mb-6">
             Vi svarar alltid — <em className="italic font-light text-gold-light">på riktigt</em>
           </h2>
           <p className="text-white/60 leading-relaxed mb-8">
@@ -156,7 +156,7 @@ export default function Support() {
               { value: "100%", label: "Personlig kontakt" },
             ].map((s) => (
               <div key={s.label}>
-                <div className="font-display text-2xl text-gold mb-1">{s.value}</div>
+                <div className="font-sans font-semibold text-2xl text-gold mb-1">{s.value}</div>
                 <div className="text-xs tracking-wider text-white/40 uppercase font-sans">{s.label}</div>
               </div>
             ))}
@@ -169,7 +169,7 @@ export default function Support() {
         <div className="container mx-auto px-4 text-center">
           <p className="text-muted-foreground text-sm mb-4">Letar du efter svar på en specifik fråga?</p>
           <Link to="/faq">
-            <Button variant="outline" className="rounded-none border-primary text-primary hover:bg-primary hover:text-primary-foreground tracking-wider text-sm">
+            <Button variant="outline" className="rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground tracking-wider text-sm">
               Gå till FAQ <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
           </Link>

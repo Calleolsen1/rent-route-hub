@@ -206,7 +206,7 @@ export default function HelpCenter() {
       <section className="bg-navy py-20 border-b border-white/10">
         <div className="container mx-auto px-4 text-center">
           <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Hjälpcenter</p>
-          <h1 className="font-display text-4xl md:text-6xl text-white mb-4">
+          <h1 className="font-sans font-semibold text-4xl md:text-6xl text-white mb-4">
             Hur kan vi <em className="italic font-light text-gold-light">hjälpa dig?</em>
           </h1>
           <p className="text-white/60 max-w-xl mx-auto leading-relaxed mb-8">
@@ -240,7 +240,7 @@ export default function HelpCenter() {
               </div>
             </div>
             <Link to="/contact">
-              <Button size="sm" variant="outline" className="rounded-none border-primary text-primary hover:bg-primary hover:text-primary-foreground text-xs tracking-wider whitespace-nowrap">
+              <Button size="sm" variant="outline" className="rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground text-xs tracking-wider whitespace-nowrap">
                 Få tidig åtkomst <ChevronRight className="h-3 w-3 ml-1" />
               </Button>
             </Link>
@@ -249,7 +249,7 @@ export default function HelpCenter() {
       </section>
 
       {/* Topics with expandable articles */}
-      <section className="py-16 bg-background">
+      <section className="py-10 md:py-14 bg-background">
         <div className="container mx-auto px-4 max-w-3xl">
           {search && filtered.length === 0 && (
             <div className="text-center py-16 text-muted-foreground">
@@ -275,7 +275,7 @@ export default function HelpCenter() {
                     </div>
                     <div className="text-left">
                       <div className="flex items-center gap-2">
-                        <span className="font-display text-lg text-foreground">{topic.title}</span>
+                        <span className="font-sans font-semibold text-lg text-foreground">{topic.title}</span>
                         {topic.comingSoon && (
                           <span className="text-[10px] tracking-wider uppercase bg-primary/10 text-primary px-2 py-0.5 font-sans">Kommer snart</span>
                         )}
@@ -326,11 +326,11 @@ export default function HelpCenter() {
       </section>
 
       {/* How updates work */}
-      <section className="py-16 bg-cream">
+      <section className="py-10 md:py-14 bg-cream">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Transparens</p>
-            <h2 className="font-display text-3xl text-foreground mb-2">
+            <h2 className="font-sans font-semibold text-3xl text-foreground mb-2">
               Alltid uppdaterad — <em className="italic font-light">utan ansträngning</em>
             </h2>
             <div className="w-10 h-px bg-primary mx-auto" />
@@ -357,7 +357,7 @@ export default function HelpCenter() {
                 <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <item.icon className="h-5 w-5 text-primary" />
                 </div>
-                <h3 className="font-display text-xl text-foreground mb-2">{item.title}</h3>
+                <h3 className="font-sans font-semibold text-xl text-foreground mb-2">{item.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
               </div>
             ))}
@@ -368,18 +368,18 @@ export default function HelpCenter() {
       {/* CTA */}
       <section className="bg-primary py-16">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="font-display text-3xl text-primary-foreground mb-4">Hittade du inte svaret?</h2>
+          <h2 className="font-sans font-semibold text-3xl text-primary-foreground mb-4">Hittade du inte svaret?</h2>
           <p className="text-primary-foreground/70 mb-8 max-w-md mx-auto">
             Vårt team svarar alltid inom en timme under kontorstid.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/support">
-              <Button className="rounded-none bg-white text-primary hover:bg-white/90 px-10 tracking-wider text-sm font-semibold">
+              <Button className="rounded-full bg-white text-primary hover:bg-white/90 px-10 tracking-wider text-sm font-semibold">
                 Gå till Support <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </Link>
             <Link to="/contact">
-              <Button variant="outline" className="rounded-none border-white text-white hover:bg-white hover:text-primary px-10 tracking-wider text-sm font-semibold">
+              <Button variant="outline" className="rounded-full border-white text-white hover:bg-white hover:text-primary px-10 tracking-wider text-sm font-semibold">
                 Kontaktformulär
               </Button>
             </Link>

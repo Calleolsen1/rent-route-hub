@@ -88,17 +88,19 @@ const BecomeHost = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative py-20">
+      <section className="relative bg-navy py-16 md:py-24 border-b border-white/10">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-5xl font-bold mb-6">Earn money as a Host</h1>
-            <p className="text-xl text-muted-foreground mb-8">
+            <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Bli Arrangör</p>
+            <h1 className="font-sans font-semibold text-3xl md:text-5xl text-white mb-6">Earn money as a Host</h1>
+            <p className="text-base md:text-lg text-white/70 mb-8 leading-relaxed">
               Share your space and earn extra income by hosting guests from around the world. Join thousands of hosts making money on their terms.
             </p>
             <Button 
               size="lg" 
               onClick={handleBecomeHost}
               disabled={isLoading}
+              className="rounded-full bg-white hover:bg-white/90 text-navy font-semibold px-10 py-6 text-base shadow-lg"
             >
               {isLoading ? (
                 <>
@@ -113,11 +115,13 @@ const BecomeHost = () => {
         </div>
       </section>
 
+
       {/* Benefits Section */}
-      <section className="py-16 container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-12">Why Host with Rentely?</h2>
+      <section className="py-12 md:py-16 container mx-auto px-4">
+        <h2 className="font-sans font-semibold text-2xl md:text-4xl text-center mb-12">Why Host with Rentely?</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
           <Card>
             <CardContent className="p-6 text-center">
               <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
@@ -169,9 +173,10 @@ const BecomeHost = () => {
       </section>
 
       {/* How It Works Section */}
-      <section className="py-16 bg-background">
+      <section className="py-12 md:py-16 bg-cream">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
+          <h2 className="font-sans font-semibold text-2xl md:text-4xl text-center mb-12">How It Works</h2>
+
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <div className="flex flex-col items-center text-center relative">
@@ -229,28 +234,36 @@ const BecomeHost = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
-          <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Join thousands of hosts earning extra income by sharing their spaces
-          </p>
-          <Button 
-            size="lg" 
-            onClick={handleBecomeHost}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Loading demo...
-              </>
-            ) : (
-              "Become a Host"
-            )}
-          </Button>
+      <section className="py-12 md:py-16">
+        <div className="container mx-auto px-4">
+          <div className="relative overflow-hidden rounded-3xl bg-navy p-10 md:p-16 text-center">
+            <div className="pointer-events-none absolute -top-24 -right-16 w-80 h-80 rounded-full bg-gold/30 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-32 -left-20 w-96 h-96 rounded-full bg-primary/40 blur-3xl" />
+            <div className="relative max-w-2xl mx-auto">
+              <h2 className="font-sans font-semibold text-2xl md:text-4xl text-white mb-4">Ready to Get Started?</h2>
+              <p className="text-base text-white/70 mb-8 leading-relaxed">
+                Join thousands of hosts earning extra income by sharing their spaces
+              </p>
+              <Button 
+                size="lg" 
+                onClick={handleBecomeHost}
+                disabled={isLoading}
+                className="rounded-full bg-white hover:bg-white/90 text-navy font-semibold px-10 py-6 text-base shadow-lg"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Loading demo...
+                  </>
+                ) : (
+                  "Become a Host"
+                )}
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
+
 
       <Footer />
     </div>

@@ -83,7 +83,7 @@ export default function VIPService() {
           <p className="text-xs tracking-[0.3em] text-gold uppercase mb-3 font-sans">
             Tjänster — VIP Service
           </p>
-          <h1 className="font-display text-4xl md:text-6xl text-white">
+          <h1 className="font-sans font-semibold text-4xl md:text-6xl text-white">
             Resor på <em className="italic font-light text-gold-light">Dina Villkor</em>
           </h1>
           <p className="text-white/70 mt-4 text-lg font-light max-w-lg">
@@ -95,7 +95,7 @@ export default function VIPService() {
       {/* Intro quote */}
       <section className="bg-navy py-16 border-t border-gold/20">
         <div className="container mx-auto px-4 max-w-3xl text-center">
-          <p className="font-display text-2xl md:text-3xl text-white italic font-light leading-relaxed">
+          <p className="font-sans font-semibold text-2xl md:text-3xl text-white italic font-light leading-relaxed">
             "Vi tar hand om varje detalj — så att du kan fokusera på det som verkligen spelar roll."
           </p>
           <div className="w-8 h-px bg-gold mx-auto mt-8" />
@@ -103,7 +103,7 @@ export default function VIPService() {
       </section>
 
       {/* Concierge image + intro text */}
-      <section className="py-20 bg-background">
+      <section className="py-12 md:py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div className="aspect-[4/3] overflow-hidden">
@@ -117,7 +117,7 @@ export default function VIPService() {
               <span className="text-[10px] tracking-[0.25em] uppercase bg-accent text-accent-foreground px-3 py-1 font-sans">
                 Privat & Affärsresor
               </span>
-              <h2 className="font-display text-3xl md:text-4xl text-foreground mt-4 mb-2">
+              <h2 className="font-sans font-semibold text-3xl md:text-4xl text-foreground mt-4 mb-2">
                 En Service Som Anpassar Sig Efter Dig
               </h2>
               <div className="w-10 h-px bg-primary mb-6" />
@@ -128,7 +128,7 @@ export default function VIPService() {
                 Vår white glove service innebär att inget lämnas åt slumpen. Från first contact till hemkomst finns vi alltid ett samtal bort.
               </p>
               <Link to="/contact">
-                <Button className="rounded-none bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
+                <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
                   Kom i kontakt
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -139,11 +139,11 @@ export default function VIPService() {
       </section>
 
       {/* Services grid */}
-      <section className="py-20 bg-cream">
+      <section className="py-12 md:py-16 bg-cream">
         <div className="container mx-auto px-4">
           <div className="text-center mb-14">
             <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Vad Ingår</p>
-            <h2 className="font-display text-3xl md:text-4xl text-foreground">
+            <h2 className="font-sans font-semibold text-3xl md:text-4xl text-foreground">
               Komplett White Glove Service
             </h2>
           </div>
@@ -158,7 +158,7 @@ export default function VIPService() {
                   } ${i < services.length - 2 ? "border-b" : ""}`}
                 >
                   <Icon className="h-5 w-5 text-primary mb-4" />
-                  <h3 className="font-display text-xl text-foreground mb-3">{s.title}</h3>
+                  <h3 className="font-sans font-semibold text-xl text-foreground mb-3">{s.title}</h3>
                   <div className="w-8 h-px bg-primary mb-4" />
                   <p className="text-muted-foreground text-sm leading-relaxed">{s.description}</p>
                 </div>
@@ -169,25 +169,25 @@ export default function VIPService() {
       </section>
 
       {/* Jet image + how it works */}
-      <section className="py-20 bg-background">
+      <section className="py-12 md:py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div>
               <span className="text-[10px] tracking-[0.25em] uppercase bg-accent text-accent-foreground px-3 py-1 font-sans">
                 Så här fungerar det
               </span>
-              <h2 className="font-display text-3xl md:text-4xl text-foreground mt-4 mb-2">
+              <h2 className="font-sans font-semibold text-3xl md:text-4xl text-foreground mt-4 mb-2">
                 Enkelt för Dig — Detaljerat för Oss
               </h2>
               <div className="w-10 h-px bg-primary mb-8" />
               <div className="space-y-8">
                 {howItWorks.map((step) => (
                   <div key={step.step} className="flex gap-6">
-                    <span className="font-display text-3xl text-primary/25 leading-none shrink-0 w-10">
+                    <span className="font-sans font-semibold text-3xl text-primary/25 leading-none shrink-0 w-10">
                       {step.step}
                     </span>
                     <div>
-                      <h3 className="font-display text-lg text-foreground mb-1">{step.title}</h3>
+                      <h3 className="font-sans font-semibold text-lg text-foreground mb-1">{step.title}</h3>
                       <p className="text-muted-foreground text-sm leading-relaxed">{step.description}</p>
                     </div>
                   </div>
@@ -211,7 +211,7 @@ export default function VIPService() {
         <div className="absolute inset-0 bg-navy/60 flex items-center justify-center">
           <div className="text-center">
             <p className="text-gold text-xs tracking-[0.3em] uppercase font-sans mb-3">Varje detalj räknas</p>
-            <p className="font-display text-2xl md:text-3xl text-white italic font-light">
+            <p className="font-sans font-semibold text-2xl md:text-3xl text-white italic font-light">
               Från avresa till ankomst — sömlöst.
             </p>
           </div>
@@ -222,7 +222,7 @@ export default function VIPService() {
       <section className="bg-navy py-24">
         <div className="container mx-auto px-4 text-center">
           <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Privat konsultation</p>
-          <h2 className="font-display text-3xl md:text-5xl text-white mb-6">
+          <h2 className="font-sans font-semibold text-3xl md:text-5xl text-white mb-6">
             Berätta Om Din Resa
           </h2>
           <p className="text-white/60 max-w-md mx-auto mb-10 leading-relaxed">
@@ -231,7 +231,7 @@ export default function VIPService() {
           <Link to="/contact">
             <Button
               size="lg"
-              className="rounded-none bg-primary hover:bg-primary/90 px-12 tracking-wider text-sm"
+              className="rounded-full bg-primary hover:bg-primary/90 px-12 tracking-wider text-sm"
             >
               Kom i kontakt
               <ArrowRight className="ml-2 h-4 w-4" />
