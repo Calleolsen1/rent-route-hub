@@ -78,8 +78,9 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="text-white font-sans font-semibold text-sm mb-3">Företaget</h3>
-            <ul className="space-y-2 text-xs text-white/80">
+            <h3 className="text-white font-sans font-semibold text-base mb-4">Företaget</h3>
+            <ul className="space-y-2.5 text-sm text-white/80">
+
               <li><Link to="/about" className="hover:text-gold transition-colors">Om oss</Link></li>
               <li><Link to="/contact" className="hover:text-gold transition-colors">Planera din resa</Link></li>
               <li><Link to="/faq" className="hover:text-gold transition-colors">FAQ</Link></li>
