@@ -115,7 +115,7 @@ export default function FAQ() {
       <section className="bg-navy py-20 border-b border-white/10">
         <div className="container mx-auto px-4 text-center">
           <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Vanliga frågor</p>
-          <h1 className="font-display text-4xl md:text-6xl text-white mb-4">
+          <h1 className="font-sans font-semibold text-4xl md:text-6xl text-white mb-4">
             Här svarar vi på <em className="italic font-light text-gold-light">Dina Frågor</em>
           </h1>
           <p className="text-white/60 max-w-xl mx-auto leading-relaxed">
@@ -146,7 +146,7 @@ export default function FAQ() {
       </section>
 
       {/* FAQ list */}
-      <section className="py-16 bg-background">
+      <section className="py-10 md:py-14 bg-background">
         <div className="container mx-auto px-4 max-w-3xl">
           <div className="divide-y divide-border border border-border">
             {filtered.map((faq, i) => (
@@ -155,7 +155,7 @@ export default function FAQ() {
                   className="w-full flex items-center justify-between text-left px-6 py-5 hover:bg-accent/30 transition-colors gap-4"
                   onClick={() => setOpenIndex(openIndex === i ? null : i)}
                 >
-                  <span className="font-display text-lg text-foreground leading-snug">{faq.question}</span>
+                  <span className="font-sans font-semibold text-lg text-foreground leading-snug">{faq.question}</span>
                   {openIndex === i
                     ? <ChevronUp className="h-4 w-4 text-primary flex-shrink-0" />
                     : <ChevronDown className="h-4 w-4 text-muted-foreground flex-shrink-0" />
@@ -173,20 +173,20 @@ export default function FAQ() {
       </section>
 
       {/* Still have questions CTA */}
-      <section className="py-16 bg-cream">
+      <section className="py-10 md:py-14 bg-cream">
         <div className="container mx-auto px-4 text-center max-w-2xl">
-          <h2 className="font-display text-3xl text-foreground mb-4">Hittar du inte svaret?</h2>
+          <h2 className="font-sans font-semibold text-3xl text-foreground mb-4">Hittar du inte svaret?</h2>
           <p className="text-muted-foreground leading-relaxed mb-8">
             Vi är alltid tillgängliga för ett personligt samtal. Ring, maila eller fyll i kontaktformuläret — vi svarar snabbt.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="tel:+442012345678">
-              <Button variant="outline" className="rounded-none border-primary text-primary hover:bg-primary hover:text-primary-foreground px-8 tracking-wider text-sm w-full sm:w-auto">
+              <Button variant="outline" className="rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground px-8 tracking-wider text-sm w-full sm:w-auto">
                 <Phone className="h-4 w-4 mr-2" /> Ring oss
               </Button>
             </a>
             <Link to="/contact">
-              <Button className="rounded-none bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm w-full sm:w-auto">
+              <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm w-full sm:w-auto">
                 Kontaktformulär <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </Link>

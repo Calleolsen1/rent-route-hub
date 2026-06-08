@@ -45,19 +45,19 @@ export default function About() {
         </div>
         <div className="relative container mx-auto px-4 pb-14">
           <p className="text-xs tracking-[0.3em] text-gold uppercase mb-3 font-sans">Om oss</p>
-          <h1 className="font-display text-4xl md:text-6xl text-white">
+          <h1 className="font-sans font-semibold text-4xl md:text-6xl text-white">
             Vår <em className="italic font-light text-gold-light">Historia</em>
           </h1>
         </div>
       </section>
 
       {/* Story + founder image */}
-      <section className="py-20 bg-cream">
+      <section className="py-12 md:py-16 bg-cream">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <div>
               <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Vilka vi är</p>
-              <h2 className="font-display text-3xl md:text-4xl text-foreground mb-2 leading-tight">
+              <h2 className="font-sans font-semibold text-3xl md:text-4xl text-foreground mb-2 leading-tight">
                 25 År av Passion för<br />
                 <em className="italic font-light">Resor som Imponerar</em>
               </h2>
@@ -79,7 +79,7 @@ export default function About() {
                 <img src={founderImage} alt="Grundare Kaisen Travel Group" className="w-full h-full object-cover" />
               </div>
               <div className="absolute -bottom-4 -right-4 bg-navy p-6 max-w-[200px]">
-                <div className="font-display text-3xl text-white mb-1">25+</div>
+                <div className="font-sans font-semibold text-3xl text-white mb-1">25+</div>
                 <div className="text-[10px] tracking-[0.2em] uppercase text-gold font-sans">År i branschen</div>
               </div>
             </div>
@@ -99,7 +99,7 @@ export default function About() {
             { label: "Privata Sällskap", detail: "Skräddarsydda resor" }].
             map((ref) =>
             <div key={ref.label} className="border-t border-white/10 pt-6">
-                <h3 className="font-display text-lg text-white mb-2">{ref.label}</h3>
+                <h3 className="font-sans font-semibold text-lg text-white mb-2">{ref.label}</h3>
                 <p className="text-white/40 text-xs tracking-[0.15em] uppercase font-sans">{ref.detail}</p>
               </div>
             )}
@@ -108,18 +108,18 @@ export default function About() {
       </section>
 
       {/* Values */}
-      <section className="py-20 bg-background">
+      <section className="py-12 md:py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-14">
             <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Vad vi står för</p>
-            <h2 className="font-display text-3xl md:text-4xl text-foreground">
+            <h2 className="font-sans font-semibold text-3xl md:text-4xl text-foreground">
               Våra Värderingar
             </h2>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((v) =>
             <div key={v.title} className="border-t border-border pt-6">
-                <h3 className="font-display text-xl text-foreground mb-3">{v.title}</h3>
+                <h3 className="font-sans font-semibold text-xl text-foreground mb-3">{v.title}</h3>
                 <div className="w-6 h-px bg-primary mb-4" />
                 <p className="text-muted-foreground text-sm leading-relaxed">{v.desc}</p>
               </div>
@@ -129,12 +129,12 @@ export default function About() {
       </section>
 
       {/* Expertise */}
-      <section className="py-20 bg-cream">
+      <section className="py-12 md:py-16 bg-cream">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <div>
               <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Vårt Team</p>
-              <h2 className="font-display text-3xl md:text-4xl text-foreground mb-2">
+              <h2 className="font-sans font-semibold text-3xl md:text-4xl text-foreground mb-2">
                 Bred Expertis — <em className="italic font-light">Djup Erfarenhet</em>
               </h2>
               <div className="w-10 h-px bg-primary mb-8" />
@@ -153,7 +153,7 @@ export default function About() {
                 i < expertise.length - 1 ? "border-b border-border" : ""}`
                 }>
 
-                  <span className="font-display text-lg text-foreground">{e.area}</span>
+                  <span className="font-sans font-semibold text-lg text-foreground">{e.area}</span>
                   <span className="text-primary text-sm font-sans tracking-wider">{e.years}</span>
                 </div>
               )}
@@ -165,14 +165,14 @@ export default function About() {
       {/* CTA */}
       <section className="bg-primary py-20">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="font-display text-3xl md:text-4xl text-primary-foreground mb-6">
+          <h2 className="font-sans font-semibold text-3xl md:text-4xl text-primary-foreground mb-6">
             Redo att Planera Er Resa?
           </h2>
           <p className="text-primary-foreground/70 max-w-md mx-auto mb-10 leading-relaxed">
             En personlig konversation är alltid startpunkten för en bra resa. Kontakta oss idag.
           </p>
           <Link to="/contact">
-            <Button size="lg" className="rounded-none bg-white text-primary hover:bg-white/90 px-10 tracking-wider text-sm font-semibold border-0">
+            <Button size="lg" className="rounded-full bg-white text-primary hover:bg-white/90 px-10 tracking-wider text-sm font-semibold border-0">
               Kom i kontakt
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>

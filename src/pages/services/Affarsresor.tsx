@@ -62,7 +62,7 @@ export default function Affarsresor() {
           <p className="text-xs tracking-[0.3em] text-gold uppercase mb-3 font-sans">
             Tjänster — Affärsresor
           </p>
-          <h1 className="font-display text-4xl md:text-6xl text-white">
+          <h1 className="font-sans font-semibold text-4xl md:text-6xl text-white">
             Skräddarsydda <em className="italic font-light text-gold-light">Affärsresor</em>
           </h1>
         </div>
@@ -71,7 +71,7 @@ export default function Affarsresor() {
       {/* Intro quote */}
       <section className="bg-cream py-14">
         <div className="container mx-auto px-4 max-w-3xl text-center">
-          <p className="font-display text-2xl md:text-3xl text-foreground italic font-light leading-relaxed">
+          <p className="font-sans font-semibold text-2xl md:text-3xl text-foreground italic font-light leading-relaxed">
             "Din tid är värdefull. Vi ser till att varje minut av din affärsresa är optimerad."
           </p>
           <div className="w-8 h-px bg-primary mx-auto mt-8" />
@@ -79,7 +79,7 @@ export default function Affarsresor() {
       </section>
 
       {/* Main section: image + tailored list */}
-      <section className="py-20 bg-background">
+      <section className="py-12 md:py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div className="aspect-[4/3] overflow-hidden">
@@ -93,7 +93,7 @@ export default function Affarsresor() {
               <span className="text-[10px] tracking-[0.25em] uppercase bg-accent text-accent-foreground px-3 py-1 font-sans">
                 Skräddarsytt för dig
               </span>
-              <h2 className="font-display text-3xl md:text-4xl text-foreground mt-4 mb-2">
+              <h2 className="font-sans font-semibold text-3xl md:text-4xl text-foreground mt-4 mb-2">
                 Inga mallar — bara din resa
               </h2>
               <div className="w-10 h-px bg-primary mb-6" />
@@ -109,7 +109,7 @@ export default function Affarsresor() {
                 ))}
               </ul>
               <Link to="/contact">
-                <Button className="rounded-none bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
+                <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
                   Boka nu
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -120,13 +120,13 @@ export default function Affarsresor() {
       </section>
 
       {/* Benefits */}
-      <section className="py-16 bg-cream">
+      <section className="py-10 md:py-14 bg-cream">
         <div className="container mx-auto px-4">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {benefits.map((b) => (
               <div key={b.title} className="bg-background p-7 border border-border hover:border-primary transition-colors">
                 <b.icon className="h-5 w-5 text-primary mb-3" />
-                <h3 className="font-display text-lg text-foreground mb-2">{b.title}</h3>
+                <h3 className="font-sans font-semibold text-lg text-foreground mb-2">{b.title}</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">{b.description}</p>
               </div>
             ))}
@@ -135,18 +135,18 @@ export default function Affarsresor() {
       </section>
 
       {/* Destinations */}
-      <section className="py-20 bg-background">
+      <section className="py-12 md:py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-14">
             <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Populära destinationer</p>
-            <h2 className="font-display text-3xl md:text-4xl text-foreground">
+            <h2 className="font-sans font-semibold text-3xl md:text-4xl text-foreground">
               Världens ledande affärsstäder
             </h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {destinations.map((d) => (
               <div key={d.city} className="p-6 border border-border text-center hover:border-primary transition-colors">
-                <h3 className="font-display text-2xl text-foreground mb-1">{d.city}</h3>
+                <h3 className="font-sans font-semibold text-2xl text-foreground mb-1">{d.city}</h3>
                 <p className="text-xs text-muted-foreground tracking-wide">{d.desc}</p>
               </div>
             ))}
@@ -158,14 +158,14 @@ export default function Affarsresor() {
       <section className="bg-navy py-20">
         <div className="container mx-auto px-4 text-center">
           <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Kom igång</p>
-          <h2 className="font-display text-3xl md:text-5xl text-white mb-6">
+          <h2 className="font-sans font-semibold text-3xl md:text-5xl text-white mb-6">
             Låt oss ta hand om dina affärsresor
           </h2>
           <p className="text-white/60 max-w-lg mx-auto mb-10 leading-relaxed">
             Kontakta oss för en kostnadsfri genomgång av hur vi kan effektivisera era företagsresor.
           </p>
           <Link to="/contact">
-            <Button size="lg" className="rounded-none bg-primary hover:bg-primary/90 px-10 tracking-wider text-sm">
+            <Button size="lg" className="rounded-full bg-primary hover:bg-primary/90 px-10 tracking-wider text-sm">
               Kontakta oss <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>

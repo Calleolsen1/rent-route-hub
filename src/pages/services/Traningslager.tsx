@@ -80,7 +80,7 @@ export default function Traningslager() {
           <p className="text-xs tracking-[0.3em] text-gold uppercase mb-3 font-sans">
             Tjänster — Träningsläger
           </p>
-          <h1 className="font-display text-4xl md:text-6xl text-white leading-tight">
+          <h1 className="font-sans font-semibold text-4xl md:text-6xl text-white leading-tight">
             En värld där idrott<br />
             <em className="italic font-light text-gold-light">och resor möts</em>
           </h1>
@@ -91,11 +91,11 @@ export default function Traningslager() {
       </section>
 
       {/* Camps grid */}
-      <section className="py-20 bg-cream">
+      <section className="py-12 md:py-16 bg-cream">
         <div className="container mx-auto px-4">
           <div className="text-center mb-14">
             <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Utvalda Träningsläger</p>
-            <h2 className="font-display text-3xl md:text-4xl text-foreground">
+            <h2 className="font-sans font-semibold text-3xl md:text-4xl text-foreground">
               Ett axplock av <em className="italic font-light">våra läger</em>
             </h2>
             <p className="text-muted-foreground mt-4 max-w-xl mx-auto">
@@ -126,7 +126,7 @@ export default function Traningslager() {
                       {camp.location}
                     </span>
                   </div>
-                  <h3 className="font-display text-xl text-foreground mb-2">{camp.title}</h3>
+                  <h3 className="font-sans font-semibold text-xl text-foreground mb-2">{camp.title}</h3>
                   <div className="w-8 h-px bg-primary mb-3" />
                   <p className="text-muted-foreground text-sm leading-relaxed flex-1">{camp.desc}</p>
                 </div>
@@ -139,7 +139,7 @@ export default function Traningslager() {
       {/* Intro */}
       <section className="bg-background py-16">
         <div className="container mx-auto px-4 max-w-3xl text-center">
-          <p className="font-display text-2xl md:text-3xl text-foreground italic font-light leading-relaxed">
+          <p className="font-sans font-semibold text-2xl md:text-3xl text-foreground italic font-light leading-relaxed">
             "Hos oss handlar det inte bara om träning — det handlar om att skapa energi, laganda och motivation som varar långt efter lägret är slut."
           </p>
           <div className="w-8 h-px bg-primary mx-auto mt-8" />
@@ -147,12 +147,12 @@ export default function Traningslager() {
       </section>
 
       {/* Pillar text blocks */}
-      <section className="py-20 bg-cream">
+      <section className="py-12 md:py-16 bg-cream">
         <div className="container mx-auto px-4 max-w-5xl">
           <div className="grid md:grid-cols-2 gap-12 lg:gap-20">
             <div>
               <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Noggrant Utvalda Destinationer</p>
-              <h2 className="font-display text-2xl md:text-3xl text-foreground mb-4">
+              <h2 className="font-sans font-semibold text-2xl md:text-3xl text-foreground mb-4">
                 Europas bästa träningsmiljöer
               </h2>
               <div className="w-10 h-px bg-primary mb-6" />
@@ -162,7 +162,7 @@ export default function Traningslager() {
             </div>
             <div>
               <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Vi Tar Hand Om Helheten</p>
-              <h2 className="font-display text-2xl md:text-3xl text-foreground mb-4">
+              <h2 className="font-sans font-semibold text-2xl md:text-3xl text-foreground mb-4">
                 Ni fokuserar på träningen
               </h2>
               <div className="w-10 h-px bg-primary mb-6" />
@@ -175,12 +175,12 @@ export default function Traningslager() {
       </section>
 
       {/* Stronger together + features */}
-      <section className="py-20 bg-background">
+      <section className="py-12 md:py-16 bg-background">
         <div className="container mx-auto px-4 max-w-5xl">
           <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div>
               <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">En Resa Som Stärker Laget</p>
-              <h2 className="font-display text-3xl md:text-4xl text-foreground mb-4">
+              <h2 className="font-sans font-semibold text-3xl md:text-4xl text-foreground mb-4">
                 Mer än bara träning
               </h2>
               <div className="w-10 h-px bg-primary mb-6" />
@@ -207,7 +207,7 @@ export default function Traningslager() {
       <section className="bg-navy py-20">
         <div className="container mx-auto px-4 text-center">
           <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Hör av er</p>
-          <h2 className="font-display text-3xl md:text-5xl text-white mb-6">
+          <h2 className="font-sans font-semibold text-3xl md:text-5xl text-white mb-6">
             Låt oss skapa ert nästa <em className="italic font-light text-gold-light">träningsläger</em>
           </h2>
           <p className="text-white/60 max-w-lg mx-auto mb-10 leading-relaxed">
@@ -216,7 +216,7 @@ export default function Traningslager() {
           <Link to="/contact">
             <Button
               size="lg"
-              className="rounded-none bg-primary hover:bg-primary/90 px-10 tracking-wider text-sm"
+              className="rounded-full bg-primary hover:bg-primary/90 px-10 tracking-wider text-sm"
             >
               Kontakta oss
               <ArrowRight className="ml-2 h-4 w-4" />

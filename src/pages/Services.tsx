@@ -75,7 +75,7 @@ export default function Services() {
         </div>
         <div className="relative container mx-auto px-4 pb-14">
           <p className="text-xs tracking-[0.3em] text-gold uppercase mb-3 font-sans">Our Specialities</p>
-          <h1 className="font-display text-4xl md:text-6xl text-white">
+          <h1 className="font-sans font-semibold text-4xl md:text-6xl text-white">
             Experiences & <em className="italic font-light text-gold-light">Services</em>
           </h1>
         </div>
@@ -84,7 +84,7 @@ export default function Services() {
       {/* Intro */}
       <section className="bg-cream py-16">
         <div className="container mx-auto px-4 max-w-3xl text-center">
-          <p className="font-display text-2xl md:text-3xl text-foreground italic font-light leading-relaxed">
+          <p className="font-sans font-semibold text-2xl md:text-3xl text-foreground italic font-light leading-relaxed">
             "Every journey begins with a single conversation. We listen first — then we build something extraordinary."
           </p>
           <div className="w-8 h-px bg-primary mx-auto mt-8" />
@@ -93,7 +93,7 @@ export default function Services() {
 
       {/* Service Sections */}
       {categories.map((cat, index) => (
-        <section key={cat.id} id={cat.id} className="kaisen-section bg-background">
+        <section key={cat.id} id={cat.id} className="py-10 md:py-14 bg-background">
           <div className="container mx-auto px-4">
             <div className={`grid md:grid-cols-2 gap-12 lg:gap-20 items-center ${index % 2 === 1 ? "md:[&>*:first-child]:order-2" : ""}`}>
               <div className="aspect-[4/3] overflow-hidden">
@@ -107,7 +107,7 @@ export default function Services() {
                 <span className="text-[10px] tracking-[0.25em] uppercase bg-accent text-accent-foreground px-3 py-1 font-sans">
                   {cat.tag}
                 </span>
-                <h2 className="font-display text-3xl md:text-4xl text-foreground mt-4 mb-2">{cat.title}</h2>
+                <h2 className="font-sans font-semibold text-3xl md:text-4xl text-foreground mt-4 mb-2">{cat.title}</h2>
                 <div className="w-10 h-px bg-primary mb-6" />
                 <p className="text-muted-foreground leading-relaxed mb-8 text-base">{cat.description}</p>
                 <ul className="space-y-3 mb-10">
@@ -119,7 +119,7 @@ export default function Services() {
                   ))}
                 </ul>
                 <Link to={cat.cta}>
-                  <Button className="rounded-none bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
+                  <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
                     {cat.ctaLabel}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
@@ -134,14 +134,14 @@ export default function Services() {
       <section className="bg-navy py-20">
         <div className="container mx-auto px-4 text-center">
           <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Bespoke by Nature</p>
-          <h2 className="font-display text-3xl md:text-5xl text-white mb-6">
+          <h2 className="font-sans font-semibold text-3xl md:text-5xl text-white mb-6">
             Don't See What You're Looking For?
           </h2>
           <p className="text-white/60 max-w-lg mx-auto mb-10 leading-relaxed">
             Our expertise extends beyond categories. Tell us your vision and we'll make it happen.
           </p>
           <Link to="/contact">
-            <Button size="lg" className="rounded-none bg-primary hover:bg-primary/90 px-10 tracking-wider text-sm">
+            <Button size="lg" className="rounded-full bg-primary hover:bg-primary/90 px-10 tracking-wider text-sm">
               Talk to an Advisor
             </Button>
           </Link>

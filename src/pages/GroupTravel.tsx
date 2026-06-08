@@ -72,7 +72,7 @@ export default function GroupTravel() {
         </div>
         <div className="relative container mx-auto px-4 pb-14">
           <p className="text-xs tracking-[0.3em] text-gold uppercase mb-3 font-sans">Gruppresor</p>
-          <h1 className="font-display text-4xl md:text-6xl text-white leading-tight">
+          <h1 className="font-sans font-semibold text-4xl md:text-6xl text-white leading-tight">
             Bättre tillsammans —<br />
             <em className="italic font-light text-gold-light">Alltid</em>
           </h1>
@@ -85,7 +85,7 @@ export default function GroupTravel() {
       {/* Intro */}
       <section className="bg-cream py-16">
         <div className="container mx-auto px-4 max-w-3xl text-center">
-          <p className="font-display text-2xl md:text-3xl text-foreground italic font-light leading-relaxed">
+          <p className="font-sans font-semibold text-2xl md:text-3xl text-foreground italic font-light leading-relaxed">
             "Gruppresor kräver mer planering — och ger dubbelt så mycket tillbaka. Vi sköter det ena så ni kan fokusera på det andra."
           </p>
           <div className="w-8 h-px bg-primary mx-auto mt-8" />
@@ -93,11 +93,11 @@ export default function GroupTravel() {
       </section>
 
       {/* Group types grid */}
-      <section className="py-20 bg-background">
+      <section className="py-12 md:py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-14">
             <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">För Alla Sorters Grupper</p>
-            <h2 className="font-display text-3xl md:text-4xl text-foreground">
+            <h2 className="font-sans font-semibold text-3xl md:text-4xl text-foreground">
               Vad Vill Ni Uppleva?
             </h2>
           </div>
@@ -112,7 +112,7 @@ export default function GroupTravel() {
                   } ${i < groupTypes.length - 3 ? "border-b" : ""}`}
                 >
                   <Icon className="h-5 w-5 text-primary mb-4" />
-                  <h3 className="font-display text-xl text-foreground mb-2">{gt.title}</h3>
+                  <h3 className="font-sans font-semibold text-xl text-foreground mb-2">{gt.title}</h3>
                   <div className="w-6 h-px bg-primary mb-3" />
                   <p className="text-muted-foreground text-sm leading-relaxed">{gt.desc}</p>
                 </div>
@@ -123,14 +123,14 @@ export default function GroupTravel() {
       </section>
 
       {/* Sports image strip */}
-      <section className="py-20 bg-cream">
+      <section className="py-12 md:py-16 bg-cream">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div>
               <span className="text-[10px] tracking-[0.25em] uppercase bg-accent text-accent-foreground px-3 py-1 font-sans">
                 Sport & Vänner
               </span>
-              <h2 className="font-display text-3xl md:text-4xl text-foreground mt-4 mb-2">
+              <h2 className="font-sans font-semibold text-3xl md:text-4xl text-foreground mt-4 mb-2">
                 Sporthelgen Ni Aldrig Glömmer
               </h2>
               <div className="w-10 h-px bg-primary mb-6" />
@@ -141,7 +141,7 @@ export default function GroupTravel() {
                 Ni behöver inte koordinera vem som bokar vad. Vi tar hand om hela logistiken — ni fokuserar på att ha kul tillsammans.
               </p>
               <Link to="/contact">
-                <Button className="rounded-none bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
+                <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
                   Planera er resa
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -159,7 +159,7 @@ export default function GroupTravel() {
       </section>
 
       {/* Corporate image + text */}
-      <section className="py-20 bg-background">
+      <section className="py-12 md:py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div className="aspect-[4/3] overflow-hidden">
@@ -173,7 +173,7 @@ export default function GroupTravel() {
               <span className="text-[10px] tracking-[0.25em] uppercase bg-accent text-accent-foreground px-3 py-1 font-sans">
                 Företag & Team
               </span>
-              <h2 className="font-display text-3xl md:text-4xl text-foreground mt-4 mb-2">
+              <h2 className="font-sans font-semibold text-3xl md:text-4xl text-foreground mt-4 mb-2">
                 Getaways som Stärker Teamet
               </h2>
               <div className="w-10 h-px bg-primary mb-6" />
@@ -184,7 +184,7 @@ export default function GroupTravel() {
                 Kickoff i Barcelona, incentiveresa till Kroatien eller en avslappnad retreat i Toscana — vi anpassar efter er budget, era mål och er grupp.
               </p>
               <Link to="/contact">
-                <Button className="rounded-none bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
+                <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
                   Begär offert för företagsresor
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -195,19 +195,19 @@ export default function GroupTravel() {
       </section>
 
       {/* How it works */}
-      <section className="py-20 bg-navy">
+      <section className="py-12 md:py-16 bg-navy">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Så fungerar det</p>
-            <h2 className="font-display text-3xl md:text-4xl text-white">
+            <h2 className="font-sans font-semibold text-3xl md:text-4xl text-white">
               Enkelt för Er — <em className="italic font-light text-gold-light">Detaljerat för Oss</em>
             </h2>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {process.map((p) => (
               <div key={p.step} className="relative">
-                <div className="font-display text-6xl text-gold/20 mb-4 leading-none">{p.step}</div>
-                <h3 className="font-display text-xl text-white mb-3">{p.title}</h3>
+                <div className="font-sans font-semibold text-6xl text-gold/20 mb-4 leading-none">{p.step}</div>
+                <h3 className="font-sans font-semibold text-xl text-white mb-3">{p.title}</h3>
                 <div className="w-6 h-px bg-gold/40 mb-3" />
                 <p className="text-white/50 text-sm leading-relaxed">{p.desc}</p>
               </div>
@@ -217,12 +217,12 @@ export default function GroupTravel() {
       </section>
 
       {/* Adventure image + what's included */}
-      <section className="py-20 bg-background">
+      <section className="py-12 md:py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <div>
               <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Vad Ingår</p>
-              <h2 className="font-display text-3xl md:text-4xl text-foreground mb-2">
+              <h2 className="font-sans font-semibold text-3xl md:text-4xl text-foreground mb-2">
                 Allt Ordnat — <em className="italic font-light">Ingenting Glömt</em>
               </h2>
               <div className="w-10 h-px bg-primary mb-8" />
@@ -238,7 +238,7 @@ export default function GroupTravel() {
                 ))}
               </ul>
               <Link to="/contact">
-                <Button className="rounded-none bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
+                <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
                   Kom i kontakt
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -249,7 +249,7 @@ export default function GroupTravel() {
                 <img src={groupAdventure} alt="Äventyrsresa i grupp" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
               </div>
               <div className="bg-primary p-6">
-                <div className="font-display text-2xl text-primary-foreground mb-1">Grupper från 6 till 200+</div>
+                <div className="font-sans font-semibold text-2xl text-primary-foreground mb-1">Grupper från 6 till 200+</div>
                 <p className="text-primary-foreground/70 text-sm">Ingen grupp är för liten eller för stor. Vi skalar vår service efter era behov.</p>
               </div>
             </div>
