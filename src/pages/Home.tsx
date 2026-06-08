@@ -240,7 +240,7 @@ const Home = () => {
 
       {/* Search bar — full width, above hero (Intrepid-style with date range) */}
       <section className="bg-background">
-        <div className="w-full max-w-3xl mx-auto px-6 md:px-10 pt-6 md:pt-8 pb-4">
+        <div className="w-full max-w-4xl mx-auto px-6 md:px-10 pt-6 md:pt-8 pb-4">
           <form
             onSubmit={handleHeroSearch}
             className="flex items-stretch bg-white border border-border rounded-full shadow-sm p-1.5 md:p-2"
