@@ -166,16 +166,16 @@ export default function About() {
  </section>
 
  {/* CTA */}
- <section className="bg-primary py-20">
+ <section className="bg-cream py-20 border-t border-border">
  <div className="container mx-auto px-4 text-center">
- <h2 className="font-display text-3xl md:text-4xl text-primary-foreground mb-6">
+ <h2 className="font-display text-3xl md:text-4xl text-foreground mb-6">
  Redo att Planera Er Resa?
  </h2>
- <p className="text-primary-foreground/70 max-w-md mx-auto mb-10 leading-relaxed">
+ <p className="text-muted-foreground max-w-md mx-auto mb-10 leading-relaxed">
  En personlig konversation är alltid startpunkten för en bra resa. Kontakta oss idag.
  </p>
  <Link to="/contact">
- <Button size="lg" className="rounded-full bg-white text-primary hover:bg-white/90 px-10 tracking-wider text-sm font-semibold border-0">
+ <Button size="lg" className="rounded-full bg-navy text-white hover:bg-navy/90 px-10 tracking-wider text-sm font-semibold border-0">
  Kom i kontakt
  <ArrowRight className="ml-2 h-4 w-4" />
  </Button>
