@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,8 @@ import { formatEventDateTime, formatSek } from "@/lib/formatSek";
 
 export default function OrderConfirmation() {
   const { orderId } = useParams<{ orderId: string }>();
+  const [searchParams] = useSearchParams();
+  const justPaid = !!searchParams.get("session_id");
   const { user, loading: authLoading } = useAuth();
   const [order, setOrder] = useState<any>(null);
   const [items, setItems] = useState<any[]>([]);
@@ -17,7 +19,9 @@ export default function OrderConfirmation() {
 
   useEffect(() => {
     if (authLoading || !user || !orderId) return;
-    (async () => {
+    let cancelled = false;
+    let attempts = 0;
+    const load = async () => {
       const [{ data: o }, { data: its }] = await Promise.all([
         supabase.from("orders").select("*").eq("id", orderId).maybeSingle(),
         supabase
@@ -27,11 +31,20 @@ export default function OrderConfirmation() {
           )
           .eq("order_id", orderId),
       ]);
+      if (cancelled) return;
       setOrder(o);
       setItems(its ?? []);
       setLoading(false);
-    })();
-  }, [orderId, user, authLoading]);
+      if (justPaid && o && o.status !== "paid" && o.status !== "fulfilled" && attempts < 6) {
+        attempts += 1;
+        setTimeout(load, 1500);
+      }
+    };
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [orderId, user, authLoading, justPaid]);
 
   if (loading || !order) {
     return (

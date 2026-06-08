@@ -340,8 +340,11 @@ export type Database = {
           id: string
           invoice_number: string | null
           notes: string | null
+          paid_at: string | null
           status: Database["public"]["Enums"]["order_status"]
+          stripe_checkout_session_id: string | null
           stripe_payment_intent_id: string | null
+          total_paid_sek: number | null
           total_sek: number
           updated_at: string
           user_id: string | null
@@ -355,8 +358,11 @@ export type Database = {
           id?: string
           invoice_number?: string | null
           notes?: string | null
+          paid_at?: string | null
           status?: Database["public"]["Enums"]["order_status"]
+          stripe_checkout_session_id?: string | null
           stripe_payment_intent_id?: string | null
+          total_paid_sek?: number | null
           total_sek?: number
           updated_at?: string
           user_id?: string | null
@@ -370,8 +376,11 @@ export type Database = {
           id?: string
           invoice_number?: string | null
           notes?: string | null
+          paid_at?: string | null
           status?: Database["public"]["Enums"]["order_status"]
+          stripe_checkout_session_id?: string | null
           stripe_payment_intent_id?: string | null
+          total_paid_sek?: number | null
           total_sek?: number
           updated_at?: string
           user_id?: string | null
