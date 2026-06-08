@@ -114,9 +114,9 @@ export default function FAQ() {
  {/* Hero */}
  <section className="bg-navy py-20 border-b border-white/10">
  <div className="container mx-auto px-4 text-center">
- <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Vanliga frågor</p>
+ <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Vanliga frågor</p>
  <h1 className="font-display text-4xl md:text-6xl text-white mb-4">
- Här svarar vi på <em className="italic font-light text-gold-light">Dina Frågor</em>
+ Här svarar vi på <em className="italic font-light text-white">Dina Frågor</em>
  </h1>
  <p className="text-white/60 max-w-xl mx-auto leading-relaxed">
  Hittar du inte svaret? Kontakta oss direkt — vi svarar alltid inom en timme under kontorstid.

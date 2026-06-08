@@ -80,11 +80,11 @@ export default function VIPService() {
  <div className="absolute inset-0 bg-navy/65" />
  </div>
  <div className="relative container mx-auto px-4 pb-16">
- <p className="text-xs tracking-[0.3em] text-gold uppercase mb-3 font-sans">
+ <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
  Tjänster — VIP Service
  </p>
  <h1 className="font-display text-4xl md:text-6xl text-white">
- Resor på <em className="italic font-light text-gold-light">Dina Villkor</em>
+ Resor på <em className="italic font-light text-white">Dina Villkor</em>
  </h1>
  <p className="text-white/70 mt-4 text-lg font-light max-w-lg">
  White glove service för privat- och affärsresenären som värdesätter tid, komfort och omsorg om detaljerna.
@@ -93,12 +93,12 @@ export default function VIPService() {
  </section>
 
  {/* Intro quote */}
- <section className="bg-navy py-16 border-t border-gold/20">
+ <section className="bg-navy py-16 border-t border-primary/20">
  <div className="container mx-auto px-4 max-w-3xl text-center">
  <p className="font-display text-2xl md:text-3xl text-white italic font-light leading-relaxed">
  "Vi tar hand om varje detalj — så att du kan fokusera på det som verkligen spelar roll."
  </p>
- <div className="w-8 h-px bg-gold mx-auto mt-8" />
+ <div className="w-8 h-px bg-primary mx-auto mt-8" />
  </div>
  </section>
 
@@ -210,7 +210,7 @@ export default function VIPService() {
  <img src={vipTransfer} alt="VIP transfer service" className="w-full h-full object-cover object-center" />
  <div className="absolute inset-0 bg-navy/60 flex items-center justify-center">
  <div className="text-center">
- <p className="text-gold text-xs tracking-[0.3em] uppercase font-sans mb-3">Varje detalj räknas</p>
+ <p className="text-primary text-xs tracking-[0.3em] uppercase font-sans mb-3">Varje detalj räknas</p>
  <p className="font-display text-2xl md:text-3xl text-white italic font-light">
  Från avresa till ankomst — sömlöst.
  </p>
@@ -221,7 +221,7 @@ export default function VIPService() {
  {/* CTA */}
  <section className="bg-navy py-24">
  <div className="container mx-auto px-4 text-center">
- <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Privat konsultation</p>
+ <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Privat konsultation</p>
  <h2 className="font-display text-3xl md:text-5xl text-white mb-6">
  Berätta Om Din Resa
  </h2>

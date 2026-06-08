@@ -205,9 +205,9 @@ export default function HelpCenter() {
  {/* Hero */}
  <section className="bg-navy py-20 border-b border-white/10">
  <div className="container mx-auto px-4 text-center">
- <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Hjälpcenter</p>
+ <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Hjälpcenter</p>
  <h1 className="font-display text-4xl md:text-6xl text-white mb-4">
- Hur kan vi <em className="italic font-light text-gold-light">hjälpa dig?</em>
+ Hur kan vi <em className="italic font-light text-white">hjälpa dig?</em>
  </h1>
  <p className="text-white/60 max-w-xl mx-auto leading-relaxed mb-8">
  Hitta svar på dina frågor eller kontakta oss direkt — vi svarar alltid inom en timme.
@@ -220,7 +220,7 @@ export default function HelpCenter() {
  placeholder="Sök efter svar..."
  value={search}
  onChange={(e) => setSearch(e.target.value)}
- className="w-full bg-white/10 border border-white/20 text-white placeholder-white/40 pl-11 pr-4 py-3 text-sm focus:outline-none focus:border-gold/60 transition-colors"
+ className="w-full bg-white/10 border border-white/20 text-white placeholder-white/40 pl-11 pr-4 py-3 text-sm focus:outline-none focus:border-primary/60 transition-colors"
  />
  </div>
  </div>

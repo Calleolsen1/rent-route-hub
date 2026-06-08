@@ -52,10 +52,10 @@ const Footer = () => {
             <div className="text-xs tracking-[0.3em] text-white/70 font-sans uppercase mt-1">Travel Group</div>
           </Link>
           <div className="flex gap-4 text-white">
-            <a href="#" aria-label="Facebook" className="hover:text-gold transition-colors"><Facebook className="h-4 w-4" /></a>
-            <a href="#" aria-label="Twitter" className="hover:text-gold transition-colors"><Twitter className="h-4 w-4" /></a>
-            <a href="#" aria-label="Instagram" className="hover:text-gold transition-colors"><Instagram className="h-4 w-4" /></a>
-            <a href="#" aria-label="LinkedIn" className="hover:text-gold transition-colors"><Linkedin className="h-4 w-4" /></a>
+            <a href="#" aria-label="Facebook" className="hover:text-white transition-colors"><Facebook className="h-4 w-4" /></a>
+            <a href="#" aria-label="Twitter" className="hover:text-white transition-colors"><Twitter className="h-4 w-4" /></a>
+            <a href="#" aria-label="Instagram" className="hover:text-white transition-colors"><Instagram className="h-4 w-4" /></a>
+            <a href="#" aria-label="LinkedIn" className="hover:text-white transition-colors"><Linkedin className="h-4 w-4" /></a>
           </div>
         </div>
 
@@ -68,12 +68,12 @@ const Footer = () => {
             <ul className="space-y-2.5 text-sm text-white/80">
 
 
-              <li><Link to="/services/sportresor" className="hover:text-gold transition-colors">Sportresor</Link></li>
-              <li><Link to="/group-travel" className="hover:text-gold transition-colors">Gruppresor</Link></li>
-              <li><Link to="/services/weekend-getaway" className="hover:text-gold transition-colors">Weekendresor</Link></li>
-              <li><Link to="/services/konferens" className="hover:text-gold transition-colors">Konferens</Link></li>
-              <li><Link to="/services/vip-service" className="hover:text-gold transition-colors">VIP-service</Link></li>
-              <li><Link to="/services/affarsresor" className="hover:text-gold transition-colors">Affärsresor</Link></li>
+              <li><Link to="/services/sportresor" className="hover:text-white transition-colors">Sportresor</Link></li>
+              <li><Link to="/group-travel" className="hover:text-white transition-colors">Gruppresor</Link></li>
+              <li><Link to="/services/weekend-getaway" className="hover:text-white transition-colors">Weekendresor</Link></li>
+              <li><Link to="/services/konferens" className="hover:text-white transition-colors">Konferens</Link></li>
+              <li><Link to="/services/vip-service" className="hover:text-white transition-colors">VIP-service</Link></li>
+              <li><Link to="/services/affarsresor" className="hover:text-white transition-colors">Affärsresor</Link></li>
             </ul>
           </div>
 
@@ -81,11 +81,11 @@ const Footer = () => {
             <h3 className="text-white font-sans font-semibold text-base mb-4">Företaget</h3>
             <ul className="space-y-2.5 text-sm text-white/80">
 
-              <li><Link to="/about" className="hover:text-gold transition-colors">Om oss</Link></li>
-              <li><Link to="/contact" className="hover:text-gold transition-colors">Planera din resa</Link></li>
-              <li><Link to="/faq" className="hover:text-gold transition-colors">FAQ</Link></li>
-              <li><Link to="/help-center" className="hover:text-gold transition-colors">Hjälpcenter</Link></li>
-              <li><Link to="/support" className="hover:text-gold transition-colors">Support</Link></li>
+              <li><Link to="/about" className="hover:text-white transition-colors">Om oss</Link></li>
+              <li><Link to="/contact" className="hover:text-white transition-colors">Planera din resa</Link></li>
+              <li><Link to="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
+              <li><Link to="/help-center" className="hover:text-white transition-colors">Hjälpcenter</Link></li>
+              <li><Link to="/support" className="hover:text-white transition-colors">Support</Link></li>
             </ul>
           </div>
 
@@ -94,8 +94,8 @@ const Footer = () => {
             <ul className="space-y-2.5 text-sm text-white/80">
 
               <li>123 Mayfair Lane,<br />London, UK W1K 2AB</li>
-              <li><a href="tel:+442012345678" className="hover:text-gold transition-colors">+44 20 1234 5678</a></li>
-              <li><a href="mailto:hello@kaisentravel.com" className="hover:text-gold transition-colors">hello@kaisentravel.com</a></li>
+              <li><a href="tel:+442012345678" className="hover:text-white transition-colors">+44 20 1234 5678</a></li>
+              <li><a href="mailto:hello@kaisentravel.com" className="hover:text-white transition-colors">hello@kaisentravel.com</a></li>
             </ul>
           </div>
         </div>

@@ -71,10 +71,10 @@ export default function GroupTravel() {
  <div className="absolute inset-0 bg-navy/65" />
  </div>
  <div className="relative container mx-auto px-4 pb-14">
- <p className="text-xs tracking-[0.3em] text-gold uppercase mb-3 font-sans">Gruppresor</p>
+ <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Gruppresor</p>
  <h1 className="font-display text-4xl md:text-6xl text-white leading-tight">
  Bättre tillsammans —<br />
- <em className="italic font-light text-gold-light">Alltid</em>
+ <em className="italic font-light text-white">Alltid</em>
  </h1>
  <p className="text-white/70 mt-4 text-lg font-light max-w-lg">
  Från sporthelger med kompisgänget till företagets stora getaway. Vi planerar, ni upplever.
@@ -198,17 +198,17 @@ export default function GroupTravel() {
  <section className="py-12 md:py-16 bg-navy">
  <div className="container mx-auto px-4">
  <div className="text-center mb-16">
- <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Så fungerar det</p>
+ <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Så fungerar det</p>
  <h2 className="font-display text-3xl md:text-4xl text-white">
- Enkelt för Er — <em className="italic font-light text-gold-light">Detaljerat för Oss</em>
+ Enkelt för Er — <em className="italic font-light text-white">Detaljerat för Oss</em>
  </h2>
  </div>
  <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
  {process.map((p) => (
  <div key={p.step} className="relative">
- <div className="font-display text-6xl text-gold/20 mb-4 leading-none">{p.step}</div>
+ <div className="font-display text-6xl text-primary/20 mb-4 leading-none">{p.step}</div>
  <h3 className="font-display text-xl text-white mb-3">{p.title}</h3>
- <div className="w-6 h-px bg-gold/40 mb-3" />
+ <div className="w-6 h-px bg-primary/40 mb-3" />
  <p className="text-white/50 text-sm leading-relaxed">{p.desc}</p>
  </div>
  ))}

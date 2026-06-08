@@ -64,9 +64,9 @@ export default function Support() {
  {/* Hero */}
  <section className="bg-navy py-20 border-b border-white/10">
  <div className="container mx-auto px-4 text-center">
- <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Support</p>
+ <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Support</p>
  <h1 className="font-display text-4xl md:text-6xl text-white mb-4">
- Vi är här för <em className="italic font-light text-gold-light">dig</em>
+ Vi är här för <em className="italic font-light text-white">dig</em>
  </h1>
  <p className="text-white/60 max-w-xl mx-auto leading-relaxed">
  Personlig och snabb hjälp — oavsett om du planerar, packar eller redan är på plats.
@@ -142,9 +142,9 @@ export default function Support() {
  {/* Promise section */}
  <section className="py-10 md:py-14 bg-navy">
  <div className="container mx-auto px-4 text-center max-w-2xl">
- <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Vårt löfte</p>
+ <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Vårt löfte</p>
  <h2 className="font-display text-3xl text-white mb-6">
- Vi svarar alltid — <em className="italic font-light text-gold-light">på riktigt</em>
+ Vi svarar alltid — <em className="italic font-light text-white">på riktigt</em>
  </h2>
  <p className="text-white/60 leading-relaxed mb-8">
  Hos Kaisen Travel Group pratar du alltid med en riktig människa. Inga automatiserade svar, ingen kö. En dedikerad rådgivare tar hand om ditt ärende från start till mål.
@@ -156,7 +156,7 @@ export default function Support() {
  { value: "100%", label: "Personlig kontakt" },
  ].map((s) => (
  <div key={s.label}>
- <div className="font-display text-2xl text-gold mb-1">{s.value}</div>
+ <div className="font-display text-2xl text-primary mb-1">{s.value}</div>
  <div className="text-xs tracking-wider text-white/40 uppercase font-sans">{s.label}</div>
  </div>
  ))}

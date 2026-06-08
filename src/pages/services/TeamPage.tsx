@@ -63,13 +63,13 @@ export default function TeamPage() {
           <div className="absolute inset-0 bg-navy/75" />
         </div>
         <div className="relative container mx-auto px-4 pb-14">
-          <p className="text-xs tracking-[0.3em] text-gold uppercase mb-3 font-sans">
+          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
             Fotbollsresor — {info.league}
           </p>
           <h1 className="font-display text-4xl md:text-6xl text-white mb-3">
             {info.name}
           </h1>
-          <p className="font-display italic font-light text-gold-light text-xl md:text-2xl">
+          <p className="font-display italic font-light text-white text-xl md:text-2xl">
             {info.tagline}
           </p>
         </div>
@@ -159,7 +159,7 @@ export default function TeamPage() {
       {/* CTA */}
       <section className="bg-navy py-16">
         <div className="container mx-auto px-4 text-center">
-          <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Boka din {info.name}-resa</p>
+          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Boka din {info.name}-resa</p>
           <h2 className="font-display text-3xl md:text-5xl text-white mb-6">
             Redo att uppleva {info.stadium}?
           </h2>
