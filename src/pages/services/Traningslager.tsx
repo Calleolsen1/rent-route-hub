@@ -150,6 +150,15 @@ export default function Traningslager() {
  </article>
  ))}
  </div>
+ <div className="mt-12 text-center">
+ <a href="#forfragan">
+ <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 py-6 text-sm tracking-wider">
+ <MessageSquare className="mr-2 h-4 w-4" />
+ Få offert för ert träningsläger
+ <ArrowRight className="ml-2 h-4 w-4" />
+ </Button>
+ </a>
+ </div>
  </div>
  </section>
 
@@ -232,6 +241,7 @@ export default function Traningslager() {
  </div>
  </section>
 
+ <FloatingInquiryButton />
  <Footer />
  </div>
  );
