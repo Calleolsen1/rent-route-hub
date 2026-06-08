@@ -91,6 +91,23 @@ export default function AdminTickets() {
     }
   };
 
+  const saveMarkup = async (categoryId: string, markup_pct: number, markup_fixed_sek: number) => {
+    setBusy(categoryId);
+    try {
+      const { error } = await supabase
+        .from("ticket_categories")
+        .update({ markup_pct, markup_fixed_sek })
+        .eq("id", categoryId);
+      if (error) throw error;
+      toast.success("Påslag sparat");
+      await load();
+    } catch (e: any) {
+      toast.error(e.message ?? "Kunde inte spara påslag");
+    } finally {
+      setBusy(null);
+    }
+  };
+
   const uploadTicket = async (delivery: DeliveryRow, file: File) => {
     setBusy(delivery.id);
     try {
