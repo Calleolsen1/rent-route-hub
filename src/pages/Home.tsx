@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { formatEventDateTime } from "@/lib/formatSek";
+import { resolveImageUrl } from "@/components/admin/ImageUploader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, Users, Trophy, Star, Shield, Globe, Calendar, MapPin, Flag, Search } from "lucide-react";
@@ -20,15 +23,32 @@ import weekendImage from "@/assets/kaisen-weekend.jpg";
 import vipImage from "@/assets/kaisen-vip.jpg";
 import luxuryImage from "@/assets/kaisen-luxury.jpg";
 import offerF1Monza from "@/assets/offer-f1-monza.jpg";
-import offerRealBarca from "@/assets/offer-real-barca.jpg";
 import offerLisbon from "@/assets/offer-lisbon.jpg";
 import offerLaManga from "@/assets/offer-lamanga.jpg";
-import offerF1Vegas from "@/assets/offer-f1-vegas.jpg";
 import offerLiverpool from "@/assets/offer-liverpool.jpg";
 import offerMallorca from "@/assets/offer-mallorca.jpg";
-import offerF1AbuDhabi from "@/assets/offer-f1-abudhabi.jpg";
 
-const heroSlides = [
+// Lookup so DB-driven slides can reference bundled assets by name without
+// shipping their URLs in the DB. Uploaded images use full https URLs instead.
+const ASSET_LOOKUP: Record<string, string> = {
+  "kaisen-hero": heroImage,
+  "kaisen-sports": sportsImage,
+  "kaisen-group": groupImage,
+  "kaisen-incoming": incomingImage,
+};
+
+type HeroSlide = {
+  image: string;
+  eyebrow: string;
+  title: string;
+  italic: string;
+  description: string;
+  primary: { label: string; to: string };
+};
+
+// Fallback slides used until admin saves any in the DB (or if the query fails).
+// Matches the original hardcoded set verbatim.
+const fallbackHeroSlides: HeroSlide[] = [
   {
     image: heroImage,
     eyebrow: "Personlig Reseservice",
@@ -37,7 +57,6 @@ const heroSlides = [
     description:
       "Sportresor, gruppresor, träningsläger och VIP-service — levererat med personlig omsorg av en dedikerad resekonsult.",
     primary: { label: "Planera din resa", to: "/contact" },
-    secondary: { label: "Utforska tjänster", to: "/services" },
   },
   {
     image: sportsImage,
@@ -47,7 +66,6 @@ const heroSlides = [
     description:
       "F1-race i Monaco, Premier League på Anfield eller Champions League-finaler — vi ordnar biljetter, boende och VIP-access.",
     primary: { label: "Se sportresor", to: "/services/sportresor" },
-    secondary: { label: "Kontakta oss", to: "/contact" },
   },
   {
     image: groupImage,
@@ -57,7 +75,6 @@ const heroSlides = [
     description:
       "Från företagsevent till kompisgäng — vi sköter hela logistiken för grupper från 8 upp till 200+ personer.",
     primary: { label: "Läs mer", to: "/group-travel" },
-    secondary: { label: "Få offert", to: "/contact" },
   },
   {
     image: incomingImage,
@@ -67,27 +84,71 @@ const heroSlides = [
     description:
       "Fotboll, simning, friidrott och fler sporter — kompletta läger med boende, transfer och planhyra.",
     primary: { label: "Se träningsläger", to: "/services/traningslager" },
-    secondary: { label: "Kontakt", to: "/contact" },
   },
 ];
 
-const stats = [
-  { value: "2 400+", label: "Resor arrangerade" },
-  { value: "98%", label: "Nöjda kunder" },
-  { value: "60+", label: "Destinationer" },
-  { value: "25+", label: "År av expertis" },
+// TODO: fyll i riktiga siffror här och avkommentera stats-sektionen längre ner
+// const stats = [
+//   { value: "...", label: "Resor arrangerade" },
+//   { value: "...", label: "Nöjda kunder" },
+//   { value: "...", label: "Destinationer" },
+//   { value: "...", label: "År av expertis" },
+// ];
+
+// Inquiry-funnel tiles (group / training / conference) — these aren't xs2
+// ticket events, they're CTAs into the inquiry form, so they stay static.
+const inquiryOffers = [
+  { image: offerLisbon, title: "Gruppresa Lissabon", date: "Q1 2027", tag: "Grupp", days: "5 dagar", fromPrice: null, href: "/group-travel", isNew: false },
+  { image: offerLaManga, title: "Träningsläger La Manga", date: "Mars 2027", tag: "Träning", days: "7 dagar", fromPrice: null, href: "/services/traningslager", isNew: false },
+  { image: offerMallorca, title: "Konferens Mallorca", date: "Maj 2027", tag: "Konferens", days: "4 dagar", fromPrice: null, href: "/group-travel", isNew: false },
 ];
 
-const quickOffers = [
-  { image: offerF1Monza, title: "F1 Monza", date: "6 sep 2026", tag: "F1", days: "4 dagar", fromPrice: "24 900", oldPrice: "29 900", href: "/services/sportresor?f1=italien-monza", isNew: false },
-  { image: offerRealBarca, title: "Real Madrid – Barça", date: "26 okt 2026", tag: "Fotboll", days: "3 dagar", fromPrice: "18 400", oldPrice: "22 000", href: "/services/sportresor?league=la-liga&team=real-madrid", isNew: true },
-  { image: offerLisbon, title: "Gruppresa Lissabon", date: "Q1 2027", tag: "Grupp", days: "5 dagar", fromPrice: "9 800", oldPrice: "12 500", href: "/group-travel", isNew: false },
-  { image: offerLaManga, title: "Träningsläger La Manga", date: "Mars 2027", tag: "Träning", days: "7 dagar", fromPrice: "14 200", oldPrice: "17 000", href: "/services/traningslager", isNew: false },
-  { image: offerF1Vegas, title: "F1 Las Vegas", date: "21 nov 2026", tag: "F1", days: "6 dagar", fromPrice: "42 000", oldPrice: "48 500", href: "/services/sportresor?f1=las-vegas", isNew: true },
-  { image: offerLiverpool, title: "Premier League – Liverpool", date: "Nov 2026", tag: "Fotboll", days: "3 dagar", fromPrice: "16 900", oldPrice: "19 500", href: "/services/sportresor?league=premier-league&team=liverpool", isNew: false },
-  { image: offerMallorca, title: "Konferens Mallorca", date: "Maj 2027", tag: "Konferens", days: "4 dagar", fromPrice: "11 500", oldPrice: "14 000", href: "/group-travel", isNew: false },
-  { image: offerF1AbuDhabi, title: "F1 Abu Dhabi", date: "6 dec 2026", tag: "F1", days: "5 dagar", fromPrice: "32 500", oldPrice: "38 000", href: "/services/sportresor?f1=abu-dhabi", isNew: false },
-];
+type FeaturedOffer = {
+  image: string;
+  title: string;
+  date: string;
+  tag: string;
+  days: string | null;
+  fromPrice: string | null;
+  href: string;
+  isNew: boolean;
+};
+
+// Image fallbacks by sport when an event has no cover_image_url.
+const sportImageFallback: Record<string, string> = {
+  soccer: offerLiverpool,
+  formula1: offerF1Monza,
+};
+
+function mapEventToOffer(ev: {
+  id: string;
+  sport: string;
+  home_team: string | null;
+  away_team: string | null;
+  race_name: string | null;
+  tournament_name: string;
+  starts_at: string;
+  cover_image_url: string | null;
+  ends_at: string | null;
+  min_price_sek: number | null;
+}): FeaturedOffer {
+  const title = ev.sport === "soccer"
+    ? `${ev.home_team ?? ""} – ${ev.away_team ?? ""}`.trim()
+    : ev.race_name ?? ev.tournament_name;
+  const days = ev.ends_at
+    ? `${Math.max(1, Math.round((new Date(ev.ends_at).getTime() - new Date(ev.starts_at).getTime()) / 86400000) + 1)} dagar`
+    : null;
+  return {
+    image: ev.cover_image_url ?? sportImageFallback[ev.sport] ?? offerF1Monza,
+    title,
+    date: formatEventDateTime(ev.starts_at).split(" kl")[0],
+    tag: ev.sport === "soccer" ? "Fotboll" : "F1",
+    days,
+    fromPrice: ev.min_price_sek ? new Intl.NumberFormat("sv-SE").format(ev.min_price_sek) : null,
+    href: `/sport/event/${ev.id}`,
+    isNew: false,
+  };
+}
 
 
 const services = [
@@ -197,6 +258,8 @@ const Home = () => {
   const [heroQuery, setHeroQuery] = useState("");
   const [offerTab, setOfferTab] = useState<"alla" | "nya" | "populara">("alla");
   const navigate = useNavigate();
+  const [featured, setFeatured] = useState<FeaturedOffer[]>([]);
+  const [heroSlides, setHeroSlides] = useState<HeroSlide[]>(fallbackHeroSlides);
 
   const handleHeroSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -204,18 +267,83 @@ const Home = () => {
     navigate(q ? `/search?q=${encodeURIComponent(q)}` : "/search");
   };
 
+  useEffect(() => {
+    (async () => {
+      const { data } = await (supabase as any)
+        .from("home_slides")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+      const rows = (data ?? []) as Array<{
+        image_url: string;
+        eyebrow: string | null;
+        title: string;
+        italic: string | null;
+        description: string | null;
+        cta_label: string | null;
+        cta_to: string | null;
+      }>;
+      if (rows.length === 0) return; // keep fallback
+      setHeroSlides(
+        rows.map((r) => ({
+          image: resolveImageUrl(r.image_url, ASSET_LOOKUP, heroImage),
+          eyebrow: r.eyebrow ?? "",
+          title: r.title,
+          italic: r.italic ?? "",
+          description: r.description ?? "",
+          primary: {
+            label: r.cta_label ?? "Läs mer",
+            to: r.cta_to ?? "/",
+          },
+        })),
+      );
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      // Cast to any: nested select + is_featured filter aren't yet in the
+      // generated Supabase types (the column ships with the xs2event_foundation
+      // migration). Regen `src/integrations/supabase/types.ts` after applying
+      // the migration to drop this cast.
+      const { data } = await (supabase as any)
+        .from("events")
+        .select(
+          "id, sport, home_team, away_team, race_name, tournament_name, starts_at, ends_at, cover_image_url, ticket_categories(unit_price_sek)",
+        )
+        .eq("is_featured", true)
+        .eq("status", "upcoming")
+        .gte("starts_at", new Date().toISOString())
+        .order("starts_at", { ascending: true })
+        .limit(8);
+
+      const rows = (data ?? []).map((ev: any) => {
+        const prices = (ev.ticket_categories ?? [])
+          .map((c: any) => Number(c.unit_price_sek))
+          .filter((n: number) => Number.isFinite(n) && n > 0);
+        return mapEventToOffer({
+          ...ev,
+          min_price_sek: prices.length ? Math.min(...prices) : null,
+        });
+      });
+      setFeatured(rows);
+    })();
+  }, []);
+
   const offerTabs = [
     { id: "alla" as const, label: "Aktuella resor" },
     { id: "nya" as const, label: "Nya resor" },
     { id: "populara" as const, label: "Populära resor" },
   ];
 
+  // Featured events first, then inquiry-funnel CTAs to fill the row.
+  const combinedOffers: FeaturedOffer[] = [...featured, ...inquiryOffers];
   const filteredOffers =
     offerTab === "nya"
-      ? quickOffers.filter((o) => o.isNew)
+      ? combinedOffers.filter((o) => o.isNew)
       : offerTab === "populara"
-      ? quickOffers.slice(0, 5)
-      : quickOffers;
+      ? combinedOffers.slice(0, 5)
+      : combinedOffers;
 
 
 
@@ -321,29 +449,20 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Stats highlights — Intrepid-style, 3 columns with vertical dividers */}
+      {/* TODO: Stats-sektion borttagen tills riktiga siffror finns att redovisa.
+          Avkommentera och fyll i i Home.tsx när data är på plats.
       <section className="bg-background pt-2 md:pt-3 pb-8 md:pb-10">
         <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
-
           <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border/60">
             <div className="px-6 py-4 md:py-2 text-center">
               <p className="font-sans font-semibold text-lg md:text-xl text-foreground leading-snug">
-                2 400+ resor<br className="hidden md:block" /> arrangerade
-              </p>
-            </div>
-            <div className="px-6 py-4 md:py-2 text-center">
-              <p className="font-sans font-semibold text-lg md:text-xl text-foreground leading-snug">
-                98% nöjda<br className="hidden md:block" /> kunder
-              </p>
-            </div>
-            <div className="px-6 py-4 md:py-2 text-center">
-              <p className="font-sans font-semibold text-lg md:text-xl text-foreground leading-snug">
-                60+ destinationer<br className="hidden md:block" /> världen över
+                ... resor<br className="hidden md:block" /> arrangerade
               </p>
             </div>
           </div>
         </div>
       </section>
+      */}
 
 
 
@@ -407,14 +526,21 @@ const Home = () => {
                       </h3>
                     </div>
                     <div className="p-5">
-                      <p className="text-xs text-foreground/60 mb-1">{offer.days}</p>
+                      {offer.days && (
+                        <p className="text-xs text-foreground/60 mb-1">{offer.days}</p>
+                      )}
                       <p className="font-sans font-semibold text-foreground text-base mb-5 leading-snug">
                         {offer.tag} · {offer.date}
                       </p>
                       <div className="border-t border-border/60 pt-4 text-right text-sm">
-                        <span className="text-foreground/50">Från </span>
-                        <span className="text-foreground/40 line-through mr-1">{offer.oldPrice} SEK</span>
-                        <span className="font-bold text-foreground">{offer.fromPrice} SEK</span>
+                        {offer.fromPrice ? (
+                          <>
+                            <span className="text-foreground/50">Från </span>
+                            <span className="font-bold text-foreground">{offer.fromPrice} SEK</span>
+                          </>
+                        ) : (
+                          <span className="font-semibold text-primary">Se biljetter →</span>
+                        )}
                       </div>
                     </div>
                   </Link>

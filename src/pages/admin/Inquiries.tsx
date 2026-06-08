@@ -18,8 +18,9 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Mail, Phone, RefreshCw } from "lucide-react";
+import { Loader2, Mail, Phone, RefreshCw, FileText, Send } from "lucide-react";
 import { toast } from "sonner";
+import QuoteComposer from "@/components/admin/QuoteComposer";
 
 type InquiryRow = {
   id: string;
@@ -67,12 +68,58 @@ const STATUS_COLOR: Record<InquiryRow["status"], string> = {
   lost: "bg-slate-200 text-slate-700",
 };
 
+type QuoteSummary = {
+  id: string;
+  public_token: string;
+  title: string;
+  total_sek: number;
+  status: "draft" | "sent" | "accepted" | "expired" | "cancelled";
+  expires_at: string;
+  sent_at: string | null;
+  created_at: string;
+};
+
+const QUOTE_STATUS_LABEL: Record<QuoteSummary["status"], string> = {
+  draft: "Utkast",
+  sent: "Skickad",
+  accepted: "Betald",
+  expired: "Utgången",
+  cancelled: "Avbruten",
+};
+
+const QUOTE_STATUS_COLOR: Record<QuoteSummary["status"], string> = {
+  draft: "bg-slate-200 text-slate-800",
+  sent: "bg-sky-100 text-sky-900",
+  accepted: "bg-emerald-100 text-emerald-900",
+  expired: "bg-amber-100 text-amber-900",
+  cancelled: "bg-rose-100 text-rose-900",
+};
+
 export default function AdminInquiries() {
   const [rows, setRows] = useState<InquiryRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selected, setSelected] = useState<InquiryRow | null>(null);
+  const [quotesForSelected, setQuotesForSelected] = useState<QuoteSummary[]>([]);
+  const [composerOpen, setComposerOpen] = useState(false);
+
+  async function loadQuotesForInquiry(inquiryId: string) {
+    const { data } = await (supabase as any)
+      .from("quotes")
+      .select("id, public_token, title, total_sek, status, expires_at, sent_at, created_at")
+      .eq("inquiry_id", inquiryId)
+      .order("created_at", { ascending: false });
+    setQuotesForSelected((data as QuoteSummary[]) ?? []);
+  }
+
+  useEffect(() => {
+    if (selected) {
+      loadQuotesForInquiry(selected.id);
+    } else {
+      setQuotesForSelected([]);
+    }
+  }, [selected?.id]);
 
   async function load() {
     setLoading(true);
@@ -337,11 +384,91 @@ export default function AdminInquiries() {
                     placeholder="Anteckningar synliga endast för admin..."
                   />
                 </div>
+
+                {/* Offerter */}
+                <div className="border-t border-border pt-5 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-xs uppercase tracking-wider text-muted-foreground">
+                      Offerter
+                    </Label>
+                    <Button size="sm" onClick={() => setComposerOpen(true)}>
+                      <FileText className="h-3.5 w-3.5 mr-2" /> Skapa offert
+                    </Button>
+                  </div>
+
+                  {quotesForSelected.length === 0 ? (
+                    <p className="text-xs text-muted-foreground">
+                      Ingen offert skickad än.
+                    </p>
+                  ) : (
+                    <div className="space-y-2">
+                      {quotesForSelected.map((q) => (
+                        <div
+                          key={q.id}
+                          className="border border-border rounded-lg p-3 text-sm"
+                        >
+                          <div className="flex items-start justify-between gap-3 mb-1">
+                            <p className="font-medium truncate">{q.title}</p>
+                            <Badge className={`${QUOTE_STATUS_COLOR[q.status]} font-normal flex-shrink-0`}>
+                              {QUOTE_STATUS_LABEL[q.status]}
+                            </Badge>
+                          </div>
+                          <div className="flex items-center justify-between text-xs text-muted-foreground">
+                            <span>
+                              {new Intl.NumberFormat("sv-SE").format(Number(q.total_sek))} SEK
+                              {" · "}gäller t.o.m. {new Date(q.expires_at).toLocaleDateString("sv-SE")}
+                            </span>
+                            <a
+                              href={`/quote/${q.public_token}`}
+                              target="_blank"
+                              rel="noopener"
+                              className="underline"
+                            >
+                              Öppna länk
+                            </a>
+                          </div>
+                          {q.status === "draft" && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="mt-2"
+                              onClick={async () => {
+                                const { error } = await supabase.functions.invoke("send-quote-email", {
+                                  body: { quote_id: q.id },
+                                });
+                                if (error) {
+                                  toast.error(error.message ?? "Kunde inte skicka mejl");
+                                } else {
+                                  toast.success("Offerten är skickad");
+                                  loadQuotesForInquiry(selected.id);
+                                }
+                              }}
+                            >
+                              <Send className="h-3 w-3 mr-1" /> Skicka nu
+                            </Button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             </>
           )}
         </SheetContent>
       </Sheet>
+
+      {selected && (
+        <QuoteComposer
+          inquiry={selected}
+          open={composerOpen}
+          onOpenChange={setComposerOpen}
+          onSent={() => {
+            loadQuotesForInquiry(selected.id);
+            load(); // refresh status badge ('quoted')
+          }}
+        />
+      )}
     </div>
   );
 }

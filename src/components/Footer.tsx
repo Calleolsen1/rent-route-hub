@@ -1,9 +1,47 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Instagram, Facebook, Linkedin, Twitter } from "lucide-react";
+import { clearCookieConsent } from "@/components/CookieConsent";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = email.trim();
+    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      toast.error("Ange en giltig e-postadress");
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const { error } = await (supabase as any)
+        .from("newsletter_signups")
+        .insert({
+          email: trimmed,
+          source: window.location.pathname,
+          user_agent: navigator.userAgent.slice(0, 200),
+        });
+      if (error) {
+        // Unique constraint violation = already subscribed — treat as success
+        if (error.code === "23505") {
+          toast.success("Du är redan anmäld — tack!");
+        } else {
+          throw error;
+        }
+      } else {
+        toast.success("Tack! Vi hör av oss med nyheter.");
+      }
+      setEmail("");
+    } catch (e: any) {
+      toast.error(e.message ?? "Något gick fel — försök igen");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <footer className="bg-navy text-white">
@@ -17,7 +55,7 @@ const Footer = () => {
           </div>
           <div>
             <form
-              onSubmit={(e) => e.preventDefault()}
+              onSubmit={handleSubscribe}
               className="flex items-end gap-3 border-b border-white/40 pb-1.5"
             >
               <input
@@ -27,20 +65,22 @@ const Footer = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Ange din e-postadress...*"
                 className="flex-1 bg-transparent text-white placeholder:text-white/60 text-base focus:outline-none py-2"
+                disabled={submitting}
               />
               <button
                 type="submit"
-                className="border border-white text-white text-sm font-medium px-6 py-2 rounded-full hover:bg-white hover:text-navy transition-colors"
+                disabled={submitting}
+                className="border border-white text-white text-sm font-medium px-6 py-2 rounded-full hover:bg-white hover:text-navy transition-colors disabled:opacity-50"
               >
-                Anmäl
+                {submitting ? "Skickar..." : "Anmäl"}
               </button>
             </form>
             <p className="text-sm text-white/70 mt-3 leading-relaxed">
 
               Genom att skicka in detta formulär godkänner jag att Kaisen Travel Group lagrar och behandlar mina personuppgifter enligt våra{" "}
-              <Link to="/faq" className="underline hover:text-white">Allmänna villkor</Link>{" "}
+              <Link to="/anvandarvillkor" className="underline hover:text-white">Användarvillkor</Link>{" "}
               &amp;{" "}
-              <Link to="/faq" className="underline hover:text-white">Integritetspolicy</Link>.
+              <Link to="/integritetspolicy" className="underline hover:text-white">Integritetspolicy</Link>.
             </p>
           </div>
         </div>
@@ -51,12 +91,14 @@ const Footer = () => {
             <div className="font-display text-2xl md:text-3xl font-semibold text-white tracking-[0.25em]">KAISEN</div>
             <div className="text-xs tracking-[0.3em] text-white/70 font-sans uppercase mt-1">Travel Group</div>
           </Link>
+          {/* TODO: ersätt # med riktiga sociala media-länkar
           <div className="flex gap-4 text-white">
             <a href="#" aria-label="Facebook" className="hover:text-white transition-colors"><Facebook className="h-4 w-4" /></a>
             <a href="#" aria-label="Twitter" className="hover:text-white transition-colors"><Twitter className="h-4 w-4" /></a>
             <a href="#" aria-label="Instagram" className="hover:text-white transition-colors"><Instagram className="h-4 w-4" /></a>
             <a href="#" aria-label="LinkedIn" className="hover:text-white transition-colors"><Linkedin className="h-4 w-4" /></a>
           </div>
+          */}
         </div>
 
         <div className="border-t border-white/20" />
@@ -93,9 +135,9 @@ const Footer = () => {
             <h3 className="text-white font-sans font-semibold text-base mb-4">Kontakt</h3>
             <ul className="space-y-2.5 text-sm text-white/80">
 
-              <li>123 Mayfair Lane,<br />London, UK W1K 2AB</li>
-              <li><a href="tel:+442012345678" className="hover:text-white transition-colors">+44 20 1234 5678</a></li>
-              <li><a href="mailto:hello@kaisentravel.com" className="hover:text-white transition-colors">hello@kaisentravel.com</a></li>
+              <li>Kaisen Travel Group AB</li>
+              {/* TODO: fyll i riktigt telefonnummer */}
+              <li><a href="mailto:info@kaisengroup.se" className="hover:text-white transition-colors">info@kaisengroup.se</a></li>
             </ul>
           </div>
         </div>
@@ -107,11 +149,11 @@ const Footer = () => {
 
           <p>© {new Date().getFullYear()} Kaisen Travel Group. Alla rättigheter förbehållna.</p>
           <div className="flex flex-wrap gap-x-5 gap-y-2">
-            <Link to="/faq" className="hover:text-white transition-colors">Integritetspolicy</Link>
+            <Link to="/integritetspolicy" className="hover:text-white transition-colors">Integritetspolicy</Link>
             <span className="text-white/30">|</span>
-            <Link to="/faq" className="hover:text-white transition-colors">Allmänna villkor</Link>
+            <Link to="/anvandarvillkor" className="hover:text-white transition-colors">Användarvillkor</Link>
             <span className="text-white/30">|</span>
-            <Link to="/faq" className="hover:text-white transition-colors">Sitemap</Link>
+            <button onClick={clearCookieConsent} className="hover:text-white transition-colors">Cookie-inställningar</button>
           </div>
         </div>
       </div>

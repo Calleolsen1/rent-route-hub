@@ -16,7 +16,7 @@ const faqs: FAQItem[] = [
  {
  category: "allmant",
  question: "Vad är Kaisen Travel Group?",
- answer: "Kaisen Travel Group är ett personligt reseföretag med 25+ års erfarenhet. Vi arrangerar skräddarsydda resor för privatpersoner, grupper och företag — från sportevent och konferenser till weekendresor och VIP-service. Vi arbetar alltid med en dedikerad rådgivare per kund."
+ answer: "Kaisen Travel Group är ett personligt reseföretag med stor erfarenhet. Vi arrangerar skräddarsydda resor för privatpersoner, grupper och företag — från sportevent och konferenser till weekendresor och VIP-service. Vi arbetar alltid med en dedikerad rådgivare per kund."
  },
  {
  category: "allmant",
@@ -89,7 +89,7 @@ const faqs: FAQItem[] = [
  {
  category: "grupp",
  question: "Kan ni arrangera företagsevent utomlands?",
- answer: "Absolut — det är ett av våra starkaste områden. Vi har 25+ års erfarenhet av incentiveresor, konferenser och företagsgetaways. Kontakta oss för ett skräddarsytt förslag."
+ answer: "Absolut — det är ett av våra starkaste områden. Vi har stor erfarenhet av incentiveresor, konferenser och företagsgetaways. Kontakta oss för ett skräddarsytt förslag."
  },
 ];
 

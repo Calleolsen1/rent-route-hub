@@ -28,6 +28,12 @@ import UsersManagement from "./pages/admin/UsersManagement";
 import AdminSupport from "./pages/admin/Support";
 import ContentManagementPage from "./pages/admin/ContentManagement";
 import AdminTickets from "./pages/admin/Tickets";
+import AdminBanners from "./pages/admin/Banners";
+import AdminMarkupDefaults from "./pages/admin/MarkupDefaults";
+import AdminDiagnostics from "./pages/admin/Diagnostics";
+import Integritetspolicy from "./pages/Integritetspolicy";
+import Anvandarvillkor from "./pages/Anvandarvillkor";
+import CookieConsent from "./components/CookieConsent";
 import NotFound from "./pages/NotFound";
 import Services from "./pages/Services";
 import GroupTravel from "./pages/GroupTravel";
@@ -44,6 +50,7 @@ import F1RacePage from "./pages/services/F1RacePage";
 import EventDetail from "./pages/EventDetail";
 import Checkout from "./pages/Checkout";
 import OrderConfirmation from "./pages/OrderConfirmation";
+import QuotePage from "./pages/Quote";
 
 const queryClient = new QueryClient();
 
@@ -74,12 +81,17 @@ const App = () => (
               <Route path="/faq" element={<FAQ />} />
               <Route path="/help-center" element={<HelpCenter />} />
               <Route path="/support" element={<Support />} />
+              <Route path="/integritetspolicy" element={<Integritetspolicy />} />
+              <Route path="/anvandarvillkor" element={<Anvandarvillkor />} />
               <Route path="/forgot-password" element={<><Navbar /><ForgotPassword /></>} />
 
               {/* Ticket flow */}
               <Route path="/sport/event/:id" element={<EventDetail />} />
               <Route path="/checkout/:orderId" element={<Checkout />} />
               <Route path="/order/:orderId" element={<OrderConfirmation />} />
+
+              {/* Custom-trip quote flow */}
+              <Route path="/quote/:token" element={<QuotePage />} />
 
 
               {/* Admin portal */}
@@ -89,6 +101,9 @@ const App = () => (
                 <Route path="inquiries" element={<AdminInquiries />} />
                 <Route path="orders" element={<AdminOrders />} />
                 <Route path="tickets" element={<AdminTickets />} />
+                <Route path="banners" element={<AdminBanners />} />
+                <Route path="markup-defaults" element={<AdminMarkupDefaults />} />
+                <Route path="diagnostics" element={<AdminDiagnostics />} />
                 <Route path="users" element={<UsersManagement />} />
                 <Route path="support" element={<AdminSupport />} />
                 <Route path="content" element={<ContentManagementPage />} />
@@ -108,6 +123,7 @@ const App = () => (
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<><Navbar /><NotFound /></>} />
             </Routes>
+            <CookieConsent />
           </DemoProvider>
         </AuthProvider>
       </BrowserRouter>

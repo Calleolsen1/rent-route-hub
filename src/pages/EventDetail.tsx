@@ -12,6 +12,7 @@ import { getStripeEnvironment } from "@/lib/stripe";
 
 type EventRow = {
   id: string;
+  source: string;
   sport: "soccer" | "formula1";
   tournament_name: string;
   home_team: string | null;
@@ -38,12 +39,34 @@ type CategoryRow = {
   qty_available: number;
 };
 
+type ReserveLine = {
+  ticket_id: string;
+  net_rate: number;
+  currency_code: string;
+  stock: number;
+};
+
+type Xs2Group = {
+  category_id: string;
+  external_category_id: string;
+  external_sub_category: string;
+  name: string;
+  description: string | null;
+  party_size_together: number;
+  total_stock: number;
+  base_sek: number;
+  final_sek: number;
+  currency: string;
+  reserve_lines: ReserveLine[];
+};
+
 export default function EventDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
   const [event, setEvent] = useState<EventRow | null>(null);
   const [categories, setCategories] = useState<CategoryRow[]>([]);
+  const [xs2Groups, setXs2Groups] = useState<Xs2Group[]>([]);
   const [livePrices, setLivePrices] = useState<Record<string, number>>({});
   const [pricesLoading, setPricesLoading] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -51,23 +74,46 @@ export default function EventDetail() {
   const [qty, setQty] = useState(2);
   const [busy, setBusy] = useState(false);
 
+  const isXs2 = event?.source === "xs2event";
+
   useEffect(() => {
     if (!id) return;
     (async () => {
-      const [{ data: ev }, { data: cats }] = await Promise.all([
-        supabase.from("events").select("*").eq("id", id).maybeSingle(),
-        supabase
-          .from("ticket_categories")
-          .select("*")
-          .eq("event_id", id)
-          .order("unit_price_sek", { ascending: true }),
-      ]);
+      const { data: ev } = await supabase
+        .from("events")
+        .select("*")
+        .eq("id", id)
+        .maybeSingle();
       setEvent(ev as EventRow | null);
+
+      if ((ev as EventRow | null)?.source === "xs2event") {
+        // Live lookup against xs2event (with markup applied)
+        try {
+          const { data: r } = await supabase.functions.invoke("xs2-get-event-tickets", {
+            body: { event_id: id },
+          });
+          const groups = (r?.groups as Xs2Group[]) ?? [];
+          setXs2Groups(groups);
+          if (groups.length) setSelectedCatId(groups[0].category_id);
+        } catch (e) {
+          console.error("xs2 tickets fetch failed", e);
+        } finally {
+          setPricesLoading(false);
+          setLoading(false);
+        }
+        return;
+      }
+
+      // Non-xs2 path (manual/Stripe-product inventory) — unchanged
+      const { data: cats } = await supabase
+        .from("ticket_categories")
+        .select("*")
+        .eq("event_id", id)
+        .order("unit_price_sek", { ascending: true });
       setCategories((cats as CategoryRow[]) ?? []);
       if (cats && cats.length) setSelectedCatId((cats[0] as CategoryRow).id);
       setLoading(false);
 
-      // Fetch live prices from Stripe (with markup applied)
       if (cats && cats.length) {
         try {
           const { data: pr } = await supabase.functions.invoke("get-ticket-prices", {
@@ -89,24 +135,70 @@ export default function EventDetail() {
 
   const priceFor = (c: CategoryRow) => livePrices[c.id] ?? Number(c.unit_price_sek);
 
+  // Unified view for the picker — both paths produce { id, name, description,
+  // party_size_together, price, available }
+  const pickerOptions = useMemo(() => {
+    if (isXs2) {
+      return xs2Groups.map((g) => ({
+        id: g.category_id,
+        name: g.name,
+        description: g.description,
+        party_size_together: g.party_size_together,
+        price: g.final_sek,
+        available: g.total_stock,
+        group: g,
+        cat: null as CategoryRow | null,
+      }));
+    }
+    return categories.map((c) => ({
+      id: c.id,
+      name: c.name,
+      description: c.description,
+      party_size_together: c.party_size_together,
+      price: priceFor(c),
+      available: c.qty_available,
+      group: null as Xs2Group | null,
+      cat: c,
+    }));
+  }, [isXs2, xs2Groups, categories, livePrices]);
 
-  const selectedCat = useMemo(
-    () => categories.find((c) => c.id === selectedCatId) ?? null,
-    [categories, selectedCatId],
+  const selected = useMemo(
+    () => pickerOptions.find((o) => o.id === selectedCatId) ?? null,
+    [pickerOptions, selectedCatId],
   );
-  const total = selectedCat ? priceFor(selectedCat) * qty : 0;
+  const total = selected ? selected.price * qty : 0;
 
   const handleCheckout = async () => {
-    if (!event || !selectedCat) return;
+    if (!event || !selected) return;
     setBusy(true);
     try {
-      const unitPrice = priceFor(selectedCat);
-      if (!unitPrice || unitPrice <= 0) throw new Error("Pris ej tillgängligt");
+      if (selected.price <= 0) throw new Error("Pris ej tillgängligt");
+
+      if (isXs2 && selected.group) {
+        const g = selected.group;
+        const { data, error } = await supabase.functions.invoke("xs2-reserve", {
+          body: {
+            event_id: event.id,
+            qty,
+            reserve_lines: g.reserve_lines,
+            external_category_id: g.external_category_id,
+            external_sub_category: g.external_sub_category,
+            customer_email: user?.email ?? "",
+          },
+        });
+        if (error || !data?.order_id) {
+          throw new Error(error?.message ?? "Kunde inte reservera biljetter");
+        }
+        navigate(`/checkout/${data.order_id}`);
+        return;
+      }
+
+      // Non-xs2 fallback path
       const { data: orderId, error } = await supabase.rpc("create_order_with_items", {
         p_event_id: event.id,
-        p_category_id: selectedCat.id,
+        p_category_id: selected.id,
         p_qty: qty,
-        p_unit_price_sek: unitPrice,
+        p_unit_price_sek: selected.price,
         p_customer_email: user?.email ?? "",
       });
       if (error || !orderId) throw error ?? new Error("Kunde inte skapa order");
@@ -225,35 +317,35 @@ export default function EventDetail() {
                 Välj biljettkategori
               </p>
               <div className="space-y-3">
-                {categories.map((c) => {
-                  const selected = c.id === selectedCatId;
+                {pickerOptions.map((o) => {
+                  const isSel = o.id === selectedCatId;
                   return (
                     <button
-                      key={c.id}
+                      key={o.id}
                       type="button"
-                      onClick={() => setSelectedCatId(c.id)}
+                      onClick={() => setSelectedCatId(o.id)}
                       className={`w-full text-left rounded-lg border p-4 transition-colors ${
-                        selected
+                        isSel
                           ? "border-primary bg-primary/5"
                           : "border-border bg-card hover:bg-accent"
                       }`}
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div>
-                          <p className="font-medium">{c.name}</p>
-                          {c.description && (
+                          <p className="font-medium">{o.name}</p>
+                          {o.description && (
                             <p className="text-xs text-muted-foreground mt-1">
-                              {c.description}
+                              {o.description}
                             </p>
                           )}
                           <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
                             <Users className="h-3 w-3" />
-                            Sittning ihop: upp till {c.party_size_together} pers
+                            Sittning ihop: upp till {o.party_size_together} pers
                           </p>
                         </div>
                         <div className="text-right">
                           <p className="font-display text-xl">
-                            {pricesLoading ? "…" : formatSek(priceFor(c))}
+                            {pricesLoading ? "…" : formatSek(o.price)}
                           </p>
                           <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
                             per biljett
@@ -278,11 +370,11 @@ export default function EventDetail() {
                 {formatEventDateTime(event.starts_at)}
               </p>
 
-              {selectedCat ? (
+              {selected ? (
                 <>
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-sm">{selectedCat.name}</span>
-                    <span className="text-sm">{pricesLoading ? "…" : formatSek(priceFor(selectedCat))}</span>
+                    <span className="text-sm">{selected.name}</span>
+                    <span className="text-sm">{pricesLoading ? "…" : formatSek(selected.price)}</span>
                   </div>
 
                   <div className="flex items-center justify-between mb-6">
@@ -304,7 +396,7 @@ export default function EventDetail() {
                         size="icon"
                         className="h-8 w-8 rounded-full"
                         onClick={() =>
-                          setQty((q) => Math.min(selectedCat.qty_available, q + 1))
+                          setQty((q) => Math.min(selected.available, q + 1))
                         }
                       >
                         <Plus className="h-3 w-3" />
@@ -322,11 +414,13 @@ export default function EventDetail() {
                     disabled={busy}
                     className="w-full rounded-full bg-primary hover:bg-primary/90 tracking-wider text-sm"
                   >
-                    {busy ? "Skapar..." : "Till kassan"}
+                    {busy ? (isXs2 ? "Reserverar..." : "Skapar...") : "Till kassan"}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                   <p className="text-[11px] text-muted-foreground text-center mt-3">
-                    Säker betalning via Stripe. Kaisen är säljare och fakturautställare.
+                    {isXs2
+                      ? "Biljetterna reserveras i 10 minuter när du går till kassan."
+                      : "Säker betalning via Stripe. Kaisen är säljare och fakturautställare."}
                   </p>
                 </>
               ) : (

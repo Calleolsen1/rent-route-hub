@@ -49,8 +49,7 @@ interface User {
   status: string;
   created_at: string;
   primary_role: string;
-  listings_count: number;
-  bookings_count: number;
+  orders_count: number;
 }
 
 interface UsersTableProps {
@@ -63,8 +62,6 @@ const getRoleBadgeVariant = (role: string) => {
   switch (role) {
     case "admin":
       return "default";
-    case "host":
-      return "secondary";
     default:
       return "outline";
   }
@@ -285,8 +282,8 @@ export function UsersTable({ users, loading, hasActiveFilters }: UsersTableProps
               <TableHead className="font-semibold">Name</TableHead>
               <TableHead className="font-semibold">Role</TableHead>
               <TableHead className="font-semibold hidden 2xl:table-cell">Email</TableHead>
-              <TableHead className="font-semibold text-right hidden 2xl:table-cell">Listings</TableHead>
-              <TableHead className="font-semibold text-right hidden 3xl:table-cell">Bookings</TableHead>
+              <TableHead className="font-semibold text-right hidden 2xl:table-cell">Beställningar</TableHead>
+              
               <TableHead className="font-semibold hidden 3xl:table-cell">Joined</TableHead>
               <TableHead className="font-semibold">Status</TableHead>
               <TableHead className="font-semibold w-[50px]"></TableHead>
@@ -322,8 +319,8 @@ export function UsersTable({ users, loading, hasActiveFilters }: UsersTableProps
               <TableHead className="font-semibold">Name</TableHead>
               <TableHead className="font-semibold">Role</TableHead>
               <TableHead className="font-semibold hidden 2xl:table-cell">Email</TableHead>
-              <TableHead className="font-semibold text-right hidden 2xl:table-cell">Listings</TableHead>
-              <TableHead className="font-semibold text-right hidden 3xl:table-cell">Bookings</TableHead>
+              <TableHead className="font-semibold text-right hidden 2xl:table-cell">Beställningar</TableHead>
+              
               <TableHead className="font-semibold hidden 3xl:table-cell">Joined</TableHead>
               <TableHead className="font-semibold">Status</TableHead>
               <TableHead className="font-semibold w-[50px]"></TableHead>
@@ -352,8 +349,8 @@ export function UsersTable({ users, loading, hasActiveFilters }: UsersTableProps
             <TableHead className="font-semibold">Name</TableHead>
             <TableHead className="font-semibold">Role</TableHead>
             <TableHead className="font-semibold hidden 2xl:table-cell">Email</TableHead>
-            <TableHead className="font-semibold text-right hidden 2xl:table-cell">Listings</TableHead>
-            <TableHead className="font-semibold text-right hidden 3xl:table-cell">Bookings</TableHead>
+            <TableHead className="font-semibold text-right hidden 2xl:table-cell">Beställningar</TableHead>
+            
             <TableHead className="font-semibold hidden 3xl:table-cell">Joined</TableHead>
             <TableHead className="font-semibold">Status</TableHead>
             <TableHead className="font-semibold w-[50px]"></TableHead>
@@ -391,10 +388,7 @@ export function UsersTable({ users, loading, hasActiveFilters }: UsersTableProps
                 {user.email}
               </TableCell>
               <TableCell className="text-right hidden 2xl:table-cell">
-                {user.listings_count}
-              </TableCell>
-              <TableCell className="text-right hidden 3xl:table-cell">
-                {user.bookings_count}
+                {user.orders_count}
               </TableCell>
               <TableCell className="text-muted-foreground hidden 3xl:table-cell">
                 {format(new Date(user.created_at), "MMM dd, yyyy")}
@@ -480,7 +474,7 @@ export function UsersTable({ users, loading, hasActiveFilters }: UsersTableProps
               This will:
               <ul className="list-disc ml-6 mt-2">
                 <li>Prevent the user from logging in</li>
-                <li>Deactivate all their listings</li>
+                <li>Markera deras konto som avstängt</li>
                 <li>Keep all data intact (reversible)</li>
               </ul>
             </AlertDialogDescription>
@@ -506,7 +500,7 @@ export function UsersTable({ users, loading, hasActiveFilters }: UsersTableProps
             <AlertDialogDescription>
               Are you sure you want to unsuspend <strong>{selectedUser?.full_name}</strong>?
               <br/><br/>
-              This will allow the user to log in again. Note that their listings will remain inactive and must be manually re-approved.
+              This will allow the user to log in again. Note that deras konto behöver inte återskapas.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -533,7 +527,7 @@ export function UsersTable({ users, loading, hasActiveFilters }: UsersTableProps
               <ul className="list-disc ml-6 mt-2">
                 <li>Anonymize all personal information</li>
                 <li>Permanently log them out</li>
-                <li>Deactivate all their listings</li>
+                <li>Markera deras konto som avstängt</li>
                 <li>Keep booking/payment history for integrity</li>
               </ul>
               <br/>

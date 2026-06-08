@@ -33,7 +33,7 @@ const topics: Topic[] = [
  },
  {
  question: "Jag har glömt mitt lösenord",
- answer: "Kundportalen är ännu inte lanserad. Kontakta oss på hello@kaisentravel.com så hjälper vi dig med din kontoinfo.",
+ answer: "Kundportalen är ännu inte lanserad. Kontakta oss på info@kaisengroup.se så hjälper vi dig med din kontoinfo.",
  },
  {
  question: "Hur håller jag koll på min resa?",
@@ -41,7 +41,7 @@ const topics: Topic[] = [
  },
  {
  question: "Uppdatera mina kontaktuppgifter",
- answer: "Skicka ett mejl till hello@kaisentravel.com med dina nya kontaktuppgifter så uppdaterar vi dem åt dig omedelbart.",
+ answer: "Skicka ett mejl till info@kaisengroup.se med dina nya kontaktuppgifter så uppdaterar vi dem åt dig omedelbart.",
  },
  ],
  },
@@ -65,7 +65,7 @@ const topics: Topic[] = [
  },
  {
  question: "Var finns mina resehandlingar och vouchers?",
- answer: "Alla resehandlingar skickas till din e-postadress i god tid innan avresa. Har du inte fått dem — kontakta oss på hello@kaisentravel.com så skickar vi om dem direkt.",
+ answer: "Alla resehandlingar skickas till din e-postadress i god tid innan avresa. Har du inte fått dem — kontakta oss på info@kaisengroup.se så skickar vi om dem direkt.",
  },
  {
  question: "Kan jag boka med kort varsel?",
@@ -89,7 +89,7 @@ const topics: Topic[] = [
  },
  {
  question: "Hur får jag min faktura?",
- answer: "Fakturan skickas automatiskt till din e-postadress vid bekräftelse och vid eventuella uppdateringar. Behöver du en kopia eller ändrad fakturaadress — kontakta oss på hello@kaisentravel.com.",
+ answer: "Fakturan skickas automatiskt till din e-postadress vid bekräftelse och vid eventuella uppdateringar. Behöver du en kopia eller ändrad fakturaadress — kontakta oss på info@kaisengroup.se.",
  },
  {
  question: "Vilka betalningsmetoder accepterar ni?",
@@ -129,7 +129,7 @@ const topics: Topic[] = [
  },
  {
  question: "Kan ni arrangera företagsevent utomlands?",
- answer: "Absolut — det är ett av våra starkaste områden. Vi har 25+ års erfarenhet av incentiveresor, konferenser och företagsgetaways. Kontakta oss för ett skräddarsytt förslag.",
+ answer: "Absolut — det är ett av våra starkaste områden. Vi har stor erfarenhet av incentiveresor, konferenser och företagsgetaways. Kontakta oss för ett skräddarsytt förslag.",
  },
  ],
  },
@@ -165,11 +165,11 @@ const topics: Topic[] = [
  articles: [
  {
  question: "Vad gör jag vid akut hjälp under resan?",
- answer: "Ring oss direkt på +44 20 1234 5678. Vi har en akutlinje för aktiva kunder som är tillgänglig dygnet runt, alla dagar.",
+ answer: "Ring oss direkt på +46 8 000 00 00. Vi har en akutlinje för aktiva kunder som är tillgänglig dygnet runt, alla dagar.",
  },
  {
  question: "Hur kontaktar jag er utanför kontorstid?",
- answer: "Akuta ärenden under pågående resa: ring +44 20 1234 5678. För icke-akuta ärenden — skicka ett mejl till hello@kaisentravel.com så svarar vi nästa arbetsdag.",
+ answer: "Akuta ärenden under pågående resa: ring +46 8 000 00 00. För icke-akuta ärenden — skicka ett mejl till info@kaisengroup.se så svarar vi nästa arbetsdag.",
  },
  {
  question: "Vad händer vid förseningar och störningar?",
@@ -177,7 +177,7 @@ const topics: Topic[] = [
  },
  {
  question: "Hur lämnar jag klagomål eller feedback?",
- answer: "Vi tar all feedback på allvar. Skicka ett mejl till hello@kaisentravel.com eller fyll i kontaktformuläret. Vi återkommer alltid med svar och åtgärder.",
+ answer: "Vi tar all feedback på allvar. Skicka ett mejl till info@kaisengroup.se eller fyll i kontaktformuläret. Vi återkommer alltid med svar och åtgärder.",
  },
  ],
  },

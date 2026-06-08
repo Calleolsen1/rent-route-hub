@@ -3,7 +3,7 @@ import { Outlet, NavLink, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { supabase } from "@/integrations/supabase/client";
-import { LayoutDashboard, Inbox, ShoppingBag, Users, MessageSquare, FileText, LogOut, Ticket } from "lucide-react";
+import { LayoutDashboard, Inbox, ShoppingBag, Users, MessageSquare, FileText, LogOut, Ticket, Image, Percent, Stethoscope } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -11,6 +11,9 @@ const navItems = [
   { to: "/admin/inquiries", label: "Förfrågningar", icon: Inbox },
   { to: "/admin/orders", label: "Beställningar", icon: ShoppingBag },
   { to: "/admin/tickets", label: "Biljetter & Stripe", icon: Ticket },
+  { to: "/admin/banners", label: "Hero-banners", icon: Image },
+  { to: "/admin/markup-defaults", label: "Påslag", icon: Percent },
+  { to: "/admin/diagnostics", label: "Diagnostik", icon: Stethoscope },
   { to: "/admin/users", label: "Användare", icon: Users },
   { to: "/admin/support", label: "Support", icon: MessageSquare },
   { to: "/admin/content", label: "Innehåll", icon: FileText },

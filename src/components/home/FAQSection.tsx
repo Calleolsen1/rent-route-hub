@@ -14,7 +14,7 @@ export default function FAQSection() {
       const {
         data,
         error
-      } = await supabase.from('faqs').select('id, question, answer, category').eq('status', 'published').in('category', ['general', 'booking', 'payment', 'host']).order('created_at', {
+      } = await supabase.from('faqs').select('id, question, answer, category').eq('status', 'published').in('category', ['general', 'booking', 'payment']).order('created_at', {
         ascending: false
       }).limit(8);
       if (error) throw error;

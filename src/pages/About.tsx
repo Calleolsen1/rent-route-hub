@@ -17,7 +17,7 @@ const values = [
 },
 {
  title: "Pålitlighet",
- desc: "Med 25+ år i branschen och hundratals nöjda kunder vet vi vad som krävs för att leverera — varje gång, utan undantag."
+ desc: "Vi vet vad som krävs vet vi vad som krävs för att leverera — varje gång, utan undantag."
 },
 {
  title: "Diskretion",
@@ -26,10 +26,10 @@ const values = [
 
 
 const expertise = [
-{ area: "Gruppresor & Logistik", years: "25+ år" },
-{ area: "Sportevent & VIP-biljetter", years: "20+ år" },
-{ area: "Konferenser & Incentive", years: "25+ år" },
-{ area: "Affärs- & Privatresor", years: "15+ år" }];
+{ area: "Gruppresor & Logistik", years: "Erfaren" },
+{ area: "Sportevent & VIP-biljetter", years: "Erfaren" },
+{ area: "Konferenser & Incentive", years: "Erfaren" },
+{ area: "Affärs- & Privatresor", years: "Erfaren" }];
 
 
 export default function About() {
@@ -58,16 +58,16 @@ export default function About() {
  <div>
  <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Vilka vi är</p>
  <h2 className="font-display text-3xl md:text-4xl text-foreground mb-2 leading-tight">
- 25 År av Passion för<br />
+ Vår passion för<br />
  <em className="italic font-light">Resor som Imponerar</em>
  </h2>
  <div className="w-10 h-px bg-primary mb-8" />
  <div className="space-y-5 text-muted-foreground leading-relaxed">
- <p>Kaisen Travel Group grundades av ett erfaret reseproffs med över 25 års erfarenhet i branschen. Vi har alltid trott att resor ska kännas personliga och inte som en produkt ur en hylla.
+ <p>Kaisen Travel Group grundades av ett erfaret reseproffs med stor erfarenhet i branschen. Vi har alltid trott att resor ska kännas personliga och inte som en produkt ur en hylla.
 
  </p>
  <p>
- Under åren har vi arrangerat gruppresor för Svenska Fotbollsförbundet, stora börsnoterade bolag och internationella organisationer. Uppdragen har varierat från VM-resor och elitsportsevent till storskaliga konferenser och incentiveresor runt om i världen.
+ Vi arrangerar allt från sportresor och elitevent till konferenser, incentive och skräddarsydda gruppresor — alltid med en dedikerad rådgivare som ansvarar för varje detalj.
  </p>
  <p>
  Idag har vi ett brett team med specialister inom alla resekategorier — men vår filosofi är densamma som dag ett: varje kund förtjänar personlig uppmärksamhet och en resa som är skräddarsydd just för dem.
@@ -78,10 +78,12 @@ export default function About() {
  <div className="aspect-[4/5] overflow-hidden">
  <img src={founderImage} alt="Grundare Kaisen Travel Group" className="w-full h-full object-cover" />
  </div>
+ {/* TODO: Avkommentera och fyll i riktig siffra när data finns.
  <div className="absolute -bottom-4 -right-4 bg-navy p-6 max-w-[200px]">
- <div className="font-display text-3xl text-white mb-1">25+</div>
+ <div className="font-display text-3xl text-white mb-1">...</div>
  <div className="text-[10px] tracking-[0.2em] uppercase text-primary font-sans">År i branschen</div>
  </div>
+ */}
  </div>
  </div>
  </div>
@@ -92,10 +94,11 @@ export default function About() {
  <div className="container mx-auto px-4">
  <p className="text-center text-xs tracking-[0.3em] text-primary uppercase mb-10 font-sans">Tidigare uppdrag & kunder</p>
  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+ {/* TODO: ersätt med riktiga kundreferenser när tillstånd finns */}
  {[
- { label: "Svenska Fotbollsförbundet", detail: "VM & EM-gruppresor" },
- { label: "Stora Börsbolag", detail: "Incentive & konferenser" },
- { label: "Internationella Organisationer", detail: "Storskaliga event" },
+ { label: "Sportresor", detail: "VM, EM & ligamatcher" },
+ { label: "Företag", detail: "Incentive & konferenser" },
+ { label: "Organisationer", detail: "Storskaliga event" },
  { label: "Privata Sällskap", detail: "Skräddarsydda resor" }].
  map((ref) =>
  <div key={ref.label} className="border-t border-white/10 pt-6">

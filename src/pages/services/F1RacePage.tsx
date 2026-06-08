@@ -81,9 +81,10 @@ export default function F1RacePage() {
         <div className="container mx-auto px-4 max-w-6xl">
           <UpcomingEventsList
             sport="formula1"
+            race={info.name}
             limit={3}
             eyebrow="Köp biljett direkt"
-            title="Aktuella F1-biljetter"
+            title={`Biljetter till ${info.name}`}
           />
         </div>
       </section>

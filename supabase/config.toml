@@ -17,3 +17,32 @@ verify_jwt = false
 
 [functions.get-ticket-prices]
 verify_jwt = false
+
+[functions.xs2-get-event-tickets]
+verify_jwt = false
+
+[functions.xs2-reserve]
+verify_jwt = false
+
+[functions.xs2-renew-reservation]
+verify_jwt = false
+
+# Quote flow: public checkout endpoint (token-gated), JWT-protected email send
+[functions.create-quote-checkout]
+verify_jwt = false
+
+[functions.send-quote-email]
+verify_jwt = true
+
+# Admin refund issues a Stripe refund + writes to refunds table. JWT-verified
+# inside the function (must be admin role), not just authenticated.
+[functions.admin-refund-order]
+verify_jwt = true
+
+# Diagnostics — admin-only, returns boolean presence of every required secret.
+[functions.admin-check-config]
+verify_jwt = true
+
+# xs2-sync verifies the JWT inline (must be authenticated admin)
+[functions.xs2-sync]
+verify_jwt = true

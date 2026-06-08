@@ -112,7 +112,11 @@ const UserManagement = () => {
 
             {/* Table */}
             <UsersTable
-              users={users}
+              // Cast: generated supabase types still expose
+              // listings_count/bookings_count from the user_admin_view; after
+              // 20260608240000_strip_rental_schema applies and types are
+              // regen'd, this becomes a direct pass-through.
+              users={users as unknown as any}
               loading={isLoading}
               hasActiveFilters={hasActiveFilters}
             />

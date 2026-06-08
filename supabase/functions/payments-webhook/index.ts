@@ -1,5 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { type StripeEnv, verifyWebhook, createStripeClient } from "../_shared/stripe.ts";
+import { Xs2Client, Xs2Error } from "../_shared/xs2event.ts";
 
 let _supabase: ReturnType<typeof createClient> | null = null;
 function getSupabase() {
@@ -24,30 +25,50 @@ async function sendOrderConfirmationEmail(orderId: string) {
   const supabase = getSupabase();
   const { data: order } = await supabase
     .from("orders")
-    .select("id, customer_email, customer_name, total_sek, currency")
+    .select("id, customer_email, customer_name, total_sek, currency, quote_id")
     .eq("id", orderId)
     .maybeSingle();
   if (!order || !order.customer_email) return;
 
-  const { data: items } = await supabase
-    .from("order_items")
-    .select(
-      "qty, unit_price_sek, events(home_team, away_team, race_name, venue_name, city, starts_at), ticket_categories(name)",
-    )
-    .eq("order_id", orderId);
-
-  const rows = (items ?? [])
-    .map((it: any) => {
-      const title = it.events?.home_team
-        ? `${it.events.home_team} vs ${it.events.away_team}`
-        : it.events?.race_name ?? "Evenemang";
-      const date = new Date(it.events?.starts_at).toLocaleDateString("sv-SE", {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      });
-      return `
+  // Ticket orders have order_items; quote orders have line items on quote_items.
+  let rows = "";
+  if (order.quote_id) {
+    const { data: qitems } = await supabase
+      .from("quote_items")
+      .select("description, qty, unit_price_sek, sort_order")
+      .eq("quote_id", order.quote_id)
+      .order("sort_order");
+    rows = (qitems ?? [])
+      .map((it: any) => `
+        <tr>
+          <td style="padding:12px 0;border-bottom:1px solid #e5e7eb;">
+            <div style="font-weight:600;color:#0f172a;">${it.description}</div>
+            <div style="font-size:13px;color:#475569;">${it.qty} × ${new Intl.NumberFormat("sv-SE").format(Number(it.unit_price_sek))} SEK</div>
+          </td>
+          <td style="padding:12px 0;border-bottom:1px solid #e5e7eb;text-align:right;color:#0f172a;">
+            ${new Intl.NumberFormat("sv-SE").format(Number(it.unit_price_sek) * it.qty)} SEK
+          </td>
+        </tr>`)
+      .join("");
+  } else {
+    const { data: items } = await supabase
+      .from("order_items")
+      .select(
+        "qty, unit_price_sek, events(home_team, away_team, race_name, venue_name, city, starts_at), ticket_categories(name)",
+      )
+      .eq("order_id", orderId);
+    rows = (items ?? [])
+      .map((it: any) => {
+        const title = it.events?.home_team
+          ? `${it.events.home_team} vs ${it.events.away_team}`
+          : it.events?.race_name ?? "Evenemang";
+        const date = new Date(it.events?.starts_at).toLocaleDateString("sv-SE", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        });
+        return `
         <tr>
           <td style="padding:12px 0;border-bottom:1px solid #e5e7eb;">
             <div style="font-weight:600;color:#0f172a;">${title}</div>
@@ -58,8 +79,9 @@ async function sendOrderConfirmationEmail(orderId: string) {
             ${new Intl.NumberFormat("sv-SE").format(Number(it.unit_price_sek) * it.qty)} SEK
           </td>
         </tr>`;
-    })
-    .join("");
+      })
+      .join("");
+  }
 
   const html = `
   <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:560px;margin:0 auto;background:#fff;color:#0f172a;">
@@ -181,9 +203,34 @@ async function ensureUserForGuestOrder(orderId: string) {
 }
 
 async function handleCheckoutCompleted(session: any, env: StripeEnv) {
+  // Two paths share this webhook: ticket orders (metadata.orderId) and quote
+  // payments (metadata.quoteId). Branch up front.
+  const quoteId = session.metadata?.quoteId;
+  if (quoteId) {
+    await handleQuotePaid(quoteId, session);
+    return;
+  }
+
   const orderId = session.metadata?.orderId;
   if (!orderId) {
-    console.warn("checkout.session.completed without orderId metadata");
+    console.warn("checkout.session.completed without orderId or quoteId metadata");
+    return;
+  }
+
+  // Idempotency: Stripe retries webhooks on any non-2xx. Without this guard
+  // a retry would double-decrement stock, duplicate ticket_deliveries rows,
+  // and re-call xs2 confirmBooking (which would fail on an already-confirmed
+  // reservation and stamp a misleading error on a successful order).
+  const { data: existing } = await getSupabase()
+    .from("orders")
+    .select("status")
+    .eq("id", orderId)
+    .maybeSingle();
+  if (existing?.status === "paid" || existing?.status === "fulfilled") {
+    console.log("ticket order already paid/fulfilled — skipping duplicate webhook", {
+      orderId,
+      status: existing.status,
+    });
     return;
   }
 
@@ -200,25 +247,146 @@ async function handleCheckoutCompleted(session: any, env: StripeEnv) {
 
   await getSupabase().from("orders").update(updates).eq("id", orderId);
 
-  // Atomically decrement ticket availability
+  // Pull the order back to branch on xs2 vs manual inventory
+  const { data: order } = await getSupabase()
+    .from("orders")
+    .select("id, customer_email, xs2_reservation_id")
+    .eq("id", orderId)
+    .maybeSingle();
+
   const { data: items } = await getSupabase()
     .from("order_items")
-    .select("id, category_id, qty")
+    .select("id, category_id, qty, external_ticket_ids")
     .eq("order_id", orderId);
-  for (const it of items ?? []) {
-    await getSupabase().rpc("decrement_ticket_qty", {
-      p_category_id: (it as any).category_id,
-      p_qty: Number((it as any).qty),
-    });
-    await getSupabase().from("ticket_deliveries").insert({
-      order_item_id: (it as any).id,
-      delivery_method: "email",
-    });
+
+  if (order?.xs2_reservation_id) {
+    // xs2-sourced order — confirm with xs2event so suppliers ship tickets,
+    // then fetch the e-ticket bundle URL and record it for delivery.
+    await confirmXs2Booking(orderId, order, items ?? []);
+  } else {
+    // Manual/Stripe-product inventory — decrement local stock per category
+    for (const it of items ?? []) {
+      await getSupabase().rpc("decrement_ticket_qty", {
+        p_category_id: (it as any).category_id,
+        p_qty: Number((it as any).qty),
+      });
+      await getSupabase().from("ticket_deliveries").insert({
+        order_item_id: (it as any).id,
+        delivery_method: "email",
+      });
+    }
   }
 
   // Auto-create Mitt Kaisen account for guest checkouts and link to order
   await ensureUserForGuestOrder(orderId);
 
+  await sendOrderConfirmationEmail(orderId);
+}
+
+async function confirmXs2Booking(
+  orderId: string,
+  order: { customer_email: string | null; xs2_reservation_id: string | null },
+  items: Array<{ id: string; external_ticket_ids: unknown }>,
+) {
+  if (!order.xs2_reservation_id || !order.customer_email) {
+    console.error("xs2 confirm skipped — missing reservation_id or email", { orderId });
+    return;
+  }
+
+  const paymentMethod = Deno.env.get("XS2_PAYMENT_METHOD") ?? "invoice";
+  let booking;
+  try {
+    const xs2 = new Xs2Client();
+    booking = await xs2.confirmBooking({
+      reservation_id: order.xs2_reservation_id,
+      invoice_reference: orderId,
+      booking_email: order.customer_email,
+      payment_method: paymentMethod,
+    });
+  } catch (e) {
+    const status = e instanceof Xs2Error ? e.status : "unknown";
+    console.error("xs2 confirmBooking failed", { orderId, status, error: e });
+    // Don't mark the order failed — Stripe payment succeeded, this needs
+    // ops intervention. Stamp the order with a fulfillment_error.
+    await getSupabase()
+      .from("orders")
+      .update({
+        notes: `xs2 confirm failed (${status}): ${e instanceof Error ? e.message : "unknown"}`,
+      })
+      .eq("id", orderId);
+    return;
+  }
+
+  // Store the booking id in a dedicated column for support / refund traceability
+  await getSupabase()
+    .from("orders")
+    .update({ status: "fulfilled", xs2_booking_id: booking.booking_id })
+    .eq("id", orderId);
+
+  // Fetch the e-ticket bundle and stamp each order_item with the same URL.
+  // (xs2's zip endpoint returns ALL tickets in a booking — one URL covers
+  // every supplier in the order.)
+  let zipUrl: string | null = null;
+  try {
+    const xs2 = new Xs2Client();
+    const r = await xs2.getETicketZipUrl({ booking_id: booking.booking_id });
+    zipUrl = r.url;
+  } catch (e) {
+    console.error("xs2 getETicketZipUrl failed", { orderId, error: e });
+  }
+
+  for (const it of items) {
+    await getSupabase().from("ticket_deliveries").insert({
+      order_item_id: it.id,
+      delivery_method: "email",
+      file_url: zipUrl,
+      delivered_at: zipUrl ? new Date().toISOString() : null,
+    });
+  }
+}
+
+async function handleQuotePaid(quoteId: string, session: any) {
+  const supabase = getSupabase();
+  // The orders row was pre-created by create-quote-checkout; metadata.orderId
+  // links them.
+  const orderId = session.metadata?.orderId;
+  if (!orderId) {
+    console.error("quote payment without orderId metadata", { quoteId });
+    return;
+  }
+
+  // Idempotency — same reason as the ticket path; without this the
+  // confirmation email + ensureUserForGuestOrder would re-run on every retry.
+  const { data: existing } = await supabase
+    .from("orders")
+    .select("status")
+    .eq("id", orderId)
+    .maybeSingle();
+  if (existing?.status === "fulfilled") {
+    console.log("quote order already fulfilled — skipping duplicate webhook", { orderId });
+    return;
+  }
+
+  const totalSek = session.amount_total ? Number(session.amount_total) / 100 : null;
+
+  const updates: Record<string, unknown> = {
+    status: "fulfilled",
+    paid_at: new Date().toISOString(),
+    stripe_payment_intent_id: session.payment_intent ?? null,
+  };
+  if (totalSek != null) updates.total_paid_sek = totalSek;
+  await supabase.from("orders").update(updates).eq("id", orderId);
+
+  await supabase
+    .from("quotes")
+    .update({
+      status: "accepted",
+      accepted_at: new Date().toISOString(),
+      order_id: orderId,
+    })
+    .eq("id", quoteId);
+
+  await ensureUserForGuestOrder(orderId);
   await sendOrderConfirmationEmail(orderId);
 }
 
