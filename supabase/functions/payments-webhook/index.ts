@@ -130,24 +130,21 @@ async function handleCheckoutCompleted(session: any, env: StripeEnv) {
 
   await getSupabase().from("orders").update(updates).eq("id", orderId);
 
-  // Decrement ticket availability
+  // Atomically decrement ticket availability
   const { data: items } = await getSupabase()
     .from("order_items")
-    .select("category_id, qty")
+    .select("id, category_id, qty")
     .eq("order_id", orderId);
   for (const it of items ?? []) {
-    const { data: cat } = await getSupabase()
-      .from("ticket_categories")
-      .select("qty_available")
-      .eq("id", (it as any).category_id)
-      .maybeSingle();
-    if (cat) {
-      const next = Math.max(0, Number((cat as any).qty_available) - Number((it as any).qty));
-      await getSupabase()
-        .from("ticket_categories")
-        .update({ qty_available: next })
-        .eq("id", (it as any).category_id);
-    }
+    await getSupabase().rpc("decrement_ticket_qty", {
+      p_category_id: (it as any).category_id,
+      p_qty: Number((it as any).qty),
+    });
+    // Create empty ticket_deliveries placeholder so admin can upload files
+    await getSupabase().from("ticket_deliveries").insert({
+      order_item_id: (it as any).id,
+      delivery_method: "email",
+    });
   }
 
   await sendOrderConfirmationEmail(orderId);
