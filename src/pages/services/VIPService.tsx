@@ -219,25 +219,15 @@ export default function VIPService() {
  </div>
  </section>
 
- {/* CTA */}
- <section className="bg-navy py-24">
- <div className="container mx-auto px-4 text-center">
- <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Privat konsultation</p>
- <h2 className="font-display text-3xl md:text-5xl text-white mb-6">
- Berätta Om Din Resa
- </h2>
- <p className="text-white/60 max-w-md mx-auto mb-10 leading-relaxed">
- Kontakta oss för en personlig konsultation. Vi lyssnar, vi planerar — och sedan levererar vi en resa du aldrig glömmer.
- </p>
- <Link to="/contact">
- <Button
- size="lg"
- className="rounded-full bg-primary hover:bg-primary/90 px-12 tracking-wider text-sm"
- >
- Kom i kontakt
- <ArrowRight className="ml-2 h-4 w-4" />
- </Button>
- </Link>
+ {/* Inquiry form */}
+ <section id="forfragan" className="bg-cream py-16 md:py-24">
+ <div className="container mx-auto px-4 max-w-3xl">
+ <InquiryForm
+ type="vip"
+ eyebrow="Privat konsultation"
+ heading="Berätta om din resa"
+ intro="Vi lyssnar, vi planerar — och sedan levererar vi. En personlig rådgivare återkommer för en privat konsultation."
+ />
  </div>
  </section>
 
