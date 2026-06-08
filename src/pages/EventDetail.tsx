@@ -44,6 +44,8 @@ export default function EventDetail() {
   const { user } = useAuth();
   const [event, setEvent] = useState<EventRow | null>(null);
   const [categories, setCategories] = useState<CategoryRow[]>([]);
+  const [livePrices, setLivePrices] = useState<Record<string, number>>({});
+  const [pricesLoading, setPricesLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const [selectedCatId, setSelectedCatId] = useState<string | null>(null);
   const [qty, setQty] = useState(2);
@@ -64,8 +66,29 @@ export default function EventDetail() {
       setCategories((cats as CategoryRow[]) ?? []);
       if (cats && cats.length) setSelectedCatId((cats[0] as CategoryRow).id);
       setLoading(false);
+
+      // Fetch live prices from Stripe (with markup applied)
+      if (cats && cats.length) {
+        try {
+          const { data: pr } = await supabase.functions.invoke("get-ticket-prices", {
+            body: { event_id: id, environment: getStripeEnvironment() },
+          });
+          const map: Record<string, number> = {};
+          for (const p of (pr?.prices ?? [])) map[p.category_id] = p.final_sek;
+          setLivePrices(map);
+        } catch (e) {
+          console.error("price fetch failed", e);
+        } finally {
+          setPricesLoading(false);
+        }
+      } else {
+        setPricesLoading(false);
+      }
     })();
   }, [id]);
+
+  const priceFor = (c: CategoryRow) => livePrices[c.id] ?? Number(c.unit_price_sek);
+
 
   const selectedCat = useMemo(
     () => categories.find((c) => c.id === selectedCatId) ?? null,
