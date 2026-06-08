@@ -479,7 +479,7 @@ const Home = () => {
           </div>
 
           <Carousel opts={{ align: "start" }}>
-            <CarouselContent className="-ml-6">
+            <CarouselContent className="-ml-4">
               {services.map((service) => (
                 <CarouselItem key={service.title} className="pl-4 basis-[70%] sm:basis-1/2 lg:basis-1/4">
                   <Link to={service.href} className="group block h-full">
