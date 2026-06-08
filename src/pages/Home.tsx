@@ -240,7 +240,7 @@ const Home = () => {
 
       {/* Search bar — full width, above hero (Intrepid-style with date range) */}
       <section className="bg-background">
-        <div className="container mx-auto px-4 pt-6 md:pt-8 pb-4">
+        <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10 pt-6 md:pt-8 pb-4">
           <form
             onSubmit={handleHeroSearch}
             className="flex flex-col md:flex-row items-stretch gap-2 md:gap-0 bg-card border border-border md:rounded-full rounded-2xl shadow-sm overflow-hidden p-2 md:pl-6 md:pr-2"
@@ -296,7 +296,7 @@ const Home = () => {
 
       {/* Hero carousel — contained rounded card, Intrepid-style */}
       <section className="relative bg-background pb-12 md:pb-16">
-        <div className="container mx-auto px-4">
+        <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
           <div className="relative rounded-2xl md:rounded-3xl overflow-hidden">
             <Carousel
               opts={{ loop: true }}
@@ -362,7 +362,7 @@ const Home = () => {
 
       {/* Stats highlights — Intrepid-style, 3 columns with vertical dividers */}
       <section className="bg-background pt-10 md:pt-12 pb-8 md:pb-10">
-        <div className="container mx-auto px-4 max-w-5xl">
+        <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
           <h2 className="text-center font-sans font-semibold text-xl md:text-2xl leading-tight text-foreground mb-8">
             Personlig reseservice — för riktiga upplevelser, världen över
           </h2>
@@ -391,7 +391,7 @@ const Home = () => {
 
       {/* Konkreta reseerbjudanden — Intrepid-style cards */}
       <section className="pt-4 pb-8 md:pb-10 bg-background">
-        <div className="container mx-auto px-4">
+        <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
             <div className="flex flex-wrap items-end gap-x-8 gap-y-3">
               {offerTabs.map((tab) => {
@@ -472,7 +472,7 @@ const Home = () => {
 
       {/* Längre erbjudanden — service cards carousel */}
       <section className="pt-4 pb-12 md:pb-16 bg-background">
-        <div className="container mx-auto px-4">
+        <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
           <div className="flex items-center justify-between mb-8 gap-6">
             <h2 className="font-sans font-semibold text-xl md:text-2xl text-foreground relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-16 after:h-[2px] after:bg-primary">
               Upplevelser som formar minnen
@@ -520,7 +520,7 @@ const Home = () => {
 
       {/* Om oss */}
       <section className="py-16 md:py-20 bg-cream">
-        <div className="container mx-auto px-4">
+        <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
           <div className="p-0 md:p-4">
 
             <div className="grid md:grid-cols-[280px_1fr] lg:grid-cols-[360px_1fr] gap-6 md:gap-10 items-center">
@@ -568,7 +568,7 @@ const Home = () => {
 
       {/* Referenser — testimonials carousel */}
       <section className="kaisen-section bg-background">
-        <div className="container mx-auto px-4">
+        <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
           <div className="text-center mb-14">
             <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Referenser</p>
             <h2 className="font-display text-4xl md:text-5xl text-foreground">
@@ -606,7 +606,7 @@ const Home = () => {
 
       {/* Kontakta oss CTA */}
       <section className="py-16 md:py-20 bg-cream border-t border-border/60">
-        <div className="container mx-auto px-4">
+        <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
           <div className="bg-background rounded-2xl p-8 md:p-12 grid md:grid-cols-[1fr_auto] gap-8 items-center shadow-sm border border-border/60">
 
             <div className="max-w-xl">
