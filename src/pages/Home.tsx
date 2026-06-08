@@ -607,7 +607,7 @@ const Home = () => {
               </p>
             </div>
             <Link to="/contact" className="relative md:justify-self-end">
-              <Button size="lg" className="rounded-full bg-gold hover:bg-gold/90 text-navy font-semibold px-8 text-sm shadow-lg">
+              <Button size="lg" className="rounded-full bg-white hover:bg-white/90 text-navy font-semibold px-8 text-sm shadow-lg">
                 Börja planera nu
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
