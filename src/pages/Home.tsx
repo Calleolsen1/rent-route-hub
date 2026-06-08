@@ -515,7 +515,7 @@ const Home = () => {
       </section>
 
       {/* Om oss */}
-      <section className="py-20 md:py-28 bg-background">
+      <section className="py-10 md:py-14 bg-background">
         <div className="w-full max-w-[1400px] mx-auto px-6 md:px-10">
           <h2 className="font-sans font-semibold text-3xl md:text-5xl text-foreground text-center mb-16 md:mb-20">
             Vad gör oss annorlunda
