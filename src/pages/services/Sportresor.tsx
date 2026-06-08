@@ -9,6 +9,7 @@ import fotbollImage from "@/assets/sport-fotboll.jpg";
 import ishockeyImage from "@/assets/sport-ishockey.jpg";
 import tennisImage from "@/assets/sport-tennis.jpg";
 import golfImage from "@/assets/sport-golf.jpg";
+import UpcomingEventsList from "@/components/UpcomingEventsList";
 
 const sports = [
  {
@@ -109,9 +110,16 @@ export default function Sportresor() {
  </div>
  </section>
 
- {/* Sport Sections */}
- <section className="py-12 md:py-16 bg-background">
- <div className="container mx-auto px-4 space-y-24">
+  {/* Live tickets */}
+  <section className="py-14 bg-background">
+  <div className="container mx-auto px-4 max-w-6xl">
+  <UpcomingEventsList limit={6} eyebrow="Köp biljett direkt" title="Aktuella biljetter" />
+  </div>
+  </section>
+
+  {/* Sport Sections */}
+  <section className="py-12 md:py-16 bg-cream">
+  <div className="container mx-auto px-4 space-y-24">
  {sports.map((sport, index) => (
  <div
  key={sport.id}

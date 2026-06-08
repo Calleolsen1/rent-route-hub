@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import fotbollImage from "@/assets/sport-fotboll.jpg";
 import { TEAMS, type TeamInfo } from "@/data/sports";
+import UpcomingEventsList from "@/components/UpcomingEventsList";
 
 export default function TeamPage() {
   const { team } = useParams<{ team: string }>();
@@ -80,11 +81,23 @@ export default function TeamPage() {
         </div>
       </section>
 
-      {/* Fixtures */}
-      <section className="py-12 md:py-16">
+      {/* Live tickets */}
+      <section className="py-12 md:py-16 bg-background">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <UpcomingEventsList
+            team={info.name}
+            limit={6}
+            eyebrow="Köp biljett direkt"
+            title={`Biljetter till ${info.name}`}
+          />
+        </div>
+      </section>
+
+      {/* Sample fixtures */}
+      <section className="py-12 md:py-16 bg-cream">
         <div className="container mx-auto px-4 max-w-4xl">
-          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans text-center">Kommande matcher</p>
-          <h2 className="font-display text-3xl md:text-4xl text-center mb-12">Resor till {info.name}s matcher</h2>
+          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans text-center">Exempel på matcher vi paketerar</p>
+          <h2 className="font-display text-3xl md:text-4xl text-center mb-12">Fler matcher att uppleva</h2>
           <div className="space-y-3">
             {info.fixtures.map((f, i) => (
               <div key={i} className="flex items-center justify-between bg-card border border-border rounded-lg p-5 hover:shadow-md transition-shadow">
@@ -96,7 +109,7 @@ export default function TeamPage() {
                   <p className="text-sm font-medium">{f.date}</p>
                   <Link to="/contact">
                     <Button size="sm" variant="outline" className="rounded-full mt-2 text-xs">
-                      Boka <ArrowRight className="ml-1 h-3 w-3" />
+                      Förfrågan <ArrowRight className="ml-1 h-3 w-3" />
                     </Button>
                   </Link>
                 </div>

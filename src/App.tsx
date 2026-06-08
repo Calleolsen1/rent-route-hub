@@ -40,6 +40,9 @@ import VIPService from "./pages/services/VIPService";
 import Traningslager from "./pages/services/Traningslager";
 import TeamPage from "./pages/services/TeamPage";
 import F1RacePage from "./pages/services/F1RacePage";
+import EventDetail from "./pages/EventDetail";
+import Checkout from "./pages/Checkout";
+import OrderConfirmation from "./pages/OrderConfirmation";
 
 const queryClient = new QueryClient();
 
@@ -71,6 +74,12 @@ const App = () => (
               <Route path="/help-center" element={<HelpCenter />} />
               <Route path="/support" element={<Support />} />
               <Route path="/forgot-password" element={<><Navbar /><ForgotPassword /></>} />
+
+              {/* Ticket flow */}
+              <Route path="/sport/event/:id" element={<EventDetail />} />
+              <Route path="/checkout/:orderId" element={<Checkout />} />
+              <Route path="/order/:orderId" element={<OrderConfirmation />} />
+
 
               {/* Admin portal */}
               <Route path="/admin" element={<AdminLayout />}>

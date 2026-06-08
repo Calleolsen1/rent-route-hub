@@ -14,6 +14,75 @@ export type Database = {
   }
   public: {
     Tables: {
+      events: {
+        Row: {
+          away_team: string | null
+          city: string | null
+          country: string | null
+          cover_image_url: string | null
+          created_at: string
+          description: string | null
+          ends_at: string | null
+          external_event_id: string | null
+          external_tournament_id: string | null
+          home_team: string | null
+          id: string
+          last_synced_at: string | null
+          race_name: string | null
+          source: string
+          sport: Database["public"]["Enums"]["event_sport"]
+          starts_at: string
+          status: Database["public"]["Enums"]["event_status"]
+          tournament_name: string
+          updated_at: string
+          venue_name: string | null
+        }
+        Insert: {
+          away_team?: string | null
+          city?: string | null
+          country?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          ends_at?: string | null
+          external_event_id?: string | null
+          external_tournament_id?: string | null
+          home_team?: string | null
+          id?: string
+          last_synced_at?: string | null
+          race_name?: string | null
+          source?: string
+          sport: Database["public"]["Enums"]["event_sport"]
+          starts_at: string
+          status?: Database["public"]["Enums"]["event_status"]
+          tournament_name: string
+          updated_at?: string
+          venue_name?: string | null
+        }
+        Update: {
+          away_team?: string | null
+          city?: string | null
+          country?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          ends_at?: string | null
+          external_event_id?: string | null
+          external_tournament_id?: string | null
+          home_team?: string | null
+          id?: string
+          last_synced_at?: string | null
+          race_name?: string | null
+          source?: string
+          sport?: Database["public"]["Enums"]["event_sport"]
+          starts_at?: string
+          status?: Database["public"]["Enums"]["event_status"]
+          tournament_name?: string
+          updated_at?: string
+          venue_name?: string | null
+        }
+        Relationships: []
+      }
       faqs: {
         Row: {
           answer: string
@@ -200,6 +269,115 @@ export type Database = {
         }
         Relationships: []
       }
+      order_items: {
+        Row: {
+          category_id: string
+          created_at: string
+          event_id: string
+          external_ticket_ids: Json | null
+          id: string
+          order_id: string
+          qty: number
+          sub_category: string | null
+          unit_price_sek: number
+          updated_at: string
+        }
+        Insert: {
+          category_id: string
+          created_at?: string
+          event_id: string
+          external_ticket_ids?: Json | null
+          id?: string
+          order_id: string
+          qty: number
+          sub_category?: string | null
+          unit_price_sek: number
+          updated_at?: string
+        }
+        Update: {
+          category_id?: string
+          created_at?: string
+          event_id?: string
+          external_ticket_ids?: Json | null
+          id?: string
+          order_id?: string
+          qty?: number
+          sub_category?: string | null
+          unit_price_sek?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "ticket_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          created_at: string
+          currency: string
+          customer_email: string
+          customer_name: string | null
+          customer_phone: string | null
+          id: string
+          invoice_number: string | null
+          notes: string | null
+          status: Database["public"]["Enums"]["order_status"]
+          stripe_payment_intent_id: string | null
+          total_sek: number
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          customer_email: string
+          customer_name?: string | null
+          customer_phone?: string | null
+          id?: string
+          invoice_number?: string | null
+          notes?: string | null
+          status?: Database["public"]["Enums"]["order_status"]
+          stripe_payment_intent_id?: string | null
+          total_sek?: number
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          customer_email?: string
+          customer_name?: string | null
+          customer_phone?: string | null
+          id?: string
+          invoice_number?: string | null
+          notes?: string | null
+          status?: Database["public"]["Enums"]["order_status"]
+          stripe_payment_intent_id?: string | null
+          total_sek?: number
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       platform_settings: {
         Row: {
           created_at: string
@@ -295,6 +473,103 @@ export type Database = {
           verified?: boolean | null
         }
         Relationships: []
+      }
+      ticket_categories: {
+        Row: {
+          created_at: string
+          currency: string
+          description: string | null
+          event_id: string
+          external_category_id: string | null
+          external_sub_category: string | null
+          id: string
+          last_synced_at: string | null
+          name: string
+          party_size_together: number
+          qty_available: number
+          unit_price_sek: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          description?: string | null
+          event_id: string
+          external_category_id?: string | null
+          external_sub_category?: string | null
+          id?: string
+          last_synced_at?: string | null
+          name: string
+          party_size_together?: number
+          qty_available?: number
+          unit_price_sek: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          description?: string | null
+          event_id?: string
+          external_category_id?: string | null
+          external_sub_category?: string | null
+          id?: string
+          last_synced_at?: string | null
+          name?: string
+          party_size_together?: number
+          qty_available?: number
+          unit_price_sek?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ticket_categories_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ticket_deliveries: {
+        Row: {
+          created_at: string
+          delivered_at: string | null
+          delivery_method: string
+          file_url: string | null
+          id: string
+          notes: string | null
+          order_item_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          delivered_at?: string | null
+          delivery_method?: string
+          file_url?: string | null
+          id?: string
+          notes?: string | null
+          order_item_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          delivered_at?: string | null
+          delivery_method?: string
+          file_url?: string | null
+          id?: string
+          notes?: string | null
+          order_item_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ticket_deliveries_order_item_id_fkey"
+            columns: ["order_item_id"]
+            isOneToOne: false
+            referencedRelation: "order_items"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -581,9 +856,18 @@ export type Database = {
         | "on_hold"
         | "resolved_approved"
         | "resolved_declined"
+      event_sport: "soccer" | "formula1"
+      event_status: "upcoming" | "sold_out" | "completed" | "cancelled"
       inquiry_status: "new" | "in_progress" | "quoted" | "won" | "lost"
       inquiry_type: "group" | "conference" | "training_camp" | "vip" | "contact"
       listing_status: "draft" | "pending" | "approved" | "rejected" | "blocked"
+      order_status:
+        | "pending"
+        | "paid"
+        | "fulfilled"
+        | "failed"
+        | "refunded"
+        | "cancelled"
       payout_status_enum: "pending" | "completed" | "failed" | "cancelled"
       property_type: "apartment" | "villa" | "room" | "house" | "condo"
       review_status: "pending" | "approved" | "rejected" | "blocked"
@@ -747,9 +1031,19 @@ export const Constants = {
         "resolved_approved",
         "resolved_declined",
       ],
+      event_sport: ["soccer", "formula1"],
+      event_status: ["upcoming", "sold_out", "completed", "cancelled"],
       inquiry_status: ["new", "in_progress", "quoted", "won", "lost"],
       inquiry_type: ["group", "conference", "training_camp", "vip", "contact"],
       listing_status: ["draft", "pending", "approved", "rejected", "blocked"],
+      order_status: [
+        "pending",
+        "paid",
+        "fulfilled",
+        "failed",
+        "refunded",
+        "cancelled",
+      ],
       payout_status_enum: ["pending", "completed", "failed", "cancelled"],
       property_type: ["apartment", "villa", "room", "house", "condo"],
       review_status: ["pending", "approved", "rejected", "blocked"],
