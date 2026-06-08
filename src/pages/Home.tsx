@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, Users, Trophy, Star, Shield, Globe, Calendar, MapPin, Flag, Search } from "lucide-react";
@@ -194,7 +194,15 @@ const whyUs = [
 
 const Home = () => {
   const [activeHero, setActiveHero] = useState(0);
+  const [heroQuery, setHeroQuery] = useState("");
   const [offerTab, setOfferTab] = useState<"alla" | "nya" | "populara">("alla");
+  const navigate = useNavigate();
+
+  const handleHeroSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = heroQuery.trim();
+    navigate(q ? `/search?q=${encodeURIComponent(q)}` : "/search");
+  };
 
   const offerTabs = [
     { id: "alla" as const, label: "Aktuella resor" },
@@ -216,6 +224,35 @@ const Home = () => {
   return (
     <div className="min-h-screen">
       <Navbar />
+
+      {/* Search bar — full width, above hero (Intrepid-style) */}
+      <section className="bg-background">
+        <div className="w-full max-w-4xl mx-auto px-6 md:px-10 pt-6 md:pt-8 pb-4">
+          <form
+            onSubmit={handleHeroSearch}
+            className="flex items-stretch bg-card border border-border rounded-full shadow-sm p-1.5 md:p-2"
+          >
+            <div className="relative flex items-center flex-1 pl-4 md:pl-5">
+              <MapPin className="h-5 w-5 text-muted-foreground flex-shrink-0" strokeWidth={2} />
+              <Input
+                type="search"
+                value={heroQuery}
+                onChange={(e) => setHeroQuery(e.target.value)}
+                placeholder="Sök destination, lag, race eller resetyp..."
+                className="h-11 md:h-12 border-0 bg-transparent pl-3 text-base focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none placeholder:text-muted-foreground"
+              />
+            </div>
+            <Button
+              type="submit"
+              size="lg"
+              className="h-11 md:h-12 rounded-full bg-primary hover:bg-primary/90 px-7 text-sm font-medium flex-shrink-0"
+            >
+              Sök
+              <Search className="ml-2 h-4 w-4" />
+            </Button>
+          </form>
+        </div>
+      </section>
 
 
       {/* Hero carousel — contained rounded card, Intrepid-style */}
