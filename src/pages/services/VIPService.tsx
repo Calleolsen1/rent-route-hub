@@ -75,7 +75,7 @@ export default function VIPService() {
  <Navbar />
 
  {/* Hero */}
- <section className="relative h-[55vh] min-h-[400px] flex items-end">
+ <section className="relative h-[42vh] min-h-[320px] flex items-end">
  <div className="absolute inset-0">
  <img src={vipImage} alt="VIP Service" className="w-full h-full object-cover" />
  <div className="absolute inset-0 bg-navy/65" />

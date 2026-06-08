@@ -72,7 +72,7 @@ export default function Traningslager() {
  <Navbar />
 
  {/* Hero */}
- <section className="relative h-[60vh] min-h-[420px] flex items-end">
+ <section className="relative h-[45vh] min-h-[340px] flex items-end">
  <div className="absolute inset-0">
  <img src={heroImage} alt="Träningsläger" className="w-full h-full object-cover" width={1920} height={1024} />
  <div className="absolute inset-0 bg-navy/65" />
