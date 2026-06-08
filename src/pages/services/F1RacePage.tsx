@@ -77,7 +77,18 @@ export default function F1RacePage() {
         </div>
       </section>
 
-      <section className="py-12 md:py-16">
+      <section className="py-12 md:py-16 bg-background">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <UpcomingEventsList
+            sport="formula1"
+            limit={3}
+            eyebrow="Köp biljett direkt"
+            title="Aktuella F1-biljetter"
+          />
+        </div>
+      </section>
+
+      <section className="py-12 md:py-16 bg-cream">
         <div className="container mx-auto px-4 max-w-4xl">
           <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans text-center">Vad ingår</p>
           <h2 className="font-display text-3xl md:text-4xl text-center mb-12">Kompletta F1-paket</h2>
