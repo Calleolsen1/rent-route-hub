@@ -103,7 +103,7 @@ const Footer = () => {
         <div className="border-t border-white/20" />
 
         {/* Bottom row */}
-        <div className="pt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-[11px] text-white/70">
+        <div className="pt-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-sm text-white/70">
 
           <p>© {new Date().getFullYear()} Kaisen Travel Group. Alla rättigheter förbehållna.</p>
           <div className="flex flex-wrap gap-x-5 gap-y-2">
