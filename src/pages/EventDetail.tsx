@@ -81,29 +81,14 @@ export default function EventDetail() {
     }
     setBusy(true);
     try {
-      const { data: order, error: orderErr } = await supabase
-        .from("orders")
-        .insert({
-          user_id: user.id,
-          status: "pending",
-          total_sek: total,
-          currency: "SEK",
-          customer_email: user.email ?? "",
-        })
-        .select("id")
-        .single();
-      if (orderErr || !order) throw orderErr ?? new Error("Kunde inte skapa order");
-
-      const { error: itemErr } = await supabase.from("order_items").insert({
-        order_id: order.id,
-        event_id: event.id,
-        category_id: selectedCat.id,
-        qty,
-        unit_price_sek: selectedCat.unit_price_sek,
+      const { data: orderId, error } = await supabase.rpc("create_order_with_items", {
+        p_event_id: event.id,
+        p_category_id: selectedCat.id,
+        p_qty: qty,
+        p_customer_email: user.email ?? "",
       });
-      if (itemErr) throw itemErr;
-
-      navigate(`/checkout/${order.id}`);
+      if (error || !orderId) throw error ?? new Error("Kunde inte skapa order");
+      navigate(`/checkout/${orderId}`);
     } catch (e: any) {
       console.error(e);
       toast.error(e.message ?? "Något gick fel");

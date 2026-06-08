@@ -47,6 +47,7 @@ export default function UpcomingEventsList({
         .select(
           "id, sport, tournament_name, home_team, away_team, race_name, venue_name, city, country, starts_at, cover_image_url, status",
         )
+        .eq("status", "upcoming")
         .gte("starts_at", new Date().toISOString())
         .order("starts_at", { ascending: true })
         .limit(limit);
