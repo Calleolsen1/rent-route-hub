@@ -173,9 +173,10 @@ const BecomeHost = () => {
       </section>
 
       {/* How It Works Section */}
-      <section className="py-16 bg-background">
+      <section className="py-12 md:py-16 bg-cream">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
+          <h2 className="font-sans font-semibold text-2xl md:text-4xl text-center mb-12">How It Works</h2>
+
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <div className="flex flex-col items-center text-center relative">
