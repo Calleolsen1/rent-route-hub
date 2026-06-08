@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Check, MapPin } from "lucide-react";
+import { ArrowRight, Check, MapPin, MessageSquare } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import InquiryForm from "@/components/InquiryForm";
+import FloatingInquiryButton from "@/components/FloatingInquiryButton";
 import heroImage from "@/assets/camps-hero.jpg";
 import laMangaImg from "@/assets/camp-lamanga.jpg";
 import algarveImg from "@/assets/camp-algarve.jpg";
@@ -94,6 +95,14 @@ export default function Traningslager() {
  <p className="text-white/70 mt-4 text-lg font-light max-w-xl">
  Träningsläger för fotboll, simning och friidrott — för föreningar, lag och grupper som vill ta träningen till nästa nivå.
  </p>
+ <div className="mt-6 flex flex-wrap gap-3">
+ <a href="#forfragan">
+ <Button className="rounded-full bg-primary hover:bg-primary/90 px-7 py-6 text-sm tracking-wider">
+ <MessageSquare className="mr-2 h-4 w-4" />
+ Skicka förfrågan
+ </Button>
+ </a>
+ </div>
  </div>
  </section>
 
@@ -140,6 +149,15 @@ export default function Traningslager() {
  </div>
  </article>
  ))}
+ </div>
+ <div className="mt-12 text-center">
+ <a href="#forfragan">
+ <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 py-6 text-sm tracking-wider">
+ <MessageSquare className="mr-2 h-4 w-4" />
+ Få offert för ert träningsläger
+ <ArrowRight className="ml-2 h-4 w-4" />
+ </Button>
+ </a>
  </div>
  </div>
  </section>
@@ -223,6 +241,7 @@ export default function Traningslager() {
  </div>
  </section>
 
+ <FloatingInquiryButton />
  <Footer />
  </div>
  );
