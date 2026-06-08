@@ -13,41 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-const footballLeagues = [
-  {
-    league: "Bundesliga",
-    teams: ["Bayern München", "Borussia Dortmund"],
-  },
-  {
-    league: "La Liga",
-    teams: ["Atlético Madrid", "FC Barcelona", "Real Madrid"],
-  },
-  {
-    league: "Premier League",
-    teams: ["Arsenal", "Chelsea", "Liverpool", "Manchester City", "Manchester United", "Tottenham Hotspur"],
-  },
-  {
-    league: "Serie A",
-    teams: ["Milan", "Inter", "Juventus", "Roma"],
-  },
-];
-
-const f1Races = [
-  { label: "Ungern", date: "26 juli" },
-  { label: "Italien – Monza", date: "6 september" },
-  { label: "Spanien – Madrid", date: "13 september" },
-  { label: "USA – Austin", date: "25 oktober" },
-  { label: "Las Vegas", date: "21 november" },
-  { label: "Qatar", date: "29 november" },
-  { label: "Abu Dhabi", date: "6 december" },
-  { label: "Miami", date: "9 maj 2027" },
-  { label: "Monaco", date: "6 juni 2027" },
-  { label: "Algarve", date: "13 juni 2027" },
-];
-
-const slug = (s: string) =>
-  s.toLowerCase().replace(/å|ä/g, "a").replace(/ö/g, "o").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+import { FOOTBALL_LEAGUES as footballLeagues, F1_RACES_NAV as f1Races, slugify as slug } from "@/data/sports";
 
 const Navbar = () => {
   const { user, signOut } = useAuth();
