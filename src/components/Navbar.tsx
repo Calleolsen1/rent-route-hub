@@ -87,7 +87,7 @@ const Navbar = () => {
                     {footballLeagues.map((lg) => (
                       <div key={lg.league}>
                         <Link
-                          to={`/services/sportresor?league=${slug(lg.league)}`}
+                          to={`/services/sportresor#${slug(lg.league)}`}
                           onClick={() => setOpenMenu(null)}
                           className="block text-[11px] tracking-[0.2em] uppercase text-primary font-semibold mb-3 hover:underline"
                         >
@@ -97,7 +97,7 @@ const Navbar = () => {
                           {lg.teams.map((team) => (
                             <li key={team}>
                               <Link
-                                to={`/services/sportresor?league=${slug(lg.league)}&team=${slug(team)}`}
+                                to={`/services/sportresor/fotboll/${slug(team)}`}
                                 onClick={() => setOpenMenu(null)}
                                 className="text-sm text-foreground/80 hover:text-primary transition-colors"
                               >
@@ -123,7 +123,7 @@ const Navbar = () => {
                     {f1Races.map((r) => (
                       <Link
                         key={r.label}
-                        to={`/services/sportresor?f1=${slug(r.label)}`}
+                        to={`/services/sportresor/f1/${slug(r.label)}`}
                         onClick={() => setOpenMenu(null)}
                         className="flex items-center justify-between gap-6 px-5 py-2.5 hover:bg-accent transition-colors group"
                       >
@@ -247,7 +247,7 @@ const Navbar = () => {
                     {lg.teams.map((team) => (
                       <Link
                         key={team}
-                        to={`/services/sportresor?league=${slug(lg.league)}&team=${slug(team)}`}
+                        to={`/services/sportresor/fotboll/${slug(team)}`}
                         className="block py-1.5 px-2 text-sm text-foreground/80"
                         onClick={() => setMobileOpen(false)}
                       >
@@ -272,7 +272,7 @@ const Navbar = () => {
                 {f1Races.map((r) => (
                   <Link
                     key={r.label}
-                    to={`/services/sportresor?f1=${slug(r.label)}`}
+                    to={`/services/sportresor/f1/${slug(r.label)}`}
                     className="flex items-center justify-between py-2 px-2 text-sm"
                     onClick={() => setMobileOpen(false)}
                   >
