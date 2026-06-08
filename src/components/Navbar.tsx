@@ -89,7 +89,7 @@ const Navbar = () => {
                     {f1Races.map((r) => (
                       <Link
                         key={r.label}
-                        to={`/services/sportresor/f1/${slug(r.label)}`}
+                        to={`/services/sportresor/f1/${r.slug}`}
                         onClick={() => setOpenMenu(null)}
                         className="flex items-center justify-between gap-6 px-5 py-2.5 hover:bg-accent transition-colors group"
                       >
@@ -233,7 +233,7 @@ const Navbar = () => {
                 {f1Races.map((r) => (
                   <Link
                     key={r.label}
-                    to={`/services/sportresor/f1/${slug(r.label)}`}
+                    to={`/services/sportresor/f1/${r.slug}`}
                     className="flex items-center justify-between py-2 px-2 text-sm"
                     onClick={() => setMobileOpen(false)}
                   >
