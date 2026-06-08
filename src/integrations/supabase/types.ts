@@ -487,6 +487,7 @@ export type Database = {
           name: string
           party_size_together: number
           qty_available: number
+          stripe_price_id: string | null
           unit_price_sek: number
           updated_at: string
         }
@@ -502,6 +503,7 @@ export type Database = {
           name: string
           party_size_together?: number
           qty_available?: number
+          stripe_price_id?: string | null
           unit_price_sek: number
           updated_at?: string
         }
@@ -517,6 +519,7 @@ export type Database = {
           name?: string
           party_size_together?: number
           qty_available?: number
+          stripe_price_id?: string | null
           unit_price_sek?: number
           updated_at?: string
         }
