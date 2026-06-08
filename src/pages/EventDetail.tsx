@@ -253,7 +253,7 @@ export default function EventDetail() {
                         </div>
                         <div className="text-right">
                           <p className="font-display text-xl">
-                            {formatSek(c.unit_price_sek)}
+                            {pricesLoading ? "…" : formatSek(priceFor(c))}
                           </p>
                           <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
                             per biljett
@@ -282,7 +282,7 @@ export default function EventDetail() {
                 <>
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-sm">{selectedCat.name}</span>
-                    <span className="text-sm">{formatSek(selectedCat.unit_price_sek)}</span>
+                    <span className="text-sm">{pricesLoading ? "…" : formatSek(priceFor(selectedCat))}</span>
                   </div>
 
                   <div className="flex items-center justify-between mb-6">
