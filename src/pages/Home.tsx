@@ -220,22 +220,7 @@ const Home = () => {
 
 
   return (
-    <div
-      className="min-h-screen"
-      style={{
-        // Roadtrips-inspired blue & white palette (homepage only)
-        ['--primary' as any]: '201 100% 21%', // #00456B
-        ['--primary-foreground' as any]: '0 0% 100%',
-        ['--ring' as any]: '201 100% 21%',
-        ['--navy' as any]: '201 100% 21%',
-        ['--navy-foreground' as any]: '0 0% 100%',
-        ['--gold' as any]: '210 39% 45%', // #4673A0
-        ['--gold-light' as any]: '210 39% 65%',
-        ['--gold-pale' as any]: '210 50% 95%',
-        ['--accent' as any]: '210 50% 95%',
-        ['--accent-foreground' as any]: '201 100% 21%',
-      }}
-    >
+    <div className="min-h-screen">
       <Navbar />
 
       {/* Search bar — full width, above hero (Intrepid-style with date range) */}

@@ -21,9 +21,9 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222 35% 15%;
 
-    /* Warm gold as primary */
-    --primary: 38 65% 38%;
-    --primary-foreground: 38 100% 97%;
+    /* Deep navy as primary (Roadtrips-inspired) */
+    --primary: 201 100% 21%; /* #00456B */
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 210 20% 93%;
     --secondary-foreground: 222 35% 15%;
@@ -31,15 +31,15 @@
     --muted: 210 15% 93%;
     --muted-foreground: 215 15% 52%;
 
-    --accent: 38 40% 90%;
-    --accent-foreground: 38 65% 25%;
+    --accent: 210 50% 95%;
+    --accent-foreground: 201 100% 21%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 215 20% 87%;
     --input: 215 20% 87%;
-    --ring: 38 65% 38%;
+    --ring: 201 100% 21%;
     --radius: 0.5rem;
 
     --success: 142 71% 45%;
@@ -49,13 +49,13 @@
     --info: 217 91% 60%;
 
     /* Deep navy for hero/dark sections */
-    --navy: 222 50% 12%;
-    --navy-foreground: 38 80% 85%;
+    --navy: 201 100% 21%;
+    --navy-foreground: 0 0% 100%;
 
-    /* Warm gold */
-    --gold: 38 65% 38%;
-    --gold-light: 38 70% 68%;
-    --gold-pale: 38 60% 92%;
+    /* "Gold" tokens now mapped to muted blue accent for brand consistency */
+    --gold: 210 39% 45%; /* #4673A0 */
+    --gold-light: 210 39% 65%;
+    --gold-pale: 210 50% 95%;
 
     /* Light gray (formerly cream) */
     --cream: 220 14% 94%;
