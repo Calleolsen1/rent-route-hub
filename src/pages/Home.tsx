@@ -390,7 +390,7 @@ const Home = () => {
 
 
       {/* Konkreta reseerbjudanden — Intrepid-style cards */}
-      <section className="pt-4 pb-16 md:pb-20 bg-background">
+      <section className="pt-4 pb-8 md:pb-10 bg-background">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
             <div className="flex flex-wrap items-end gap-x-8 gap-y-3">
@@ -471,7 +471,7 @@ const Home = () => {
       </section>
 
       {/* Längre erbjudanden — service cards carousel */}
-      <section className="py-16 md:py-24 bg-background">
+      <section className="pt-4 pb-12 md:pb-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-8 gap-6">
             <h2 className="font-sans font-semibold text-xl md:text-2xl text-foreground relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-16 after:h-[2px] after:bg-primary">
