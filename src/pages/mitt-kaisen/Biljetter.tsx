@@ -2,8 +2,28 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Ticket, ArrowRight } from "lucide-react";
+import { Ticket, ArrowRight, Download } from "lucide-react";
 import { formatEventDateTime, formatSek } from "@/lib/formatSek";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+
+type OrderItem = {
+  id: string;
+  qty: number;
+  unit_price_sek: number;
+  events: {
+    sport: string;
+    tournament_name: string;
+    home_team: string | null;
+    away_team: string | null;
+    race_name: string | null;
+    venue_name: string | null;
+    city: string | null;
+    starts_at: string;
+  };
+  ticket_categories: { name: string };
+  ticket_deliveries: Array<{ file_url: string | null; delivered_at: string | null }>;
+};
 
 type OrderWithItems = {
   id: string;
@@ -11,26 +31,12 @@ type OrderWithItems = {
   total_sek: number;
   created_at: string;
   invoice_number: string | null;
-  order_items: Array<{
-    id: string;
-    qty: number;
-    unit_price_sek: number;
-    events: {
-      sport: string;
-      tournament_name: string;
-      home_team: string | null;
-      away_team: string | null;
-      race_name: string | null;
-      venue_name: string | null;
-      city: string | null;
-      starts_at: string;
-    };
-    ticket_categories: { name: string };
-  }>;
+  order_items: OrderItem[];
 };
 
 const STATUS_LABELS: Record<string, string> = {
   pending: "Pågående",
+  awaiting_payment: "Väntar på betalning",
   paid: "Betald",
   fulfilled: "Levererad",
   failed: "Misslyckad",
@@ -49,7 +55,7 @@ export default function MittKaisenBiljetter() {
       const { data } = await supabase
         .from("orders")
         .select(
-          "id, status, total_sek, created_at, invoice_number, order_items(id, qty, unit_price_sek, events(sport, tournament_name, home_team, away_team, race_name, venue_name, city, starts_at), ticket_categories(name))",
+          "id, status, total_sek, created_at, invoice_number, order_items(id, qty, unit_price_sek, events(sport, tournament_name, home_team, away_team, race_name, venue_name, city, starts_at), ticket_categories(name), ticket_deliveries(file_url, delivered_at))",
         )
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
@@ -57,6 +63,18 @@ export default function MittKaisenBiljetter() {
       setLoading(false);
     })();
   }, [user]);
+
+  const handleDownloadTicket = async (filePath: string) => {
+    try {
+      const { data, error } = await supabase.storage
+        .from("ticket-files")
+        .createSignedUrl(filePath, 300);
+      if (error || !data?.signedUrl) throw error ?? new Error("Kunde inte hämta filen");
+      window.open(data.signedUrl, "_blank");
+    } catch (e: any) {
+      toast.error(e.message ?? "Något gick fel");
+    }
+  };
 
   return (
     <div className="p-6 md:p-10 max-w-4xl mx-auto">
@@ -92,10 +110,9 @@ export default function MittKaisenBiljetter() {
       ) : (
         <div className="space-y-4">
           {orders.map((o) => (
-            <Link
+            <div
               key={o.id}
-              to={`/order/${o.id}`}
-              className="block rounded-xl p-5 hover:opacity-90 transition-opacity"
+              className="block rounded-xl p-5"
               style={{ backgroundColor: "hsl(222 40% 18%)" }}
             >
               <div className="flex items-start justify-between mb-3">
@@ -114,26 +131,43 @@ export default function MittKaisenBiljetter() {
                   {STATUS_LABELS[o.status] ?? o.status}
                 </span>
               </div>
-              <div className="space-y-2 mb-3">
+              <div className="space-y-3 mb-3">
                 {o.order_items.map((it) => {
                   const headline =
                     it.events.sport === "soccer"
                       ? `${it.events.home_team} vs ${it.events.away_team}`
                       : it.events.race_name;
+                  const fileUrl = it.ticket_deliveries?.find((d) => d.file_url)?.file_url ?? null;
                   return (
-                    <div key={it.id} className="text-sm" style={{ color: "hsl(210 30% 92%)" }}>
-                      <p>{headline} — {it.ticket_categories.name} × {it.qty}</p>
-                      <p className="text-xs" style={{ color: "hsl(210 20% 60%)" }}>
-                        {formatEventDateTime(it.events.starts_at)} · {it.events.venue_name}
-                      </p>
+                    <div key={it.id} className="text-sm flex items-start justify-between gap-4" style={{ color: "hsl(210 30% 92%)" }}>
+                      <div>
+                        <p>{headline} — {it.ticket_categories.name} × {it.qty}</p>
+                        <p className="text-xs" style={{ color: "hsl(210 20% 60%)" }}>
+                          {formatEventDateTime(it.events.starts_at)} · {it.events.venue_name}
+                        </p>
+                      </div>
+                      {fileUrl && (o.status === "paid" || o.status === "fulfilled") ? (
+                        <Button size="sm" variant="outline" onClick={() => handleDownloadTicket(fileUrl)}>
+                          <Download className="h-3 w-3 mr-1" /> Ladda ner
+                        </Button>
+                      ) : o.status === "paid" || o.status === "fulfilled" ? (
+                        <span className="text-[10px] uppercase tracking-wider" style={{ color: "hsl(210 20% 60%)" }}>
+                          Skickas snart
+                        </span>
+                      ) : null}
                     </div>
                   );
                 })}
               </div>
-              <p className="text-right text-lg" style={{ color: "hsl(210 30% 92%)" }}>
-                {formatSek(o.total_sek)}
-              </p>
-            </Link>
+              <div className="flex items-center justify-between pt-3 border-t" style={{ borderColor: "hsl(222 40% 25%)" }}>
+                <Link to={`/order/${o.id}`} className="text-xs underline" style={{ color: "hsl(210 20% 70%)" }}>
+                  Visa orderdetaljer
+                </Link>
+                <p className="text-lg" style={{ color: "hsl(210 30% 92%)" }}>
+                  {formatSek(o.total_sek)}
+                </p>
+              </div>
+            </div>
           ))}
         </div>
       )}
