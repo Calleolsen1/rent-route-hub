@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { CheckCircle2, AlertCircle, Loader2, Upload } from "lucide-react";
+import { CheckCircle2, AlertCircle, Loader2, Upload, Save } from "lucide-react";
 import { formatSek, formatEventDateTime } from "@/lib/formatSek";
 import { getStripeEnvironment } from "@/lib/stripe";
 
