@@ -1,276 +1,243 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Users, Trophy, Briefcase, Heart, Mountain, Utensils, Check } from "lucide-react";
+import { ArrowRight, Users, Trophy, Briefcase, Heart, Mountain, Utensils, Check, PartyPopper, Waves, Wine, Bus } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import InquiryForm from "@/components/InquiryForm";
 import groupImage from "@/assets/kaisen-group.jpg";
-import groupAdventure from "@/assets/group-adventure.jpg";
-import groupCorporate from "@/assets/group-corporate.jpg";
 import groupSports from "@/assets/group-sports.jpg";
+import groupCorporate from "@/assets/group-corporate.jpg";
+import groupAdventure from "@/assets/group-adventure.jpg";
 
-const groupTypes = [
- {
- icon: Trophy,
- title: "Sportresor med Kompisgänget",
- desc: "Fotboll i London, F1 i Monaco, golf i Skottland eller skidor i Alperna — vi ordnar biljetter, boende och transfer för hela gruppen.",
- },
- {
- icon: Briefcase,
- title: "Företags-Getaways",
- desc: "Team building, kickoffer och incentiveresor som skapar minnen och stärker sammanhållningen. Vi skräddarsyr hela upplägget för er grupp.",
- },
- {
- icon: Heart,
- title: "Privata Sällskapsresor",
- desc: "Jubileum, polterabend, vänner som länge pratat om en gemensam resa — vi gör det enkelt att resa tillsammans.",
- },
- {
- icon: Mountain,
- title: "Äventyrsresor",
- desc: "Vandring, kayak, skidfärder eller roadtrips — för grupper som vill ha mer än poolkanten.",
- },
- {
- icon: Utensils,
- title: "Gastronomi & Kultur",
- desc: "Vinresor i Frankrike, matkurser i Italien, kulturresor i Spanien — upplevelser för grupper med gott om smak.",
- },
- {
- icon: Users,
- title: "Familjeresor i Grupp",
- desc: "Multigenerationella resor som passar alla — från barnbarn till morföräldrar. Vi hittar det som fungerar för hela sällskapet.",
- },
+const experiences = [
+  {
+    icon: Trophy,
+    title: "Sport på riktigt",
+    tagline: "Fotboll i London · F1 i Monaco · Golf i Skottland",
+    desc: "Biljetter, boende och transfer — för hela gänget. Inte en enda pappa ska behöva \u201cfixa allt\u201d.",
+  },
+  {
+    icon: PartyPopper,
+    title: "Möhippa & Svensexa",
+    tagline: "Prag · Barcelona · Amsterdam · Tallinn",
+    desc: "Hela paketet med aktiviteter, middagar och logistik. Den blivande bruden/brudgummen får minnen för livet.",
+  },
+  {
+    icon: Briefcase,
+    title: "Företags-Getaway",
+    tagline: "Kickoffer · Incentive · Team Building",
+    desc: "Resor som faktikt stärker laget. Vi skräddarsyr efter era mål och budget.",
+  },
+  {
+    icon: Mountain,
+    title: "Äventyr & Natur",
+    tagline: "Skidåkning · Vandring · Kayak · Roadtrip",
+    desc: "För grupper som vill ha mer än poolkanten. Aktiva resor som ger historier att berätta.",
+  },
+  {
+    icon: Wine,
+    title: "Gastronomi & Vin",
+    tagline: "Vintours i Frankrike · Matlagning i Italien",
+    desc: "Upplevelser för gäng som uppskattar smak. Vinprovningar, stjärnkrogar och lokala marknader.",
+  },
+  {
+    icon: Users,
+    title: "Familjeresor",
+    tagline: "Flera generationer · Res tillsammans",
+    desc: "Från barnbarn till morföräldrar. Vi hittar det som fungerar för alla åldrar.",
+  },
 ];
 
-const process = [
- { step: "01", title: "Berätta om er grupp", desc: "Storlek, intressen, budget och vad ni drömmer om. Vi lyssnar och ställer rätt frågor." },
- { step: "02", title: "Vi tar fram ett förslag", desc: "Inom 48 timmar presenterar vi ett skräddarsytt upplägg med hotell, aktiviteter och prisalternativ." },
- { step: "03", title: "Vi finjusterar", desc: "Ni väljer och justerar tills allt känns rätt. Vi tar hand om detaljerna." },
- { step: "04", title: "Ni njuter — vi sköter resten", desc: "Från ankomst till avresa hanterar vi all logistik. Ni fokuserar på varandra." },
-];
-
-const inclusions = [
- "Privat transport och flygplatstransfer",
- "Hotell med grupprabatter",
- "Lokala guider och upplevelser",
- "Gemensamma middagar och aktiviteter",
- "Biljetter till sportevent och evenemang",
- "Support dygnet runt under resan",
- "Rådgivning om reseförsäkring för grupper",
- "Digital reseguide och packlista",
+const activities = [
+  { icon: Bus, text: "Privat transport & flygplatstransfer" },
+  { icon: Waves, text: "Guidade aktiviteter & utflykter" },
+  { icon: Utensils, text: "Bokade middagar & gemensamma måltider" },
+  { icon: Trophy, text: "Biljetter till event & matcher" },
+  { icon: Heart, text: "Team building-upplägg" },
+  { icon: Check, text: "Support dygnet runt under resan" },
 ];
 
 export default function GroupTravel() {
- return (
- <div className="min-h-screen">
- <Navbar />
+  return (
+    <div className="min-h-screen">
+      <Navbar />
 
- {/* Hero */}
- <section className="relative h-[42vh] min-h-[320px] flex items-end">
- <div className="absolute inset-0">
- <img src={groupImage} alt="Gruppresor" className="w-full h-full object-cover" />
- <div className="absolute inset-0 bg-navy/65" />
- </div>
- <div className="relative container mx-auto px-4 pb-14">
- <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Gruppresor</p>
- <h1 className="font-display text-4xl md:text-6xl text-white leading-tight">
- Bättre tillsammans —<br />
- <em className="italic font-light text-white">Alltid</em>
- </h1>
- <p className="text-white/70 mt-4 text-lg font-light max-w-lg">
- Från sporthelger med kompisgänget till företagets stora getaway. Vi planerar, ni upplever.
- </p>
- </div>
- </section>
+      {/* Hero */}
+      <section className="relative h-[42vh] min-h-[320px] flex items-end">
+        <div className="absolute inset-0">
+          <img src={groupImage} alt="Gruppresor" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-navy/65" />
+        </div>
+        <div className="relative container mx-auto px-4 pb-14">
+          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Gruppresor</p>
+          <h1 className="font-display text-4xl md:text-6xl text-white leading-tight">
+            Bättre tillsammans —<br />
+            <em className="italic font-light text-white">Alltid</em>
+          </h1>
+          <p className="text-white/70 mt-4 text-lg font-light max-w-lg">
+            Sport, äventyr eller fest — vi planerar, ni upplever.
+          </p>
+        </div>
+      </section>
 
- {/* Intro */}
- <section className="bg-cream py-16">
- <div className="container mx-auto px-4 max-w-3xl text-center">
- <p className="font-display text-2xl md:text-3xl text-foreground italic font-light leading-relaxed">
- "Gruppresor kräver mer planering — och ger dubbelt så mycket tillbaka. Vi sköter det ena så ni kan fokusera på det andra."
- </p>
- <div className="w-8 h-px bg-primary mx-auto mt-8" />
- </div>
- </section>
+      {/* Experience Grid — SALES FIRST */}
+      <section className="py-14 md:py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Vad Vill Ni Uppleva?</p>
+            <h2 className="font-display text-3xl md:text-4xl text-foreground">
+              Upplevelser för <em className="italic font-light">alla gäng</em>
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {experiences.map((exp) => {
+              const Icon = exp.icon;
+              return (
+                <div key={exp.title} className="group bg-cream border border-border p-8 hover:border-primary transition-all duration-300">
+                  <Icon className="h-6 w-6 text-primary mb-4" />
+                  <h3 className="font-display text-xl text-foreground mb-1">{exp.title}</h3>
+                  <p className="text-xs tracking-wider text-primary uppercase font-sans mb-3">{exp.tagline}</p>
+                  <div className="w-6 h-px bg-primary mb-4" />
+                  <p className="text-muted-foreground text-sm leading-relaxed">{exp.desc}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
 
- {/* Group types grid */}
- <section className="py-12 md:py-16 bg-background">
- <div className="container mx-auto px-4">
- <div className="text-center mb-14">
- <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">För Alla Sorters Grupper</p>
- <h2 className="font-display text-3xl md:text-4xl text-foreground">
- Vad Vill Ni Uppleva?
- </h2>
- </div>
- <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-0 border border-border">
- {groupTypes.map((gt, i) => {
- const Icon = gt.icon;
- return (
- <div
- key={gt.title}
- className={`p-8 hover:bg-accent/30 transition-colors border-border ${
- i % 3 !== 2 ? "border-r" : ""
- } ${i < groupTypes.length - 3 ? "border-b" : ""}`}
- >
- <Icon className="h-5 w-5 text-primary mb-4" />
- <h3 className="font-display text-xl text-foreground mb-2">{gt.title}</h3>
- <div className="w-6 h-px bg-primary mb-3" />
- <p className="text-muted-foreground text-sm leading-relaxed">{gt.desc}</p>
- </div>
- );
- })}
- </div>
- </div>
- </section>
+      {/* Sport — image + short pitch */}
+      <section className="py-12 md:py-16 bg-cream">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
+            <div>
+              <span className="text-[10px] tracking-[0.25em] uppercase bg-accent text-accent-foreground px-3 py-1 font-sans">
+                Sport & Vänner
+              </span>
+              <h2 className="font-display text-3xl md:text-4xl text-foreground mt-4 mb-2">
+                Matcher ni aldrig glömmer
+              </h2>
+              <div className="w-10 h-px bg-primary mb-6" />
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                Premier League, Monaco Grand Prix, Champions League — vi fixar biljetter, boende och transfer för hela gänget. En kontaktpunkt. Noll huvudbry.
+              </p>
+              <div className="grid grid-cols-2 gap-3 mb-8">
+                {["Biljetter till matcher & event", "Gruppbokade hotell", "Privat transfer", "Cityguide & tips"].map((item) => (
+                  <div key={item} className="flex items-center gap-2 text-sm text-foreground/80">
+                    <Check className="h-4 w-4 text-primary flex-shrink-0" />
+                    {item}
+                  </div>
+                ))}
+              </div>
+              <Link to="/contact">
+                <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
+                  Planera er sportresa
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+            <div className="aspect-[4/3] overflow-hidden">
+              <img
+                src={groupSports}
+                alt="Sportevent med grupp"
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
 
- {/* Sports image strip */}
- <section className="py-12 md:py-16 bg-cream">
- <div className="container mx-auto px-4">
- <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
- <div>
- <span className="text-[10px] tracking-[0.25em] uppercase bg-accent text-accent-foreground px-3 py-1 font-sans">
- Sport & Vänner
- </span>
- <h2 className="font-display text-3xl md:text-4xl text-foreground mt-4 mb-2">
- Sporthelgen Ni Aldrig Glömmer
- </h2>
- <div className="w-10 h-px bg-primary mb-6" />
- <p className="text-muted-foreground leading-relaxed mb-4">
- Fotboll i Premier League, formel 1 i Monaco, golf i St Andrews eller skidsemester i Åre — vi fixar biljetter, hotell och transfer för hela gänget.
- </p>
- <p className="text-muted-foreground leading-relaxed mb-8">
- Ni behöver inte koordinera vem som bokar vad. Vi tar hand om hela logistiken — ni fokuserar på att ha kul tillsammans.
- </p>
- <Link to="/contact">
- <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
- Planera er resa
- <ArrowRight className="ml-2 h-4 w-4" />
- </Button>
- </Link>
- </div>
- <div className="aspect-[4/3] overflow-hidden">
- <img
- src={groupSports}
- alt="Sportevent med grupp"
- className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
- />
- </div>
- </div>
- </div>
- </section>
+      {/* Corporate — reversed */}
+      <section className="py-12 md:py-16 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
+            <div className="aspect-[4/3] overflow-hidden md:order-1">
+              <img
+                src={groupCorporate}
+                alt="Företagets getaway"
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+            <div>
+              <span className="text-[10px] tracking-[0.25em] uppercase bg-accent text-accent-foreground px-3 py-1 font-sans">
+                Företag & Team
+              </span>
+              <h2 className="font-display text-3xl md:text-4xl text-foreground mt-4 mb-2">
+                Resor som bygger lag
+              </h2>
+              <div className="w-10 h-px bg-primary mb-6" />
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                Kickoff i Barcelona. Incentive till Kroatien. Retreat i Toscana. Vi skapar upplevelser som teamet pratar om länge — och faktiskt stärker sammanhållningen.
+              </p>
+              <div className="grid grid-cols-2 gap-3 mb-8">
+                {["Boende & logistik", "Aktiviteter & teambuilding", "Middagar & event", "Pris efter budget"].map((item) => (
+                  <div key={item} className="flex items-center gap-2 text-sm text-foreground/80">
+                    <Check className="h-4 w-4 text-primary flex-shrink-0" />
+                    {item}
+                  </div>
+                ))}
+              </div>
+              <Link to="/contact">
+                <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
+                  Offert för företagsresa
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
 
- {/* Corporate image + text */}
- <section className="py-12 md:py-16 bg-background">
- <div className="container mx-auto px-4">
- <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
- <div className="aspect-[4/3] overflow-hidden">
- <img
- src={groupCorporate}
- alt="Företagets getaway"
- className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
- />
- </div>
- <div>
- <span className="text-[10px] tracking-[0.25em] uppercase bg-accent text-accent-foreground px-3 py-1 font-sans">
- Företag & Team
- </span>
- <h2 className="font-display text-3xl md:text-4xl text-foreground mt-4 mb-2">
- Getaways som Stärker Teamet
- </h2>
- <div className="w-10 h-px bg-primary mb-6" />
- <p className="text-muted-foreground leading-relaxed mb-4">
- En välplanerad företagsresa gör mer för sammanhållningen än tio interna möten. Vi skapar upplevelser som teamet pratar om länge efteråt.
- </p>
- <p className="text-muted-foreground leading-relaxed mb-8">
- Kickoff i Barcelona, incentiveresa till Kroatien eller en avslappnad retreat i Toscana — vi anpassar efter er budget, era mål och er grupp.
- </p>
- <Link to="/contact">
- <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
- Begär offert för företagsresor
- <ArrowRight className="ml-2 h-4 w-4" />
- </Button>
- </Link>
- </div>
- </div>
- </div>
- </section>
+      {/* What's included — compact */}
+      <section className="py-14 md:py-20 bg-cream">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div>
+              <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Vad Ingår</p>
+              <h2 className="font-display text-3xl md:text-4xl text-foreground mb-2">
+                Allt ordnat — <em className="italic font-light">ingenting glömt</em>
+              </h2>
+              <div className="w-10 h-px bg-primary mb-8" />
+              <div className="grid sm:grid-cols-2 gap-4 mb-10">
+                {activities.map((a) => {
+                  const Icon = a.icon;
+                  return (
+                    <div key={a.text} className="flex items-center gap-3">
+                      <Icon className="h-5 w-5 text-primary flex-shrink-0" />
+                      <span className="text-foreground/80 text-sm">{a.text}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="bg-navy p-6 inline-block">
+                <div className="font-display text-2xl text-white mb-1">6 – 200+ personer</div>
+                <p className="text-white/60 text-sm">Ingen grupp är för liten eller för stor.</p>
+              </div>
+            </div>
+            <div className="aspect-[4/3] overflow-hidden">
+              <img
+                src={groupAdventure}
+                alt="Äventyrsresa i grupp"
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
 
- {/* How it works */}
- <section className="py-12 md:py-16 bg-navy">
- <div className="container mx-auto px-4">
- <div className="text-center mb-16">
- <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Så fungerar det</p>
- <h2 className="font-display text-3xl md:text-4xl text-white">
- Enkelt för Er — <em className="italic font-light text-white">Detaljerat för Oss</em>
- </h2>
- </div>
- <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
- {process.map((p) => (
- <div key={p.step} className="relative">
- <div className="font-display text-6xl text-primary/20 mb-4 leading-none">{p.step}</div>
- <h3 className="font-display text-xl text-white mb-3">{p.title}</h3>
- <div className="w-6 h-px bg-primary/40 mb-3" />
- <p className="text-white/50 text-sm leading-relaxed">{p.desc}</p>
- </div>
- ))}
- </div>
- </div>
- </section>
+      {/* Inquiry form */}
+      <section id="forfragan" className="py-16 md:py-24 bg-background">
+        <div className="container mx-auto px-4 max-w-3xl">
+          <InquiryForm
+            type="group"
+            eyebrow="Skicka förfrågan"
+            heading="Berätta om er gruppresa"
+            intro="Antal personer, ungefärliga datum, destination och budget — vi återkommer med ett skräddarsytt förslag inom 24 timmar på vardagar."
+          />
+        </div>
+      </section>
 
- {/* Adventure image + what's included */}
- <section className="py-12 md:py-16 bg-background">
- <div className="container mx-auto px-4">
- <div className="grid md:grid-cols-2 gap-16 items-center">
- <div>
- <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Vad Ingår</p>
- <h2 className="font-display text-3xl md:text-4xl text-foreground mb-2">
- Allt Ordnat — <em className="italic font-light">Ingenting Glömt</em>
- </h2>
- <div className="w-10 h-px bg-primary mb-8" />
- <p className="text-muted-foreground leading-relaxed mb-8">
- Gruppresor har många rörliga delar. Vi hanterar dem alla — så att ingen i gruppen behöver vara "den som fixar allt".
- </p>
- <ul className="grid sm:grid-cols-2 gap-3 mb-10">
- {inclusions.map((inc) => (
- <li key={inc} className="flex items-start gap-3 text-sm">
- <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
- <span className="text-foreground/80">{inc}</span>
- </li>
- ))}
- </ul>
- <Link to="/contact">
- <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
- Kom i kontakt
- <ArrowRight className="ml-2 h-4 w-4" />
- </Button>
- </Link>
- </div>
- <div className="space-y-4">
- <div className="aspect-[4/3] overflow-hidden">
- <img src={groupAdventure} alt="Äventyrsresa i grupp" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
- </div>
- <div className="bg-primary p-6">
- <div className="font-display text-2xl text-primary-foreground mb-1">Grupper från 6 till 200+</div>
- <p className="text-primary-foreground/70 text-sm">Ingen grupp är för liten eller för stor. Vi skalar vår service efter era behov.</p>
- </div>
- </div>
- </div>
- </div>
- </section>
-
- {/* Inquiry form */}
- <section id="forfragan" className="py-16 md:py-24 bg-cream">
- <div className="container mx-auto px-4 max-w-3xl">
- <InquiryForm
- type="group"
- eyebrow="Skicka förfrågan"
- heading="Berätta om er gruppresa"
- intro="Antal personer, ungefärliga datum, destination och budget — vi återkommer med ett skräddarsytt förslag inom 24 timmar på vardagar."
- />
- </div>
- </section>
-
- <Footer />
- </div>
- );
+      <Footer />
+    </div>
+  );
 }
