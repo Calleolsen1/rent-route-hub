@@ -58,10 +58,6 @@ export default function Checkout() {
 
   useEffect(() => {
     if (authLoading) return;
-    if (!user) {
-      navigate("/mitt-kaisen");
-      return;
-    }
     if (!orderId) return;
     (async () => {
       const [{ data: o }, { data: its }] = await Promise.all([
@@ -76,7 +72,7 @@ export default function Checkout() {
       setOrder(o as OrderRow | null);
       setItems((its as unknown as ItemRow[]) ?? []);
       if (o) {
-        setEmail((o as OrderRow).customer_email ?? user.email ?? "");
+        setEmail((o as OrderRow).customer_email ?? user?.email ?? "");
         setName((o as OrderRow).customer_name ?? "");
         setPhone((o as OrderRow).customer_phone ?? "");
       }

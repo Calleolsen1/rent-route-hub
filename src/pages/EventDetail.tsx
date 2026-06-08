@@ -74,18 +74,13 @@ export default function EventDetail() {
 
   const handleCheckout = async () => {
     if (!event || !selectedCat) return;
-    if (!user) {
-      toast.info("Logga in för att fortsätta till kassan");
-      navigate("/mitt-kaisen");
-      return;
-    }
     setBusy(true);
     try {
       const { data: orderId, error } = await supabase.rpc("create_order_with_items", {
         p_event_id: event.id,
         p_category_id: selectedCat.id,
         p_qty: qty,
-        p_customer_email: user.email ?? "",
+        p_customer_email: user?.email ?? "",
       });
       if (error || !orderId) throw error ?? new Error("Kunde inte skapa order");
       navigate(`/checkout/${orderId}`);

@@ -110,6 +110,76 @@ async function sendOrderConfirmationEmail(orderId: string) {
   }
 }
 
+async function ensureUserForGuestOrder(orderId: string) {
+  const supabase = getSupabase();
+  const { data: order } = await supabase
+    .from("orders")
+    .select("id, user_id, customer_email, customer_name")
+    .eq("id", orderId)
+    .maybeSingle();
+  if (!order || order.user_id || !order.customer_email) return;
+
+  const email = String(order.customer_email).toLowerCase().trim();
+  const [firstName, ...rest] = String(order.customer_name ?? "").trim().split(/\s+/);
+  const lastName = rest.join(" ");
+
+  // Find or create the auth user
+  let userId: string | null = null;
+  const { data: existing } = await supabase.auth.admin.listUsers();
+  const found = existing?.users?.find((u: any) => u.email === email);
+  if (found) {
+    userId = found.id;
+  } else {
+    const redirectTo = `${Deno.env.get("SITE_URL") ?? "https://rent-route-hub.lovable.app"}/mitt-kaisen`;
+    const { data: linkData } = await supabase.auth.admin.generateLink({
+      type: "invite",
+      email,
+      options: { data: { first_name: firstName, last_name: lastName }, redirectTo },
+    });
+    if (linkData?.user) {
+      userId = linkData.user.id;
+      await supabase.from("profiles").upsert({
+        id: userId,
+        email,
+        first_name: firstName || null,
+        last_name: lastName || null,
+        status: "active",
+      });
+      await supabase.from("user_roles").upsert({ user_id: userId, role: "guest" });
+
+      // Send password-setup email via Resend gateway
+      const actionLink = linkData.properties?.action_link;
+      if (LOVABLE_API_KEY && RESEND_API_KEY && actionLink) {
+        const html = `<!DOCTYPE html><html><body style="font-family:Georgia,serif;background:#0f1929;padding:32px;color:#c9d6e8;">
+          <div style="max-width:560px;margin:0 auto;background:#162035;padding:32px;border:1px solid #1e2d4a;">
+            <h1 style="color:#c9d6e8;font-weight:400;">Tack för ditt köp, ${firstName || ""}!</h1>
+            <p>Vi har skapat ett konto på Mitt Kaisen så att du kan se din order, fakturor och biljetter.</p>
+            <p><a href="${actionLink}" style="display:inline-block;background:#1e3a5f;color:#fff;padding:14px 32px;text-decoration:none;letter-spacing:.15em;text-transform:uppercase;font-size:13px;">Sätt ditt lösenord</a></p>
+            <p style="color:#4a5d75;font-size:12px;">Om knappen inte fungerar: <a href="${actionLink}" style="color:#c9d6e8;">${actionLink}</a></p>
+          </div></body></html>`;
+        await fetch(`${GATEWAY_URL}/emails`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${LOVABLE_API_KEY}`,
+            "X-Connection-Api-Key": RESEND_API_KEY,
+          },
+          body: JSON.stringify({
+            from: "Kaisen Travel Group <info@kaisengroup.se>",
+            to: [email],
+            subject: "Välkommen till Mitt Kaisen – sätt ditt lösenord",
+            html,
+          }),
+        }).catch((e) => console.error("Welcome email failed", e));
+      }
+    }
+  }
+
+  if (userId) {
+    await supabase.from("orders").update({ user_id: userId }).eq("id", orderId);
+  }
+}
+
 async function handleCheckoutCompleted(session: any, env: StripeEnv) {
   const orderId = session.metadata?.orderId;
   if (!orderId) {
@@ -140,12 +210,14 @@ async function handleCheckoutCompleted(session: any, env: StripeEnv) {
       p_category_id: (it as any).category_id,
       p_qty: Number((it as any).qty),
     });
-    // Create empty ticket_deliveries placeholder so admin can upload files
     await getSupabase().from("ticket_deliveries").insert({
       order_item_id: (it as any).id,
       delivery_method: "email",
     });
   }
+
+  // Auto-create Mitt Kaisen account for guest checkouts and link to order
+  await ensureUserForGuestOrder(orderId);
 
   await sendOrderConfirmationEmail(orderId);
 }
