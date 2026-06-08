@@ -8,6 +8,7 @@ import { ArrowLeft, ArrowRight, Calendar, MapPin, Minus, Plus, Ticket, Users } f
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { formatEventDateTime, formatSek } from "@/lib/formatSek";
+import { getStripeEnvironment } from "@/lib/stripe";
 
 type EventRow = {
   id: string;
