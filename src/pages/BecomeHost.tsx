@@ -234,28 +234,36 @@ const BecomeHost = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
-          <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Join thousands of hosts earning extra income by sharing their spaces
-          </p>
-          <Button 
-            size="lg" 
-            onClick={handleBecomeHost}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Loading demo...
-              </>
-            ) : (
-              "Become a Host"
-            )}
-          </Button>
+      <section className="py-12 md:py-16">
+        <div className="container mx-auto px-4">
+          <div className="relative overflow-hidden rounded-3xl bg-navy p-10 md:p-16 text-center">
+            <div className="pointer-events-none absolute -top-24 -right-16 w-80 h-80 rounded-full bg-gold/30 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-32 -left-20 w-96 h-96 rounded-full bg-primary/40 blur-3xl" />
+            <div className="relative max-w-2xl mx-auto">
+              <h2 className="font-sans font-semibold text-2xl md:text-4xl text-white mb-4">Ready to Get Started?</h2>
+              <p className="text-base text-white/70 mb-8 leading-relaxed">
+                Join thousands of hosts earning extra income by sharing their spaces
+              </p>
+              <Button 
+                size="lg" 
+                onClick={handleBecomeHost}
+                disabled={isLoading}
+                className="rounded-full bg-white hover:bg-white/90 text-navy font-semibold px-10 py-6 text-base shadow-lg"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Loading demo...
+                  </>
+                ) : (
+                  "Become a Host"
+                )}
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
+
 
       <Footer />
     </div>
