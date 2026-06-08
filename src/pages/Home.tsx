@@ -515,51 +515,40 @@ const Home = () => {
       </section>
 
       {/* Om oss */}
-      <section className="py-16 md:py-20 bg-cream">
-        <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
-          <div className="p-0 md:p-4">
+      <section className="py-20 md:py-28 bg-cream">
+        <div className="w-full max-w-[1400px] mx-auto px-6 md:px-10">
+          <h2 className="font-sans font-semibold text-3xl md:text-5xl text-foreground text-center mb-16 md:mb-20">
+            Vad gör oss annorlunda
+          </h2>
 
-            <div className="grid md:grid-cols-[280px_1fr] lg:grid-cols-[360px_1fr] gap-6 md:gap-10 items-center">
-              <div className="relative rounded-xl overflow-hidden aspect-[4/3] md:aspect-[4/5]">
-                <img
-                  src={luxuryImage}
-                  alt="Glad resenär i vackert landskap"
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-              </div>
-              <div>
-                <p className="text-[11px] tracking-[0.25em] text-primary uppercase mb-2 font-sans font-semibold">Om oss</p>
-                <h2 className="font-sans font-bold text-2xl md:text-3xl text-foreground mb-3 leading-tight">
-                  Resor designade kring dig
-                </h2>
-                <p className="text-foreground/70 text-sm md:text-base leading-relaxed mb-6 max-w-2xl">
-                  I en värld av automatiserade bokningar och standardpaket sticker Kaisen Travel Group ut. Vi tror att de bästa reseupplevelserna börjar med en riktig mänsklig kontakt — ett samtal, en gemensam vision och ett åtagande att få varje detalj att stämma.
-                </p>
-                <div className="grid sm:grid-cols-2 gap-x-8 gap-y-5 mb-6">
-                  {whyUs.map((item) => (
-                    <div key={item.title} className="flex gap-3">
-                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                        <item.icon className="h-3.5 w-3.5 text-primary" />
-                      </div>
-                      <div>
-                        <h4 className="font-sans font-semibold text-sm text-foreground mb-0.5">{item.title}</h4>
-                        <p className="text-foreground/60 text-xs leading-relaxed">{item.description}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <Link
-                  to="/about"
-                  className="inline-flex items-center gap-2 bg-foreground text-background text-sm font-semibold px-6 py-2.5 rounded-full hover:bg-primary transition-colors"
-                >
-                  Läs mer om oss
-                </Link>
-              </div>
+          <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
+            <div className="max-w-xl">
+              <h3 className="font-sans font-bold text-2xl md:text-4xl text-foreground mb-6 leading-tight">
+                Resor designade kring dig
+              </h3>
+              <p className="text-foreground/70 text-base md:text-lg leading-relaxed mb-8">
+                I en värld av automatiserade bokningar och standardpaket sticker Kaisen Travel Group ut. Vi tror att de bästa reseupplevelserna börjar med en riktig mänsklig kontakt — ett samtal, en gemensam vision och ett åtagande att få varje detalj att stämma.
+              </p>
+              <Link
+                to="/about"
+                className="inline-flex items-center gap-2 bg-primary text-primary-foreground text-sm font-semibold px-7 py-3 rounded-full hover:bg-primary/90 transition-colors"
+              >
+                Läs mer om oss
+              </Link>
+            </div>
+
+            <div className="relative rounded-2xl overflow-hidden aspect-[5/4] md:aspect-[4/3]">
+              <img
+                src={luxuryImage}
+                alt="Glad resenär i vackert landskap"
+                className="w-full h-full object-cover"
+                loading="lazy"
+              />
             </div>
           </div>
         </div>
       </section>
+
 
 
       {/* Referenser — testimonials carousel */}
