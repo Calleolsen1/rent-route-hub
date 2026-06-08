@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, Users, Trophy, Star, Shield, Globe, Calendar, MapPin, Flag, Search } from "lucide-react";
@@ -194,7 +194,6 @@ const whyUs = [
 
 const Home = () => {
   const [activeHero, setActiveHero] = useState(0);
-  const [heroQuery, setHeroQuery] = useState("");
   const [offerTab, setOfferTab] = useState<"alla" | "nya" | "populara">("alla");
 
   const offerTabs = [
@@ -210,7 +209,7 @@ const Home = () => {
       ? quickOffers.slice(0, 5)
       : quickOffers;
 
-  const navigate = useNavigate();
+
 
 
 
