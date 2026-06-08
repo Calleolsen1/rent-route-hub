@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Star, Shield, Clock, Phone, Plane, Car } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import InquiryForm from "@/components/InquiryForm";
 import vipImage from "@/assets/kaisen-vip.jpg";
 import vipConcierge from "@/assets/vip-concierge.jpg";
 import vipJet from "@/assets/vip-jet.jpg";
