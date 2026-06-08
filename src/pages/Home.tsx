@@ -345,22 +345,31 @@ const Home = () => {
       </section>
 
       {/* Stats highlights — Intrepid-style, 3 columns with vertical dividers */}
-      <section className="bg-background pb-16 md:pb-20">
-        <div className="container mx-auto px-4">
-          <h2 className="text-center font-display text-2xl md:text-3xl text-foreground mb-10 md:mb-14">
+      <section className="bg-background py-16 md:py-20">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <h2 className="text-center font-sans font-semibold text-2xl md:text-[2rem] leading-tight text-foreground mb-12 md:mb-14">
             Personlig reseservice — för riktiga upplevelser, världen över
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
-            {stats.slice(0, 3).map((stat) => (
-              <div key={stat.label} className="px-6 py-6 md:py-2 text-center">
-                <div className="font-display text-2xl md:text-3xl text-foreground mb-2">
-                  {stat.value} {stat.label.toLowerCase()}
-                </div>
-              </div>
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border/60">
+            <div className="px-6 py-4 md:py-2 text-center">
+              <p className="font-sans font-semibold text-lg md:text-xl text-foreground leading-snug">
+                2 400+ resor<br className="hidden md:block" /> arrangerade
+              </p>
+            </div>
+            <div className="px-6 py-4 md:py-2 text-center">
+              <p className="font-sans font-semibold text-lg md:text-xl text-foreground leading-snug">
+                98% nöjda<br className="hidden md:block" /> kunder
+              </p>
+            </div>
+            <div className="px-6 py-4 md:py-2 text-center">
+              <p className="font-sans font-semibold text-lg md:text-xl text-foreground leading-snug">
+                60+ destinationer<br className="hidden md:block" /> världen över
+              </p>
+            </div>
           </div>
         </div>
       </section>
+
 
 
       {/* Konkreta reseerbjudanden — swipeable icon cards */}
