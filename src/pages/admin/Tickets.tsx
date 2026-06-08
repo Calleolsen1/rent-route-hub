@@ -163,33 +163,13 @@ export default function AdminTickets() {
               </div>
               <div className="space-y-2">
                 {ev.ticket_categories?.map((c) => (
-                  <div key={c.id} className="flex items-center justify-between text-sm border-t border-border pt-3">
-                    <div>
-                      <p className="font-medium">{c.name}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {formatSek(c.unit_price_sek)} · {c.qty_available} biljetter kvar
-                      </p>
-                      <p className="text-[11px] text-muted-foreground font-mono mt-1">
-                        lookup_key: {c.stripe_price_id ?? "–"}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {c.stripe_price_id ? (
-                        <CheckCircle2 className="h-4 w-4 text-green-600" />
-                      ) : (
-                        <AlertCircle className="h-4 w-4 text-amber-600" />
-                      )}
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        disabled={busy === c.id}
-                        onClick={() => syncStripe(c.id)}
-                      >
-                        {busy === c.id ? <Loader2 className="h-3 w-3 animate-spin" /> : null}
-                        {c.stripe_price_id ? "Uppdatera Stripe-pris" : "Skapa Stripe-pris"}
-                      </Button>
-                    </div>
-                  </div>
+                  <CategoryRow
+                    key={c.id}
+                    c={c}
+                    busy={busy}
+                    onSync={syncStripe}
+                    onSaveMarkup={saveMarkup}
+                  />
                 ))}
                 {!ev.ticket_categories?.length && (
                   <p className="text-xs text-muted-foreground">Inga biljettkategorier för detta evenemang.</p>
