@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, MapPin } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import InquiryForm from "@/components/InquiryForm";
 import heroImage from "@/assets/camps-hero.jpg";
 import laMangaImg from "@/assets/camp-lamanga.jpg";
 import algarveImg from "@/assets/camp-algarve.jpg";
