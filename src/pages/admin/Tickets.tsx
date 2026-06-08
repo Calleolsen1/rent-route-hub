@@ -13,6 +13,8 @@ type Category = {
   unit_price_sek: number;
   qty_available: number;
   stripe_price_id: string | null;
+  markup_pct: number;
+  markup_fixed_sek: number;
 };
 
 type EventRow = {
@@ -52,7 +54,7 @@ export default function AdminTickets() {
     const [{ data: ev }, { data: dels }] = await Promise.all([
       supabase
         .from("events")
-        .select("id, sport, tournament_name, home_team, away_team, race_name, venue_name, city, starts_at, status, ticket_categories(id, name, unit_price_sek, qty_available, stripe_price_id)")
+        .select("id, sport, tournament_name, home_team, away_team, race_name, venue_name, city, starts_at, status, ticket_categories(id, name, unit_price_sek, qty_available, stripe_price_id, markup_pct, markup_fixed_sek)")
         .order("starts_at", { ascending: true }),
       supabase
         .from("ticket_deliveries")
