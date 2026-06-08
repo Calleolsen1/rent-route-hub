@@ -57,9 +57,9 @@ export default function Contact() {
  <div className="absolute inset-0 bg-navy/70" />
  </div>
  <div className="relative container mx-auto px-4 pb-14">
- <p className="text-xs tracking-[0.3em] text-gold uppercase mb-3 font-sans">Kom i kontakt</p>
+ <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Kom i kontakt</p>
  <h1 className="font-display text-4xl md:text-6xl text-white">
- Planera Er <em className="italic font-light text-gold-light">Resa</em>
+ Planera Er <em className="italic font-light text-white">Resa</em>
  </h1>
  </div>
  </section>

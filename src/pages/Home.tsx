@@ -243,13 +243,13 @@ const Home = () => {
                       <div className="absolute inset-0 bg-gradient-to-t from-navy/85 via-navy/30 to-transparent" />
                       <div className="relative h-full flex items-end p-8 md:p-14">
                         <div className="max-w-xl">
-                          <p className="text-[11px] tracking-[0.3em] text-gold-light uppercase mb-4 font-sans">
+                          <p className="text-[11px] tracking-[0.3em] text-white uppercase mb-4 font-sans">
                             {slide.eyebrow}
                           </p>
                           <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-light text-white leading-tight mb-6">
                             {slide.title}
                             <br />
-                            <em className="font-light italic text-gold-light">{slide.italic}</em>
+                            <em className="font-light italic text-white">{slide.italic}</em>
                           </h1>
                           <Link to={slide.primary.to}>
                             <Button
@@ -275,7 +275,7 @@ const Home = () => {
                 <div
                   key={i}
                   className={`h-1.5 transition-all ${
-                    i === activeHero ? "w-8 bg-gold-light" : "w-1.5 bg-white/50"
+                    i === activeHero ? "w-8 bg-white" : "w-1.5 bg-white/50"
                   }`}
                 />
               ))}
@@ -422,7 +422,7 @@ const Home = () => {
                       </div>
                       <div className="absolute bottom-0 left-0 right-0 p-4">
                         <h3 className="font-display text-lg text-white mb-0.5">{service.title}</h3>
-                        <p className="text-[10px] tracking-wider text-gold-light uppercase font-sans">{service.subtitle}</p>
+                        <p className="text-[10px] tracking-wider text-white uppercase font-sans">{service.subtitle}</p>
                       </div>
                     </div>
                     <p className="text-muted-foreground text-xs leading-relaxed mb-2">{service.description}</p>
@@ -518,14 +518,14 @@ const Home = () => {
       <section className="py-16 md:py-24 bg-background">
         <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
           <div className="relative overflow-hidden rounded-3xl bg-navy p-10 md:p-16 grid md:grid-cols-[1fr_auto] gap-10 items-center">
-            {/* Decorative blurred gold orbs */}
-            <div className="pointer-events-none absolute -top-24 -right-16 w-80 h-80 rounded-full bg-gold/30 blur-3xl" />
+            {/* Decorative blurred orbs */}
+            <div className="pointer-events-none absolute -top-24 -right-16 w-80 h-80 rounded-full bg-primary/30 blur-3xl" />
             <div className="pointer-events-none absolute -bottom-32 -left-20 w-96 h-96 rounded-full bg-primary/40 blur-3xl" />
 
             <div className="relative max-w-2xl">
-              <p className="text-[11px] tracking-[0.3em] text-gold uppercase mb-4 font-sans font-semibold">Kontakta oss</p>
+              <p className="text-[11px] tracking-[0.3em] text-primary uppercase mb-4 font-sans font-semibold">Kontakta oss</p>
               <h2 className="font-sans text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">
-                Ditt nästa äventyr börjar med ett <em className="italic font-light text-gold-light">samtal</em>
+                Ditt nästa äventyr börjar med ett <em className="italic font-light text-white">samtal</em>
               </h2>
               <p className="text-base text-white/70 leading-relaxed">
                 Prata med en Kaisen-konsult idag. Inga mallar, inga algoritmer — bara genuin expertis dedikerad till din perfekta resa.

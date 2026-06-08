@@ -74,11 +74,11 @@ export default function WeekendGetaway() {
  <div className="absolute inset-0 bg-navy/65" />
  </div>
  <div className="relative container mx-auto px-4 pb-14">
- <p className="text-xs tracking-[0.3em] text-gold uppercase mb-3 font-sans">
+ <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
  Tjänster — Weekend Getaway
  </p>
  <h1 className="font-display text-4xl md:text-6xl text-white">
- Europas Mysigaste <em className="italic font-light text-gold-light">Helgresmål</em>
+ Europas Mysigaste <em className="italic font-light text-white">Helgresmål</em>
  </h1>
  </div>
  </section>
@@ -140,7 +140,7 @@ export default function WeekendGetaway() {
  {/* CTA */}
  <section className="bg-navy py-20">
  <div className="container mx-auto px-4 text-center">
- <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Boka din helg</p>
+ <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Boka din helg</p>
  <h2 className="font-display text-3xl md:text-5xl text-white mb-6">
  Vilken stad lockar dig mest?
  </h2>

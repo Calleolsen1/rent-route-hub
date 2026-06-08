@@ -77,12 +77,12 @@ export default function Traningslager() {
  <div className="absolute inset-0 bg-navy/65" />
  </div>
  <div className="relative container mx-auto px-4 pb-14">
- <p className="text-xs tracking-[0.3em] text-gold uppercase mb-3 font-sans">
+ <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
  Tjänster — Träningsläger
  </p>
  <h1 className="font-display text-4xl md:text-6xl text-white leading-tight">
  En värld där idrott<br />
- <em className="italic font-light text-gold-light">och resor möts</em>
+ <em className="italic font-light text-white">och resor möts</em>
  </h1>
  <p className="text-white/70 mt-4 text-lg font-light max-w-xl">
  Träningsläger för fotboll, simning och friidrott — för föreningar, lag och grupper som vill ta träningen till nästa nivå.
@@ -206,9 +206,9 @@ export default function Traningslager() {
  {/* CTA */}
  <section className="bg-navy py-20">
  <div className="container mx-auto px-4 text-center">
- <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Hör av er</p>
+ <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Hör av er</p>
  <h2 className="font-display text-3xl md:text-5xl text-white mb-6">
- Låt oss skapa ert nästa <em className="italic font-light text-gold-light">träningsläger</em>
+ Låt oss skapa ert nästa <em className="italic font-light text-white">träningsläger</em>
  </h2>
  <p className="text-white/60 max-w-lg mx-auto mb-10 leading-relaxed">
  Berätta om era idéer, mål och behov — så tar vi fram ett upplägg som passar just ert lag.

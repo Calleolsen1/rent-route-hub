@@ -59,11 +59,11 @@ export default function Affarsresor() {
  <div className="absolute inset-0 bg-navy/75" />
  </div>
  <div className="relative container mx-auto px-4 pb-14">
- <p className="text-xs tracking-[0.3em] text-gold uppercase mb-3 font-sans">
+ <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
  Tjänster — Affärsresor
  </p>
  <h1 className="font-display text-4xl md:text-6xl text-white">
- Skräddarsydda <em className="italic font-light text-gold-light">Affärsresor</em>
+ Skräddarsydda <em className="italic font-light text-white">Affärsresor</em>
  </h1>
  </div>
  </section>
@@ -157,7 +157,7 @@ export default function Affarsresor() {
  {/* CTA */}
  <section className="bg-navy py-20">
  <div className="container mx-auto px-4 text-center">
- <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Kom igång</p>
+ <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Kom igång</p>
  <h2 className="font-display text-3xl md:text-5xl text-white mb-6">
  Låt oss ta hand om dina affärsresor
  </h2>

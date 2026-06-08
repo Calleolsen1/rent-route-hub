@@ -90,11 +90,11 @@ export default function Sportresor() {
  <div className="absolute inset-0 bg-navy/70" />
  </div>
  <div className="relative container mx-auto px-4 pb-14">
- <p className="text-xs tracking-[0.3em] text-gold uppercase mb-3 font-sans">
+ <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
  Tjänster — Sportresor
  </p>
  <h1 className="font-display text-4xl md:text-6xl text-white">
- Resor för <em className="italic font-light text-gold-light">Sportälskare</em>
+ Resor för <em className="italic font-light text-white">Sportälskare</em>
  </h1>
  </div>
  </section>
@@ -164,7 +164,7 @@ export default function Sportresor() {
  {/* CTA */}
  <section className="bg-navy py-20">
  <div className="container mx-auto px-4 text-center">
- <p className="text-xs tracking-[0.3em] text-gold uppercase mb-4 font-sans">Boka din sportresa</p>
+ <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Boka din sportresa</p>
  <h2 className="font-display text-3xl md:text-5xl text-white mb-6">
  Vilken sport vill du uppleva live?
  </h2>

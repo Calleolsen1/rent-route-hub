@@ -44,9 +44,9 @@ export default function About() {
  <div className="absolute inset-0 bg-navy/70" />
  </div>
  <div className="relative container mx-auto px-4 pb-14">
- <p className="text-xs tracking-[0.3em] text-gold uppercase mb-3 font-sans">Om oss</p>
+ <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Om oss</p>
  <h1 className="font-display text-4xl md:text-6xl text-white">
- Vår <em className="italic font-light text-gold-light">Historia</em>
+ Vår <em className="italic font-light text-white">Historia</em>
  </h1>
  </div>
  </section>
@@ -80,7 +80,7 @@ export default function About() {
  </div>
  <div className="absolute -bottom-4 -right-4 bg-navy p-6 max-w-[200px]">
  <div className="font-display text-3xl text-white mb-1">25+</div>
- <div className="text-[10px] tracking-[0.2em] uppercase text-gold font-sans">År i branschen</div>
+ <div className="text-[10px] tracking-[0.2em] uppercase text-primary font-sans">År i branschen</div>
  </div>
  </div>
  </div>
@@ -88,9 +88,9 @@ export default function About() {
  </section>
 
  {/* References strip */}
- <section className="bg-navy py-16 border-t border-gold/20">
+ <section className="bg-navy py-16 border-t border-primary/20">
  <div className="container mx-auto px-4">
- <p className="text-center text-xs tracking-[0.3em] text-gold uppercase mb-10 font-sans">Tidigare uppdrag & kunder</p>
+ <p className="text-center text-xs tracking-[0.3em] text-primary uppercase mb-10 font-sans">Tidigare uppdrag & kunder</p>
  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
  {[
  { label: "Svenska Fotbollsförbundet", detail: "VM & EM-gruppresor" },
