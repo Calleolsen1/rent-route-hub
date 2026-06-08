@@ -195,6 +195,21 @@ const whyUs = [
 const Home = () => {
   const [activeHero, setActiveHero] = useState(0);
   const [heroQuery, setHeroQuery] = useState("");
+  const [offerTab, setOfferTab] = useState<"alla" | "nya" | "populara">("alla");
+
+  const offerTabs = [
+    { id: "alla" as const, label: "Aktuella resor" },
+    { id: "nya" as const, label: "Nya resor" },
+    { id: "populara" as const, label: "Populära resor" },
+  ];
+
+  const filteredOffers =
+    offerTab === "nya"
+      ? quickOffers.filter((o) => o.isNew)
+      : offerTab === "populara"
+      ? quickOffers.slice(0, 5)
+      : quickOffers;
+
   const navigate = useNavigate();
 
   const handleHeroSearch = (e: React.FormEvent) => {
