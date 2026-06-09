@@ -59,12 +59,26 @@ const activities = [
 ];
 
 import { usePageMeta } from "@/lib/usePageMeta";
+import { useSiteContent } from "@/hooks/useSiteContent";
+
+const GROUP_KEYS = ["group_hero_eyebrow", "group_hero_title", "group_hero_tagline", "group_activities"];
+
+const FALLBACK_GROUP_ACTIVITIES = [
+  "Privat transport & flygplatstransfer",
+  "Guidade aktiviteter & utflykter",
+  "Bokade middagar & gemensamma måltider",
+  "Biljetter till event & matcher",
+  "Team building-upplägg",
+  "Support dygnet runt under resan",
+];
 
 export default function GroupTravel() {
   usePageMeta({
     title: "Gruppresor — 8 till 200+ personer | Kaisen Travel Group",
     description: "Skräddarsydda gruppresor, företagsevent och incentiveresor. Vi sköter logistiken — från flyg och hotell till middag och aktiviteter.",
   });
+  const { get, getArray } = useSiteContent(GROUP_KEYS);
+  const editableActivities = getArray("group_activities", FALLBACK_GROUP_ACTIVITIES);
   return (
     <div className="min-h-screen">
       <Navbar />
@@ -76,13 +90,12 @@ export default function GroupTravel() {
           <div className="absolute inset-0 bg-navy/65" />
         </div>
         <div className="relative container mx-auto px-4 pb-14">
-          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Gruppresor</p>
+          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">{get("group_hero_eyebrow", "Gruppresor")}</p>
           <h1 className="font-display text-4xl md:text-6xl text-white leading-tight">
-            Bättre tillsammans —<br />
-            <em className="italic font-light text-white">Alltid</em>
+            {get("group_hero_title", "Bättre tillsammans — Alltid")}
           </h1>
           <p className="text-white/70 mt-4 text-lg font-light max-w-lg">
-            Sport, äventyr eller fest — vi planerar, ni upplever.
+            {get("group_hero_tagline", "Sport, äventyr eller fest — vi planerar, ni upplever.")}
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <a href="#forfragan">
@@ -214,15 +227,12 @@ export default function GroupTravel() {
               </h2>
               <div className="w-10 h-px bg-primary mb-8" />
               <div className="grid sm:grid-cols-2 gap-4 mb-10">
-                {activities.map((a) => {
-                  const Icon = a.icon;
-                  return (
-                    <div key={a.text} className="flex items-center gap-3">
-                      <Icon className="h-5 w-5 text-primary flex-shrink-0" />
-                      <span className="text-foreground/80 text-sm">{a.text}</span>
-                    </div>
-                  );
-                })}
+                {editableActivities.map((text, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <Check className="h-5 w-5 text-primary flex-shrink-0" />
+                    <span className="text-foreground/80 text-sm">{text}</span>
+                  </div>
+                ))}
               </div>
               <div className="bg-navy p-6 inline-block">
                 <div className="font-display text-2xl text-white mb-1">6 – 200+ personer</div>

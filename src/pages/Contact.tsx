@@ -3,21 +3,35 @@ import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import InquiryForm from "@/components/InquiryForm";
 import heroImage from "@/assets/contact-hero.jpg";
-
-const contactInfo = [
-  { icon: Phone, label: "Telefon", value: "+46 8 123 45 67", href: "tel:+4681234567" },
-  { icon: Mail, label: "E-post", value: "info@kaisengroup.se", href: "mailto:info@kaisengroup.se" },
-  { icon: MapPin, label: "Adress", value: "Stockholm, Sverige" },
-  { icon: Clock, label: "Öppettider", value: "Mån–Fre 09–18" },
-];
-
 import { usePageMeta } from "@/lib/usePageMeta";
+import { useSiteContent } from "@/hooks/useSiteContent";
+
+const CONTACT_KEYS = [
+  "contact_hero_eyebrow",
+  "contact_hero_title",
+  "contact_section_eyebrow",
+  "contact_section_title",
+  "contact_intro",
+  "contact_phone",
+  "contact_email",
+  "contact_address",
+  "contact_hours",
+];
 
 export default function Contact() {
   usePageMeta({
     title: "Kontakt — Kaisen Travel Group",
     description: "Skicka en förfrågan så återkommer en konsult inom 24 timmar med ett skräddarsytt förslag.",
   });
+  const { get } = useSiteContent(CONTACT_KEYS);
+  const phone = get("contact_phone", "+46 8 123 45 67");
+  const email = get("contact_email", "info@kaisengroup.se");
+  const contactInfo = [
+    { icon: Phone, label: "Telefon", value: phone, href: `tel:${phone.replace(/\s+/g, "")}` },
+    { icon: Mail, label: "E-post", value: email, href: `mailto:${email}` },
+    { icon: MapPin, label: "Adress", value: get("contact_address", "Stockholm, Sverige") },
+    { icon: Clock, label: "Öppettider", value: get("contact_hours", "Mån–Fre 09–18") },
+  ];
   return (
     <div className="min-h-screen">
       <Navbar />
@@ -29,9 +43,9 @@ export default function Contact() {
           <div className="absolute inset-0 bg-navy/70" />
         </div>
         <div className="relative container mx-auto px-4 pb-14">
-          <p className="text-xs tracking-[0.3em] text-white uppercase mb-3 font-sans">Kom i kontakt</p>
+          <p className="text-xs tracking-[0.3em] text-white uppercase mb-3 font-sans">{get("contact_hero_eyebrow", "Kom i kontakt")}</p>
           <h1 className="font-display text-4xl md:text-6xl text-white">
-            Planera Er <em className="italic font-light text-white">Resa</em>
+            {get("contact_hero_title", "Planera Er Resa")}
           </h1>
         </div>
       </section>
@@ -41,14 +55,13 @@ export default function Contact() {
           <div className="grid lg:grid-cols-3 gap-12 lg:gap-16">
             {/* Contact Info */}
             <div className="lg:col-span-1">
-              <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Tala med oss</p>
+              <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">{get("contact_section_eyebrow", "Tala med oss")}</p>
               <h2 className="font-display text-3xl text-foreground mb-2">
-                Vi startar med ett<br />
-                <em className="italic font-light">Samtal</em>
+                {get("contact_section_title", "Vi startar med ett Samtal")}
               </h2>
               <div className="w-8 h-px bg-primary mb-8" />
               <p className="text-muted-foreground leading-relaxed mb-10 text-sm">
-                Föredrar du att ringa eller mejla direkt? Ingen mall — bara ett riktigt samtal. En dedikerad rådgivare återkommer normalt inom 24 timmar på vardagar.
+                {get("contact_intro", "Föredrar du att ringa eller mejla direkt? Ingen mall — bara ett riktigt samtal. En dedikerad rådgivare återkommer normalt inom 24 timmar på vardagar.")}
               </p>
               <div className="space-y-6">
                 {contactInfo.map((info) => (

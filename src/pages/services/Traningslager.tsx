@@ -73,7 +73,22 @@ const features = [
  "Lokal kontakt och support på plats",
 ];
 
+import { useSiteContent } from "@/hooks/useSiteContent";
+
+const TRAINING_KEYS = ["training_hero_eyebrow", "training_hero_title", "training_hero_tagline", "training_features"];
+
+const FALLBACK_TRAINING_FEATURES = [
+ "Transport och flygplatstransfer för hela laget",
+ "Boende anpassat för lag och ledare",
+ "Träningstider och planer enligt era önskemål",
+ "Mat och kost anpassad för idrottare",
+ "Möjlighet till träningsmatcher och möten",
+ "Lokal kontakt och support på plats",
+];
+
 export default function Traningslager() {
+ const { get, getArray } = useSiteContent(TRAINING_KEYS);
+ const editableFeatures = getArray("training_features", FALLBACK_TRAINING_FEATURES);
  return (
  <div className="min-h-screen">
  <Navbar />
@@ -86,14 +101,13 @@ export default function Traningslager() {
  </div>
  <div className="relative container mx-auto px-4 pb-14">
  <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
- Tjänster — Träningsläger
+ {get("training_hero_eyebrow", "Tjänster — Träningsläger")}
  </p>
  <h1 className="font-display text-4xl md:text-6xl text-white leading-tight">
- En värld där idrott<br />
- <em className="italic font-light text-white">och resor möts</em>
+ {get("training_hero_title", "En värld där idrott och resor möts")}
  </h1>
  <p className="text-white/70 mt-4 text-lg font-light max-w-xl">
- Träningsläger för fotboll, simning och friidrott — för föreningar, lag och grupper som vill ta träningen till nästa nivå.
+ {get("training_hero_tagline", "Träningsläger för fotboll, simning och friidrott — för föreningar, lag och grupper som vill ta träningen till nästa nivå.")}
  </p>
  <div className="mt-6 flex flex-wrap gap-3">
  <a href="#forfragan">
@@ -218,8 +232,8 @@ export default function Traningslager() {
  </p>
  </div>
  <ul className="space-y-3">
- {features.map((f) => (
- <li key={f} className="flex items-start gap-3 text-sm">
+ {editableFeatures.map((f, i) => (
+ <li key={i} className="flex items-start gap-3 text-sm">
  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
  <span className="text-foreground/80">{f}</span>
  </li>
