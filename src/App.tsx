@@ -48,8 +48,7 @@ import WeekendGetaway from "./pages/services/WeekendGetaway";
 import Konferens from "./pages/services/Konferens";
 import VIPService from "./pages/services/VIPService";
 import Traningslager from "./pages/services/Traningslager";
-import TeamPage from "./pages/services/TeamPage";
-import F1RacePage from "./pages/services/F1RacePage";
+import SportEntryPage from "./pages/services/SportEntryPage";
 import EventDetail from "./pages/EventDetail";
 import Checkout from "./pages/Checkout";
 import OrderConfirmation from "./pages/OrderConfirmation";
@@ -71,8 +70,8 @@ const App = () => (
               <Route path="/" element={<Home />} />
               <Route path="/services" element={<Services />} />
               <Route path="/services/sportresor" element={<Sportresor />} />
-              <Route path="/services/sportresor/fotboll/:team" element={<TeamPage />} />
-              <Route path="/services/sportresor/f1/:race" element={<F1RacePage />} />
+              {/* Generic sport entry page — drives /:sport/:entry for any sport in nav_sports */}
+              <Route path="/services/sportresor/:sport/:entry" element={<SportEntryPage />} />
               <Route path="/services/traningslager" element={<Traningslager />} />
               <Route path="/services/affarsresor" element={<Affarsresor />} />
               <Route path="/services/weekend-getaway" element={<WeekendGetaway />} />

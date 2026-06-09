@@ -14,18 +14,31 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { slugify as slug } from "@/data/sports";
-import { useFootballLeagues, useF1Nav, useTopMenu } from "@/hooks/useNavigation";
+import { useSports, useEntries, useTopMenu, type NavSport, type NavEntry } from "@/hooks/useNavigation";
 
 const Navbar = () => {
   const { user, signOut } = useAuth();
   const { isAdmin, isHost } = useUserRole();
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [openMenu, setOpenMenu] = useState<null | "fotboll" | "f1" | "sprak">(null);
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [mobileSubmenu, setMobileSubmenu] = useState<string | null>(null);
-  const footballLeagues = useFootballLeagues();
-  const f1Races = useF1Nav();
+  const sports = useSports();
+  const entries = useEntries();
   const topMenu = useTopMenu();
+
+  const entriesFor = (sportId: string) =>
+    entries.filter((e) => e.sport_id === sportId);
+  const groupedFor = (sportId: string) => {
+    const list = entriesFor(sportId);
+    const map = new Map<string, NavEntry[]>();
+    for (const e of list) {
+      const key = e.group_label ?? "Övrigt";
+      if (!map.has(key)) map.set(key, []);
+      map.get(key)!.push(e);
+    }
+    return Array.from(map.entries());
+  };
 
   return (
     <>
@@ -46,64 +59,71 @@ const Navbar = () => {
 
             {/* Desktop nav */}
             <div className="hidden lg:flex items-center gap-7">
-              {/* FOTBOLL mega menu */}
-              <div className="relative" onMouseEnter={() => setOpenMenu("fotboll")} onMouseLeave={() => setOpenMenu(null)}>
-                <button className="flex items-center gap-1 text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors py-2">
-                  Fotboll
-                  <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${openMenu === "fotboll" ? "rotate-180" : ""}`} />
-                </button>
-                {openMenu === "fotboll" && (
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 bg-card border border-border shadow-xl z-50 w-[760px] p-6 grid grid-cols-4 gap-6">
-                    {footballLeagues.map((lg) => (
-                      <div key={lg.league}>
-                        <Link
-                          to={`/services/sportresor#${slug(lg.league)}`}
-                          onClick={() => setOpenMenu(null)}
-                          className="block text-[11px] tracking-[0.2em] uppercase text-primary font-semibold mb-3 hover:underline"
-                        >
-                          {lg.league}
-                        </Link>
-                        <ul className="space-y-1.5">
-                          {lg.teams.map((team) => (
-                            <li key={team}>
-                              <Link
-                                to={`/services/sportresor/fotboll/${slug(team)}`}
-                                onClick={() => setOpenMenu(null)}
-                                className="text-sm text-foreground/80 hover:text-primary transition-colors"
-                              >
-                                {team}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
+              {sports.map((sport) => {
+                const isOpen = openMenu === sport.slug;
+                const sportEntries = entriesFor(sport.id);
+                if (!sportEntries.length) return null;
+                return (
+                  <div
+                    key={sport.id}
+                    className="relative"
+                    onMouseEnter={() => setOpenMenu(sport.slug)}
+                    onMouseLeave={() => setOpenMenu(null)}
+                  >
+                    <button className="flex items-center gap-1 text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors py-2">
+                      {sport.label}
+                      <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+                    </button>
+                    {isOpen && sport.menu_style === "grouped" && (
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 bg-card border border-border shadow-xl z-50 w-[760px] p-6 grid grid-cols-4 gap-6">
+                        {groupedFor(sport.id).map(([groupLabel, items]) => (
+                          <div key={groupLabel}>
+                            <Link
+                              to={`/services/sportresor#${slug(groupLabel)}`}
+                              onClick={() => setOpenMenu(null)}
+                              className="block text-[11px] tracking-[0.2em] uppercase text-primary font-semibold mb-3 hover:underline"
+                            >
+                              {groupLabel}
+                            </Link>
+                            <ul className="space-y-1.5">
+                              {items.map((entry) => (
+                                <li key={entry.id}>
+                                  <Link
+                                    to={`/services/sportresor/${sport.slug}/${entry.slug}`}
+                                    onClick={() => setOpenMenu(null)}
+                                    className="text-sm text-foreground/80 hover:text-primary transition-colors"
+                                  >
+                                    {entry.name}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    )}
+                    {isOpen && sport.menu_style === "list" && (
+                      <div className="absolute top-full left-0 bg-card border border-border shadow-xl z-50 min-w-[260px] py-2">
+                        {sportEntries.map((entry) => (
+                          <Link
+                            key={entry.id}
+                            to={`/services/sportresor/${sport.slug}/${entry.slug}`}
+                            onClick={() => setOpenMenu(null)}
+                            className="flex items-center justify-between gap-6 px-5 py-2.5 hover:bg-accent transition-colors group"
+                          >
+                            <span className="text-sm font-medium text-foreground group-hover:text-primary tracking-wide">
+                              {entry.name.replace(/s Grand Prix$/i, "").replace(/ Grand Prix$/i, "")}
+                            </span>
+                            {entry.short_date && (
+                              <span className="text-xs text-muted-foreground">{entry.short_date}</span>
+                            )}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-
-              {/* F1 dropdown */}
-              <div className="relative" onMouseEnter={() => setOpenMenu("f1")} onMouseLeave={() => setOpenMenu(null)}>
-                <button className="flex items-center gap-1 text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors py-2">
-                  F1
-                  <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${openMenu === "f1" ? "rotate-180" : ""}`} />
-                </button>
-                {openMenu === "f1" && (
-                  <div className="absolute top-full left-0 bg-card border border-border shadow-xl z-50 min-w-[260px] py-2">
-                    {f1Races.map((r) => (
-                      <Link
-                        key={r.label}
-                        to={`/services/sportresor/f1/${r.slug}`}
-                        onClick={() => setOpenMenu(null)}
-                        className="flex items-center justify-between gap-6 px-5 py-2.5 hover:bg-accent transition-colors group"
-                      >
-                        <span className="text-sm font-medium text-foreground group-hover:text-primary tracking-wide">{r.label}</span>
-                        <span className="text-xs text-muted-foreground">{r.date}</span>
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
+                );
+              })}
 
               {topMenu.map((item) => (
                 <Link
@@ -193,57 +213,58 @@ const Navbar = () => {
         {/* Mobile menu */}
         {mobileOpen && (
           <div className="lg:hidden border-t bg-card px-4 py-6 space-y-1 max-h-[calc(100vh-4rem)] overflow-y-auto">
-            {/* Fotboll */}
-            <button
-              className="w-full flex items-center justify-between py-3 px-2 text-sm font-medium tracking-wide text-foreground"
-              onClick={() => setMobileSubmenu(mobileSubmenu === "fotboll" ? null : "fotboll")}
-            >
-              Fotboll
-              <ChevronDown className={`h-4 w-4 transition-transform ${mobileSubmenu === "fotboll" ? "rotate-180" : ""}`} />
-            </button>
-            {mobileSubmenu === "fotboll" && (
-              <div className="pl-4 pb-2 space-y-3">
-                {footballLeagues.map((lg) => (
-                  <div key={lg.league}>
-                    <p className="text-[10px] tracking-[0.2em] uppercase text-primary font-semibold py-1">{lg.league}</p>
-                    {lg.teams.map((team) => (
-                      <Link
-                        key={team}
-                        to={`/services/sportresor/fotboll/${slug(team)}`}
-                        className="block py-1.5 px-2 text-sm text-foreground/80"
-                        onClick={() => setMobileOpen(false)}
-                      >
-                        {team}
-                      </Link>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* F1 */}
-            <button
-              className="w-full flex items-center justify-between py-3 px-2 text-sm font-medium tracking-wide text-foreground"
-              onClick={() => setMobileSubmenu(mobileSubmenu === "f1" ? null : "f1")}
-            >
-              F1
-              <ChevronDown className={`h-4 w-4 transition-transform ${mobileSubmenu === "f1" ? "rotate-180" : ""}`} />
-            </button>
-            {mobileSubmenu === "f1" && (
-              <div className="pl-4 pb-2">
-                {f1Races.map((r) => (
-                  <Link
-                    key={r.label}
-                    to={`/services/sportresor/f1/${r.slug}`}
-                    className="flex items-center justify-between py-2 px-2 text-sm"
-                    onClick={() => setMobileOpen(false)}
+            {sports.map((sport) => {
+              const sportEntries = entriesFor(sport.id);
+              if (!sportEntries.length) return null;
+              const isOpen = mobileSubmenu === sport.slug;
+              return (
+                <div key={sport.id}>
+                  <button
+                    className="w-full flex items-center justify-between py-3 px-2 text-sm font-medium tracking-wide text-foreground"
+                    onClick={() => setMobileSubmenu(isOpen ? null : sport.slug)}
                   >
-                    <span className="text-foreground/80">{r.label}</span>
-                    <span className="text-xs text-muted-foreground">{r.date}</span>
-                  </Link>
-                ))}
-              </div>
-            )}
+                    {sport.label}
+                    <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+                  </button>
+                  {isOpen && sport.menu_style === "grouped" && (
+                    <div className="pl-4 pb-2 space-y-3">
+                      {groupedFor(sport.id).map(([groupLabel, items]) => (
+                        <div key={groupLabel}>
+                          <p className="text-[10px] tracking-[0.2em] uppercase text-primary font-semibold py-1">{groupLabel}</p>
+                          {items.map((entry) => (
+                            <Link
+                              key={entry.id}
+                              to={`/services/sportresor/${sport.slug}/${entry.slug}`}
+                              className="block py-1.5 px-2 text-sm text-foreground/80"
+                              onClick={() => setMobileOpen(false)}
+                            >
+                              {entry.name}
+                            </Link>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {isOpen && sport.menu_style === "list" && (
+                    <div className="pl-4 pb-2">
+                      {sportEntries.map((entry) => (
+                        <Link
+                          key={entry.id}
+                          to={`/services/sportresor/${sport.slug}/${entry.slug}`}
+                          className="flex items-center justify-between py-2 px-2 text-sm"
+                          onClick={() => setMobileOpen(false)}
+                        >
+                          <span className="text-foreground/80">{entry.name}</span>
+                          {entry.short_date && (
+                            <span className="text-xs text-muted-foreground">{entry.short_date}</span>
+                          )}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
 
             {topMenu.map((item) => (
               <Link
