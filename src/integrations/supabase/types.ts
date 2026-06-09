@@ -329,6 +329,143 @@ export type Database = {
         }
         Relationships: []
       }
+      nav_menu_entries: {
+        Row: {
+          city: string | null
+          created_at: string
+          date_text: string | null
+          description: string | null
+          features_json: Json
+          group_label: string | null
+          hero_image_url: string | null
+          id: string
+          is_active: boolean
+          name: string
+          short_date: string | null
+          slug: string
+          sort_order: number
+          sport_id: string
+          tagline: string | null
+          updated_at: string
+          venue: string | null
+        }
+        Insert: {
+          city?: string | null
+          created_at?: string
+          date_text?: string | null
+          description?: string | null
+          features_json?: Json
+          group_label?: string | null
+          hero_image_url?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          short_date?: string | null
+          slug: string
+          sort_order?: number
+          sport_id: string
+          tagline?: string | null
+          updated_at?: string
+          venue?: string | null
+        }
+        Update: {
+          city?: string | null
+          created_at?: string
+          date_text?: string | null
+          description?: string | null
+          features_json?: Json
+          group_label?: string | null
+          hero_image_url?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          short_date?: string | null
+          slug?: string
+          sort_order?: number
+          sport_id?: string
+          tagline?: string | null
+          updated_at?: string
+          venue?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nav_menu_entries_sport_id_fkey"
+            columns: ["sport_id"]
+            isOneToOne: false
+            referencedRelation: "nav_sports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      nav_sports: {
+        Row: {
+          created_at: string
+          entry_kind: string
+          id: string
+          is_active: boolean
+          label: string
+          menu_style: string
+          slug: string
+          sort_order: number
+          sport_filter: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          entry_kind?: string
+          id?: string
+          is_active?: boolean
+          label: string
+          menu_style?: string
+          slug: string
+          sort_order?: number
+          sport_filter?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          entry_kind?: string
+          id?: string
+          is_active?: boolean
+          label?: string
+          menu_style?: string
+          slug?: string
+          sort_order?: number
+          sport_filter?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      nav_top_menu_items: {
+        Row: {
+          created_at: string
+          href: string
+          id: string
+          is_active: boolean
+          label: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          href: string
+          id?: string
+          is_active?: boolean
+          label: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          href?: string
+          id?: string
+          is_active?: boolean
+          label?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       newsletter_signups: {
         Row: {
           created_at: string
