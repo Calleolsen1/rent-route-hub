@@ -487,8 +487,8 @@ function SportsEditor() {
                     onDelete={delEntry}
                     onToggleActive={toggleEntryActive}
                     onToggleShowInMenu={toggleEntryShowInMenu}
-                    onRenameLeague={(oldLabel, newLabel) => renameLeague(sport.id, oldLabel, newLabel)}
-                    onDeleteLeague={(label) => deleteLeague(sport.id, label)}
+                    onRenameLeague={async (oldLabel, newLabel) => { await renameLeague(sport.id, oldLabel, newLabel); }}
+                    onDeleteLeague={async (label) => { await deleteLeague(sport.id, label); }}
                   />
                 )}
               </div>
