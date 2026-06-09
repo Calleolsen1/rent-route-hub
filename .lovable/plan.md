@@ -1,18 +1,43 @@
-## Restore the hero search bar
+## Plan: Deploya alla edge functions
 
-The Intrepid-style search bar above the hero was removed in a recent change. I'll add it back exactly as it was, sitting between the navbar and the hero carousel on the Home page.
+Kör `supabase--deploy_edge_functions` med samtliga 21 funktioner i `supabase/functions/`:
 
-### What it looks like
-A single rounded pill, full-width (max 4xl, centered), containing:
-- MapPin icon + text input — placeholder "Sök destination, lag, race eller resetyp..."
-- Vertical divider + date range trigger (Calendar icon, "När?")
-- Primary "Sök" button with search icon
+**XS2 integration (4):**
+- xs2-get-event-tickets
+- xs2-reserve
+- xs2-renew-reservation
+- xs2-sync
 
-### Behavior
-- Submitting navigates to `/search?q=<query>` (or `/search` if empty), matching the previous implementation.
-- Note: there is no `/search` route yet, so the destination page will 404 until built. I can scaffold a basic search results page in a follow-up if you want — let me know.
+**Betalningar (4):**
+- create-checkout
+- create-quote-checkout
+- payments-webhook
+- sync-stripe-price
 
-### Files
-- `src/pages/Home.tsx` — re-add `heroQuery` state, `handleHeroSearch`, and the `<section>` containing the form, placed directly under `<Navbar />` and above the hero carousel.
+**Fakturor & quotes (4):**
+- get-invoice
+- send-invoice
+- send-group-invoice
+- send-quote-email
 
-No other files change.
+**Konton & admin (5):**
+- create-client-account
+- create-demo-accounts
+- admin-check-config
+- admin-refund-order
+- admin-send-message
+
+**Övrigt (4):**
+- send-email
+- submit-inquiry
+- get-ticket-prices
+
+## Efter deploy
+1. Kontrollera deploy-output — alla ska visa "deployed".
+2. Probe `/admin/diagnostics` så XS2_API_KEY + XS2_BASE_URL visar gröna bockar och `xs2-get-event-tickets` returnerar ok.
+3. Rapportera tillbaka resultatet till dig så du kan säga åt Claude "klart, kör vidare".
+
+## Workflow framåt för Claude Code
+- Frontend → git push, Lovable plockar upp.
+- Migrations → be mig köra `supabase--migration` eller paste i SQL editor.
+- Edge functions → be mig köra deploy (du kan inte själv köra `npx supabase functions deploy` mot ett Lovable-managed projekt utan service-token).
