@@ -938,6 +938,50 @@ export type Database = {
         }
         Relationships: []
       }
+      system_errors: {
+        Row: {
+          created_at: string
+          details: Json | null
+          id: string
+          kind: string
+          message: string
+          order_id: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          resolved_note: string | null
+        }
+        Insert: {
+          created_at?: string
+          details?: Json | null
+          id?: string
+          kind: string
+          message: string
+          order_id?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          resolved_note?: string | null
+        }
+        Update: {
+          created_at?: string
+          details?: Json | null
+          id?: string
+          kind?: string
+          message?: string
+          order_id?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          resolved_note?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "system_errors_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       testimonials: {
         Row: {
           author: string
