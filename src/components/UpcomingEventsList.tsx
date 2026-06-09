@@ -134,22 +134,37 @@ export default function UpcomingEventsList({
             <Link
               key={e.id}
               to={`/sport/event/${e.id}`}
-              className="group bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-shadow"
+              className="group bg-card border border-border rounded-xl overflow-hidden hover:shadow-xl hover:-translate-y-0.5 transition-all flex flex-col"
             >
               {e.cover_image_url && (
-                <div className="aspect-[16/10] overflow-hidden">
+                <div className="aspect-[16/10] overflow-hidden relative">
                   <img
                     src={e.cover_image_url}
                     alt={headline ?? ""}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
+                  {e.min_price_sek != null && e.min_price_sek > 0 && (
+                    <div className="absolute top-3 right-3 bg-background/95 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-lg border border-border">
+                      <PriceTag
+                        currentSek={e.min_price_sek}
+                        compareAt={{
+                          eventSek: e.compare_at_price_sek,
+                          eventPct: e.compare_at_pct,
+                          defaultPct,
+                        }}
+                        variant="card"
+                        showFrom={true}
+                        className="!text-sm"
+                      />
+                    </div>
+                  )}
                 </div>
               )}
-              <div className="p-5">
+              <div className="p-5 flex flex-col flex-1">
                 <p className="text-[10px] tracking-[0.25em] uppercase text-primary font-sans mb-2">
                   {e.tournament_name}
                 </p>
-                <h3 className="font-display text-xl mb-2">{headline}</h3>
+                <h3 className="font-display text-xl mb-3">{headline}</h3>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
                   <Calendar className="h-3.5 w-3.5" />
                   <span>{formatEventDate(e.starts_at)}</span>
@@ -161,10 +176,7 @@ export default function UpcomingEventsList({
                     {e.city ? `, ${e.city}` : ""}
                   </span>
                 </div>
-                <div className="flex items-center justify-between gap-3">
-                  <Button size="sm" variant="outline" className="rounded-full text-xs">
-                    Visa biljetter <ArrowRight className="ml-1 h-3 w-3" />
-                  </Button>
+                <div className="mt-auto pt-4 border-t border-border flex items-end justify-between gap-3">
                   <PriceTag
                     currentSek={e.min_price_sek}
                     compareAt={{
@@ -172,7 +184,11 @@ export default function UpcomingEventsList({
                       eventPct: e.compare_at_pct,
                       defaultPct,
                     }}
+                    variant="large"
                   />
+                  <Button size="sm" className="rounded-full text-xs bg-primary hover:bg-primary/90 shrink-0">
+                    Köp <ArrowRight className="ml-1 h-3 w-3" />
+                  </Button>
                 </div>
               </div>
             </Link>
