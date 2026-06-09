@@ -111,9 +111,30 @@ export function SearchTypeahead({
     if (q.length < 2) return [];
     const out: Suggestion[] = [];
 
+    // Pre-compute: names of race-style landing pages, normalized for fuzzy
+    // matching. Used below to suppress duplicate event rows for F1 — the
+    // landing page already covers the same scheduled race, so showing both
+    // a "MATCH Monaco Grand Prix" and a "RACE Monacos Grand Prix" is just
+    // two doors to the same room.
+    const normalizeRace = (name: string) =>
+      name
+        .toLowerCase()
+        .replace(/\s*grand\s*prix\s*$/i, "")
+        .replace(/s$/, "")
+        .trim();
+    const racePageNames = new Set<string>();
+    for (const entry of entries) {
+      if (entry.is_active === false) continue;
+      const sport = sportById.get(entry.sport_id);
+      if (sport?.entry_kind !== "race") continue;
+      racePageNames.add(normalizeRace(entry.name));
+    }
+
     // 1. Specific upcoming games (from `events`)
     for (const e of eventHits) {
       const sportSlug = e.sport === "soccer" ? "fotboll" : e.sport === "formula1" ? "f1" : e.sport;
+      // Suppress F1 events that are already represented by a race landing page
+      if (e.race_name && racePageNames.has(normalizeRace(e.race_name))) continue;
       const headline = e.sport === "soccer"
         ? `${e.home_team ?? ""} vs ${e.away_team ?? ""}`.trim()
         : e.race_name ?? "Event";
