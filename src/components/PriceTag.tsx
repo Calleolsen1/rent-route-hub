@@ -1,25 +1,67 @@
 import { formatSek } from "@/lib/formatSek";
 
 /**
- * Resolves the displayed compare-at value with this priority:
- *   1. Explicit compareAtSek (per-event override or xs2 face_value)
- *   2. Synthetic from defaultPct (currentSek * (1 + pct/100))
- *   3. None (no strikethrough)
+ * Inputs covering the full compare-at priority chain. All optional —
+ * callers pass whichever levels apply to their render context.
  *
- * Returns null when no compare-at applies or when it would be <= current.
+ * Priority (most specific wins; SEK beats % at the same level):
+ *   1. categorySek      → use as-is
+ *   2. categoryPct      → current × (1 + pct/100)
+ *   3. eventSek         → use as-is
+ *   4. eventPct         → current × (1 + pct/100)
+ *   5. defaultPct       → current × (1 + pct/100)
+ *
+ * Returns null when nothing produces a value strictly greater than current.
  */
+export type ResolveInput = {
+  categorySek?: number | null;
+  categoryPct?: number | null;
+  eventSek?: number | null;
+  eventPct?: number | null;
+  defaultPct?: number | null;
+};
+
+function fromPct(currentSek: number, pct: number | null | undefined): number | null {
+  const p = Number(pct);
+  if (!Number.isFinite(p) || p <= 0) return null;
+  return Math.round(currentSek * (1 + p / 100));
+}
+
+function asExplicitSek(sek: number | null | undefined): number | null {
+  const v = Number(sek);
+  return Number.isFinite(v) && v > 0 ? Math.round(v) : null;
+}
+
 export function resolveCompareAt(
   currentSek: number | null | undefined,
-  compareAtSek: number | null | undefined,
-  defaultPct: number | null | undefined,
+  /**
+   * Legacy positional API: a single explicit SEK override.
+   * Pass an object to use the full priority chain.
+   */
+  compareAtSekOrInput?: number | null | ResolveInput,
+  defaultPctLegacy?: number | null,
 ): number | null {
   const cur = Number(currentSek);
   if (!Number.isFinite(cur) || cur <= 0) return null;
-  const explicit = Number(compareAtSek);
-  if (Number.isFinite(explicit) && explicit > cur) return Math.round(explicit);
-  const pct = Number(defaultPct);
-  if (Number.isFinite(pct) && pct > 0) {
-    return Math.round(cur * (1 + pct / 100));
+
+  // Legacy two-arg call site → preserve behavior
+  if (typeof compareAtSekOrInput !== "object" || compareAtSekOrInput === null) {
+    const explicit = asExplicitSek(compareAtSekOrInput as number | null | undefined);
+    if (explicit && explicit > cur) return explicit;
+    const synth = fromPct(cur, defaultPctLegacy);
+    return synth && synth > cur ? synth : null;
+  }
+
+  const input = compareAtSekOrInput;
+  const candidates: Array<number | null> = [
+    asExplicitSek(input.categorySek),
+    fromPct(cur, input.categoryPct),
+    asExplicitSek(input.eventSek),
+    fromPct(cur, input.eventPct),
+    fromPct(cur, input.defaultPct),
+  ];
+  for (const c of candidates) {
+    if (c && c > cur) return c;
   }
   return null;
 }
@@ -37,7 +79,10 @@ export function resolveCompareAt(
  */
 type Props = {
   currentSek?: number | null;
+  /** Legacy single-explicit-SEK override. Prefer `compareAt` for multi-level resolution. */
   compareAtSek?: number | null;
+  /** Multi-level override input — overrides `compareAtSek` and `defaultPct` if provided. */
+  compareAt?: ResolveInput;
   defaultPct?: number | null;
   /** Show the "Från" prefix. Default true — turn off for single-ticket views where price is exact. */
   showFrom?: boolean;
@@ -51,6 +96,7 @@ type Props = {
 export function PriceTag({
   currentSek,
   compareAtSek,
+  compareAt: compareAtInput,
   defaultPct,
   showFrom = true,
   variant = "card",
@@ -65,7 +111,9 @@ export function PriceTag({
       </span>
     );
   }
-  const compareAt = resolveCompareAt(cur, compareAtSek, defaultPct);
+  const compareAt = compareAtInput
+    ? resolveCompareAt(cur, compareAtInput)
+    : resolveCompareAt(cur, compareAtSek, defaultPct);
   const pctOff = compareAt
     ? Math.round(((compareAt - cur) / compareAt) * 100)
     : null;

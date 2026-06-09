@@ -99,9 +99,9 @@ const fallbackHeroSlides: HeroSlide[] = [
 // Inquiry-funnel tiles (group / training / conference) — these aren't xs2
 // ticket events, they're CTAs into the inquiry form, so they stay static.
 const inquiryOffers: FeaturedOffer[] = [
-  { image: offerLisbon, title: "Gruppresa Lissabon", date: "Q1 2027", tag: "Grupp", days: "5 dagar", fromPrice: null, compareAtPrice: null, currentPriceSek: null, href: "/group-travel", isNew: false },
-  { image: offerLaManga, title: "Träningsläger La Manga", date: "Mars 2027", tag: "Träning", days: "7 dagar", fromPrice: null, compareAtPrice: null, currentPriceSek: null, href: "/services/traningslager", isNew: false },
-  { image: offerMallorca, title: "Konferens Mallorca", date: "Maj 2027", tag: "Konferens", days: "4 dagar", fromPrice: null, compareAtPrice: null, currentPriceSek: null, href: "/group-travel", isNew: false },
+  { image: offerLisbon, title: "Gruppresa Lissabon", date: "Q1 2027", tag: "Grupp", days: "5 dagar", fromPrice: null, compareAtPrice: null, compareAtPct: null, currentPriceSek: null, href: "/group-travel", isNew: false },
+  { image: offerLaManga, title: "Träningsläger La Manga", date: "Mars 2027", tag: "Träning", days: "7 dagar", fromPrice: null, compareAtPrice: null, compareAtPct: null, currentPriceSek: null, href: "/services/traningslager", isNew: false },
+  { image: offerMallorca, title: "Konferens Mallorca", date: "Maj 2027", tag: "Konferens", days: "4 dagar", fromPrice: null, compareAtPrice: null, compareAtPct: null, currentPriceSek: null, href: "/group-travel", isNew: false },
 ];
 
 type FeaturedOffer = {
@@ -112,6 +112,7 @@ type FeaturedOffer = {
   days: string | null;
   fromPrice: string | null;
   compareAtPrice: number | null;
+  compareAtPct: number | null;
   currentPriceSek: number | null;
   href: string;
   isNew: boolean;
@@ -135,6 +136,7 @@ function mapEventToOffer(ev: {
   ends_at: string | null;
   min_price_sek: number | null;
   compare_at_price_sek: number | null;
+  compare_at_pct: number | null;
 }): FeaturedOffer {
   const title = ev.sport === "soccer"
     ? `${ev.home_team ?? ""} – ${ev.away_team ?? ""}`.trim()
@@ -150,6 +152,7 @@ function mapEventToOffer(ev: {
     days,
     fromPrice: ev.min_price_sek ? new Intl.NumberFormat("sv-SE").format(ev.min_price_sek) : null,
     compareAtPrice: ev.compare_at_price_sek != null ? Number(ev.compare_at_price_sek) : null,
+    compareAtPct: ev.compare_at_pct != null ? Number(ev.compare_at_pct) : null,
     currentPriceSek: ev.min_price_sek != null ? Number(ev.min_price_sek) : null,
     href: `/sport/event/${ev.id}`,
     isNew: false,
@@ -359,7 +362,7 @@ const Home = () => {
       const { data } = await (supabase as any)
         .from("events")
         .select(
-          "id, sport, home_team, away_team, race_name, tournament_name, starts_at, ends_at, cover_image_url, min_price_sek, compare_at_price_sek",
+          "id, sport, home_team, away_team, race_name, tournament_name, starts_at, ends_at, cover_image_url, min_price_sek, compare_at_price_sek, compare_at_pct",
         )
         .eq("is_featured", true)
         .eq("status", "upcoming")
@@ -576,8 +579,11 @@ const Home = () => {
                       <div className="border-t border-border/60 pt-4">
                         <PriceTag
                           currentSek={offer.currentPriceSek}
-                          compareAtSek={offer.compareAtPrice}
-                          defaultPct={compareAtDefaultPct}
+                          compareAt={{
+                            eventSek: offer.compareAtPrice,
+                            eventPct: offer.compareAtPct,
+                            defaultPct: compareAtDefaultPct,
+                          }}
                         />
                       </div>
                     </div>

@@ -30,6 +30,7 @@ type EventRow = {
   status: string;
   min_price_sek: number | null;
   compare_at_price_sek: number | null;
+  compare_at_pct: number | null;
 };
 
 type CategoryRow = {
@@ -41,6 +42,8 @@ type CategoryRow = {
   unit_price_sek: number;
   currency: string;
   qty_available: number;
+  compare_at_price_sek: number | null;
+  compare_at_pct: number | null;
 };
 
 type ReserveLine = {
@@ -378,7 +381,13 @@ export default function EventDetail() {
                           ) : (
                             <PriceTag
                               currentSek={o.price}
-                              defaultPct={compareAtDefaultPct}
+                              compareAt={{
+                                categorySek: o.cat?.compare_at_price_sek,
+                                categoryPct: o.cat?.compare_at_pct,
+                                eventSek: event.compare_at_price_sek,
+                                eventPct: event.compare_at_pct,
+                                defaultPct: compareAtDefaultPct,
+                              }}
                               showFrom={false}
                             />
                           )}
@@ -414,7 +423,13 @@ export default function EventDetail() {
                         "…"
                       ) : (
                         (() => {
-                          const compare = resolveCompareAt(selected.price, null, compareAtDefaultPct);
+                          const compare = resolveCompareAt(selected.price, {
+                            categorySek: selected.cat?.compare_at_price_sek,
+                            categoryPct: selected.cat?.compare_at_pct,
+                            eventSek: event.compare_at_price_sek,
+                            eventPct: event.compare_at_pct,
+                            defaultPct: compareAtDefaultPct,
+                          });
                           return compare ? (
                             <>
                               <span className="text-foreground/40 line-through mr-1.5">{formatSek(compare)}</span>
@@ -458,7 +473,17 @@ export default function EventDetail() {
                   <div className="flex items-center justify-between border-t border-border pt-4 mb-6">
                     <span className="font-medium">Totalt</span>
                     {(() => {
-                      const compare = resolveCompareAt(total, null, compareAtDefaultPct);
+                      const compare = resolveCompareAt(total, {
+                        categorySek: selected.cat?.compare_at_price_sek != null
+                          ? Number(selected.cat.compare_at_price_sek) * qty
+                          : null,
+                        categoryPct: selected.cat?.compare_at_pct,
+                        eventSek: event.compare_at_price_sek != null
+                          ? Number(event.compare_at_price_sek) * qty
+                          : null,
+                        eventPct: event.compare_at_pct,
+                        defaultPct: compareAtDefaultPct,
+                      });
                       return compare ? (
                         <div className="flex items-baseline gap-2">
                           <span className="text-base text-foreground/40 line-through">{formatSek(compare)}</span>

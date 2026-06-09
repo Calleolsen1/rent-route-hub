@@ -12,7 +12,8 @@ import { ImageUploader } from "@/components/admin/ImageUploader";
 import { ManualEventDialog } from "@/components/admin/ManualEventDialog";
 import { CategoryDialog } from "@/components/admin/CategoryDialog";
 import { BulkMarkupDialog } from "@/components/admin/BulkMarkupDialog";
-import { ChevronDown, ChevronRight, Percent } from "lucide-react";
+import { BulkCompareAtDialog } from "@/components/admin/BulkCompareAtDialog";
+import { ChevronDown, ChevronRight, Percent, Tag } from "lucide-react";
 
 type Category = {
   id: string;
@@ -22,6 +23,8 @@ type Category = {
   stripe_price_id: string | null;
   markup_pct: number;
   markup_fixed_sek: number;
+  compare_at_price_sek: number | null;
+  compare_at_pct: number | null;
 };
 
 type EventRow = {
@@ -40,6 +43,7 @@ type EventRow = {
   cover_image_url: string | null;
   min_price_sek: number | null;
   compare_at_price_sek: number | null;
+  compare_at_pct: number | null;
   ticket_categories: Category[];
 };
 
@@ -82,12 +86,16 @@ export default function AdminTickets() {
   const [featuredFilter, setFeaturedFilter] = useState<"all" | "featured" | "not_featured">("all");
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [bulkTarget, setBulkTarget] = useState<{ eventIds: string[]; label: string } | null>(null);
+  const [bulkCompareTarget, setBulkCompareTarget] = useState<
+    | { kind: "sport" | "tournament"; value: string; label: string }
+    | null
+  >(null);
 
   const load = async () => {
     const [{ data: ev }, { data: dels }, { data: logs }] = await Promise.all([
       (supabase as any)
         .from("events")
-        .select("id, source, is_featured, sport, tournament_name, home_team, away_team, race_name, venue_name, city, starts_at, status, cover_image_url, min_price_sek, compare_at_price_sek, ticket_categories(id, name, unit_price_sek, qty_available, stripe_price_id, markup_pct, markup_fixed_sek)")
+        .select("id, source, is_featured, sport, tournament_name, home_team, away_team, race_name, venue_name, city, starts_at, status, cover_image_url, min_price_sek, compare_at_price_sek, compare_at_pct, ticket_categories(id, name, unit_price_sek, qty_available, stripe_price_id, markup_pct, markup_fixed_sek, compare_at_price_sek, compare_at_pct)")
         .order("starts_at", { ascending: true }),
       supabase
         .from("ticket_deliveries")
@@ -151,23 +159,81 @@ export default function AdminTickets() {
     }
   };
 
-  const saveCompareAt = async (eventId: string, value: number | null) => {
+  const saveCompareAt = async (
+    eventId: string,
+    value: { sek: number | null; pct: number | null },
+  ) => {
     setBusy(eventId);
     try {
       const { error } = await (supabase as any)
         .from("events")
-        .update({ compare_at_price_sek: value })
+        .update({
+          compare_at_price_sek: value.sek,
+          compare_at_pct: value.pct,
+        })
         .eq("id", eventId);
       if (error) throw error;
       setEvents((prev) =>
-        prev.map((e) => (e.id === eventId ? { ...e, compare_at_price_sek: value } : e)),
+        prev.map((e) =>
+          e.id === eventId
+            ? { ...e, compare_at_price_sek: value.sek, compare_at_pct: value.pct }
+            : e,
+        ),
       );
-      toast.success(value == null ? "Jämförelsepris rensat" : "Jämförelsepris sparat");
+      const empty = value.sek == null && value.pct == null;
+      toast.success(empty ? "Jämförelsepris rensat" : "Jämförelsepris sparat");
     } catch (e: any) {
       toast.error(e.message ?? "Kunde inte spara");
     } finally {
       setBusy(null);
     }
+  };
+
+  const saveCategoryCompareAt = async (
+    categoryId: string,
+    value: { sek: number | null; pct: number | null },
+  ) => {
+    setBusy(categoryId);
+    try {
+      const { error } = await (supabase as any)
+        .from("ticket_categories")
+        .update({
+          compare_at_price_sek: value.sek,
+          compare_at_pct: value.pct,
+        })
+        .eq("id", categoryId);
+      if (error) throw error;
+      setEvents((prev) =>
+        prev.map((e) => ({
+          ...e,
+          ticket_categories: e.ticket_categories?.map((c) =>
+            c.id === categoryId
+              ? { ...c, compare_at_price_sek: value.sek, compare_at_pct: value.pct }
+              : c,
+          ),
+        })),
+      );
+      const empty = value.sek == null && value.pct == null;
+      toast.success(empty ? "Jämförelsepris rensat" : "Jämförelsepris sparat");
+    } catch (e: any) {
+      toast.error(e.message ?? "Kunde inte spara");
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const applyGroupCompareAtPct = async (
+    target: { sport?: string; tournament?: string },
+    pct: number | null,
+  ): Promise<number> => {
+    const { data, error } = await (supabase as any).rpc("set_group_compare_at_pct", {
+      p_pct: pct ?? 0,
+      p_sport: target.sport ?? null,
+      p_tournament_name: target.tournament ?? null,
+    });
+    if (error) throw error;
+    await load();
+    return Number(data ?? 0);
   };
 
   const setCoverImage = async (eventId: string, url: string | null) => {
@@ -412,10 +478,25 @@ export default function AdminTickets() {
             const sportTotal = Array.from(tournaments.values()).reduce((s, evs) => s + evs.length, 0);
             return (
               <div key={sport} className="space-y-3">
-                <h3 className="font-display text-2xl pt-4 border-t border-border">
-                  {SPORT_LABEL[sport] ?? sport}
-                  <span className="text-sm text-muted-foreground font-sans ml-3">{sportTotal} st</span>
-                </h3>
+                <div className="flex items-center justify-between pt-4 border-t border-border gap-3 flex-wrap">
+                  <h3 className="font-display text-2xl">
+                    {SPORT_LABEL[sport] ?? sport}
+                    <span className="text-sm text-muted-foreground font-sans ml-3">{sportTotal} st</span>
+                  </h3>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() =>
+                      setBulkCompareTarget({
+                        kind: "sport",
+                        value: sport,
+                        label: `${SPORT_LABEL[sport] ?? sport} (${sportTotal} event)`,
+                      })
+                    }
+                  >
+                    <Tag className="h-3 w-3 mr-1.5" /> Jämförelsepris för sporten
+                  </Button>
+                </div>
                 {sortedTournaments.map((tournament) => {
                   const evs = tournaments.get(tournament)!;
                   const groupKey = `${sport}::${tournament}`;
@@ -438,19 +519,35 @@ export default function AdminTickets() {
                           <span className="font-medium truncate">{tournament}</span>
                           <span className="text-xs text-muted-foreground">{evs.length} st</span>
                         </button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setBulkTarget({
-                              eventIds: evs.map((x) => x.id),
-                              label: `${tournament} (${evs.length} ${evs.length === 1 ? "match" : "matcher"})`,
-                            });
-                          }}
-                        >
-                          <Percent className="h-3 w-3 mr-1.5" /> Sätt påslag för gruppen
-                        </Button>
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setBulkCompareTarget({
+                                kind: "tournament",
+                                value: tournament,
+                                label: `${tournament} (${evs.length} ${evs.length === 1 ? "event" : "event"})`,
+                              });
+                            }}
+                          >
+                            <Tag className="h-3 w-3 mr-1.5" /> Jämförelsepris
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setBulkTarget({
+                                eventIds: evs.map((x) => x.id),
+                                label: `${tournament} (${evs.length} ${evs.length === 1 ? "match" : "matcher"})`,
+                              });
+                            }}
+                          >
+                            <Percent className="h-3 w-3 mr-1.5" /> Påslag
+                          </Button>
+                        </div>
                       </div>
                       {!isCollapsed && (
                         <div className="space-y-3 p-4">
@@ -498,11 +595,13 @@ export default function AdminTickets() {
               </div>
 
               <CompareAtEditor
-                eventId={ev.id}
+                targetId={ev.id}
                 minPriceSek={ev.min_price_sek}
-                value={ev.compare_at_price_sek}
+                valueSek={ev.compare_at_price_sek}
+                valuePct={ev.compare_at_pct}
                 busy={busy === ev.id}
                 onSave={saveCompareAt}
+                label="Jämförelsepris (överstruket)"
               />
 
               <div className="space-y-2">
@@ -514,6 +613,7 @@ export default function AdminTickets() {
                     busy={busy}
                     onSync={syncStripe}
                     onSaveMarkup={saveMarkup}
+                    onSaveCompareAt={saveCategoryCompareAt}
                   />
                 ))}
                 {!ev.ticket_categories?.length && (
@@ -560,6 +660,20 @@ export default function AdminTickets() {
           onOpenChange={(o) => !o && setBulkTarget(null)}
           eventIds={bulkTarget.eventIds}
           groupLabel={bulkTarget.label}
+          onApplied={load}
+        />
+      )}
+
+      {bulkCompareTarget && (
+        <BulkCompareAtDialog
+          open={!!bulkCompareTarget}
+          onOpenChange={(o) => !o && setBulkCompareTarget(null)}
+          target={
+            bulkCompareTarget.kind === "sport"
+              ? { sport: bulkCompareTarget.value }
+              : { tournament: bulkCompareTarget.value }
+          }
+          groupLabel={bulkCompareTarget.label}
           onApplied={load}
         />
       )}
@@ -632,96 +746,145 @@ export default function AdminTickets() {
 }
 
 function CompareAtEditor({
-  eventId,
+  targetId,
   minPriceSek,
-  value,
+  valueSek,
+  valuePct,
   busy,
   onSave,
+  label,
+  compact = false,
 }: {
-  eventId: string;
+  targetId: string;
   minPriceSek: number | null;
-  value: number | null;
+  valueSek: number | null;
+  valuePct: number | null;
   busy: boolean;
-  onSave: (eventId: string, value: number | null) => void;
+  onSave: (id: string, value: { sek: number | null; pct: number | null }) => void;
+  label: string;
+  /** Tighter layout for the per-category row (no warning, no border). */
+  compact?: boolean;
 }) {
-  const [text, setText] = useState<string>(value != null ? String(value) : "");
+  const [sekText, setSekText] = useState<string>(valueSek != null ? String(valueSek) : "");
+  const [pctText, setPctText] = useState<string>(valuePct != null ? String(valuePct) : "");
   useEffect(() => {
-    setText(value != null ? String(value) : "");
-  }, [value]);
+    setSekText(valueSek != null ? String(valueSek) : "");
+    setPctText(valuePct != null ? String(valuePct) : "");
+  }, [valueSek, valuePct]);
 
   const cur = Number(minPriceSek);
-  const compare = Number(text);
+  const sekNum = Number(sekText);
+  const pctNum = Number(pctText);
+  // Live preview — SEK wins, then pct
+  const previewCompare = Number.isFinite(sekNum) && sekNum > cur
+    ? sekNum
+    : Number.isFinite(pctNum) && pctNum > 0 && cur > 0
+      ? Math.round(cur * (1 + pctNum / 100))
+      : null;
   const pctOff =
-    Number.isFinite(cur) && cur > 0 && Number.isFinite(compare) && compare > cur
-      ? Math.round(((compare - cur) / compare) * 100)
+    previewCompare && cur > 0
+      ? Math.round(((previewCompare - cur) / previewCompare) * 100)
       : null;
 
-  const commit = () => {
-    const trimmed = text.trim();
-    if (trimmed === "") {
-      if (value != null) onSave(eventId, null);
-      return;
-    }
-    const n = Number(trimmed);
-    if (!Number.isFinite(n) || n < 0) {
+  const commitSek = () => {
+    const t = sekText.trim();
+    const next = t === "" ? null : Number(t);
+    if (next != null && (!Number.isFinite(next) || next < 0)) {
       toast.error("Ange ett giltigt belopp eller lämna tomt");
-      setText(value != null ? String(value) : "");
+      setSekText(valueSek != null ? String(valueSek) : "");
       return;
     }
-    if (n === Number(value)) return;
-    onSave(eventId, n);
+    if (next === valueSek) return;
+    // When SEK is set, clear pct on the same level (SEK wins anyway)
+    onSave(targetId, { sek: next, pct: next != null ? null : valuePct });
+  };
+  const commitPct = () => {
+    const t = pctText.trim();
+    const next = t === "" ? null : Number(t);
+    if (next != null && (!Number.isFinite(next) || next < 0 || next > 500)) {
+      toast.error("Procent måste vara 0-500 eller tomt");
+      setPctText(valuePct != null ? String(valuePct) : "");
+      return;
+    }
+    if (next === valuePct) return;
+    onSave(targetId, { sek: next != null ? null : valueSek, pct: next });
+  };
+  const clear = () => {
+    setSekText("");
+    setPctText("");
+    onSave(targetId, { sek: null, pct: null });
   };
 
   return (
-    <div className="mb-4 pb-4 border-b border-border">
-      <div className="flex items-end gap-3 flex-wrap">
-        <div className="flex-1 min-w-[200px] max-w-[260px]">
-          <label className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground block mb-1">
-            Jämförelsepris (överstruket)
-          </label>
-          <div className="relative">
+    <div className={compact ? "" : "mb-4 pb-4 border-b border-border"}>
+      {!compact && (
+        <p className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground mb-2">
+          {label}
+        </p>
+      )}
+      <div className="flex items-end gap-2 flex-wrap">
+        <div className="w-[120px]">
+          {compact && <label className="text-[10px] uppercase tracking-wider text-muted-foreground">SEK</label>}
+          <div className="relative mt-0.5">
             <Input
               type="number"
               min={0}
               step="1"
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              onBlur={commit}
-              placeholder={cur > 0 ? `t.ex. ${Math.round(cur * 1.2)}` : "tomt = av"}
+              value={sekText}
+              onChange={(e) => setSekText(e.target.value)}
+              onBlur={commitSek}
+              placeholder={cur > 0 ? `t.ex. ${Math.round(cur * 1.2)}` : "tomt"}
               disabled={busy}
-              className="h-9 pr-12"
+              className="h-9 pr-10 text-sm"
             />
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">SEK</span>
+            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">SEK</span>
           </div>
         </div>
-        <div className="text-xs text-muted-foreground pb-2">
+        <span className="text-xs text-muted-foreground pb-2">eller</span>
+        <div className="w-[100px]">
+          {compact && <label className="text-[10px] uppercase tracking-wider text-muted-foreground">%</label>}
+          <div className="relative mt-0.5">
+            <Input
+              type="number"
+              min={0}
+              max={500}
+              step="1"
+              value={pctText}
+              onChange={(e) => setPctText(e.target.value)}
+              onBlur={commitPct}
+              placeholder="tomt"
+              disabled={busy}
+              className="h-9 pr-7 text-sm"
+            />
+            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">%</span>
+          </div>
+        </div>
+        <div className="text-xs text-muted-foreground pb-2 flex-1 min-w-[160px]">
           {cur > 0 ? (
-            <>
-              Pris från <strong>{formatSek(cur)}</strong>
-              {pctOff != null && <> · visas som <strong>−{pctOff}%</strong></>}
-            </>
+            previewCompare ? (
+              <>
+                <span className="line-through">{formatSek(previewCompare)}</span> →{" "}
+                <strong>{formatSek(Math.round(cur))}</strong>{" "}
+                <span className="text-primary font-semibold">−{pctOff}%</span>
+              </>
+            ) : (
+              <>Pris från <strong>{formatSek(cur)}</strong> — fyll i SEK eller % för att visa rabatt</>
+            )
           ) : (
-            <>Pris saknas — kör xs2-synk eller lägg till kategori först.</>
+            <>Pris saknas</>
           )}
         </div>
-        {value != null && (
-          <Button
-            size="sm"
-            variant="ghost"
-            disabled={busy}
-            onClick={() => {
-              setText("");
-              onSave(eventId, null);
-            }}
-            className="h-9 text-xs"
-          >
+        {(valueSek != null || valuePct != null) && (
+          <Button size="sm" variant="ghost" disabled={busy} onClick={clear} className="h-9 text-xs">
             Rensa
           </Button>
         )}
       </div>
-      <p className="text-[10px] text-amber-700 mt-1.5">
-        ⚠️ Måste vara ett verkligt tidigare pris (Prisinformationslagen). xs2-synk fyller automatiskt med biljettens face value när det finns.
-      </p>
+      {!compact && (
+        <p className="text-[10px] text-amber-700 mt-1.5">
+          ⚠️ Måste vara ett verkligt tidigare pris (Prisinformationslagen). SEK vinner över % om båda är ifyllda. Per-kategori vinner över event-nivå.
+        </p>
+      )}
     </div>
   );
 }
@@ -732,12 +895,14 @@ function CategoryRow({
   busy,
   onSync,
   onSaveMarkup,
+  onSaveCompareAt,
 }: {
   c: Category;
   isXs2: boolean;
   busy: string | null;
   onSync: (id: string) => void;
   onSaveMarkup: (id: string, pct: number, fixed: number) => void;
+  onSaveCompareAt: (id: string, value: { sek: number | null; pct: number | null }) => void;
 }) {
   const [pct, setPct] = useState<string>(String(c.markup_pct ?? 0));
   const [fixed, setFixed] = useState<string>(String(c.markup_fixed_sek ?? 0));
@@ -815,6 +980,21 @@ function CategoryRow({
             <CheckCircle2 className="h-3 w-3" /> Sparad
           </span>
         )}
+      </div>
+      <div className="pt-2 border-t border-dashed border-border/60">
+        <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">
+          Jämförelsepris för denna kategori (valfritt — vinner över event-nivå)
+        </p>
+        <CompareAtEditor
+          targetId={c.id}
+          minPriceSek={Number(c.unit_price_sek) || null}
+          valueSek={c.compare_at_price_sek}
+          valuePct={c.compare_at_pct}
+          busy={busy === c.id}
+          onSave={onSaveCompareAt}
+          label=""
+          compact
+        />
       </div>
     </div>
   );

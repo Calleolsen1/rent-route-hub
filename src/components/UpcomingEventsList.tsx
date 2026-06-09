@@ -21,6 +21,7 @@ type EventRow = {
   status: string;
   min_price_sek: number | null;
   compare_at_price_sek: number | null;
+  compare_at_pct: number | null;
 };
 
 type Props = {
@@ -70,7 +71,7 @@ export default function UpcomingEventsList({
       let q = (supabase as any)
         .from("events")
         .select(
-          "id, sport, tournament_name, home_team, away_team, race_name, venue_name, city, country, starts_at, cover_image_url, status, min_price_sek, compare_at_price_sek",
+          "id, sport, tournament_name, home_team, away_team, race_name, venue_name, city, country, starts_at, cover_image_url, status, min_price_sek, compare_at_price_sek, compare_at_pct",
         )
         .eq("status", "upcoming")
         .gte("starts_at", dateFrom ?? new Date().toISOString())
@@ -166,8 +167,11 @@ export default function UpcomingEventsList({
                   </Button>
                   <PriceTag
                     currentSek={e.min_price_sek}
-                    compareAtSek={e.compare_at_price_sek}
-                    defaultPct={defaultPct}
+                    compareAt={{
+                      eventSek: e.compare_at_price_sek,
+                      eventPct: e.compare_at_pct,
+                      defaultPct,
+                    }}
                   />
                 </div>
               </div>
