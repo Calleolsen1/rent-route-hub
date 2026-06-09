@@ -27,6 +27,7 @@ export type Database = {
           external_tournament_id: string | null
           home_team: string | null
           id: string
+          is_featured: boolean
           last_synced_at: string | null
           race_name: string | null
           source: string
@@ -49,6 +50,7 @@ export type Database = {
           external_tournament_id?: string | null
           home_team?: string | null
           id?: string
+          is_featured?: boolean
           last_synced_at?: string | null
           race_name?: string | null
           source?: string
@@ -71,6 +73,7 @@ export type Database = {
           external_tournament_id?: string | null
           home_team?: string | null
           id?: string
+          is_featured?: boolean
           last_synced_at?: string | null
           race_name?: string | null
           source?: string
@@ -116,6 +119,51 @@ export type Database = {
           status?: string
           updated_at?: string
           updated_by_admin_id?: string | null
+        }
+        Relationships: []
+      }
+      home_slides: {
+        Row: {
+          created_at: string
+          cta_label: string | null
+          cta_to: string | null
+          description: string | null
+          eyebrow: string | null
+          id: string
+          image_url: string
+          is_active: boolean
+          italic: string | null
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          cta_label?: string | null
+          cta_to?: string | null
+          description?: string | null
+          eyebrow?: string | null
+          id?: string
+          image_url: string
+          is_active?: boolean
+          italic?: string | null
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          cta_label?: string | null
+          cta_to?: string | null
+          description?: string | null
+          eyebrow?: string | null
+          id?: string
+          image_url?: string
+          is_active?: boolean
+          italic?: string | null
+          sort_order?: number
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -269,6 +317,30 @@ export type Database = {
         }
         Relationships: []
       }
+      newsletter_signups: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          source: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          source?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          source?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           category_id: string
@@ -339,8 +411,12 @@ export type Database = {
           customer_phone: string | null
           id: string
           invoice_number: string | null
+          last_refund_reason: string | null
           notes: string | null
           paid_at: string | null
+          quote_id: string | null
+          refunded_sek: number
+          reservation_expires_at: string | null
           status: Database["public"]["Enums"]["order_status"]
           stripe_checkout_session_id: string | null
           stripe_payment_intent_id: string | null
@@ -348,6 +424,8 @@ export type Database = {
           total_sek: number
           updated_at: string
           user_id: string | null
+          xs2_booking_id: string | null
+          xs2_reservation_id: string | null
         }
         Insert: {
           created_at?: string
@@ -357,8 +435,12 @@ export type Database = {
           customer_phone?: string | null
           id?: string
           invoice_number?: string | null
+          last_refund_reason?: string | null
           notes?: string | null
           paid_at?: string | null
+          quote_id?: string | null
+          refunded_sek?: number
+          reservation_expires_at?: string | null
           status?: Database["public"]["Enums"]["order_status"]
           stripe_checkout_session_id?: string | null
           stripe_payment_intent_id?: string | null
@@ -366,6 +448,8 @@ export type Database = {
           total_sek?: number
           updated_at?: string
           user_id?: string | null
+          xs2_booking_id?: string | null
+          xs2_reservation_id?: string | null
         }
         Update: {
           created_at?: string
@@ -375,8 +459,12 @@ export type Database = {
           customer_phone?: string | null
           id?: string
           invoice_number?: string | null
+          last_refund_reason?: string | null
           notes?: string | null
           paid_at?: string | null
+          quote_id?: string | null
+          refunded_sek?: number
+          reservation_expires_at?: string | null
           status?: Database["public"]["Enums"]["order_status"]
           stripe_checkout_session_id?: string | null
           stripe_payment_intent_id?: string | null
@@ -384,8 +472,18 @@ export type Database = {
           total_sek?: number
           updated_at?: string
           user_id?: string | null
+          xs2_booking_id?: string | null
+          xs2_reservation_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "orders_quote_id_fkey"
+            columns: ["quote_id"]
+            isOneToOne: false
+            referencedRelation: "quotes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       platform_settings: {
         Row: {
@@ -482,6 +580,160 @@ export type Database = {
           verified?: boolean | null
         }
         Relationships: []
+      }
+      quote_items: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          qty: number
+          quote_id: string
+          sort_order: number
+          unit_price_sek: number
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          qty?: number
+          quote_id: string
+          sort_order?: number
+          unit_price_sek: number
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          qty?: number
+          quote_id?: string
+          sort_order?: number
+          unit_price_sek?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quote_items_quote_id_fkey"
+            columns: ["quote_id"]
+            isOneToOne: false
+            referencedRelation: "quotes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quotes: {
+        Row: {
+          accepted_at: string | null
+          created_at: string
+          created_by: string | null
+          currency: string
+          customer_email: string
+          customer_name: string | null
+          expires_at: string
+          id: string
+          inquiry_id: string | null
+          intro_message: string | null
+          order_id: string | null
+          public_token: string
+          sent_at: string | null
+          status: string
+          stripe_checkout_session_id: string | null
+          title: string
+          total_sek: number
+          updated_at: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          customer_email: string
+          customer_name?: string | null
+          expires_at: string
+          id?: string
+          inquiry_id?: string | null
+          intro_message?: string | null
+          order_id?: string | null
+          public_token?: string
+          sent_at?: string | null
+          status?: string
+          stripe_checkout_session_id?: string | null
+          title: string
+          total_sek: number
+          updated_at?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          customer_email?: string
+          customer_name?: string | null
+          expires_at?: string
+          id?: string
+          inquiry_id?: string | null
+          intro_message?: string | null
+          order_id?: string | null
+          public_token?: string
+          sent_at?: string | null
+          status?: string
+          stripe_checkout_session_id?: string | null
+          title?: string
+          total_sek?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quotes_inquiry_id_fkey"
+            columns: ["inquiry_id"]
+            isOneToOne: false
+            referencedRelation: "inquiries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quotes_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      refunds: {
+        Row: {
+          amount_sek: number
+          created_at: string
+          id: string
+          order_id: string
+          processed_by: string | null
+          reason: string | null
+          stripe_refund_id: string | null
+        }
+        Insert: {
+          amount_sek: number
+          created_at?: string
+          id?: string
+          order_id: string
+          processed_by?: string | null
+          reason?: string | null
+          stripe_refund_id?: string | null
+        }
+        Update: {
+          amount_sek?: number
+          created_at?: string
+          id?: string
+          order_id?: string
+          processed_by?: string | null
+          reason?: string | null
+          stripe_refund_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "refunds_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       ticket_categories: {
         Row: {
@@ -610,6 +862,42 @@ export type Database = {
         }
         Relationships: []
       }
+      xs2_sync_log: {
+        Row: {
+          error_message: string | null
+          finished_at: string | null
+          id: string
+          records_fetched: number
+          records_upserted: number
+          resource_type: string
+          started_at: string
+          status: string
+          trigger: string
+        }
+        Insert: {
+          error_message?: string | null
+          finished_at?: string | null
+          id?: string
+          records_fetched?: number
+          records_upserted?: number
+          resource_type: string
+          started_at?: string
+          status?: string
+          trigger?: string
+        }
+        Update: {
+          error_message?: string | null
+          finished_at?: string | null
+          id?: string
+          records_fetched?: number
+          records_upserted?: number
+          resource_type?: string
+          started_at?: string
+          status?: string
+          trigger?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       public_profiles: {
@@ -620,6 +908,48 @@ export type Database = {
           first_name: string | null
           id: string | null
           last_name: string | null
+        }
+        Relationships: []
+      }
+      user_admin_view: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          email: string | null
+          first_name: string | null
+          full_name: string | null
+          id: string | null
+          last_name: string | null
+          orders_count: number | null
+          primary_role: Database["public"]["Enums"]["app_role"] | null
+          status: Database["public"]["Enums"]["user_status"] | null
+          user_display_id: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          email?: string | null
+          first_name?: string | null
+          full_name?: never
+          id?: string | null
+          last_name?: string | null
+          orders_count?: never
+          primary_role?: never
+          status?: Database["public"]["Enums"]["user_status"] | null
+          user_display_id?: never
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          email?: string | null
+          first_name?: string | null
+          full_name?: never
+          id?: string | null
+          last_name?: string | null
+          orders_count?: never
+          primary_role?: never
+          status?: Database["public"]["Enums"]["user_status"] | null
+          user_display_id?: never
         }
         Relationships: []
       }
@@ -674,14 +1004,13 @@ export type Database = {
         }
         Returns: {
           avatar_url: string
-          bookings_count: number
           created_at: string
           email: string
           first_name: string
           full_name: string
           id: string
           last_name: string
-          listings_count: number
+          orders_count: number
           primary_role: string
           status: Database["public"]["Enums"]["user_status"]
           user_display_id: string
@@ -715,6 +1044,7 @@ export type Database = {
         Args: { p_category_id: string; p_qty: number }
         Returns: undefined
       }
+      expire_old_quotes: { Args: never; Returns: number }
       get_demo_credentials: {
         Args: never
         Returns: {
@@ -736,6 +1066,14 @@ export type Database = {
         }
         Returns: string
       }
+      get_order_by_session: {
+        Args: { p_order_id: string; p_session_id: string }
+        Returns: Json
+      }
+      get_platform_decimal: {
+        Args: { p_default: number; p_key: string }
+        Returns: number
+      }
       get_public_profiles: {
         Args: never
         Returns: {
@@ -747,6 +1085,7 @@ export type Database = {
           last_name: string
         }[]
       }
+      get_quote_by_token: { Args: { p_token: string }; Returns: Json }
       get_unread_inbox_conversations: {
         Args: { p_user_id: string }
         Returns: {
@@ -772,74 +1111,6 @@ export type Database = {
         Returns: boolean
       }
       make_user_admin: { Args: { target_user_id: string }; Returns: undefined }
-      process_guest_debt_payment:
-        | {
-            Args: { p_approved_amount: number; p_dispute_id: string }
-            Returns: undefined
-          }
-        | {
-            Args: {
-              p_guest_debt_id: string
-              p_payment_amount: number
-              p_payment_currency: string
-              p_payment_provider: string
-            }
-            Returns: Json
-          }
-        | {
-            Args: {
-              p_amount: number
-              p_currency?: string
-              p_guest_debt_id: string
-              p_provider: string
-            }
-            Returns: Json
-          }
-      process_guest_refund:
-        | {
-            Args: { p_approved_refund_amount: number; p_dispute_id: string }
-            Returns: Json
-          }
-        | {
-            Args: {
-              p_approved_refund_amount: number
-              p_dispute_id: string
-              p_resolution_notes: string
-            }
-            Returns: Json
-          }
-        | {
-            Args: {
-              p_approved_amount: number
-              p_booking_id: string
-              p_booking_status: string
-              p_currency: string
-              p_dispute_id: string
-              p_host_user_id: string
-              p_resolution_notes: string
-            }
-            Returns: undefined
-          }
-      process_host_claim:
-        | {
-            Args: {
-              p_approved_claim_amount: number
-              p_dispute_id: string
-              p_resolution_notes: string
-            }
-            Returns: Json
-          }
-        | {
-            Args: {
-              p_approved_amount: number
-              p_booking_id: string
-              p_currency: string
-              p_dispute_id: string
-              p_host_user_id: string
-              p_resolution_notes: string
-            }
-            Returns: undefined
-          }
       search_inbox_conversations: {
         Args: { p_search_query?: string; p_sort_by?: string; p_user_id: string }
         Returns: {
@@ -854,51 +1125,13 @@ export type Database = {
           unread_count: number
         }[]
       }
-      send_dispute_resolution_message: {
-        Args: {
-          p_decision: string
-          p_dispute_id: string
-          p_is_guest_dispute?: boolean
-          p_refund_amount?: number
-          p_resolution_notes?: string
-        }
-        Returns: undefined
-      }
     }
     Enums: {
       app_role: "admin" | "host" | "guest"
-      booking_status:
-        | "pending_payment"
-        | "confirmed"
-        | "cancelled_guest"
-        | "cancelled_host"
-        | "completed"
-        | "expired"
-      cancellation_policy: "flexible" | "moderate" | "strict"
-      dispute_category:
-        | "refund_request"
-        | "policy_violation"
-        | "property_damage"
-        | "cleanliness_issue"
-        | "amenity_issue"
-        | "safety_concern"
-        | "billing_dispute"
-        | "other"
-      dispute_status:
-        | "open"
-        | "in_progress"
-        | "resolved"
-        | "closed"
-        | "escalated"
-        | "pending"
-        | "on_hold"
-        | "resolved_approved"
-        | "resolved_declined"
       event_sport: "soccer" | "formula1"
       event_status: "upcoming" | "sold_out" | "completed" | "cancelled"
       inquiry_status: "new" | "in_progress" | "quoted" | "won" | "lost"
       inquiry_type: "group" | "conference" | "training_camp" | "vip" | "contact"
-      listing_status: "draft" | "pending" | "approved" | "rejected" | "blocked"
       order_status:
         | "pending"
         | "paid"
@@ -907,9 +1140,6 @@ export type Database = {
         | "refunded"
         | "cancelled"
         | "awaiting_payment"
-      payout_status_enum: "pending" | "completed" | "failed" | "cancelled"
-      property_type: "apartment" | "villa" | "room" | "house" | "condo"
-      review_status: "pending" | "approved" | "rejected" | "blocked"
       thread_type: "user_to_user" | "user_to_support"
       user_status: "active" | "inactive" | "suspended"
     }
@@ -1040,41 +1270,10 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "host", "guest"],
-      booking_status: [
-        "pending_payment",
-        "confirmed",
-        "cancelled_guest",
-        "cancelled_host",
-        "completed",
-        "expired",
-      ],
-      cancellation_policy: ["flexible", "moderate", "strict"],
-      dispute_category: [
-        "refund_request",
-        "policy_violation",
-        "property_damage",
-        "cleanliness_issue",
-        "amenity_issue",
-        "safety_concern",
-        "billing_dispute",
-        "other",
-      ],
-      dispute_status: [
-        "open",
-        "in_progress",
-        "resolved",
-        "closed",
-        "escalated",
-        "pending",
-        "on_hold",
-        "resolved_approved",
-        "resolved_declined",
-      ],
       event_sport: ["soccer", "formula1"],
       event_status: ["upcoming", "sold_out", "completed", "cancelled"],
       inquiry_status: ["new", "in_progress", "quoted", "won", "lost"],
       inquiry_type: ["group", "conference", "training_camp", "vip", "contact"],
-      listing_status: ["draft", "pending", "approved", "rejected", "blocked"],
       order_status: [
         "pending",
         "paid",
@@ -1084,9 +1283,6 @@ export const Constants = {
         "cancelled",
         "awaiting_payment",
       ],
-      payout_status_enum: ["pending", "completed", "failed", "cancelled"],
-      property_type: ["apartment", "villa", "room", "house", "condo"],
-      review_status: ["pending", "approved", "rejected", "blocked"],
       thread_type: ["user_to_user", "user_to_support"],
       user_status: ["active", "inactive", "suspended"],
     },
