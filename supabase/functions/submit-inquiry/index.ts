@@ -2,9 +2,16 @@
 // Validates an inquiry form submission, stores it in `public.inquiries`,
 // emails info@kaisengroup.se (notification) and the customer (auto-reply)
 // via the Resend API. Publicly accessible (verify_jwt = false).
+//
+// Anti-abuse:
+//   - Cloudflare Turnstile verification when TURNSTILE_SECRET_KEY env is set
+//     (defensively skipped if not configured, so we don't break before user
+//     signs up for Turnstile).
+//   - Rate limit: 5 submissions per IP per 10 minutes.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { z } from "https://esm.sh/zod@3.23.8";
+import { checkRateLimit } from "../_shared/rate_limit.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -35,7 +42,34 @@ const Schema = z.object({
   sport_or_topic: z.string().trim().max(160).optional().or(z.literal("")),
   message: z.string().trim().min(5).max(4000),
   source_page: z.string().trim().max(300).optional().or(z.literal("")),
+  turnstile_token: z.string().optional(),
 });
+
+/**
+ * Verify a Cloudflare Turnstile token. Returns true if either:
+ *  - TURNSTILE_SECRET_KEY env is unset (no captcha required yet, defensive)
+ *  - Cloudflare verifies the token successfully.
+ */
+async function verifyTurnstile(token: string | undefined, remoteIp: string): Promise<boolean> {
+  const secret = Deno.env.get("TURNSTILE_SECRET_KEY");
+  if (!secret) return true;
+  if (!token) return false;
+  try {
+    const params = new URLSearchParams();
+    params.append("secret", secret);
+    params.append("response", token);
+    if (remoteIp) params.append("remoteip", remoteIp);
+    const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method: "POST",
+      body: params,
+    });
+    const data = await res.json();
+    return data?.success === true;
+  } catch (e) {
+    console.error("turnstile verify error", e);
+    return false;
+  }
+}
 
 const TYPE_LABELS: Record<(typeof INQUIRY_TYPES)[number], string> = {
   group: "Gruppresa",
@@ -107,6 +141,10 @@ Deno.serve(async (req) => {
     });
   }
 
+  // Rate limit: 5 submissions per IP per 10 minutes
+  const rl = await checkRateLimit(req, "submit-inquiry", { max: 5, windowSec: 600 });
+  if (!rl.allowed) return rl.response;
+
   try {
     const body = await req.json().catch(() => null);
     const parsed = Schema.safeParse(body);
@@ -120,6 +158,19 @@ Deno.serve(async (req) => {
       );
     }
     const data = parsed.data;
+
+    // Captcha verification (no-op when Turnstile isn't configured yet)
+    const remoteIp = req.headers.get("cf-connecting-ip") ?? req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "";
+    const captchaOk = await verifyTurnstile(data.turnstile_token, remoteIp);
+    if (!captchaOk) {
+      return new Response(
+        JSON.stringify({ error: "Captcha-kontroll misslyckades" }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
+    }
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,

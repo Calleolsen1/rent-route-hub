@@ -19,6 +19,7 @@
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { type StripeEnv, createStripeClient } from "../_shared/stripe.ts";
+import { checkRateLimit } from "../_shared/rate_limit.ts";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -28,6 +29,9 @@ Deno.serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
+
+  const rl = await checkRateLimit(req, "create-quote-checkout", { max: 30, windowSec: 600 });
+  if (!rl.allowed) return rl.response;
 
   try {
     const { public_token, environment, returnBase } = await req.json();

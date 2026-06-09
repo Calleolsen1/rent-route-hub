@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { Check, Loader2 } from "lucide-react";
+import { TurnstileWidget } from "@/components/TurnstileWidget";
 
 export type InquiryType =
   | "group"
@@ -73,6 +74,7 @@ export default function InquiryForm({
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [serverError, setServerError] = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
   const fieldShowGroupSize = showGroupSize ?? defaultFor(type, "showGroupSize");
   const fieldShowDestination = showDestination ?? defaultFor(type, "showDestination");
@@ -130,6 +132,7 @@ export default function InquiryForm({
         message: parsed.data.message,
         source_page:
           typeof window !== "undefined" ? window.location.pathname : undefined,
+        turnstile_token: turnstileToken ?? undefined,
       };
 
       const { data, error } = await supabase.functions.invoke("submit-inquiry", {
@@ -150,6 +153,8 @@ export default function InquiryForm({
     }
   }
 
+  // Render Turnstile widget into the form; defaults to invisible when the
+  // env var isn't set (component returns null).
   if (submitted) {
     return (
       <div className="bg-white border border-border p-10 text-center">
@@ -245,6 +250,8 @@ export default function InquiryForm({
         />
         {errors.message && <p className="text-xs text-destructive mt-1">{errors.message}</p>}
       </div>
+
+      <TurnstileWidget onToken={setTurnstileToken} />
 
       {serverError && (
         <div className="text-sm text-destructive bg-destructive/5 border border-destructive/20 px-4 py-3">

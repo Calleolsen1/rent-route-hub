@@ -25,6 +25,7 @@ import {
   groupTickets,
   type Xs2Ticket,
 } from "../_shared/xs2event.ts";
+import { checkRateLimit } from "../_shared/rate_limit.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -87,6 +88,9 @@ Deno.serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
+
+  const rl = await checkRateLimit(req, "xs2-renew-reservation", { max: 15, windowSec: 600 });
+  if (!rl.allowed) return rl.response;
 
   try {
     const { order_id } = await req.json();

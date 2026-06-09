@@ -26,6 +26,7 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { Xs2Client, applyMarkup, eurCentsToSek, Xs2Error } from "../_shared/xs2event.ts";
+import { checkRateLimit } from "../_shared/rate_limit.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -78,6 +79,11 @@ Deno.serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
+
+  // Rate limit: 20 reservations per IP per 10 min — generous for legit
+  // shoppers, throttles bots cycling through inventory.
+  const rl = await checkRateLimit(req, "xs2-reserve", { max: 20, windowSec: 600 });
+  if (!rl.allowed) return rl.response;
 
   try {
     const body = await req.json();
