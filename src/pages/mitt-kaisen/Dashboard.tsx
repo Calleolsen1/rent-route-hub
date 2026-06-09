@@ -60,22 +60,33 @@ export default function MittKaisenDashboard() {
           <Link
             key={c.to}
             to={c.to}
-            className="rounded-xl p-6 transition hover:opacity-90"
-            style={{ backgroundColor: "hsl(222 40% 18%)" }}
+            className="group rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_30px_80px_-30px_rgba(3,15,35,0.9)] relative overflow-hidden"
+            style={{
+              backgroundColor: "hsl(222 40% 18%)",
+              border: "1px solid hsl(222 40% 25%)",
+            }}
           >
+            <span
+              aria-hidden
+              className="absolute inset-x-0 top-0 h-px"
+              style={{ background: "linear-gradient(to right, transparent, hsl(201 100% 55% / 0.6), transparent)" }}
+            />
             <div
-              className="w-10 h-10 rounded-full flex items-center justify-center mb-4"
-              style={{ backgroundColor: "hsl(201 100% 35%)" }}
+              className="w-11 h-11 rounded-full flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110"
+              style={{
+                background: "linear-gradient(135deg, hsl(201 100% 40%), hsl(201 100% 28%))",
+                boxShadow: "0 8px 24px -8px hsl(201 100% 35% / 0.6)",
+              }}
             >
               <c.icon className="h-5 w-5 text-white" />
             </div>
             <h2
-              className="text-xl font-light mb-1"
+              className="text-2xl font-light mb-1"
               style={{ color: "hsl(210 30% 92%)", fontFamily: "'Cormorant Garamond', serif" }}
             >
               {c.title}
             </h2>
-            <p className="text-sm" style={{ color: "hsl(210 20% 70%)" }}>
+            <p className="text-sm leading-relaxed" style={{ color: "hsl(210 20% 70%)" }}>
               {c.description}
             </p>
           </Link>
