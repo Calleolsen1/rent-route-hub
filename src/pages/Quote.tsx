@@ -10,6 +10,7 @@ import Navbar from "@/components/Navbar";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import { getStripe, getStripeEnvironment } from "@/lib/stripe";
 import { formatSek } from "@/lib/formatSek";
+import { usePageMeta } from "@/lib/usePageMeta";
 
 type QuoteItem = {
   id: string;
@@ -58,6 +59,11 @@ export default function QuotePage() {
       setLoading(false);
     })();
   }, [token]);
+
+  usePageMeta({
+    title: quote ? `${quote.title} — Kaisen offert` : "Offert — Kaisen Travel Group",
+    description: quote?.intro_message?.slice(0, 160) ?? undefined,
+  });
 
   const isAccepted = quote?.status === "accepted";
   const isCancelled = quote?.status === "cancelled";

@@ -58,7 +58,13 @@ const activities = [
   { icon: Check, text: "Support dygnet runt under resan" },
 ];
 
+import { usePageMeta } from "@/lib/usePageMeta";
+
 export default function GroupTravel() {
+  usePageMeta({
+    title: "Gruppresor — 8 till 200+ personer | Kaisen Travel Group",
+    description: "Skräddarsydda gruppresor, företagsevent och incentiveresor. Vi sköter logistiken — från flyg och hotell till middag och aktiviteter.",
+  });
   return (
     <div className="min-h-screen">
       <Navbar />

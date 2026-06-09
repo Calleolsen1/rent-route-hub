@@ -56,7 +56,13 @@ const supportTypes = [
  },
 ];
 
+import { usePageMeta } from "@/lib/usePageMeta";
+
 export default function Support() {
+ usePageMeta({
+   title: "Support — Kaisen Travel Group",
+   description: "Behöver du hjälp under resan eller med din beställning? Vi finns tillgängliga dygnet runt för aktiva kunder.",
+ });
  return (
  <div className="min-h-screen">
  <Navbar />

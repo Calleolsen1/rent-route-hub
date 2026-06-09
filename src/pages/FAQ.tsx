@@ -101,7 +101,13 @@ const categories = [
  { value: "grupp", label: "Gruppresor" },
 ];
 
+import { usePageMeta } from "@/lib/usePageMeta";
+
 export default function FAQ() {
+ usePageMeta({
+   title: "Vanliga frågor — Kaisen Travel Group",
+   description: "Svar på vanliga frågor om beställning, betalning, biljetter och avbokning hos Kaisen Travel Group.",
+ });
  const [activeCategory, setActiveCategory] = useState("alla");
  const [openIndex, setOpenIndex] = useState<number | null>(null);
 

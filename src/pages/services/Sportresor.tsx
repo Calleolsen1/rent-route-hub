@@ -10,6 +10,7 @@ import ishockeyImage from "@/assets/sport-ishockey.jpg";
 import tennisImage from "@/assets/sport-tennis.jpg";
 import golfImage from "@/assets/sport-golf.jpg";
 import UpcomingEventsList from "@/components/UpcomingEventsList";
+import { usePageMeta } from "@/lib/usePageMeta";
 
 const sports = [
  {
@@ -80,6 +81,10 @@ const sports = [
 ];
 
 export default function Sportresor() {
+ usePageMeta({
+   title: "Sportresor — F1, Fotboll & Golf | Kaisen Travel Group",
+   description: "Köp biljetter och resepaket till F1-race, Premier League, Champions League, golfturneringar och fler sportevent. Personlig service från Kaisen Travel Group.",
+ });
  return (
  <div className="min-h-screen">
  <Navbar />

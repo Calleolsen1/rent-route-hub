@@ -12,3 +12,10 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /mitt-kaisen
+Disallow: /checkout
+Disallow: /order
+Disallow: /quote
+
+Sitemap: https://kaisengroup.se/sitemap.xml

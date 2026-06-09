@@ -15,4 +15,23 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    // Split vendor libraries into named chunks so the initial bundle stays
+    // small. Big libs (Stripe SDK, Leaflet maps, Radix UI primitives) only
+    // load on pages that need them.
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          "vendor-react": ["react", "react-dom", "react-router-dom"],
+          "vendor-supabase": ["@supabase/supabase-js"],
+          "vendor-stripe": ["@stripe/stripe-js", "@stripe/react-stripe-js"],
+          "vendor-leaflet": ["leaflet", "react-leaflet", "react-leaflet-cluster"],
+          "vendor-form": ["react-hook-form", "@hookform/resolvers", "zod"],
+          "vendor-query": ["@tanstack/react-query"],
+          "vendor-sentry": ["@sentry/react"],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 600,
+  },
 }));

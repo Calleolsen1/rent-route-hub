@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { formatEventDateTime, formatSek } from "@/lib/formatSek";
 import { getStripeEnvironment } from "@/lib/stripe";
+import { usePageMeta } from "@/lib/usePageMeta";
 
 type EventRow = {
   id: string;
@@ -132,6 +133,20 @@ export default function EventDetail() {
       }
     })();
   }, [id]);
+
+  // Build the page-meta title from whichever event data is available; the
+  // hook re-runs when event loads and overwrites with the real title.
+  const metaTitle = event
+    ? `${event.sport === "soccer" ? `${event.home_team} vs ${event.away_team}` : event.race_name ?? event.tournament_name} — Kaisen Travel Group`
+    : "Evenemang — Kaisen Travel Group";
+  usePageMeta({
+    title: metaTitle,
+    description: event?.description
+      ? event.description.slice(0, 160)
+      : "Köp biljetter via Kaisen Travel Group — säker betalning, personlig service.",
+    image: event?.cover_image_url ?? undefined,
+    type: "article",
+  });
 
   const priceFor = (c: CategoryRow) => livePrices[c.id] ?? Number(c.unit_price_sek);
 

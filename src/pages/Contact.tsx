@@ -11,7 +11,13 @@ const contactInfo = [
   { icon: Clock, label: "Öppettider", value: "Mån–Fre 09–18" },
 ];
 
+import { usePageMeta } from "@/lib/usePageMeta";
+
 export default function Contact() {
+  usePageMeta({
+    title: "Kontakt — Kaisen Travel Group",
+    description: "Skicka en förfrågan så återkommer en konsult inom 24 timmar med ett skräddarsytt förslag.",
+  });
   return (
     <div className="min-h-screen">
       <Navbar />

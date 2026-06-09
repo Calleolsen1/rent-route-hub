@@ -183,7 +183,13 @@ const topics: Topic[] = [
  },
 ];
 
+import { usePageMeta } from "@/lib/usePageMeta";
+
 export default function HelpCenter() {
+ usePageMeta({
+   title: "Hjälpcenter — Kaisen Travel Group",
+   description: "Hjälpcenter med vanliga frågor om bokning, betalning, biljettleverans och kundsupport.",
+ });
  const [openTopic, setOpenTopic] = useState<string | null>(null);
  const [openArticle, setOpenArticle] = useState<string | null>(null);
  const [search, setSearch] = useState("");
