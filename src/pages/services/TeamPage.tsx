@@ -31,32 +31,33 @@ export default function TeamPage() {
       <Navbar />
 
       {/* Hero — compact so tickets are visible right away */}
-      <section className="relative h-[28vh] min-h-[220px] flex items-end">
+      <section className="relative h-[22vh] min-h-[170px] flex items-end">
         <div className="absolute inset-0">
           <img src={fotbollImage} alt={info.name} className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-navy/75" />
         </div>
-        <div className="relative container mx-auto px-4 pb-8">
-          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-2 font-sans">
+        <div className="relative container mx-auto px-4 pb-5">
+          <p className="text-[10px] tracking-[0.28em] text-primary uppercase mb-1.5 font-sans">
             Fotbollsresor — {info.league}
           </p>
-          <h1 className="font-display text-3xl md:text-5xl text-white mb-1">
+          <h1 className="font-display text-3xl md:text-4xl text-white mb-1">
             {info.name}
           </h1>
-          <p className="font-display italic font-light text-white text-lg md:text-xl">
+          <p className="font-display italic font-light text-white text-base md:text-lg">
             {info.tagline}
           </p>
         </div>
       </section>
 
       {/* Live tickets — visible on entry */}
-      <section className="py-8 md:py-10 bg-background">
+      <section className="py-4 md:py-5 bg-background">
         <div className="container mx-auto px-4 max-w-6xl">
           <UpcomingEventsList
             team={info.name}
             limit={6}
             eyebrow="Köp biljett direkt"
             title={`Biljetter till ${info.name}`}
+            compact
           />
         </div>
       </section>
