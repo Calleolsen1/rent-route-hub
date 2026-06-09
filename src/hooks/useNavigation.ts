@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { TEAMS as STATIC_TEAMS, RACES as STATIC_RACES } from "@/data/sports";
 
 export type TopMenuItem = {
   id: string;
@@ -44,6 +45,62 @@ type Cache = {
   entries?: NavEntry[];
   fetchedAt?: number;
 };
+
+/**
+ * Static fallback rendered on first paint and whenever the DB returns empty.
+ * Pre-migration this is what visitors see; post-migration the DB rows take
+ * over and these constants only run if a fetch fails outright.
+ *
+ * IDs are stable string literals (not UUIDs) so React keys are deterministic.
+ */
+const STATIC_TOP_MENU: TopMenuItem[] = [
+  { id: "static-group", label: "Grupp & Konferens", href: "/group-travel", sort_order: 10, is_active: true },
+  { id: "static-train", label: "Träningsläger", href: "/services/traningslager", sort_order: 20, is_active: true },
+  { id: "static-about", label: "Om oss", href: "/about", sort_order: 30, is_active: true },
+  { id: "static-contact", label: "Kontakt", href: "/contact", sort_order: 40, is_active: true },
+];
+
+const STATIC_SPORTS: NavSport[] = [
+  { id: "static-fotboll", slug: "fotboll", label: "Fotboll", sport_filter: "soccer", menu_style: "grouped", entry_kind: "team", sort_order: 10, is_active: true },
+  { id: "static-f1", slug: "f1", label: "F1", sport_filter: "formula1", menu_style: "list", entry_kind: "race", sort_order: 20, is_active: true },
+];
+
+const STATIC_ENTRIES: NavEntry[] = [
+  ...Object.values(STATIC_TEAMS).map((t, i) => ({
+    id: `static-team-${t.slug}`,
+    sport_id: "static-fotboll",
+    slug: t.slug,
+    name: t.name,
+    group_label: t.league,
+    city: t.city,
+    venue: t.stadium,
+    date_text: null,
+    short_date: null,
+    tagline: t.tagline,
+    description: t.description,
+    hero_image_url: null,
+    features_json: null,
+    sort_order: (i + 1) * 10,
+    is_active: true,
+  })),
+  ...Object.values(STATIC_RACES).map((r, i) => ({
+    id: `static-race-${r.slug}`,
+    sport_id: "static-f1",
+    slug: r.slug,
+    name: r.name,
+    group_label: null,
+    city: r.city,
+    venue: r.circuit,
+    date_text: r.date,
+    short_date: r.shortDate,
+    tagline: r.tagline,
+    description: r.description,
+    hero_image_url: null,
+    features_json: null,
+    sort_order: (i + 1) * 10,
+    is_active: true,
+  })),
+];
 
 let cache: Cache = {};
 let inFlight: Promise<void> | null = null;
@@ -118,16 +175,22 @@ function useNavCache<T>(pick: (c: Cache) => T | undefined, fallback: T): T {
   return value;
 }
 
+// When DB returns empty (pre-migration / fetch failure) fall back to the
+// static constants so the navbar is never blank. As soon as the DB has rows,
+// they take precedence.
 export function useTopMenu(): TopMenuItem[] {
-  return useNavCache((c) => c.topMenu, []);
+  const v = useNavCache((c) => c.topMenu, STATIC_TOP_MENU);
+  return v.length ? v : STATIC_TOP_MENU;
 }
 
 export function useSports(): NavSport[] {
-  return useNavCache((c) => c.sports, []);
+  const v = useNavCache((c) => c.sports, STATIC_SPORTS);
+  return v.length ? v : STATIC_SPORTS;
 }
 
 export function useEntries(): NavEntry[] {
-  return useNavCache((c) => c.entries, []);
+  const v = useNavCache((c) => c.entries, STATIC_ENTRIES);
+  return v.length ? v : STATIC_ENTRIES;
 }
 
 export function useSport(slug?: string): NavSport | undefined {

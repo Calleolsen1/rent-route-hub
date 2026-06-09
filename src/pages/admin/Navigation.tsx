@@ -6,7 +6,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Trash2, Loader2, AlertTriangle, ChevronDown, ChevronRight, X } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Plus, Trash2, Loader2, AlertTriangle, ChevronDown, ChevronRight, X, ExternalLink } from "lucide-react";
 import { invalidateNavigation } from "@/hooks/useNavigation";
 import { ImageUploader } from "@/components/admin/ImageUploader";
 
@@ -56,26 +64,26 @@ export default function AdminNavigation() {
       <div>
         <h1 className="text-3xl font-display mb-2">Navigation</h1>
         <p className="text-sm text-muted-foreground">
-          Toppmenyn, sporter (med dropdowns + landningssidor) och vad de länkar till. Ändringar går live direkt — besökare ser dem nästa gång de fokuserar fliken.
+          Här bygger du upp menyn och landningssidorna. Ändringar går live direkt — besökare ser dem nästa gång de fokuserar fliken.
         </p>
       </div>
       <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900 flex items-start gap-2">
         <AlertTriangle className="h-4 w-4 flex-shrink-0 mt-0.5" />
         <span>
-          <strong>Viktigt:</strong> <em>Namnet</em> på lag/race måste exakt matcha det xs2event skickar i <code>events.home_team</code> respektive <code>events.race_name</code> — annars hittas inga biljetter på landningssidan. Slug (URL-segment) kan vara vad som helst.
+          <strong>Tips:</strong> Namnet på lag/race måste exakt matcha det xs2event skickar (t.ex. "Arsenal", inte "Arsenal FC") — annars hittas inga biljetter på landningssidan.
         </span>
       </div>
 
-      <Tabs defaultValue="menu">
+      <Tabs defaultValue="sports">
         <TabsList>
+          <TabsTrigger value="sports">Sporter & sidor</TabsTrigger>
           <TabsTrigger value="menu">Toppmeny</TabsTrigger>
-          <TabsTrigger value="sports">Sporter & menyer</TabsTrigger>
         </TabsList>
-        <TabsContent value="menu" className="mt-6">
-          <TopMenuEditor />
-        </TabsContent>
         <TabsContent value="sports" className="mt-6">
           <SportsEditor />
+        </TabsContent>
+        <TabsContent value="menu" className="mt-6">
+          <TopMenuEditor />
         </TabsContent>
       </Tabs>
     </div>
@@ -88,6 +96,7 @@ function TopMenuEditor() {
   const [rows, setRows] = useState<TopMenuItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -97,17 +106,6 @@ function TopMenuEditor() {
   };
   useEffect(() => { load(); }, []);
 
-  const addNew = async () => {
-    setBusy("new");
-    const maxOrder = rows.reduce((m, r) => Math.max(m, r.sort_order), 0);
-    const { error } = await (supabase as any).from("nav_top_menu_items").insert({
-      label: "Ny länk", href: "/", sort_order: maxOrder + 10, is_active: true,
-    });
-    setBusy(null);
-    if (error) return toast.error(error.message);
-    invalidateNavigation();
-    await load();
-  };
   const save = async (row: TopMenuItem) => {
     setBusy(row.id);
     const { error } = await (supabase as any).from("nav_top_menu_items").update({
@@ -119,7 +117,7 @@ function TopMenuEditor() {
     toast.success("Sparat");
   };
   const del = async (id: string) => {
-    if (!confirm("Ta bort menyalternativet?")) return;
+    if (!confirm("Ta bort länken?")) return;
     setBusy(id);
     const { error } = await (supabase as any).from("nav_top_menu_items").delete().eq("id", id);
     setBusy(null);
@@ -132,10 +130,23 @@ function TopMenuEditor() {
 
   return (
     <div className="space-y-3">
-      {rows.map((row, idx) => (
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-muted-foreground">
+          Länkar som visas till höger i menyn (Grupp & Konferens, Om oss, …).
+        </p>
+        <Button onClick={() => setDialogOpen(true)}>
+          <Plus className="h-3 w-3 mr-2" /> Ny länk
+        </Button>
+      </div>
+
+      {rows.length === 0 ? (
+        <div className="rounded-lg border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
+          Inga länkar än. Klicka "Ny länk" för att lägga till.
+        </div>
+      ) : rows.map((row, idx) => (
         <div key={row.id} className="rounded-lg border border-border bg-card p-4 grid grid-cols-12 gap-3 items-end">
           <div className="col-span-3">
-            <Label className="text-[10px] uppercase tracking-wider">Etikett</Label>
+            <Label className="text-[10px] uppercase tracking-wider">Text</Label>
             <Input value={row.label} onChange={(e) => setRows(rows.map((r, i) => i === idx ? { ...r, label: e.target.value } : r))} onBlur={() => save(row)} className="h-9" />
           </div>
           <div className="col-span-5">
@@ -147,20 +158,70 @@ function TopMenuEditor() {
             <Input type="number" value={row.sort_order} onChange={(e) => setRows(rows.map((r, i) => i === idx ? { ...r, sort_order: Number(e.target.value) } : r))} onBlur={() => save(row)} className="h-9" />
           </div>
           <div className="col-span-2 flex items-center justify-end gap-3">
-            <label className="text-xs flex items-center gap-2">Aktiv
-              <Switch checked={row.is_active} onCheckedChange={(v) => { const next = { ...row, is_active: v }; setRows(rows.map((r, i) => i === idx ? next : r)); save(next); }} />
-            </label>
+            <Switch checked={row.is_active} onCheckedChange={(v) => { const next = { ...row, is_active: v }; setRows(rows.map((r, i) => i === idx ? next : r)); save(next); }} />
             <Button size="icon" variant="ghost" disabled={busy === row.id} onClick={() => del(row.id)}>
               {busy === row.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4 text-destructive" />}
             </Button>
           </div>
         </div>
       ))}
-      <Button variant="outline" onClick={addNew} disabled={busy === "new"}>
-        {busy === "new" && <Loader2 className="h-3 w-3 animate-spin mr-2" />}
-        <Plus className="h-3 w-3 mr-2" /> Lägg till länk
-      </Button>
+
+      <NewTopMenuDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        nextOrder={rows.reduce((m, r) => Math.max(m, r.sort_order), 0) + 10}
+        onSaved={async () => { await load(); invalidateNavigation(); }}
+      />
     </div>
+  );
+}
+
+function NewTopMenuDialog({ open, onOpenChange, nextOrder, onSaved }: { open: boolean; onOpenChange: (o: boolean) => void; nextOrder: number; onSaved: () => Promise<void> }) {
+  const [label, setLabel] = useState("");
+  const [href, setHref] = useState("/");
+  const [submitting, setSubmitting] = useState(false);
+  useEffect(() => { if (open) { setLabel(""); setHref("/"); } }, [open]);
+
+  const submit = async () => {
+    if (!label.trim()) return toast.error("Text krävs");
+    if (!href.trim()) return toast.error("URL krävs");
+    setSubmitting(true);
+    const { error } = await (supabase as any).from("nav_top_menu_items").insert({
+      label: label.trim(), href: href.trim(), sort_order: nextOrder, is_active: true,
+    });
+    setSubmitting(false);
+    if (error) return toast.error(error.message);
+    toast.success("Länk skapad");
+    await onSaved();
+    onOpenChange(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Ny menylänk</DialogTitle>
+          <DialogDescription>Visas till höger i toppmenyn. URL kan vara en sida på sajten (t.ex. /about) eller en extern länk.</DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4 py-2">
+          <div>
+            <Label>Text i menyn</Label>
+            <Input value={label} onChange={(e) => setLabel(e.target.value)} placeholder="t.ex. Blogg" autoFocus />
+          </div>
+          <div>
+            <Label>URL</Label>
+            <Input value={href} onChange={(e) => setHref(e.target.value)} placeholder="/blog eller https://…" />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="ghost" onClick={() => onOpenChange(false)}>Avbryt</Button>
+          <Button onClick={submit} disabled={submitting}>
+            {submitting && <Loader2 className="h-3 w-3 animate-spin mr-2" />}
+            Skapa
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -172,6 +233,10 @@ function SportsEditor() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
   const [expandedSport, setExpandedSport] = useState<string | null>(null);
+  const [newSportOpen, setNewSportOpen] = useState(false);
+  const [editSport, setEditSport] = useState<Sport | null>(null);
+  const [newEntryFor, setNewEntryFor] = useState<Sport | null>(null);
+  const [editEntry, setEditEntry] = useState<{ entry: Entry; sport: Sport } | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -185,39 +250,8 @@ function SportsEditor() {
   };
   useEffect(() => { load(); }, []);
 
-  const addSport = async () => {
-    const label = prompt("Sportens namn (visas i menyn, t.ex. Tennis):");
-    if (!label) return;
-    const sport_filter = prompt(`xs2-sport-filter (t.ex. soccer, formula1, tennis — måste matcha events.sport exakt):`, "");
-    const slug = prompt("Slug (URL):", slugify(label)) ?? slugify(label);
-    const menu_style = (prompt("Meny-stil (grouped/list):", "list") ?? "list") as "grouped" | "list";
-    const entry_kind = (prompt("Inläggstyp (team/race):", "team") ?? "team") as "team" | "race";
-    if (!slug || !label) return;
-    setBusy("new-sport");
-    const maxOrder = sports.reduce((m, r) => Math.max(m, r.sort_order), 0);
-    const { error } = await (supabase as any).from("nav_sports").insert({
-      slug, label, sport_filter: sport_filter || null, menu_style, entry_kind, sort_order: maxOrder + 10, is_active: true,
-    });
-    setBusy(null);
-    if (error) return toast.error(error.message);
-    invalidateNavigation();
-    await load();
-  };
-
-  const saveSport = async (s: Sport) => {
-    setBusy(s.id);
-    const { error } = await (supabase as any).from("nav_sports").update({
-      label: s.label, sport_filter: s.sport_filter, menu_style: s.menu_style, entry_kind: s.entry_kind,
-      sort_order: s.sort_order, is_active: s.is_active,
-    }).eq("id", s.id);
-    setBusy(null);
-    if (error) return toast.error(error.message);
-    invalidateNavigation();
-    toast.success("Sparat");
-  };
-
-  const delSport = async (id: string) => {
-    if (!confirm("Ta bort sporten OCH alla dess menyalternativ? Detta kan inte ångras.")) return;
+  const delSport = async (id: string, label: string) => {
+    if (!confirm(`Ta bort sporten "${label}" OCH alla dess sidor? Detta kan inte ångras.`)) return;
     setBusy(id);
     const { error } = await (supabase as any).from("nav_sports").delete().eq("id", id);
     setBusy(null);
@@ -226,249 +260,453 @@ function SportsEditor() {
     await load();
   };
 
+  const delEntry = async (entry: Entry) => {
+    if (!confirm(`Ta bort "${entry.name}"?`)) return;
+    setBusy(entry.id);
+    const { error } = await (supabase as any).from("nav_menu_entries").delete().eq("id", entry.id);
+    setBusy(null);
+    if (error) return toast.error(error.message);
+    invalidateNavigation();
+    await load();
+  };
+
+  const toggleSportActive = async (sport: Sport, v: boolean) => {
+    const { error } = await (supabase as any).from("nav_sports").update({ is_active: v }).eq("id", sport.id);
+    if (error) return toast.error(error.message);
+    setSports(sports.map((s) => s.id === sport.id ? { ...s, is_active: v } : s));
+    invalidateNavigation();
+  };
+
+  const toggleEntryActive = async (entry: Entry, v: boolean) => {
+    const { error } = await (supabase as any).from("nav_menu_entries").update({ is_active: v }).eq("id", entry.id);
+    if (error) return toast.error(error.message);
+    setEntries(entries.map((e) => e.id === entry.id ? { ...e, is_active: v } : e));
+    invalidateNavigation();
+  };
+
   if (loading) return <p className="text-sm text-muted-foreground">Laddar…</p>;
 
   return (
     <div className="space-y-4">
-      {sports.map((sport) => {
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-muted-foreground">
+          Varje sport är en dropdown i menyn med en lista av sidor under sig.
+        </p>
+        <Button onClick={() => setNewSportOpen(true)}>
+          <Plus className="h-3 w-3 mr-2" /> Ny sport
+        </Button>
+      </div>
+
+      {sports.length === 0 ? (
+        <div className="rounded-lg border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
+          Inga sporter än. Klicka "Ny sport" för att lägga till (t.ex. Fotboll, F1, Tennis).
+        </div>
+      ) : sports.map((sport) => {
         const sportEntries = entries.filter((e) => e.sport_id === sport.id);
         const isOpen = expandedSport === sport.id;
         return (
-          <div key={sport.id} className="rounded-lg border border-border bg-card">
-            <div className="p-3 grid grid-cols-12 gap-2 items-center">
-              <Button size="icon" variant="ghost" onClick={() => setExpandedSport(isOpen ? null : sport.id)} className="col-span-1">
-                {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-              </Button>
-              <div className="col-span-3">
-                <Label className="text-[10px] uppercase tracking-wider">Etikett (menyn)</Label>
-                <Input value={sport.label} onChange={(e) => setSports(sports.map((s) => s.id === sport.id ? { ...s, label: e.target.value } : s))} onBlur={() => saveSport(sport)} className="h-9" />
+          <div key={sport.id} className="rounded-lg border border-border bg-card overflow-hidden">
+            <div className="p-4 flex items-center gap-3 hover:bg-muted/30 cursor-pointer" onClick={() => setExpandedSport(isOpen ? null : sport.id)}>
+              {isOpen ? <ChevronDown className="h-4 w-4 flex-shrink-0" /> : <ChevronRight className="h-4 w-4 flex-shrink-0" />}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-baseline gap-3">
+                  <h3 className="font-display text-lg">{sport.label}</h3>
+                  <span className="text-xs text-muted-foreground font-mono">/{sport.slug}</span>
+                  <span className="text-xs text-muted-foreground">· {sportEntries.length} sid{sportEntries.length === 1 ? "a" : "or"}</span>
+                  {!sport.is_active && <span className="text-xs text-amber-700">· dold</span>}
+                </div>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {sport.menu_style === "grouped" ? "Grupperad meny (sub-rubriker)" : "Enkel lista"} ·
+                  xs2-filter: <code className="bg-muted px-1 rounded">{sport.sport_filter ?? "—"}</code>
+                </p>
               </div>
-              <div className="col-span-2 text-xs text-muted-foreground font-mono pt-5">/{sport.slug}</div>
-              <div className="col-span-2">
-                <Label className="text-[10px] uppercase tracking-wider">xs2 sport-filter</Label>
-                <Input value={sport.sport_filter ?? ""} placeholder="soccer / formula1 / …" onChange={(e) => setSports(sports.map((s) => s.id === sport.id ? { ...s, sport_filter: e.target.value || null } : s))} onBlur={() => saveSport(sport)} className="h-9" />
-              </div>
-              <div className="col-span-1">
-                <Label className="text-[10px] uppercase tracking-wider">Stil</Label>
-                <select value={sport.menu_style} onChange={(e) => { const next = { ...sport, menu_style: e.target.value as "grouped" | "list" }; setSports(sports.map((s) => s.id === sport.id ? next : s)); saveSport(next); }} className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm">
-                  <option value="grouped">grouped</option>
-                  <option value="list">list</option>
-                </select>
-              </div>
-              <div className="col-span-1">
-                <Label className="text-[10px] uppercase tracking-wider">Typ</Label>
-                <select value={sport.entry_kind} onChange={(e) => { const next = { ...sport, entry_kind: e.target.value as "team" | "race" }; setSports(sports.map((s) => s.id === sport.id ? next : s)); saveSport(next); }} className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm">
-                  <option value="team">team</option>
-                  <option value="race">race</option>
-                </select>
-              </div>
-              <div className="col-span-2 flex items-center justify-end gap-2">
-                <Switch checked={sport.is_active} onCheckedChange={(v) => { const next = { ...sport, is_active: v }; setSports(sports.map((s) => s.id === sport.id ? next : s)); saveSport(next); }} />
-                <Button size="icon" variant="ghost" disabled={busy === sport.id} onClick={() => delSport(sport.id)}>
+              <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                <Switch checked={sport.is_active} onCheckedChange={(v) => toggleSportActive(sport, v)} />
+                <Button size="sm" variant="ghost" onClick={() => setEditSport(sport)}>Redigera</Button>
+                <Button size="icon" variant="ghost" disabled={busy === sport.id} onClick={() => delSport(sport.id, sport.label)}>
                   {busy === sport.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4 text-destructive" />}
                 </Button>
               </div>
             </div>
             {isOpen && (
-              <EntriesEditor
-                sport={sport}
-                entries={sportEntries}
-                onRefresh={load}
-              />
+              <div className="border-t border-border bg-muted/20 p-4 space-y-2">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs text-muted-foreground">
+                    Sidor under <strong>{sport.label}</strong>
+                    {sport.menu_style === "grouped" && ` — grupperade efter "${sport.entry_kind === "team" ? "liga" : "kategori"}"`}
+                  </p>
+                  <Button size="sm" variant="outline" onClick={() => setNewEntryFor(sport)}>
+                    <Plus className="h-3 w-3 mr-1.5" /> Lägg till {sport.entry_kind === "team" ? "lag" : "race"}
+                  </Button>
+                </div>
+                {sportEntries.length === 0 ? (
+                  <p className="text-xs text-muted-foreground text-center py-6">
+                    Inga sidor under {sport.label} än.
+                  </p>
+                ) : (
+                  <div className="space-y-1">
+                    {sportEntries.map((entry) => (
+                      <div key={entry.id} className="rounded-md border border-border bg-card p-3 flex items-center gap-3">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-baseline gap-2 flex-wrap">
+                            <span className="font-medium">{entry.name}</span>
+                            {entry.group_label && (
+                              <span className="text-[10px] uppercase tracking-wider bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">
+                                {entry.group_label}
+                              </span>
+                            )}
+                            <span className="text-xs text-muted-foreground font-mono">/{sport.slug}/{entry.slug}</span>
+                            {!entry.is_active && <span className="text-xs text-amber-700">· dold</span>}
+                          </div>
+                          <div className="text-xs text-muted-foreground mt-0.5">
+                            {[entry.city, entry.venue].filter(Boolean).join(" · ") || <span className="italic">Saknar info — klicka redigera</span>}
+                          </div>
+                        </div>
+                        <a
+                          href={`/services/sportresor/${sport.slug}/${entry.slug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-muted-foreground hover:text-primary inline-flex items-center gap-1"
+                          title="Öppna landningssidan"
+                        >
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
+                        <Switch checked={entry.is_active} onCheckedChange={(v) => toggleEntryActive(entry, v)} />
+                        <Button size="sm" variant="ghost" onClick={() => setEditEntry({ entry, sport })}>Redigera</Button>
+                        <Button size="icon" variant="ghost" disabled={busy === entry.id} onClick={() => delEntry(entry)}>
+                          {busy === entry.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Trash2 className="h-3 w-3 text-destructive" />}
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             )}
           </div>
         );
       })}
-      <Button variant="outline" onClick={addSport} disabled={busy === "new-sport"}>
-        {busy === "new-sport" && <Loader2 className="h-3 w-3 animate-spin mr-2" />}
-        <Plus className="h-3 w-3 mr-2" /> Lägg till sport (t.ex. Tennis, MMA)
-      </Button>
-    </div>
-  );
-}
 
-/* --------------------------- ENTRIES ----------------------------------- */
+      <SportDialog
+        open={newSportOpen || !!editSport}
+        onOpenChange={(o) => { if (!o) { setNewSportOpen(false); setEditSport(null); } }}
+        initial={editSport}
+        nextOrder={sports.reduce((m, r) => Math.max(m, r.sort_order), 0) + 10}
+        onSaved={async () => { await load(); invalidateNavigation(); }}
+      />
 
-function EntriesEditor({ sport, entries, onRefresh }: { sport: Sport; entries: Entry[]; onRefresh: () => Promise<void> }) {
-  const [rows, setRows] = useState<Entry[]>(entries);
-  const [busy, setBusy] = useState<string | null>(null);
-  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
-  useEffect(() => { setRows(entries); }, [entries]);
-
-  const addNew = async () => {
-    const name = prompt(`${sport.entry_kind === "team" ? "Lagnamn" : "Race-namn"} (måste matcha xs2 ${sport.entry_kind === "team" ? "home_team" : "race_name"} exakt):`);
-    if (!name) return;
-    const slug = prompt("Slug (URL):", slugify(name)) ?? slugify(name);
-    if (!slug) return;
-    setBusy("new");
-    const maxOrder = rows.reduce((m, r) => Math.max(m, r.sort_order), 0);
-    const { error } = await (supabase as any).from("nav_menu_entries").insert({
-      sport_id: sport.id, slug, name, sort_order: maxOrder + 10, is_active: true,
-    });
-    setBusy(null);
-    if (error) return toast.error(error.message);
-    invalidateNavigation();
-    setExpanded((p) => ({ ...p, [slug]: true }));
-    await onRefresh();
-  };
-
-  const save = async (row: Entry) => {
-    setBusy(row.id);
-    const { error } = await (supabase as any).from("nav_menu_entries").update({
-      name: row.name, group_label: row.group_label, city: row.city, venue: row.venue,
-      date_text: row.date_text, short_date: row.short_date, tagline: row.tagline, description: row.description,
-      hero_image_url: row.hero_image_url, features_json: row.features_json ?? [],
-      sort_order: row.sort_order, is_active: row.is_active,
-    }).eq("id", row.id);
-    setBusy(null);
-    if (error) return toast.error(error.message);
-    invalidateNavigation();
-    toast.success("Sparat");
-  };
-
-  const del = async (id: string) => {
-    if (!confirm("Ta bort denna entry?")) return;
-    setBusy(id);
-    const { error } = await (supabase as any).from("nav_menu_entries").delete().eq("id", id);
-    setBusy(null);
-    if (error) return toast.error(error.message);
-    invalidateNavigation();
-    await onRefresh();
-  };
-
-  return (
-    <div className="border-t border-border p-4 space-y-2 bg-muted/20">
-      <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2">
-        {sport.menu_style === "grouped" ? "Grupperade under rubriker (group_label)" : "Listade direkt"} · {rows.length} st
-      </p>
-      {rows.map((row, idx) => (
-        <div key={row.id} className="rounded-md border border-border bg-card p-2">
-          <div className="grid grid-cols-12 gap-2 items-center">
-            <Button size="icon" variant="ghost" onClick={() => setExpanded((p) => ({ ...p, [row.id]: !p[row.id] }))} className="col-span-1">
-              {expanded[row.id] ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-            </Button>
-            <div className="col-span-4">
-              <Input value={row.name} onChange={(e) => setRows(rows.map((r, i) => i === idx ? { ...r, name: e.target.value } : r))} onBlur={() => save(row)} className="h-8 text-sm" />
-            </div>
-            {sport.menu_style === "grouped" && (
-              <div className="col-span-3">
-                <Input placeholder="grupp" value={row.group_label ?? ""} onChange={(e) => setRows(rows.map((r, i) => i === idx ? { ...r, group_label: e.target.value || null } : r))} onBlur={() => save(row)} className="h-8 text-sm" />
-              </div>
-            )}
-            <div className={sport.menu_style === "grouped" ? "col-span-2" : "col-span-5"}>
-              <span className="text-[11px] text-muted-foreground font-mono">{row.slug}</span>
-            </div>
-            <div className="col-span-1">
-              <Input type="number" value={row.sort_order} onChange={(e) => setRows(rows.map((r, i) => i === idx ? { ...r, sort_order: Number(e.target.value) } : r))} onBlur={() => save(row)} className="h-8 text-sm" />
-            </div>
-            <div className="col-span-1 flex items-center justify-end gap-1">
-              <Switch checked={row.is_active} onCheckedChange={(v) => { const next = { ...row, is_active: v }; setRows(rows.map((r, i) => i === idx ? next : r)); save(next); }} />
-              <Button size="icon" variant="ghost" disabled={busy === row.id} onClick={() => del(row.id)}>
-                {busy === row.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Trash2 className="h-3 w-3 text-destructive" />}
-              </Button>
-            </div>
-          </div>
-          {expanded[row.id] && (
-            <EntryDetail
-              row={row}
-              kind={sport.entry_kind}
-              onChange={(next) => setRows(rows.map((r) => r.id === row.id ? next : r))}
-              onSave={save}
-            />
-          )}
-        </div>
-      ))}
-      <Button size="sm" variant="outline" onClick={addNew} disabled={busy === "new"}>
-        {busy === "new" && <Loader2 className="h-3 w-3 animate-spin mr-2" />}
-        <Plus className="h-3 w-3 mr-2" /> Lägg till {sport.entry_kind === "team" ? "lag" : "race"}
-      </Button>
-    </div>
-  );
-}
-
-function EntryDetail({ row, kind, onChange, onSave }: { row: Entry; kind: "team" | "race"; onChange: (next: Entry) => void; onSave: (row: Entry) => void }) {
-  const features = row.features_json ?? [];
-  return (
-    <div className="grid grid-cols-2 gap-3 mt-3 pl-10 pb-2">
-      <div>
-        <Label className="text-[10px] uppercase tracking-wider">Stad</Label>
-        <Input value={row.city ?? ""} onChange={(e) => onChange({ ...row, city: e.target.value || null })} onBlur={() => onSave(row)} className="h-9" />
-      </div>
-      <div>
-        <Label className="text-[10px] uppercase tracking-wider">{kind === "team" ? "Arena" : "Bana"}</Label>
-        <Input value={row.venue ?? ""} onChange={(e) => onChange({ ...row, venue: e.target.value || null })} onBlur={() => onSave(row)} className="h-9" />
-      </div>
-      {kind === "race" && (
-        <>
-          <div>
-            <Label className="text-[10px] uppercase tracking-wider">Datum (lång)</Label>
-            <Input value={row.date_text ?? ""} onChange={(e) => onChange({ ...row, date_text: e.target.value || null })} onBlur={() => onSave(row)} className="h-9" />
-          </div>
-          <div>
-            <Label className="text-[10px] uppercase tracking-wider">Datum (kort, menyn)</Label>
-            <Input value={row.short_date ?? ""} onChange={(e) => onChange({ ...row, short_date: e.target.value || null })} onBlur={() => onSave(row)} className="h-9" />
-          </div>
-        </>
-      )}
-      <div className="col-span-2">
-        <Label className="text-[10px] uppercase tracking-wider">Tagline</Label>
-        <Input value={row.tagline ?? ""} onChange={(e) => onChange({ ...row, tagline: e.target.value || null })} onBlur={() => onSave(row)} className="h-9" />
-      </div>
-      <div className="col-span-2">
-        <Label className="text-[10px] uppercase tracking-wider">Beskrivning</Label>
-        <textarea value={row.description ?? ""} onChange={(e) => onChange({ ...row, description: e.target.value || null })} onBlur={() => onSave(row)} rows={3} className="w-full text-sm rounded-md border border-input bg-background px-3 py-2" />
-      </div>
-      <div className="col-span-2">
-        <Label className="text-[10px] uppercase tracking-wider">Hero-bild (landningssida)</Label>
-        <ImageUploader
-          value={row.hero_image_url}
-          prefix={`nav-hero/${row.id}`}
-          onUploaded={(url) => { const next = { ...row, hero_image_url: url }; onChange(next); onSave(next); }}
-          onCleared={() => { const next = { ...row, hero_image_url: null }; onChange(next); onSave(next); }}
+      {newEntryFor && (
+        <EntryDialog
+          open={!!newEntryFor}
+          onOpenChange={(o) => { if (!o) setNewEntryFor(null); }}
+          sport={newEntryFor}
+          initial={null}
+          nextOrder={(entries.filter((e) => e.sport_id === newEntryFor.id).reduce((m, r) => Math.max(m, r.sort_order), 0)) + 10}
+          onSaved={async () => { await load(); invalidateNavigation(); }}
         />
-      </div>
-      <div className="col-span-2">
-        <Label className="text-[10px] uppercase tracking-wider mb-1 block">"Vad ingår" — lista (en per rad)</Label>
-        <div className="space-y-1.5">
-          {features.map((f, i) => (
-            <div key={i} className="flex gap-2">
-              <Input
-                value={f}
-                onChange={(e) => {
-                  const next = [...features];
-                  next[i] = e.target.value;
-                  onChange({ ...row, features_json: next });
-                }}
-                onBlur={() => onSave(row)}
-                className="h-8 text-sm"
-              />
-              <Button
-                size="icon"
-                variant="ghost"
-                onClick={() => {
-                  const next = features.filter((_, j) => j !== i);
-                  const r = { ...row, features_json: next };
-                  onChange(r);
-                  onSave(r);
-                }}
-              >
-                <X className="h-3 w-3" />
+      )}
+
+      {editEntry && (
+        <EntryDialog
+          open={!!editEntry}
+          onOpenChange={(o) => { if (!o) setEditEntry(null); }}
+          sport={editEntry.sport}
+          initial={editEntry.entry}
+          nextOrder={editEntry.entry.sort_order}
+          onSaved={async () => { await load(); invalidateNavigation(); }}
+        />
+      )}
+    </div>
+  );
+}
+
+/* --------------------------- SPORT DIALOG ------------------------------ */
+
+function SportDialog({ open, onOpenChange, initial, nextOrder, onSaved }: { open: boolean; onOpenChange: (o: boolean) => void; initial: Sport | null; nextOrder: number; onSaved: () => Promise<void> }) {
+  const [label, setLabel] = useState("");
+  const [slug, setSlug] = useState("");
+  const [slugTouched, setSlugTouched] = useState(false);
+  const [sportFilter, setSportFilter] = useState("");
+  const [menuStyle, setMenuStyle] = useState<"grouped" | "list">("list");
+  const [entryKind, setEntryKind] = useState<"team" | "race">("team");
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    if (initial) {
+      setLabel(initial.label);
+      setSlug(initial.slug);
+      setSlugTouched(true);
+      setSportFilter(initial.sport_filter ?? "");
+      setMenuStyle(initial.menu_style);
+      setEntryKind(initial.entry_kind);
+    } else {
+      setLabel("");
+      setSlug("");
+      setSlugTouched(false);
+      setSportFilter("");
+      setMenuStyle("list");
+      setEntryKind("team");
+    }
+  }, [open, initial]);
+
+  const isEdit = !!initial;
+  const effectiveSlug = slugTouched ? slug : slugify(label);
+
+  const submit = async () => {
+    if (!label.trim()) return toast.error("Sportens namn krävs");
+    if (!effectiveSlug.trim()) return toast.error("URL-slug krävs");
+    setSubmitting(true);
+    const payload = {
+      label: label.trim(),
+      slug: effectiveSlug.trim(),
+      sport_filter: sportFilter.trim() || null,
+      menu_style: menuStyle,
+      entry_kind: entryKind,
+    };
+    const { error } = isEdit
+      ? await (supabase as any).from("nav_sports").update(payload).eq("id", initial!.id)
+      : await (supabase as any).from("nav_sports").insert({ ...payload, sort_order: nextOrder, is_active: true });
+    setSubmitting(false);
+    if (error) return toast.error(error.message);
+    toast.success(isEdit ? "Sport uppdaterad" : "Sport skapad");
+    await onSaved();
+    onOpenChange(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader>
+          <DialogTitle>{isEdit ? `Redigera ${initial!.label}` : "Ny sport"}</DialogTitle>
+          <DialogDescription>
+            En sport blir en dropdown i toppmenyn. Den får automatiskt sin egen URL-sektion på sajten under <code>/services/sportresor/{effectiveSlug || "slug"}/…</code>
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4 py-2">
+          <div>
+            <Label>Sportens namn <span className="text-muted-foreground">(visas i menyn)</span></Label>
+            <Input value={label} onChange={(e) => setLabel(e.target.value)} placeholder="t.ex. Tennis" autoFocus />
+          </div>
+          <div>
+            <Label>URL-slug <span className="text-muted-foreground">(autogenereras)</span></Label>
+            <Input value={effectiveSlug} onChange={(e) => { setSlug(e.target.value); setSlugTouched(true); }} placeholder="t.ex. tennis" />
+            <p className="text-[11px] text-muted-foreground mt-1">Slug är delen efter <code>/services/sportresor/</code> i URL:en. Ändra bara om du vet vad du gör.</p>
+          </div>
+          <div>
+            <Label>xs2event sport-filter</Label>
+            <Input value={sportFilter} onChange={(e) => setSportFilter(e.target.value)} placeholder="soccer / formula1 / tennis" />
+            <p className="text-[11px] text-muted-foreground mt-1">Det här värdet används för att filtrera biljetter på landningssidan. Måste matcha det xs2event lägger i <code>events.sport</code>.</p>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label>Meny-stil</Label>
+              <select value={menuStyle} onChange={(e) => setMenuStyle(e.target.value as any)} className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm">
+                <option value="list">Enkel lista (som F1)</option>
+                <option value="grouped">Grupperad (som Fotboll med ligor)</option>
+              </select>
+            </div>
+            <div>
+              <Label>Sidornas typ</Label>
+              <select value={entryKind} onChange={(e) => setEntryKind(e.target.value as any)} className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm">
+                <option value="team">Lag (rubriker: Liga, Arena)</option>
+                <option value="race">Race (rubriker: Datum, Bana)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="ghost" onClick={() => onOpenChange(false)}>Avbryt</Button>
+          <Button onClick={submit} disabled={submitting}>
+            {submitting && <Loader2 className="h-3 w-3 animate-spin mr-2" />}
+            {isEdit ? "Spara" : "Skapa sport"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+/* --------------------------- ENTRY DIALOG ------------------------------ */
+
+function EntryDialog({ open, onOpenChange, sport, initial, nextOrder, onSaved }: { open: boolean; onOpenChange: (o: boolean) => void; sport: Sport; initial: Entry | null; nextOrder: number; onSaved: () => Promise<void> }) {
+  const [name, setName] = useState("");
+  const [slug, setSlug] = useState("");
+  const [slugTouched, setSlugTouched] = useState(false);
+  const [groupLabel, setGroupLabel] = useState("");
+  const [city, setCity] = useState("");
+  const [venue, setVenue] = useState("");
+  const [dateText, setDateText] = useState("");
+  const [shortDate, setShortDate] = useState("");
+  const [tagline, setTagline] = useState("");
+  const [description, setDescription] = useState("");
+  const [heroImageUrl, setHeroImageUrl] = useState<string | null>(null);
+  const [features, setFeatures] = useState<string[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    if (initial) {
+      setName(initial.name);
+      setSlug(initial.slug);
+      setSlugTouched(true);
+      setGroupLabel(initial.group_label ?? "");
+      setCity(initial.city ?? "");
+      setVenue(initial.venue ?? "");
+      setDateText(initial.date_text ?? "");
+      setShortDate(initial.short_date ?? "");
+      setTagline(initial.tagline ?? "");
+      setDescription(initial.description ?? "");
+      setHeroImageUrl(initial.hero_image_url);
+      setFeatures(initial.features_json ?? []);
+    } else {
+      setName(""); setSlug(""); setSlugTouched(false); setGroupLabel("");
+      setCity(""); setVenue(""); setDateText(""); setShortDate("");
+      setTagline(""); setDescription(""); setHeroImageUrl(null); setFeatures([]);
+    }
+  }, [open, initial]);
+
+  const isEdit = !!initial;
+  const effectiveSlug = slugTouched ? slug : slugify(name);
+  const isRace = sport.entry_kind === "race";
+
+  const submit = async () => {
+    if (!name.trim()) return toast.error(`${isRace ? "Race-namn" : "Lagnamn"} krävs`);
+    if (!effectiveSlug.trim()) return toast.error("URL-slug krävs");
+    setSubmitting(true);
+    const payload = {
+      sport_id: sport.id,
+      slug: effectiveSlug.trim(),
+      name: name.trim(),
+      group_label: groupLabel.trim() || null,
+      city: city.trim() || null,
+      venue: venue.trim() || null,
+      date_text: dateText.trim() || null,
+      short_date: shortDate.trim() || null,
+      tagline: tagline.trim() || null,
+      description: description.trim() || null,
+      hero_image_url: heroImageUrl,
+      features_json: features.filter((f) => f.trim().length > 0),
+    };
+    const { error } = isEdit
+      ? await (supabase as any).from("nav_menu_entries").update(payload).eq("id", initial!.id)
+      : await (supabase as any).from("nav_menu_entries").insert({ ...payload, sort_order: nextOrder, is_active: true });
+    setSubmitting(false);
+    if (error) return toast.error(error.message);
+    toast.success(isEdit ? "Sparat" : "Skapad");
+    await onSaved();
+    onOpenChange(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>
+            {isEdit ? `Redigera ${initial!.name}` : `Lägg till ${isRace ? "race" : "lag"} under ${sport.label}`}
+          </DialogTitle>
+          <DialogDescription>
+            Allt här hamnar på den publika landningssidan <code>/services/sportresor/{sport.slug}/{effectiveSlug || "slug"}</code>.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-4 py-2">
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label>{isRace ? "Race-namn" : "Lagets namn"} <span className="text-destructive">*</span></Label>
+              <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={isRace ? "t.ex. Monacos Grand Prix" : "t.ex. Arsenal"} autoFocus />
+              <p className="text-[11px] text-amber-700 mt-1">⚠️ Måste matcha xs2events {isRace ? "race_name" : "home_team"} exakt.</p>
+            </div>
+            <div>
+              <Label>URL-slug</Label>
+              <Input value={effectiveSlug} onChange={(e) => { setSlug(e.target.value); setSlugTouched(true); }} placeholder={isRace ? "monaco" : "arsenal"} />
+            </div>
+          </div>
+
+          {sport.menu_style === "grouped" && (
+            <div>
+              <Label>{sport.entry_kind === "team" ? "Liga (gruppering i menyn)" : "Kategori"}</Label>
+              <Input value={groupLabel} onChange={(e) => setGroupLabel(e.target.value)} placeholder={sport.entry_kind === "team" ? "t.ex. Premier League" : "t.ex. Slam"} />
+              <p className="text-[11px] text-muted-foreground mt-1">Sidor med samma värde grupperas tillsammans i dropdownen.</p>
+            </div>
+          )}
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label>Stad</Label>
+              <Input value={city} onChange={(e) => setCity(e.target.value)} placeholder="t.ex. London, England" />
+            </div>
+            <div>
+              <Label>{isRace ? "Bana" : "Arena"}</Label>
+              <Input value={venue} onChange={(e) => setVenue(e.target.value)} placeholder={isRace ? "t.ex. Hungaroring" : "t.ex. Emirates Stadium"} />
+            </div>
+          </div>
+
+          {isRace && (
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>Datum (lång form)</Label>
+                <Input value={dateText} onChange={(e) => setDateText(e.target.value)} placeholder="t.ex. 26 juli 2026" />
+              </div>
+              <div>
+                <Label>Datum (kort form, visas i menyn)</Label>
+                <Input value={shortDate} onChange={(e) => setShortDate(e.target.value)} placeholder="t.ex. 26 juli" />
+              </div>
+            </div>
+          )}
+
+          <div>
+            <Label>Tagline <span className="text-muted-foreground">(kort fångfras under titeln)</span></Label>
+            <Input value={tagline} onChange={(e) => setTagline(e.target.value)} placeholder="t.ex. North London is red" />
+          </div>
+
+          <div>
+            <Label>Beskrivning</Label>
+            <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} className="w-full text-sm rounded-md border border-input bg-background px-3 py-2" placeholder="2-3 meningar som visas på landningssidan." />
+          </div>
+
+          <div>
+            <Label className="mb-1 block">Hero-bild</Label>
+            <ImageUploader
+              value={heroImageUrl}
+              prefix={`nav-hero/${effectiveSlug || "draft"}`}
+              onUploaded={setHeroImageUrl}
+              onCleared={() => setHeroImageUrl(null)}
+            />
+            <p className="text-[11px] text-muted-foreground mt-1">Lämna tomt för att använda sportens standardbild.</p>
+          </div>
+
+          <div>
+            <Label className="mb-1 block">"Vad ingår" på landningssidan</Label>
+            <div className="space-y-1.5">
+              {features.map((f, i) => (
+                <div key={i} className="flex gap-2">
+                  <Input
+                    value={f}
+                    onChange={(e) => setFeatures(features.map((x, j) => j === i ? e.target.value : x))}
+                    placeholder="t.ex. Matchbiljetter med bra sittplatser"
+                    className="h-9 text-sm"
+                  />
+                  <Button size="icon" variant="ghost" onClick={() => setFeatures(features.filter((_, j) => j !== i))}>
+                    <X className="h-3 w-3" />
+                  </Button>
+                </div>
+              ))}
+              <Button size="sm" variant="outline" onClick={() => setFeatures([...features, ""])}>
+                <Plus className="h-3 w-3 mr-1.5" /> Lägg till rad
               </Button>
             </div>
-          ))}
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => {
-              const next = { ...row, features_json: [...features, ""] };
-              onChange(next);
-            }}
-          >
-            <Plus className="h-3 w-3 mr-1.5" /> Lägg till rad
-          </Button>
+            <p className="text-[11px] text-muted-foreground mt-1">Lämna helt tom för standard-lista för {isRace ? "race" : "lag"}.</p>
+          </div>
         </div>
-        <p className="text-[10px] text-muted-foreground mt-1">Lämna helt tomt för att visa standard-listan för {kind}.</p>
-      </div>
-    </div>
+
+        <DialogFooter>
+          <Button variant="ghost" onClick={() => onOpenChange(false)}>Avbryt</Button>
+          <Button onClick={submit} disabled={submitting}>
+            {submitting && <Loader2 className="h-3 w-3 animate-spin mr-2" />}
+            {isEdit ? "Spara" : "Skapa"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
