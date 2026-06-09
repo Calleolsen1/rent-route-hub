@@ -351,9 +351,10 @@ export default function EventDetail() {
                           <p className="font-medium">{o.name}</p>
                           {o.description && (
                             <p className="text-xs text-muted-foreground mt-1">
-                              {o.description}
+                              {o.description.replace(/<[^>]+>/g, "")}
                             </p>
                           )}
+
                           <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
                             <Users className="h-3 w-3" />
                             Sittning ihop: upp till {o.party_size_together} pers
