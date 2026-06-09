@@ -84,6 +84,8 @@ export default function AdminTickets() {
   const [search, setSearch] = useState("");
   const [sourceFilter, setSourceFilter] = useState<"all" | "xs2event" | "manual">("all");
   const [featuredFilter, setFeaturedFilter] = useState<"all" | "featured" | "not_featured">("all");
+  const [sportFilter, setSportFilter] = useState<string>("all");
+  const [tournamentFilter, setTournamentFilter] = useState<string>("all");
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [bulkTarget, setBulkTarget] = useState<{ eventIds: string[]; label: string } | null>(null);
   const [bulkCompareTarget, setBulkCompareTarget] = useState<
@@ -217,6 +219,29 @@ export default function AdminTickets() {
       toast.success(empty ? "Jämförelsepris rensat" : "Jämförelsepris sparat");
     } catch (e: any) {
       toast.error(e.message ?? "Kunde inte spara");
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const applyEventMarkupToAll = async (
+    eventId: string,
+    values: { pct: number; fixed: number },
+  ): Promise<number> => {
+    setBusy(eventId);
+    try {
+      const { error, count } = await (supabase as any)
+        .from("ticket_categories")
+        .update({ markup_pct: values.pct, markup_fixed_sek: values.fixed })
+        .eq("event_id", eventId)
+        .select("*", { count: "exact", head: true });
+      if (error) throw error;
+      await load();
+      toast.success(`Påslag uppdaterat på ${count ?? 0} kategorier`);
+      return Number(count ?? 0);
+    } catch (e: any) {
+      toast.error(e.message ?? "Kunde inte uppdatera");
+      return 0;
     } finally {
       setBusy(null);
     }
@@ -394,40 +419,80 @@ export default function AdminTickets() {
         </div>
 
         {/* Filter / sök */}
-        <div className="rounded-xl border border-border bg-card p-4 grid grid-cols-1 md:grid-cols-4 gap-3">
-          <div className="md:col-span-2">
-            <Input
-              placeholder="Sök på lag, race, turnering, arena..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="h-9"
-            />
-          </div>
-          <select
-            value={sourceFilter}
-            onChange={(e) => setSourceFilter(e.target.value as typeof sourceFilter)}
-            className="h-9 rounded-md border border-input bg-background px-3 text-sm"
-          >
-            <option value="all">Alla källor</option>
-            <option value="xs2event">Bara xs2event</option>
-            <option value="manual">Bara manuella</option>
-          </select>
-          <select
-            value={featuredFilter}
-            onChange={(e) => setFeaturedFilter(e.target.value as typeof featuredFilter)}
-            className="h-9 rounded-md border border-input bg-background px-3 text-sm"
-          >
-            <option value="all">Alla evenemang</option>
-            <option value="featured">Bara förstasidan</option>
-            <option value="not_featured">Ej förstasidan</option>
-          </select>
-        </div>
+        {(() => {
+          const SPORT_LABEL: Record<string, string> = { soccer: "Fotboll", formula1: "Formel 1" };
+          const availableSports = Array.from(new Set(events.map((e) => e.sport))).sort();
+          const tournamentsForSport = Array.from(
+            new Set(
+              events
+                .filter((e) => sportFilter === "all" || e.sport === sportFilter)
+                .map((e) => e.tournament_name)
+                .filter(Boolean),
+            ),
+          ).sort();
+          return (
+            <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+              <Input
+                placeholder="Sök på lag, race, turnering, arena..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="h-9"
+              />
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                <select
+                  value={sportFilter}
+                  onChange={(e) => {
+                    setSportFilter(e.target.value);
+                    setTournamentFilter("all"); // Reset tournament when sport changes
+                  }}
+                  className="h-9 rounded-md border border-input bg-background px-3 text-sm"
+                >
+                  <option value="all">Alla sporter</option>
+                  {availableSports.map((s) => (
+                    <option key={s} value={s}>{SPORT_LABEL[s] ?? s}</option>
+                  ))}
+                </select>
+                <select
+                  value={tournamentFilter}
+                  onChange={(e) => setTournamentFilter(e.target.value)}
+                  className="h-9 rounded-md border border-input bg-background px-3 text-sm"
+                  disabled={tournamentsForSport.length === 0}
+                >
+                  <option value="all">Alla turneringar</option>
+                  {tournamentsForSport.map((t) => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+                <select
+                  value={sourceFilter}
+                  onChange={(e) => setSourceFilter(e.target.value as typeof sourceFilter)}
+                  className="h-9 rounded-md border border-input bg-background px-3 text-sm"
+                >
+                  <option value="all">Alla källor</option>
+                  <option value="xs2event">Bara xs2event</option>
+                  <option value="manual">Bara manuella</option>
+                </select>
+                <select
+                  value={featuredFilter}
+                  onChange={(e) => setFeaturedFilter(e.target.value as typeof featuredFilter)}
+                  className="h-9 rounded-md border border-input bg-background px-3 text-sm"
+                >
+                  <option value="all">Alla evenemang</option>
+                  <option value="featured">Bara förstasidan</option>
+                  <option value="not_featured">Ej förstasidan</option>
+                </select>
+              </div>
+            </div>
+          );
+        })()}
 
         {(() => {
           const SPORT_LABEL: Record<string, string> = { soccer: "Fotboll", formula1: "Formel 1" };
           const SPORT_ORDER = ["soccer", "formula1"];
 
           const filtered = events.filter((ev) => {
+            if (sportFilter !== "all" && ev.sport !== sportFilter) return false;
+            if (tournamentFilter !== "all" && ev.tournament_name !== tournamentFilter) return false;
             if (sourceFilter === "xs2event" && ev.source !== "xs2event") return false;
             if (sourceFilter === "manual" && ev.source === "xs2event") return false;
             if (featuredFilter === "featured" && !ev.is_featured) return false;
@@ -594,14 +659,11 @@ export default function AdminTickets() {
                 />
               </div>
 
-              <CompareAtEditor
-                targetId={ev.id}
-                minPriceSek={ev.min_price_sek}
-                valueSek={ev.compare_at_price_sek}
-                valuePct={ev.compare_at_pct}
+              <EventDefaultsPanel
+                event={ev}
                 busy={busy === ev.id}
-                onSave={saveCompareAt}
-                label="Jämförelsepris (överstruket)"
+                onSaveCompareAt={saveCompareAt}
+                onApplyMarkupToAll={applyEventMarkupToAll}
               />
 
               <div className="space-y-2">
@@ -741,6 +803,148 @@ export default function AdminTickets() {
           })
         )}
       </section>
+    </div>
+  );
+}
+
+/**
+ * Single source-of-truth row for "what applies to every category under this
+ * game by default". Two side-by-side editors: compare-at (resolution-chain,
+ * cascades automatically) and markup (writes back to all categories on
+ * apply — no event-level markup column, so the value here is just a bulk
+ * action against ticket_categories).
+ */
+function EventDefaultsPanel({
+  event,
+  busy,
+  onSaveCompareAt,
+  onApplyMarkupToAll,
+}: {
+  event: EventRow;
+  busy: boolean;
+  onSaveCompareAt: (id: string, value: { sek: number | null; pct: number | null }) => void;
+  onApplyMarkupToAll: (id: string, values: { pct: number; fixed: number }) => Promise<number>;
+}) {
+  // Derive a representative markup from the first category (categories may
+  // diverge; this is a quick read-out showing what the bulk will start from).
+  const firstCat = event.ticket_categories?.[0];
+  const representativePct = firstCat ? Number(firstCat.markup_pct ?? 0) : 0;
+  const representativeFixed = firstCat ? Number(firstCat.markup_fixed_sek ?? 0) : 0;
+  const allSameMarkup = (event.ticket_categories ?? []).every(
+    (c) =>
+      Number(c.markup_pct ?? 0) === representativePct &&
+      Number(c.markup_fixed_sek ?? 0) === representativeFixed,
+  );
+
+  const [pctText, setPctText] = useState(String(representativePct));
+  const [fixedText, setFixedText] = useState(String(representativeFixed));
+  useEffect(() => {
+    setPctText(String(representativePct));
+    setFixedText(String(representativeFixed));
+  }, [representativePct, representativeFixed]);
+
+  const apply = async () => {
+    const pct = Number(pctText);
+    const fixed = Number(fixedText);
+    if (!Number.isFinite(pct) || pct < 0 || pct > 200) {
+      toast.error("Procent måste vara 0–200");
+      return;
+    }
+    if (!Number.isFinite(fixed) || fixed < 0) {
+      toast.error("Fast påslag kan inte vara negativt");
+      return;
+    }
+    if (
+      !confirm(
+        `Sätter påslag ${pct}% + ${fixed} kr på alla biljettkategorier för detta event. Per-kategori-värden ersätts. Fortsätta?`,
+      )
+    ) {
+      return;
+    }
+    await onApplyMarkupToAll(event.id, { pct, fixed });
+  };
+
+  return (
+    <div className="mb-4 pb-4 border-b border-border">
+      <div className="flex items-center justify-between mb-3">
+        <p className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground">
+          Standardvärden för alla biljetter under detta event
+        </p>
+        {!allSameMarkup && event.ticket_categories?.length ? (
+          <span className="text-[10px] text-amber-700">
+            ⚠️ Olika påslag per kategori — fält visar första kategorin
+          </span>
+        ) : null}
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Jämförelsepris */}
+        <div className="rounded-lg border border-border bg-muted/20 p-3">
+          <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-2">
+            Jämförelsepris (överstruket)
+          </p>
+          <CompareAtEditor
+            targetId={event.id}
+            minPriceSek={event.min_price_sek}
+            valueSek={event.compare_at_price_sek}
+            valuePct={event.compare_at_pct}
+            busy={busy}
+            onSave={onSaveCompareAt}
+            label=""
+            compact
+          />
+        </div>
+        {/* Påslag (markup) */}
+        <div className="rounded-lg border border-border bg-muted/20 p-3">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground">
+              Påslag (gäller alla kategorier)
+            </p>
+            <Button size="sm" variant="outline" disabled={busy} onClick={apply} className="h-7 text-xs">
+              <Percent className="h-3 w-3 mr-1" /> Tillämpa
+            </Button>
+          </div>
+          <div className="flex items-end gap-2 flex-wrap">
+            <div className="w-[100px]">
+              <label className="text-[10px] uppercase tracking-wider text-muted-foreground">%</label>
+              <div className="relative mt-0.5">
+                <Input
+                  type="number"
+                  min={0}
+                  max={200}
+                  step="0.1"
+                  value={pctText}
+                  onChange={(e) => setPctText(e.target.value)}
+                  disabled={busy}
+                  className="h-9 pr-7 text-sm"
+                />
+                <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">%</span>
+              </div>
+            </div>
+            <span className="text-xs text-muted-foreground pb-2">+</span>
+            <div className="w-[110px]">
+              <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Fast</label>
+              <div className="relative mt-0.5">
+                <Input
+                  type="number"
+                  min={0}
+                  step="1"
+                  value={fixedText}
+                  onChange={(e) => setFixedText(e.target.value)}
+                  disabled={busy}
+                  className="h-9 pr-10 text-sm"
+                />
+                <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">SEK</span>
+              </div>
+            </div>
+            <p className="text-[11px] text-muted-foreground pb-2 flex-1 min-w-[140px]">
+              slutpris = xs2-pris × (1 + %/100) + SEK
+            </p>
+          </div>
+        </div>
+      </div>
+      <p className="text-[10px] text-amber-700 mt-2">
+        ⚠️ Jämförelsepris måste vara ett verkligt tidigare pris (Prisinformationslagen). Per-kategori-värden längre ner vinner över dessa standardvärden.
+      </p>
     </div>
   );
 }
