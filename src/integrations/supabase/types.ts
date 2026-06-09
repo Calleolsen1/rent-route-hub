@@ -697,6 +697,24 @@ export type Database = {
           },
         ]
       }
+      rate_limits: {
+        Row: {
+          count: number
+          key: string
+          window_start: string
+        }
+        Insert: {
+          count?: number
+          key: string
+          window_start?: string
+        }
+        Update: {
+          count?: number
+          key?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       refunds: {
         Row: {
           amount_sek: number
@@ -734,6 +752,66 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      site_content: {
+        Row: {
+          description: string | null
+          key: string
+          updated_at: string
+          updated_by: string | null
+          value: Json
+        }
+        Insert: {
+          description?: string | null
+          key: string
+          updated_at?: string
+          updated_by?: string | null
+          value: Json
+        }
+        Update: {
+          description?: string | null
+          key?: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: Json
+        }
+        Relationships: []
+      }
+      testimonials: {
+        Row: {
+          author: string
+          created_at: string
+          id: string
+          is_active: boolean
+          quote: string
+          rating: number
+          role: string | null
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          author: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          quote: string
+          rating?: number
+          role?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          author?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          quote?: string
+          rating?: number
+          role?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
       }
       ticket_categories: {
         Row: {
@@ -859,6 +937,39 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      why_us_cards: {
+        Row: {
+          created_at: string
+          description: string
+          icon: string
+          id: string
+          is_active: boolean
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          icon: string
+          id?: string
+          is_active?: boolean
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          icon?: string
+          id?: string
+          is_active?: boolean
+          sort_order?: number
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -1027,6 +1138,11 @@ export type Database = {
       admin_unsuspend_user: {
         Args: { p_admin_user_id: string; p_user_id: string }
         Returns: Json
+      }
+      cleanup_rate_limits: { Args: never; Returns: number }
+      consume_rate_limit: {
+        Args: { p_key: string; p_max: number; p_window_sec: number }
+        Returns: boolean
       }
       create_order_with_items: {
         Args: {
