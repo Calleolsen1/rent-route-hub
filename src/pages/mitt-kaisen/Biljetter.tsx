@@ -148,7 +148,22 @@ function OrderCard({ order }: { order: OrderWithItems }) {
   const orderRef = order.invoice_number ?? order.id.slice(0, 8).toUpperCase();
 
   return (
-    <div className="rounded-xl p-5" style={{ backgroundColor: C.bgCard }}>
+    <div
+      className="rounded-2xl p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_60px_-20px_rgba(3,15,35,0.7)] relative overflow-hidden"
+      style={{
+        backgroundColor: C.bgCard,
+        border: `1px solid ${C.bgCardBorder}`,
+        boxShadow: "0 1px 0 hsl(210 30% 92% / 0.04) inset",
+      }}
+    >
+      <span
+        aria-hidden
+        className="absolute left-0 top-0 bottom-0 w-[3px]"
+        style={{
+          background: `linear-gradient(to bottom, ${C.accent}, transparent)`,
+          opacity: 0.8,
+        }}
+      />
       {/* Header */}
       <div className="flex items-start justify-between mb-3 gap-3">
         <div className="min-w-0">
