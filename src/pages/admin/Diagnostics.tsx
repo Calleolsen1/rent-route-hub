@@ -218,8 +218,8 @@ export default function AdminDiagnostics() {
           <SecretCheck label="XS2_API_KEY" ok={config?.xs2_api_key} required hint="Mock-läge utan denna" />
           <SecretCheck label="XS2_BASE_URL" ok={config?.xs2_base_url} required hint="t.ex. https://api.xs2event.com" />
           <SecretCheck label="XS2_PAYMENT_METHOD" ok={config?.xs2_payment_method} hint="Default 'invoice'" />
-          <SecretCheck label="XS2_AUTH_HEADER" ok={config?.xs2_auth_header_custom} hint="Default 'Authorization'" />
-          <SecretCheck label="XS2_AUTH_SCHEME" ok={config?.xs2_auth_scheme_custom} hint="Default 'Bearer '" />
+          <SecretCheck label="XS2_AUTH_HEADER" ok={config?.xs2_auth_header_custom} hint="Default 'X-Api-Key'" />
+          <SecretCheck label="XS2_AUTH_SCHEME" ok={config?.xs2_auth_scheme_custom} hint="Default '' (empty, raw key)" />
           <SecretCheck label="STRIPE_SANDBOX_API_KEY" ok={config?.stripe_sandbox} required />
           <SecretCheck label="STRIPE_LIVE_API_KEY" ok={config?.stripe_live} hint="Krävs för live-betalningar" />
           <SecretCheck label="PAYMENTS_SANDBOX_WEBHOOK_SECRET" ok={config?.payments_sandbox_webhook} required />
