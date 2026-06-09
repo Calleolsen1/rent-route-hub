@@ -25,7 +25,7 @@
 // Checkout.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-import { Xs2Client, applyMarkup, Xs2Error } from "../_shared/xs2event.ts";
+import { Xs2Client, applyMarkup, eurCentsToSek, Xs2Error } from "../_shared/xs2event.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -181,10 +181,20 @@ Deno.serve(async (req) => {
       );
     }
 
+    // EUR → SEK rate (xs2 prices come in EUR cents; we charge in SEK)
+    const { data: rateRaw } = await admin.rpc("get_platform_decimal", {
+      p_key: "eur_to_sek_rate",
+      p_default: 11.5,
+    });
+    const eurToSek = Number(rateRaw ?? 11.5);
+
     // Compute order total with markup
     let totalSek = 0;
     const itemRows = allocations.map((a) => {
-      const finalUnit = applyMarkup(a.net_rate, category.markup_pct, category.markup_fixed_sek);
+      const baseSek = a.currency_code === "EUR"
+        ? eurCentsToSek(a.net_rate, eurToSek)
+        : Number(a.net_rate);
+      const finalUnit = applyMarkup(baseSek, category.markup_pct, category.markup_fixed_sek);
       const subtotal = finalUnit * a.quantity;
       totalSek += subtotal;
       return {
@@ -193,6 +203,9 @@ Deno.serve(async (req) => {
         qty: a.quantity,
         unit_price_sek: finalUnit,
         sub_category: external_sub_category,
+        // Store the raw xs2 values so xs2-renew-reservation can reconstruct
+        // the reservation payload (net_rate + currency_code must match xs2's
+        // price-drift guard).
         external_ticket_ids: [{
           ticket_id: a.ticket_id,
           quantity: a.quantity,

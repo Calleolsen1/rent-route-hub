@@ -15,6 +15,7 @@ type SettingRow = {
 export default function AdminMarkupDefaults() {
   const [pct, setPct] = useState("15");
   const [fixed, setFixed] = useState("0");
+  const [eurRate, setEurRate] = useState("11.5");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [applying, setApplying] = useState(false);
@@ -24,12 +25,14 @@ export default function AdminMarkupDefaults() {
     const { data } = await (supabase as any)
       .from("platform_settings")
       .select("setting_key, setting_value, description")
-      .in("setting_key", ["default_markup_pct", "default_markup_fixed_sek"]);
+      .in("setting_key", ["default_markup_pct", "default_markup_fixed_sek", "eur_to_sek_rate"]);
     const rows = (data as SettingRow[]) ?? [];
     const pctRow = rows.find((r) => r.setting_key === "default_markup_pct");
     const fixedRow = rows.find((r) => r.setting_key === "default_markup_fixed_sek");
+    const rateRow = rows.find((r) => r.setting_key === "eur_to_sek_rate");
     if (pctRow) setPct(pctRow.setting_value);
     if (fixedRow) setFixed(fixedRow.setting_value);
+    if (rateRow) setEurRate(rateRow.setting_value);
     setLoading(false);
   };
 
@@ -40,12 +43,17 @@ export default function AdminMarkupDefaults() {
   const save = async () => {
     const pctNum = Number(pct);
     const fixedNum = Number(fixed);
+    const rateNum = Number(eurRate);
     if (!Number.isFinite(pctNum) || pctNum < 0 || pctNum > 100) {
       toast.error("Procentsats måste vara 0-100");
       return;
     }
     if (!Number.isFinite(fixedNum) || fixedNum < 0) {
       toast.error("Fast påslag kan inte vara negativt");
+      return;
+    }
+    if (!Number.isFinite(rateNum) || rateNum <= 0 || rateNum > 50) {
+      toast.error("EUR-kursen ska vara mellan 0 och 50");
       return;
     }
     setSaving(true);
@@ -67,11 +75,18 @@ export default function AdminMarkupDefaults() {
               setting_type: "decimal",
               description: "Platsens fasta påslag i SEK (gäller nya kategorier)",
             },
+            {
+              setting_key: "eur_to_sek_rate",
+              setting_value: String(rateNum),
+              setting_type: "decimal",
+              description:
+                "Växelkurs EUR → SEK för xs2event-biljetter. Påverkar nya prisberäkningar omedelbart.",
+            },
           ],
           { onConflict: "setting_key" },
         );
       if (error) throw error;
-      toast.success("Sparat. Nya kategorier får dessa värden från och med nu.");
+      toast.success("Sparat. Nya prisberäkningar använder dessa värden.");
     } catch (e: any) {
       toast.error(e.message ?? "Kunde inte spara");
     } finally {
@@ -113,10 +128,38 @@ export default function AdminMarkupDefaults() {
   return (
     <div className="p-8 max-w-2xl space-y-8">
       <div>
-        <h1 className="text-3xl font-display mb-2">Påslag — standardvärden</h1>
+        <h1 className="text-3xl font-display mb-2">Prisinställningar</h1>
         <p className="text-muted-foreground text-sm">
-          Bestämmer vilket påslag som tillämpas när nya biljettkategorier skapas (t.ex. när en kund öppnar ett xs2-event som inte synkats än). Per-kategori-värden i Biljetter har företräde över dessa.
+          Påslag som tillämpas på nya biljettkategorier, plus EUR→SEK-kursen som används när xs2-priser konverteras. Per-kategori-värden i Biljetter har företräde över standardpåslag.
         </p>
+      </div>
+
+      <div className="rounded-xl border border-border bg-card p-6 space-y-4">
+        <div>
+          <h2 className="font-display text-lg">Växelkurs EUR → SEK</h2>
+          <p className="text-xs text-muted-foreground mt-1">
+            xs2event prissätter alla biljetter i euro. Den här kursen styr vad svenska kunder betalar i SEK. Uppdatera manuellt — påverkar nya prisberäkningar omedelbart, inte redan reserverade ordrar.
+          </p>
+        </div>
+        <div className="max-w-[200px]">
+          <Label htmlFor="eur-rate" className="text-xs uppercase tracking-wider">
+            1 EUR =
+          </Label>
+          <div className="relative mt-1">
+            <Input
+              id="eur-rate"
+              type="number"
+              min={0}
+              max={50}
+              step="0.01"
+              value={eurRate}
+              onChange={(e) => setEurRate(e.target.value)}
+            />
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+              SEK
+            </span>
+          </div>
+        </div>
       </div>
 
       <div className="rounded-xl border border-border bg-card p-6 space-y-5">

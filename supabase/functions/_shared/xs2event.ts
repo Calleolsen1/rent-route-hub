@@ -1,14 +1,19 @@
 // xs2event API client (Deno).
 //
-// Auth scheme is configurable via env vars so the same code works regardless of
-// whether xs2event hands Kaisen a Bearer token, an X-Api-Key header, or
-// something custom. Defaults match the most common B2B pattern.
+// Live API quirks confirmed via curl 2026-06-09:
+//   - Auth: header X-Api-Key with the raw key (NOT Authorization: Bearer)
+//   - List responses wrap data under the resource name, e.g.
+//     `{ "tickets": [...], "pagination": {...} }`, not `{ "data": [...] }`
+//   - Tickets return `currency_code: "EUR"` and `net_rate` in **cents**
+//     (e.g. 60000 = 600 EUR). Callers must convert + apply EUR→SEK rate
+//     for Swedish display.
+//   - `&stock:gt:0` filter rejected as "Extra inputs"; use ticket_status=available
 //
-//   XS2_BASE_URL      e.g. https://api.xs2event.com   (no trailing slash)
-//   XS2_API_KEY       the credential string
-//   XS2_AUTH_HEADER   default "Authorization"
-//   XS2_AUTH_SCHEME   default "Bearer " (note trailing space). Use "" if the
-//                     header value is the raw key (e.g. X-Api-Key style).
+// Env vars:
+//   XS2_BASE_URL      sandbox: https://testapi.xs2event.com
+//   XS2_API_KEY       raw key string
+//   XS2_AUTH_HEADER   default "X-Api-Key"
+//   XS2_AUTH_SCHEME   default "" (empty — xs2 wants the bare key value)
 //
 // All types use index signatures for forward-compatibility — xs2event adds
 // fields over time and we don't want strict typing to break on unknown keys.
@@ -34,7 +39,7 @@ export class Xs2Error extends Error {
   }
 }
 
-export interface Xs2Sport { sport_type: string; [k: string]: unknown }
+export interface Xs2Sport { sport_id: string; [k: string]: unknown }
 
 export interface Xs2Tournament {
   tournament_id: string;
@@ -74,9 +79,14 @@ export interface Xs2Venue {
 
 export interface Xs2Category {
   category_id: string;
-  name: string;
-  description?: string;
+  category_name: string;
+  /**
+   * Localized — keyed by IETF tag e.g. `en_GB`, `de_DE`, `nl_NL`. Use
+   * `pickLocalized(description)` to extract a usable string.
+   */
+  description?: Record<string, string> | string;
   party_size_together: number;
+  category_type?: string;
   [k: string]: unknown;
 }
 
@@ -127,8 +137,8 @@ export function loadConfig(): Xs2Config | null {
   return {
     baseUrl: env("XS2_BASE_URL").replace(/\/+$/, ""),
     apiKey,
-    authHeader: env("XS2_AUTH_HEADER", "Authorization"),
-    authScheme: env("XS2_AUTH_SCHEME", "Bearer "),
+    authHeader: env("XS2_AUTH_HEADER", "X-Api-Key"),
+    authScheme: env("XS2_AUTH_SCHEME", ""),
   };
 }
 
@@ -196,16 +206,24 @@ export class Xs2Client {
     return body as T;
   }
 
-  // xs2event responses wrap arrays under various keys depending on endpoint
-  // ("data", "items", or the resource name). Normalize.
+  // xs2event wraps list responses under the resource name
+  // (sports / tournaments / events / venues / tickets / categories).
+  // Fallback to `data`/`items`/`results` for older endpoints if shape changes.
   private async list<T>(path: string): Promise<T[]> {
     const res = await this.request<unknown>(path);
     if (Array.isArray(res)) return res as T[];
     if (res && typeof res === "object") {
       const obj = res as Record<string, unknown>;
-      for (const key of ["data", "items", "results"]) {
+      // Prefer the canonical resource-name key first
+      for (const key of [
+        "tickets", "events", "tournaments", "categories",
+        "venues", "sports", "teams", "data", "items", "results",
+      ]) {
         if (Array.isArray(obj[key])) return obj[key] as T[];
       }
+      // Last-resort heuristic: take the only array value if just one exists
+      const arrays = Object.entries(obj).filter(([, v]) => Array.isArray(v));
+      if (arrays.length === 1) return arrays[0][1] as T[];
     }
     throw new Xs2Error(
       `xs2event ${path}: unexpected response shape`,
@@ -282,23 +300,31 @@ export class Xs2Client {
     return this.list<Xs2Category>(`/v1/categories${q}`);
   }
 
-  /** Live ticket lookup. xs2event explicitly says do not cache these. */
+  /**
+   * Live ticket lookup. xs2event explicitly says do not cache these.
+   *
+   * The `stock_gt` opt is honoured client-side now — the live API rejects
+   * `&stock:gt:0` as an unknown query parameter, despite the docs.
+   * `ticket_status=available` already excludes sold-out tickets in practice.
+   */
   async listTickets(opts: {
     event_id: string;
     ticket_status?: string;
     stock_gt?: number;
   }): Promise<Xs2Ticket[]> {
     if (this.mock) {
-      return MOCK_FIXTURES[opts.event_id]?.tickets ?? [];
+      const arr = MOCK_FIXTURES[opts.event_id]?.tickets ?? [];
+      return opts.stock_gt != null ? arr.filter((t) => t.stock > opts.stock_gt!) : arr;
     }
     const params: Record<string, QueryValue> = {
       event_id: opts.event_id,
       ticket_status: opts.ticket_status ?? "available",
     };
+    const tickets = await this.list<Xs2Ticket>(`/v1/tickets${buildQuery(params)}`);
     if (opts.stock_gt != null) {
-      params["stock:gt"] = opts.stock_gt;
+      return tickets.filter((t) => Number(t.stock) > opts.stock_gt!);
     }
-    return this.list<Xs2Ticket>(`/v1/tickets${buildQuery(params)}`);
+    return tickets;
   }
 
   // --- Writes ---
@@ -423,18 +449,43 @@ export function applyMarkup(
   return Math.round(withPct + (Number(markupFixedSek) || 0));
 }
 
+/**
+ * Convert an xs2 ticket's raw `net_rate` (EUR cents) to SEK major units.
+ * Reads `eur_to_sek_rate` from platform_settings via get_platform_decimal RPC;
+ * falls back to the supplied default if the setting or RPC is unavailable.
+ */
+export function eurCentsToSek(centsEur: number, eurToSekRate: number): number {
+  const eur = Number(centsEur) / 100;
+  return eur * (Number(eurToSekRate) || 0);
+}
+
+/**
+ * xs2 returns category `description` as a localized object
+ * (`{en_GB, de_DE, nl_NL, ...}`) or sometimes a plain string. Pick a usable
+ * value with a sensible preference order.
+ */
+export function pickLocalized(
+  value: Record<string, string> | string | null | undefined,
+  preferOrder: readonly string[] = ["sv_SE", "en_GB", "en_US", "de_DE", "nl_NL"],
+): string {
+  if (!value) return "";
+  if (typeof value === "string") return value;
+  for (const lang of preferOrder) {
+    if (typeof value[lang] === "string" && value[lang].length > 0) return value[lang];
+  }
+  // Fallback: first non-empty value in the object
+  for (const v of Object.values(value)) {
+    if (typeof v === "string" && v.length > 0) return v;
+  }
+  return "";
+}
+
 // ---------------------------------------------------------------------------
 // Mock fixtures — used when XS2_API_KEY is missing.
 //
-// Keep `event_id`, `category_id`, `sub_category` values in sync with
-// supabase/seed/dev_demo_events.sql. The seed inserts events whose
-// `external_event_id` matches these keys; xs2-get-event-tickets routes through
-// the mock client and finds these tickets/categories. Lets you exercise the
-// whole booking flow before real credentials arrive.
-//
-// Two tickets per group illustrate the multi-supplier case — different
-// `ticket_id` for the same `(event_id, category_id, sub_category)` group means
-// xs2event docs warn sitting-together is not guaranteed across suppliers.
+// Shapes mirror the live xs2 API: `category_name` (not `name`) on categories,
+// `net_rate` in EUR cents, `currency_code: "EUR"`. Callers convert via
+// `eurCentsToSek()` before applying markup.
 // ---------------------------------------------------------------------------
 
 type MockFixture = {
@@ -442,13 +493,13 @@ type MockFixture = {
   tickets: Xs2Ticket[];
 };
 
-const SEK = "SEK";
+const EUR = "EUR";
 
 function tickets(
   event_id: string,
   category_id: string,
   sub_category: string,
-  base: number,
+  eurCents: number,
   stockA: number,
   stockB: number,
 ): Xs2Ticket[] {
@@ -462,8 +513,8 @@ function tickets(
       sub_category,
       ticket_status: "available",
       stock: stockA,
-      net_rate: base,
-      currency_code: SEK,
+      net_rate: eurCents,
+      currency_code: EUR,
     },
     {
       ticket_id: `tkt_${category_id}_${sub_category}_b`,
@@ -472,8 +523,8 @@ function tickets(
       sub_category,
       ticket_status: "available",
       stock: stockB,
-      net_rate: Math.round(base * 1.08),
-      currency_code: SEK,
+      net_rate: Math.round(eurCents * 1.08),
+      currency_code: EUR,
     },
   ];
 }
@@ -486,49 +537,48 @@ const E4 = "evt_demo_milan_inter";
 export const MOCK_FIXTURES: Record<string, MockFixture> = {
   [E1]: {
     categories: [
-      { category_id: "ctg_liv_vip", name: "VIP Hospitality", description: "Lounge, mat och dryck ingår", party_size_together: 4 },
-      { category_id: "ctg_liv_premium", name: "Premium långsida", description: "Bästa läget på Anfield", party_size_together: 6 },
-      { category_id: "ctg_liv_standard", name: "Kop End", description: "Hemmaläktaren — bästa atmosfären", party_size_together: 8 },
+      { category_id: "ctg_liv_vip",      category_name: "VIP Hospitality",   description: "Lounge, mat och dryck ingår",      party_size_together: 4 },
+      { category_id: "ctg_liv_premium",  category_name: "Premium långsida",  description: "Bästa läget på Anfield",            party_size_together: 6 },
+      { category_id: "ctg_liv_standard", category_name: "Kop End",           description: "Hemmaläktaren — bästa atmosfären", party_size_together: 8 },
     ],
     tickets: [
-      ...tickets(E1, "ctg_liv_vip", "singleday_regular", 8500, 6, 12),
-      ...tickets(E1, "ctg_liv_premium", "singleday_regular", 4200, 14, 22),
-      ...tickets(E1, "ctg_liv_standard", "singleday_regular", 1900, 30, 50),
+      // EUR cents → ~600/300/150 EUR → ~6900/3450/1725 SEK base @ 11.5 rate
+      ...tickets(E1, "ctg_liv_vip",      "singleday_regular", 60000, 6, 12),
+      ...tickets(E1, "ctg_liv_premium",  "singleday_regular", 30000, 14, 22),
+      ...tickets(E1, "ctg_liv_standard", "singleday_regular", 15000, 30, 50),
     ],
   },
   [E2]: {
     categories: [
-      { category_id: "ctg_rma_vip", name: "VIP Box", description: "Privat box med 4 säten", party_size_together: 4 },
-      { category_id: "ctg_rma_premium", name: "Premium mittlinje", description: "Bästa vyn på Bernabéu", party_size_together: 6 },
-      { category_id: "ctg_rma_standard", name: "Standard kortsida", description: "Bra sikt, prisvärt", party_size_together: 8 },
+      { category_id: "ctg_rma_vip",      category_name: "VIP Box",            description: "Privat box med 4 säten", party_size_together: 4 },
+      { category_id: "ctg_rma_premium",  category_name: "Premium mittlinje",  description: "Bästa vyn på Bernabéu",  party_size_together: 6 },
+      { category_id: "ctg_rma_standard", category_name: "Standard kortsida",  description: "Bra sikt, prisvärt",     party_size_together: 8 },
     ],
     tickets: [
-      ...tickets(E2, "ctg_rma_vip", "singleday_regular", 12000, 4, 8),
-      ...tickets(E2, "ctg_rma_premium", "singleday_regular", 6800, 10, 18),
-      ...tickets(E2, "ctg_rma_standard", "singleday_regular", 2800, 24, 40),
+      ...tickets(E2, "ctg_rma_vip",      "singleday_regular", 80000, 4, 8),
+      ...tickets(E2, "ctg_rma_premium",  "singleday_regular", 50000, 10, 18),
+      ...tickets(E2, "ctg_rma_standard", "singleday_regular", 20000, 24, 40),
     ],
   },
   [E3]: {
     categories: [
-      { category_id: "ctg_mnz_paddock", name: "Paddock Club", description: "VIP-tillgång, mat & dryck hela helgen", party_size_together: 4 },
-      { category_id: "ctg_mnz_grandstand", name: "Grandstand 7", description: "Klassisk läktare nära start/mål", party_size_together: 6 },
+      { category_id: "ctg_mnz_paddock",    category_name: "Paddock Club",  description: "VIP-tillgång, mat & dryck hela helgen", party_size_together: 4 },
+      { category_id: "ctg_mnz_grandstand", category_name: "Grandstand 7", description: "Klassisk läktare nära start/mål",       party_size_together: 6 },
     ],
     tickets: [
-      // Paddock: weekend pass only
-      ...tickets(E3, "ctg_mnz_paddock", "weekend_regular", 38000, 4, 6),
-      // Grandstand: weekend OR single Sunday
-      ...tickets(E3, "ctg_mnz_grandstand", "weekend_regular", 11500, 12, 20),
-      ...tickets(E3, "ctg_mnz_grandstand", "sun_regular", 4200, 18, 30),
+      ...tickets(E3, "ctg_mnz_paddock",    "weekend_regular", 250000, 4, 6),
+      ...tickets(E3, "ctg_mnz_grandstand", "weekend_regular",  80000, 12, 20),
+      ...tickets(E3, "ctg_mnz_grandstand", "sun_regular",      30000, 18, 30),
     ],
   },
   [E4]: {
     categories: [
-      { category_id: "ctg_acm_vip", name: "VIP Hospitality", description: "San Siro Lounge", party_size_together: 4 },
-      { category_id: "ctg_acm_premium", name: "Tribuna d'Onore", description: "Premiumläktaren", party_size_together: 6 },
+      { category_id: "ctg_acm_vip",     category_name: "VIP Hospitality",  description: "San Siro Lounge", party_size_together: 4 },
+      { category_id: "ctg_acm_premium", category_name: "Tribuna d'Onore",  description: "Premiumläktaren", party_size_together: 6 },
     ],
     tickets: [
-      ...tickets(E4, "ctg_acm_vip", "singleday_regular", 9500, 4, 8),
-      ...tickets(E4, "ctg_acm_premium", "singleday_regular", 4800, 14, 22),
+      ...tickets(E4, "ctg_acm_vip",     "singleday_regular", 70000, 4, 8),
+      ...tickets(E4, "ctg_acm_premium", "singleday_regular", 35000, 14, 22),
     ],
   },
 };

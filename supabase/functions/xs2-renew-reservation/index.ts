@@ -18,7 +18,13 @@
 // back to the event page to pick again.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-import { Xs2Client, applyMarkup, groupTickets, type Xs2Ticket } from "../_shared/xs2event.ts";
+import {
+  Xs2Client,
+  applyMarkup,
+  eurCentsToSek,
+  groupTickets,
+  type Xs2Ticket,
+} from "../_shared/xs2event.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -177,6 +183,13 @@ Deno.serve(async (req) => {
     // Single combined reservation call
     const reservation = await xs2.createReservation({ tickets: allAllocations });
 
+    // EUR → SEK rate for the fresh prices
+    const { data: rateRaw } = await admin.rpc("get_platform_decimal", {
+      p_key: "eur_to_sek_rate",
+      p_default: 11.5,
+    });
+    const eurToSek = Number(rateRaw ?? 11.5);
+
     // Compute new per-item unit_price_sek (weighted average across suppliers)
     // and the new order total. Surface a price_changed flag if any item moved.
     let priceChanged = false;
@@ -185,7 +198,10 @@ Deno.serve(async (req) => {
     for (const it of perItem) {
       let itemSubtotal = 0;
       for (const a of it.allocations) {
-        const finalUnit = applyMarkup(a.net_rate, it.markup_pct, it.markup_fixed_sek);
+        const baseSek = a.currency_code === "EUR"
+          ? eurCentsToSek(a.net_rate, eurToSek)
+          : Number(a.net_rate);
+        const finalUnit = applyMarkup(baseSek, it.markup_pct, it.markup_fixed_sek);
         itemSubtotal += finalUnit * a.quantity;
       }
       const newUnit = Math.round(itemSubtotal / it.qty);

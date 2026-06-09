@@ -11,7 +11,7 @@
 // role for the writes.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-import { Xs2Client, type Xs2Event, today } from "../_shared/xs2event.ts";
+import { Xs2Client, type Xs2Event, today, pickLocalized } from "../_shared/xs2event.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -141,8 +141,8 @@ async function syncCategoriesForEvent(
       event_id: ourEventId,
       external_category_id: g.external_category_id,
       external_sub_category: g.external_sub_category,
-      name: c?.name ?? "Unknown",
-      description: c?.description ?? null,
+      name: c?.category_name ?? "Unknown",
+      description: pickLocalized(c?.description) || null,
       party_size_together: c?.party_size_together ?? 1,
       unit_price_sek: 0,
       currency: "SEK",

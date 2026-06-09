@@ -24,6 +24,8 @@ import {
   Xs2Client,
   groupTickets,
   applyMarkup,
+  eurCentsToSek,
+  pickLocalized,
   type TicketGroup,
 } from "../_shared/xs2event.ts";
 
@@ -79,6 +81,14 @@ Deno.serve(async (req) => {
       xs2.listCategories({ event_id: event.external_event_id }),
     ]);
 
+    // EUR → SEK rate (admin-managed in /admin/markup-defaults).
+    // Fetched once per request so all groups use a consistent rate.
+    const { data: rateRaw } = await admin.rpc("get_platform_decimal", {
+      p_key: "eur_to_sek_rate",
+      p_default: 11.5,
+    });
+    const eurToSek = Number(rateRaw ?? 11.5);
+
     const categoryByExternal = new Map(categories.map((c) => [c.category_id, c]));
     const groups = groupTickets(tickets);
 
@@ -89,7 +99,11 @@ Deno.serve(async (req) => {
 
     const result = groups.map((g) => {
       const row = findCategoryRow(categoryRows, g.category_id, g.sub_category);
-      const baseSek = g.cheapest_net_rate;
+      // xs2 returns net_rate in EUR cents; convert to SEK major units before
+      // applying our markup. base_sek is per-ticket.
+      const baseSek = g.currency_code === "EUR"
+        ? eurCentsToSek(g.cheapest_net_rate, eurToSek)
+        : Number(g.cheapest_net_rate);
       const finalSek = row
         ? applyMarkup(baseSek, row.markup_pct, row.markup_fixed_sek)
         : applyMarkup(baseSek, 15, 0); // safety fallback if upsert race-lost
@@ -99,15 +113,16 @@ Deno.serve(async (req) => {
         category_id: row?.id ?? null,
         external_category_id: g.category_id,
         external_sub_category: g.sub_category,
-        name: xs2Category?.name ?? "Unknown",
-        description: xs2Category?.description ?? null,
+        name: xs2Category?.category_name ?? "Unknown",
+        description: pickLocalized(xs2Category?.description) || null,
         party_size_together: xs2Category?.party_size_together ?? 1,
         total_stock: g.total_stock,
-        base_sek: baseSek,
+        base_sek: Math.round(baseSek),
         final_sek: finalSek,
-        currency: g.currency_code,
+        currency: "SEK",
         // Canonical reserve payload — caller forwards verbatim to xs2-reserve
-        // to guarantee net_rate + currency_code match (xs2 price-drift guard).
+        // to guarantee net_rate + currency_code match xs2's price-drift guard.
+        // Note: net_rate stays in EUR cents — do NOT convert here.
         reserve_lines: g.tickets.map((t) => ({
           ticket_id: t.ticket_id,
           net_rate: t.net_rate,
@@ -137,7 +152,7 @@ async function ensureCategoryRows(
   admin: ReturnType<typeof createClient>,
   ourEventId: string,
   groups: readonly TicketGroup[],
-  xs2CategoryByExternal: Map<string, { name: string; description?: string; party_size_together: number }>,
+  xs2CategoryByExternal: Map<string, { category_name?: string; description?: Record<string, string> | string; party_size_together?: number }>,
 ): Promise<CategoryRow[]> {
   if (groups.length === 0) return [];
 
@@ -147,8 +162,8 @@ async function ensureCategoryRows(
       event_id: ourEventId,
       external_category_id: g.category_id,
       external_sub_category: g.sub_category,
-      name: xc?.name ?? "Unknown",
-      description: xc?.description ?? null,
+      name: xc?.category_name ?? "Unknown",
+      description: pickLocalized(xc?.description) || null,
       party_size_together: xc?.party_size_together ?? 1,
       unit_price_sek: 0, // not used for xs2 events, kept for schema compat
       currency: "SEK",
