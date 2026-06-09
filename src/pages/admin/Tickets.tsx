@@ -73,6 +73,9 @@ export default function AdminTickets() {
   const [syncing, setSyncing] = useState(false);
   const [manualEventOpen, setManualEventOpen] = useState(false);
   const [categoryTarget, setCategoryTarget] = useState<{ eventId: string; label: string } | null>(null);
+  const [search, setSearch] = useState("");
+  const [sourceFilter, setSourceFilter] = useState<"all" | "xs2event" | "manual">("all");
+  const [featuredFilter, setFeaturedFilter] = useState<"all" | "featured" | "not_featured">("all");
 
   const load = async () => {
     const [{ data: ev }, { data: dels }, { data: logs }] = await Promise.all([
@@ -298,7 +301,65 @@ export default function AdminTickets() {
             <Plus className="h-3 w-3 mr-1.5" /> Skapa manuellt event
           </Button>
         </div>
-        {events.map((ev) => {
+
+        {/* Filter / sök */}
+        <div className="rounded-xl border border-border bg-card p-4 grid grid-cols-1 md:grid-cols-4 gap-3">
+          <div className="md:col-span-2">
+            <Input
+              placeholder="Sök på lag, race, turnering, arena..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="h-9"
+            />
+          </div>
+          <select
+            value={sourceFilter}
+            onChange={(e) => setSourceFilter(e.target.value as typeof sourceFilter)}
+            className="h-9 rounded-md border border-input bg-background px-3 text-sm"
+          >
+            <option value="all">Alla källor</option>
+            <option value="xs2event">Bara xs2event</option>
+            <option value="manual">Bara manuella</option>
+          </select>
+          <select
+            value={featuredFilter}
+            onChange={(e) => setFeaturedFilter(e.target.value as typeof featuredFilter)}
+            className="h-9 rounded-md border border-input bg-background px-3 text-sm"
+          >
+            <option value="all">Alla evenemang</option>
+            <option value="featured">Bara förstasidan</option>
+            <option value="not_featured">Ej förstasidan</option>
+          </select>
+        </div>
+
+        {(() => {
+          const filtered = events.filter((ev) => {
+            if (sourceFilter === "xs2event" && ev.source !== "xs2event") return false;
+            if (sourceFilter === "manual" && ev.source === "xs2event") return false;
+            if (featuredFilter === "featured" && !ev.is_featured) return false;
+            if (featuredFilter === "not_featured" && ev.is_featured) return false;
+            if (search.trim()) {
+              const q = search.trim().toLowerCase();
+              const haystack = [
+                ev.tournament_name,
+                ev.home_team,
+                ev.away_team,
+                ev.race_name,
+                ev.venue_name,
+                ev.city,
+              ].filter(Boolean).join(" ").toLowerCase();
+              if (!haystack.includes(q)) return false;
+            }
+            return true;
+          });
+          if (filtered.length === 0) {
+            return (
+              <p className="text-sm text-muted-foreground text-center py-8">
+                Inga evenemang matchar filtren.
+              </p>
+            );
+          }
+          return filtered.map((ev) => {
           const headline = ev.sport === "soccer" ? `${ev.home_team} vs ${ev.away_team}` : ev.race_name;
           const isXs2 = ev.source === "xs2event";
           return (
@@ -378,7 +439,8 @@ export default function AdminTickets() {
               </div>
             </div>
           );
-        })}
+        });
+        })()}
       </section>
 
       <ManualEventDialog

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowRight, Calendar, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { formatEventDate, formatSek } from "@/lib/formatSek";
+import { formatEventDate } from "@/lib/formatSek";
 
 type EventRow = {
   id: string;
@@ -24,6 +24,16 @@ type Props = {
   sport?: "soccer" | "formula1";
   team?: string;
   race?: string;
+  /** Filter to events whose tournament_name contains this string (case-insensitive). */
+  tournament?: string;
+  /** Free-text search across team/race/tournament names. */
+  query?: string;
+  /** Earliest start date (ISO). */
+  dateFrom?: string;
+  /** Latest start date (ISO). */
+  dateTo?: string;
+  /** Default "soonest" (starts_at asc). */
+  sort?: "soonest" | "latest";
   limit?: number;
   title?: string;
   eyebrow?: string;
@@ -33,6 +43,11 @@ export default function UpcomingEventsList({
   sport,
   team,
   race,
+  tournament,
+  query,
+  dateFrom,
+  dateTo,
+  sort = "soonest",
   limit = 6,
   title = "Aktuella biljetter",
   eyebrow = "Köp biljett",
@@ -42,23 +57,34 @@ export default function UpcomingEventsList({
 
   useEffect(() => {
     (async () => {
+      setLoading(true);
       let q = supabase
         .from("events")
         .select(
           "id, sport, tournament_name, home_team, away_team, race_name, venue_name, city, country, starts_at, cover_image_url, status",
         )
         .eq("status", "upcoming")
-        .gte("starts_at", new Date().toISOString())
-        .order("starts_at", { ascending: true })
+        .gte("starts_at", dateFrom ?? new Date().toISOString())
+        .order("starts_at", { ascending: sort === "soonest" })
         .limit(limit);
       if (sport) q = q.eq("sport", sport);
       if (team) q = q.or(`home_team.eq.${team},away_team.eq.${team}`);
       if (race) q = q.eq("race_name", race);
+      if (tournament) q = q.ilike("tournament_name", `%${tournament}%`);
+      if (dateTo) q = q.lte("starts_at", dateTo);
+      if (query && query.trim()) {
+        const term = query.trim().replace(/[,]/g, " ");
+        // Cross-field substring match — Supabase doesn't expose ILIKE-OR easily,
+        // so search the most common surfaces individually
+        q = q.or(
+          `home_team.ilike.%${term}%,away_team.ilike.%${term}%,race_name.ilike.%${term}%,tournament_name.ilike.%${term}%,venue_name.ilike.%${term}%,city.ilike.%${term}%`,
+        );
+      }
       const { data } = await q;
       setEvents((data as EventRow[]) ?? []);
       setLoading(false);
     })();
-  }, [sport, team, race, limit]);
+  }, [sport, team, race, tournament, query, dateFrom, dateTo, sort, limit]);
 
   if (loading) {
     return (
@@ -71,7 +97,7 @@ export default function UpcomingEventsList({
   if (!events.length) {
     return (
       <div className="text-center py-10 text-muted-foreground text-sm">
-        Inga kommande biljetter just nu — hör av dig till oss så letar vi åt dig.
+        Inga evenemang matchade — testa att rensa filtren eller hör av dig så letar vi åt dig.
       </div>
     );
   }

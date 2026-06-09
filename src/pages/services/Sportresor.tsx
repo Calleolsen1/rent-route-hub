@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Check } from "lucide-react";
@@ -10,6 +11,7 @@ import ishockeyImage from "@/assets/sport-ishockey.jpg";
 import tennisImage from "@/assets/sport-tennis.jpg";
 import golfImage from "@/assets/sport-golf.jpg";
 import UpcomingEventsList from "@/components/UpcomingEventsList";
+import { SportFilters, emptyFilters, type SportFilterValues } from "@/components/SportFilters";
 import { usePageMeta } from "@/lib/usePageMeta";
 
 const sports = [
@@ -85,6 +87,7 @@ export default function Sportresor() {
    title: "Sportresor — F1, Fotboll & Golf | Kaisen Travel Group",
    description: "Köp biljetter och resepaket till F1-race, Premier League, Champions League, golfturneringar och fler sportevent. Personlig service från Kaisen Travel Group.",
  });
+ const [filters, setFilters] = useState<SportFilterValues>(emptyFilters);
  return (
  <div className="min-h-screen">
  <Navbar />
@@ -115,10 +118,29 @@ export default function Sportresor() {
  </div>
  </section>
 
-  {/* Live tickets */}
+  {/* Live tickets with filters */}
   <section className="py-14 bg-background">
   <div className="container mx-auto px-4 max-w-6xl">
-  <UpcomingEventsList limit={6} eyebrow="Köp biljett direkt" title="Aktuella biljetter" />
+  <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans text-center">
+    Köp biljett direkt
+  </p>
+  <h2 className="font-display text-3xl md:text-4xl text-center mb-8">
+    Aktuella biljetter
+  </h2>
+  <div className="mb-8">
+    <SportFilters value={filters} onChange={setFilters} />
+  </div>
+  <UpcomingEventsList
+    sport={filters.sport}
+    tournament={filters.tournament}
+    query={filters.query}
+    dateFrom={filters.dateFrom}
+    dateTo={filters.dateTo}
+    sort={filters.sort}
+    limit={24}
+    eyebrow=""
+    title=""
+  />
   </div>
   </section>
 
