@@ -4,12 +4,12 @@ import { ArrowRight, Check, Calendar, MapPin, Flag } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import f1Image from "@/assets/sport-f1.jpg";
-import { RACES, type RaceInfo } from "@/data/sports";
+import { useRace } from "@/hooks/useNavigation";
 import UpcomingEventsList from "@/components/UpcomingEventsList";
 
 export default function F1RacePage() {
   const { race } = useParams<{ race: string }>();
-  const info: RaceInfo | undefined = race ? RACES[race] : undefined;
+  const info = useRace(race);
 
   if (!info) {
     return (
@@ -37,7 +37,7 @@ export default function F1RacePage() {
         </div>
         <div className="relative container mx-auto px-4 pb-14">
           <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
-            F1-resa — {info.date}
+            F1-resa — {info.date_text}
           </p>
           <h1 className="font-display text-4xl md:text-6xl text-white mb-3">{info.name}</h1>
           <p className="font-display italic font-light text-white text-xl md:text-2xl">
@@ -67,7 +67,7 @@ export default function F1RacePage() {
               <Calendar className="h-5 w-5 text-primary mt-1" />
               <div>
                 <p className="text-xs uppercase tracking-wider text-muted-foreground">Datum</p>
-                <p className="font-medium">{info.date}</p>
+                <p className="font-medium">{info.date_text}</p>
               </div>
             </div>
           </div>

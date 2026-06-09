@@ -13,7 +13,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { FOOTBALL_LEAGUES as footballLeagues, F1_RACES_NAV as f1Races, slugify as slug } from "@/data/sports";
+import { slugify as slug } from "@/data/sports";
+import { useFootballLeagues, useF1Nav, useTopMenu } from "@/hooks/useNavigation";
 
 const Navbar = () => {
   const { user, signOut } = useAuth();
@@ -22,6 +23,9 @@ const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState<null | "fotboll" | "f1" | "sprak">(null);
   const [mobileSubmenu, setMobileSubmenu] = useState<string | null>(null);
+  const footballLeagues = useFootballLeagues();
+  const f1Races = useF1Nav();
+  const topMenu = useTopMenu();
 
   return (
     <>
@@ -101,18 +105,15 @@ const Navbar = () => {
                 )}
               </div>
 
-              <Link to="/group-travel" className="text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors">
-                Grupp & Konferens
-              </Link>
-              <Link to="/services/traningslager" className="text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors">
-                Träningsläger
-              </Link>
-              <Link to="/about" className="text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors">
-                Om oss
-              </Link>
-              <Link to="/contact" className="text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors">
-                Kontakt
-              </Link>
+              {topMenu.map((item) => (
+                <Link
+                  key={item.id}
+                  to={item.href}
+                  className="text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors"
+                >
+                  {item.label}
+                </Link>
+              ))}
             </div>
 
             {/* Right side */}
@@ -244,19 +245,14 @@ const Navbar = () => {
               </div>
             )}
 
-            {[
-              { label: "Grupp & Konferens", to: "/group-travel" },
-              { label: "Träningsläger", to: "/services/traningslager" },
-              { label: "Om oss", to: "/about" },
-              { label: "Kontakt", to: "/contact" },
-            ].map((link) => (
+            {topMenu.map((item) => (
               <Link
-                key={link.label}
-                to={link.to}
+                key={item.id}
+                to={item.href}
                 className="block text-sm font-medium tracking-wide py-3 px-2 text-foreground/80 hover:text-primary transition-colors border-t border-border/40"
                 onClick={() => setMobileOpen(false)}
               >
-                {link.label}
+                {item.label}
               </Link>
             ))}
 

@@ -4,12 +4,12 @@ import { ArrowRight, Check, Calendar, MapPin, Trophy } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import fotbollImage from "@/assets/sport-fotboll.jpg";
-import { TEAMS, type TeamInfo } from "@/data/sports";
+import { useTeam } from "@/hooks/useNavigation";
 import UpcomingEventsList from "@/components/UpcomingEventsList";
 
 export default function TeamPage() {
   const { team } = useParams<{ team: string }>();
-  const info: TeamInfo | undefined = team ? TEAMS[team] : undefined;
+  const info = useTeam(team);
 
   if (!info) {
     return (
@@ -59,32 +59,6 @@ export default function TeamPage() {
             title={`Biljetter till ${info.name}`}
             compact
           />
-        </div>
-      </section>
-
-      {/* Sample fixtures */}
-      <section className="py-12 md:py-16 bg-background border-t border-border">
-        <div className="container mx-auto px-4 max-w-4xl">
-          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans text-center">Exempel på matcher vi paketerar</p>
-          <h2 className="font-display text-3xl md:text-4xl text-center mb-12">Fler matcher att uppleva</h2>
-          <div className="space-y-3">
-            {info.fixtures.map((f, i) => (
-              <div key={i} className="flex items-center justify-between bg-card border border-border rounded-lg p-5 hover:shadow-md transition-shadow">
-                <div>
-                  <p className="font-display text-lg">{info.name} vs {f.opponent}</p>
-                  <p className="text-xs uppercase tracking-wider text-muted-foreground mt-1">{f.competition}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-medium">{f.date}</p>
-                  <Link to="/contact">
-                    <Button size="sm" variant="outline" className="rounded-full mt-2 text-xs">
-                      Förfrågan <ArrowRight className="ml-1 h-3 w-3" />
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 

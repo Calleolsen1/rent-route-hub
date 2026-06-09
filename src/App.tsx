@@ -31,6 +31,7 @@ import ContentManagementPage from "./pages/admin/ContentManagement";
 import AdminTickets from "./pages/admin/Tickets";
 import AdminBanners from "./pages/admin/Banners";
 import AdminMarkupDefaults from "./pages/admin/MarkupDefaults";
+import AdminNavigation from "./pages/admin/Navigation";
 import AdminDiagnostics from "./pages/admin/Diagnostics";
 import AdminMediaLibrary from "./pages/admin/MediaLibrary";
 import Integritetspolicy from "./pages/Integritetspolicy";
@@ -110,6 +111,7 @@ const App = () => (
                 <Route path="users" element={<UsersManagement />} />
                 <Route path="support" element={<AdminSupport />} />
                 <Route path="content" element={<ContentManagementPage />} />
+                <Route path="navigation" element={<AdminNavigation />} />
               </Route>
 
               {/* Mitt Kaisen — public routes */}

@@ -3,7 +3,7 @@ import { Outlet, NavLink, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { supabase } from "@/integrations/supabase/client";
-import { LayoutDashboard, Inbox, ShoppingBag, Users, MessageSquare, FileText, LogOut, Ticket, Image, Percent, Stethoscope, Images } from "lucide-react";
+import { LayoutDashboard, Inbox, ShoppingBag, Users, MessageSquare, FileText, LogOut, Ticket, Image, Percent, Stethoscope, Images, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -18,6 +18,7 @@ const navItems = [
   { to: "/admin/users", label: "Användare", icon: Users },
   { to: "/admin/support", label: "Support", icon: MessageSquare },
   { to: "/admin/content", label: "Innehåll", icon: FileText },
+  { to: "/admin/navigation", label: "Navigation", icon: Menu },
 ];
 
 export default function AdminLayout() {
