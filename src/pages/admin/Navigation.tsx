@@ -377,7 +377,14 @@ function SportsEditor() {
 
   const toggleEntryShowInMenu = async (entry: Entry, v: boolean) => {
     const { error } = await (supabase as any).from("nav_menu_entries").update({ show_in_menu: v }).eq("id", entry.id);
-    if (error) return toast.error(error.message);
+    if (error) {
+      if (/show_in_menu/.test(error.message)) {
+        toast.error("Migrationen för 'Visa i meny' är inte applicerad än. Be Lovable köra 20260609200000_nav_show_in_menu.sql.");
+      } else {
+        toast.error(error.message);
+      }
+      return;
+    }
     setEntries(entries.map((e) => e.id === entry.id ? { ...e, show_in_menu: v } : e));
     invalidateNavigation();
   };
@@ -582,7 +589,7 @@ function EntriesList({
                     <span className="font-medium">{entry.name}</span>
                     <span className="text-xs text-muted-foreground font-mono">/{sport.slug}/{entry.slug}</span>
                     {!entry.is_active && <span className="text-xs text-amber-700">· dold (inaktiv)</span>}
-                    {entry.is_active && !entry.show_in_menu && <span className="text-xs text-muted-foreground">· dold från meny</span>}
+                    {entry.is_active && entry.show_in_menu === false && <span className="text-xs text-muted-foreground">· dold från meny</span>}
                   </div>
                   <div className="text-xs text-muted-foreground mt-0.5">
                     {[entry.city, entry.venue].filter(Boolean).join(" · ") || <span className="italic">Saknar info — klicka redigera</span>}
@@ -599,7 +606,7 @@ function EntriesList({
                 </a>
                 <label className="flex flex-col items-center gap-0.5 text-[9px] uppercase tracking-wider text-muted-foreground" title="Visa i navbar-dropdown">
                   Meny
-                  <Switch checked={entry.show_in_menu} onCheckedChange={(v) => onToggleShowInMenu(entry, v)} />
+                  <Switch checked={entry.show_in_menu ?? true} onCheckedChange={(v) => onToggleShowInMenu(entry, v)} />
                 </label>
                 <label className="flex flex-col items-center gap-0.5 text-[9px] uppercase tracking-wider text-muted-foreground" title="Sidan är publicerad och nåbar via URL">
                   Aktiv
