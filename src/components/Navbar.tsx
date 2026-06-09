@@ -28,7 +28,8 @@ const Navbar = () => {
   const topMenu = useTopMenu();
 
   const entriesFor = (sportId: string) =>
-    entries.filter((e) => e.sport_id === sportId);
+    // show_in_menu defaults to true if absent (backward compat with static fallback)
+    entries.filter((e) => e.sport_id === sportId && (e.show_in_menu ?? true));
   const groupedFor = (sportId: string) => {
     const list = entriesFor(sportId);
     const map = new Map<string, NavEntry[]>();

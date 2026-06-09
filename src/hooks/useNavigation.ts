@@ -37,6 +37,7 @@ export type NavEntry = {
   features_json: string[] | null;
   sort_order: number;
   is_active: boolean;
+  show_in_menu: boolean;
 };
 
 type Cache = {
@@ -82,6 +83,7 @@ const STATIC_ENTRIES: NavEntry[] = [
     features_json: null,
     sort_order: (i + 1) * 10,
     is_active: true,
+    show_in_menu: true,
   })),
   ...Object.values(STATIC_RACES).map((r, i) => ({
     id: `static-race-${r.slug}`,
@@ -99,6 +101,7 @@ const STATIC_ENTRIES: NavEntry[] = [
     features_json: null,
     sort_order: (i + 1) * 10,
     is_active: true,
+    show_in_menu: true,
   })),
 ];
 

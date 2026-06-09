@@ -53,6 +53,7 @@ type Entry = {
   features_json: string[] | null;
   sort_order: number;
   is_active: boolean;
+  show_in_menu: boolean;
 };
 
 const slugify = (s: string) =>
@@ -374,6 +375,13 @@ function SportsEditor() {
     invalidateNavigation();
   };
 
+  const toggleEntryShowInMenu = async (entry: Entry, v: boolean) => {
+    const { error } = await (supabase as any).from("nav_menu_entries").update({ show_in_menu: v }).eq("id", entry.id);
+    if (error) return toast.error(error.message);
+    setEntries(entries.map((e) => e.id === entry.id ? { ...e, show_in_menu: v } : e));
+    invalidateNavigation();
+  };
+
   if (loading) return <p className="text-sm text-muted-foreground">Laddar…</p>;
 
   return (
@@ -434,41 +442,15 @@ function SportsEditor() {
                     Inga sidor under {sport.label} än.
                   </p>
                 ) : (
-                  <div className="space-y-1">
-                    {sportEntries.map((entry) => (
-                      <div key={entry.id} className="rounded-md border border-border bg-card p-3 flex items-center gap-3">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-baseline gap-2 flex-wrap">
-                            <span className="font-medium">{entry.name}</span>
-                            {entry.group_label && (
-                              <span className="text-[10px] uppercase tracking-wider bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">
-                                {entry.group_label}
-                              </span>
-                            )}
-                            <span className="text-xs text-muted-foreground font-mono">/{sport.slug}/{entry.slug}</span>
-                            {!entry.is_active && <span className="text-xs text-amber-700">· dold</span>}
-                          </div>
-                          <div className="text-xs text-muted-foreground mt-0.5">
-                            {[entry.city, entry.venue].filter(Boolean).join(" · ") || <span className="italic">Saknar info — klicka redigera</span>}
-                          </div>
-                        </div>
-                        <a
-                          href={`/services/sportresor/${sport.slug}/${entry.slug}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-xs text-muted-foreground hover:text-primary inline-flex items-center gap-1"
-                          title="Öppna landningssidan"
-                        >
-                          <ExternalLink className="h-3 w-3" />
-                        </a>
-                        <Switch checked={entry.is_active} onCheckedChange={(v) => toggleEntryActive(entry, v)} />
-                        <Button size="sm" variant="ghost" onClick={() => setEditEntry({ entry, sport })}>Redigera</Button>
-                        <Button size="icon" variant="ghost" disabled={busy === entry.id} onClick={() => delEntry(entry)}>
-                          {busy === entry.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Trash2 className="h-3 w-3 text-destructive" />}
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
+                  <EntriesList
+                    sport={sport}
+                    entries={sportEntries}
+                    busy={busy}
+                    onEdit={(entry) => setEditEntry({ entry, sport })}
+                    onDelete={delEntry}
+                    onToggleActive={toggleEntryActive}
+                    onToggleShowInMenu={toggleEntryShowInMenu}
+                  />
                 )}
               </div>
             )}
@@ -491,6 +473,7 @@ function SportsEditor() {
           sport={newEntryFor}
           initial={null}
           nextOrder={(entries.filter((e) => e.sport_id === newEntryFor.id).reduce((m, r) => Math.max(m, r.sort_order), 0)) + 10}
+          existingGroupLabels={Array.from(new Set(entries.filter((e) => e.sport_id === newEntryFor.id && e.group_label).map((e) => e.group_label!))).sort()}
           onSaved={async () => { await load(); invalidateNavigation(); }}
         />
       )}
@@ -502,9 +485,177 @@ function SportsEditor() {
           sport={editEntry.sport}
           initial={editEntry.entry}
           nextOrder={editEntry.entry.sort_order}
+          existingGroupLabels={Array.from(new Set(entries.filter((e) => e.sport_id === editEntry.sport.id && e.group_label).map((e) => e.group_label!))).sort()}
           onSaved={async () => { await load(); invalidateNavigation(); }}
         />
       )}
+    </div>
+  );
+}
+
+/* --------------------------- ENTRIES LIST ------------------------------ */
+
+function EntriesList({
+  sport,
+  entries,
+  busy,
+  onEdit,
+  onDelete,
+  onToggleActive,
+  onToggleShowInMenu,
+}: {
+  sport: Sport;
+  entries: Entry[];
+  busy: string | null;
+  onEdit: (entry: Entry) => void;
+  onDelete: (entry: Entry) => void;
+  onToggleActive: (entry: Entry, v: boolean) => void;
+  onToggleShowInMenu: (entry: Entry, v: boolean) => void;
+}) {
+  // For grouped sports (Fotboll), group entries by league inside the sport.
+  // For list sports (F1), render flat.
+  const groups = (() => {
+    if (sport.menu_style !== "grouped") return [["", entries] as [string, Entry[]]];
+    const map = new Map<string, Entry[]>();
+    for (const e of entries) {
+      const key = e.group_label ?? "Övriga (ingen liga)";
+      if (!map.has(key)) map.set(key, []);
+      map.get(key)!.push(e);
+    }
+    return Array.from(map.entries());
+  })();
+
+  return (
+    <div className="space-y-4">
+      {groups.map(([groupLabel, items]) => (
+        <div key={groupLabel || "__flat__"}>
+          {groupLabel && (
+            <div className="flex items-center gap-2 mb-1.5 px-1">
+              <span className="text-[10px] tracking-[0.25em] uppercase font-semibold text-primary">
+                {groupLabel}
+              </span>
+              <span className="text-[10px] text-muted-foreground">({items.length})</span>
+              <div className="flex-1 border-t border-border/50 ml-1" />
+            </div>
+          )}
+          <div className="space-y-1">
+            {items.map((entry) => (
+              <div key={entry.id} className="rounded-md border border-border bg-card p-3 flex items-center gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-baseline gap-2 flex-wrap">
+                    <span className="font-medium">{entry.name}</span>
+                    <span className="text-xs text-muted-foreground font-mono">/{sport.slug}/{entry.slug}</span>
+                    {!entry.is_active && <span className="text-xs text-amber-700">· dold (inaktiv)</span>}
+                    {entry.is_active && !entry.show_in_menu && <span className="text-xs text-muted-foreground">· dold från meny</span>}
+                  </div>
+                  <div className="text-xs text-muted-foreground mt-0.5">
+                    {[entry.city, entry.venue].filter(Boolean).join(" · ") || <span className="italic">Saknar info — klicka redigera</span>}
+                  </div>
+                </div>
+                <a
+                  href={`/services/sportresor/${sport.slug}/${entry.slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-muted-foreground hover:text-primary inline-flex items-center gap-1"
+                  title="Öppna landningssidan"
+                >
+                  <ExternalLink className="h-3 w-3" />
+                </a>
+                <label className="flex flex-col items-center gap-0.5 text-[9px] uppercase tracking-wider text-muted-foreground" title="Visa i navbar-dropdown">
+                  Meny
+                  <Switch checked={entry.show_in_menu} onCheckedChange={(v) => onToggleShowInMenu(entry, v)} />
+                </label>
+                <label className="flex flex-col items-center gap-0.5 text-[9px] uppercase tracking-wider text-muted-foreground" title="Sidan är publicerad och nåbar via URL">
+                  Aktiv
+                  <Switch checked={entry.is_active} onCheckedChange={(v) => onToggleActive(entry, v)} />
+                </label>
+                <Button size="sm" variant="ghost" onClick={() => onEdit(entry)}>Redigera</Button>
+                <Button size="icon" variant="ghost" disabled={busy === entry.id} onClick={() => onDelete(entry)}>
+                  {busy === entry.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Trash2 className="h-3 w-3 text-destructive" />}
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* --------------------------- GROUP LABEL PICKER ------------------------ */
+
+const NEW_GROUP_SENTINEL = "__new__";
+
+function GroupLabelPicker({
+  kind,
+  existing,
+  value,
+  onChange,
+}: {
+  kind: "team" | "race";
+  existing: string[];
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const label = kind === "team" ? "Liga (gruppering i menyn)" : "Kategori";
+  const placeholder = kind === "team" ? "t.ex. Premier League" : "t.ex. Slam";
+  // The select is in "add new" mode when value is non-empty AND not in the existing list
+  const isNewValue = !!value && !existing.includes(value);
+  const [adding, setAdding] = useState(isNewValue);
+
+  // Re-sync when initial value or existing list changes (e.g. editing existing entry)
+  useEffect(() => {
+    setAdding(!!value && !existing.includes(value));
+  }, [value, existing]);
+
+  return (
+    <div>
+      <Label>{label}</Label>
+      {!adding ? (
+        <select
+          value={value}
+          onChange={(e) => {
+            const v = e.target.value;
+            if (v === NEW_GROUP_SENTINEL) {
+              onChange("");
+              setAdding(true);
+            } else {
+              onChange(v);
+            }
+          }}
+          className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+        >
+          <option value="">— ingen gruppering —</option>
+          {existing.map((opt) => (
+            <option key={opt} value={opt}>{opt}</option>
+          ))}
+          <option disabled>──────────</option>
+          <option value={NEW_GROUP_SENTINEL}>+ Lägg till ny liga…</option>
+        </select>
+      ) : (
+        <div className="flex gap-2">
+          <Input
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder={placeholder}
+            autoFocus
+          />
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              onChange("");
+              setAdding(false);
+            }}
+          >
+            Avbryt
+          </Button>
+        </div>
+      )}
+      <p className="text-[11px] text-muted-foreground mt-1">
+        Sidor med samma värde grupperas tillsammans i dropdownen.
+      </p>
     </div>
   );
 }
@@ -618,7 +769,7 @@ function SportDialog({ open, onOpenChange, initial, nextOrder, onSaved }: { open
 
 /* --------------------------- ENTRY DIALOG ------------------------------ */
 
-function EntryDialog({ open, onOpenChange, sport, initial, nextOrder, onSaved }: { open: boolean; onOpenChange: (o: boolean) => void; sport: Sport; initial: Entry | null; nextOrder: number; onSaved: () => Promise<void> }) {
+function EntryDialog({ open, onOpenChange, sport, initial, nextOrder, existingGroupLabels, onSaved }: { open: boolean; onOpenChange: (o: boolean) => void; sport: Sport; initial: Entry | null; nextOrder: number; existingGroupLabels: string[]; onSaved: () => Promise<void> }) {
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [slugTouched, setSlugTouched] = useState(false);
@@ -631,6 +782,7 @@ function EntryDialog({ open, onOpenChange, sport, initial, nextOrder, onSaved }:
   const [description, setDescription] = useState("");
   const [heroImageUrl, setHeroImageUrl] = useState<string | null>(null);
   const [features, setFeatures] = useState<string[]>([]);
+  const [showInMenu, setShowInMenu] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [forceSave, setForceSave] = useState(false);
   const xs2 = useXs2NameMatch(name, sport.entry_kind);
@@ -650,11 +802,13 @@ function EntryDialog({ open, onOpenChange, sport, initial, nextOrder, onSaved }:
       setDescription(initial.description ?? "");
       setHeroImageUrl(initial.hero_image_url);
       setFeatures(initial.features_json ?? []);
+      setShowInMenu(initial.show_in_menu ?? true);
       setForceSave(true); // existing entries can be re-saved without re-validation
     } else {
       setName(""); setSlug(""); setSlugTouched(false); setGroupLabel("");
       setCity(""); setVenue(""); setDateText(""); setShortDate("");
       setTagline(""); setDescription(""); setHeroImageUrl(null); setFeatures([]);
+      setShowInMenu(true);
       setForceSave(false);
     }
   }, [open, initial]);
@@ -680,6 +834,7 @@ function EntryDialog({ open, onOpenChange, sport, initial, nextOrder, onSaved }:
       description: description.trim() || null,
       hero_image_url: heroImageUrl,
       features_json: features.filter((f) => f.trim().length > 0),
+      show_in_menu: showInMenu,
     };
     const { error } = isEdit
       ? await (supabase as any).from("nav_menu_entries").update(payload).eq("id", initial!.id)
@@ -734,11 +889,12 @@ function EntryDialog({ open, onOpenChange, sport, initial, nextOrder, onSaved }:
           </div>
 
           {sport.menu_style === "grouped" && (
-            <div>
-              <Label>{sport.entry_kind === "team" ? "Liga (gruppering i menyn)" : "Kategori"}</Label>
-              <Input value={groupLabel} onChange={(e) => setGroupLabel(e.target.value)} placeholder={sport.entry_kind === "team" ? "t.ex. Premier League" : "t.ex. Slam"} />
-              <p className="text-[11px] text-muted-foreground mt-1">Sidor med samma värde grupperas tillsammans i dropdownen.</p>
-            </div>
+            <GroupLabelPicker
+              kind={sport.entry_kind}
+              existing={existingGroupLabels}
+              value={groupLabel}
+              onChange={setGroupLabel}
+            />
           )}
 
           <div className="grid grid-cols-2 gap-3">
@@ -773,6 +929,17 @@ function EntryDialog({ open, onOpenChange, sport, initial, nextOrder, onSaved }:
           <div>
             <Label>Beskrivning</Label>
             <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} className="w-full text-sm rounded-md border border-input bg-background px-3 py-2" placeholder="2-3 meningar som visas på landningssidan." />
+          </div>
+
+          <div className="rounded-lg border border-border p-3 flex items-start justify-between gap-3">
+            <div>
+              <Label className="mb-0.5 block">Visa i menyn</Label>
+              <p className="text-[11px] text-muted-foreground">
+                Av = sidan är publicerad och nåbar via URL, men syns inte i navbarens dropdown.
+                Bra om du vill ha många landningssidor utan att meny-listan svämmar över.
+              </p>
+            </div>
+            <Switch checked={showInMenu} onCheckedChange={setShowInMenu} />
           </div>
 
           <div>
