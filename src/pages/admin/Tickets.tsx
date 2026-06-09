@@ -11,6 +11,8 @@ import { getStripeEnvironment } from "@/lib/stripe";
 import { ImageUploader } from "@/components/admin/ImageUploader";
 import { ManualEventDialog } from "@/components/admin/ManualEventDialog";
 import { CategoryDialog } from "@/components/admin/CategoryDialog";
+import { BulkMarkupDialog } from "@/components/admin/BulkMarkupDialog";
+import { ChevronDown, ChevronRight, Percent } from "lucide-react";
 
 type Category = {
   id: string;
@@ -76,6 +78,8 @@ export default function AdminTickets() {
   const [search, setSearch] = useState("");
   const [sourceFilter, setSourceFilter] = useState<"all" | "xs2event" | "manual">("all");
   const [featuredFilter, setFeaturedFilter] = useState<"all" | "featured" | "not_featured">("all");
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+  const [bulkTarget, setBulkTarget] = useState<{ eventIds: string[]; label: string } | null>(null);
 
   const load = async () => {
     const [{ data: ev }, { data: dels }, { data: logs }] = await Promise.all([
@@ -333,6 +337,9 @@ export default function AdminTickets() {
         </div>
 
         {(() => {
+          const SPORT_LABEL: Record<string, string> = { soccer: "Fotboll", formula1: "Formel 1" };
+          const SPORT_ORDER = ["soccer", "formula1"];
+
           const filtered = events.filter((ev) => {
             if (sourceFilter === "xs2event" && ev.source !== "xs2event") return false;
             if (sourceFilter === "manual" && ev.source === "xs2event") return false;
@@ -359,7 +366,74 @@ export default function AdminTickets() {
               </p>
             );
           }
-          return filtered.map((ev) => {
+
+          // Group: sport → tournament_name → events (sorted by date)
+          const sportMap = new Map<string, Map<string, EventRow[]>>();
+          for (const ev of [...filtered].sort((a, b) => a.starts_at.localeCompare(b.starts_at))) {
+            const tournamentKey = ev.tournament_name ?? "Okänd turnering";
+            if (!sportMap.has(ev.sport)) sportMap.set(ev.sport, new Map());
+            const tournaments = sportMap.get(ev.sport)!;
+            if (!tournaments.has(tournamentKey)) tournaments.set(tournamentKey, []);
+            tournaments.get(tournamentKey)!.push(ev);
+          }
+          const sortedSports = Array.from(sportMap.keys()).sort((a, b) => {
+            const ia = SPORT_ORDER.indexOf(a);
+            const ib = SPORT_ORDER.indexOf(b);
+            if (ia === -1 && ib === -1) return a.localeCompare(b);
+            if (ia === -1) return 1;
+            if (ib === -1) return -1;
+            return ia - ib;
+          });
+
+          return sortedSports.map((sport) => {
+            const tournaments = sportMap.get(sport)!;
+            const sortedTournaments = Array.from(tournaments.keys()).sort();
+            const sportTotal = Array.from(tournaments.values()).reduce((s, evs) => s + evs.length, 0);
+            return (
+              <div key={sport} className="space-y-3">
+                <h3 className="font-display text-2xl pt-4 border-t border-border">
+                  {SPORT_LABEL[sport] ?? sport}
+                  <span className="text-sm text-muted-foreground font-sans ml-3">{sportTotal} st</span>
+                </h3>
+                {sortedTournaments.map((tournament) => {
+                  const evs = tournaments.get(tournament)!;
+                  const groupKey = `${sport}::${tournament}`;
+                  const isCollapsed = collapsed[groupKey] ?? false;
+                  return (
+                    <div key={groupKey} className="border border-border rounded-xl overflow-hidden">
+                      <div className="flex items-center justify-between gap-3 px-4 py-3 bg-muted/30">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setCollapsed((prev) => ({ ...prev, [groupKey]: !isCollapsed }))
+                          }
+                          className="flex items-center gap-2 text-left flex-1 min-w-0"
+                        >
+                          {isCollapsed ? (
+                            <ChevronRight className="h-4 w-4 flex-shrink-0" />
+                          ) : (
+                            <ChevronDown className="h-4 w-4 flex-shrink-0" />
+                          )}
+                          <span className="font-medium truncate">{tournament}</span>
+                          <span className="text-xs text-muted-foreground">{evs.length} st</span>
+                        </button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setBulkTarget({
+                              eventIds: evs.map((x) => x.id),
+                              label: `${tournament} (${evs.length} ${evs.length === 1 ? "match" : "matcher"})`,
+                            });
+                          }}
+                        >
+                          <Percent className="h-3 w-3 mr-1.5" /> Sätt påslag för gruppen
+                        </Button>
+                      </div>
+                      {!isCollapsed && (
+                        <div className="space-y-3 p-4">
+                          {evs.map((ev) => {
           const headline = ev.sport === "soccer" ? `${ev.home_team} vs ${ev.away_team}` : ev.race_name;
           const isXs2 = ev.source === "xs2event";
           return (
@@ -439,9 +513,27 @@ export default function AdminTickets() {
               </div>
             </div>
           );
-        });
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          });
         })()}
       </section>
+
+      {bulkTarget && (
+        <BulkMarkupDialog
+          open={!!bulkTarget}
+          onOpenChange={(o) => !o && setBulkTarget(null)}
+          eventIds={bulkTarget.eventIds}
+          groupLabel={bulkTarget.label}
+          onApplied={load}
+        />
+      )}
 
       <ManualEventDialog
         open={manualEventOpen}

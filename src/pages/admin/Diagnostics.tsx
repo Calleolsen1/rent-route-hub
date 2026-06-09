@@ -244,9 +244,10 @@ export default function AdminDiagnostics() {
           <Count label="Offerter skickade" value={counts?.quotes_sent} />
           <Count label="Återbetalningar" value={counts?.refunds_total} />
         </div>
-        {(counts?.events_seeded ?? 0) === 0 && (
+        {(counts?.events_seeded ?? 0) === 0 && (counts?.events_xs2 ?? 0) === 0 && (
           <p className="text-xs text-amber-700 mt-3">
-            ⚠️ Inga seed-events hittades. Kör <code className="bg-muted px-1 rounded">supabase/seed/dev_demo_events.sql</code> mot dev-databasen för att få demo-flödet att fungera.
+            ⚠️ Inga xs2-events i databasen. Kör <strong>Synka allt</strong> på{" "}
+            <code className="bg-muted px-1 rounded">/admin/tickets</code> för att hämta evenemang från xs2event.
           </p>
         )}
       </Section>
