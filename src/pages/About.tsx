@@ -32,13 +32,35 @@ const expertise = [
 { area: "Affärs- & Privatresor", years: "Erfaren" }];
 
 
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { usePageMeta } from "@/lib/usePageMeta";
+
+const FALLBACK_ABOUT_STORY = [
+ "Kaisen Travel Group grundades med övertygelsen om att resor ska kännas personliga, inte som en produkt ur en hylla. Vi tror på att varje kund förtjänar full uppmärksamhet och en upplevelse anpassad just för dem.",
+ "Vi arrangerar allt från sportresor och elitevent till konferenser, incentive och skräddarsydda gruppresor — alltid med en dedikerad rådgivare som ansvarar för varje detalj.",
+ "Idag har vi ett brett team med specialister inom alla resekategorier — men vår filosofi är densamma som dag ett: varje kund förtjänar personlig uppmärksamhet och en resa som är skräddarsydd just för dem."
+];
 
 export default function About() {
  usePageMeta({
    title: "Om oss — Kaisen Travel Group",
    description: "Kaisen Travel Group arrangerar skräddarsydda lyx- och sportresor. Personlig service från en dedikerad rådgivare — inga mallar, inga callcenter.",
  });
+ const [story, setStory] = useState<string[]>(FALLBACK_ABOUT_STORY);
+
+ useEffect(() => {
+   (async () => {
+     const { data } = await (supabase as any)
+       .from("site_content")
+       .select("value")
+       .eq("key", "about_story")
+       .maybeSingle();
+     if (Array.isArray(data?.value) && data.value.length) {
+       setStory(data.value as string[]);
+     }
+   })();
+ }, []);
  return (
  <div className="min-h-screen">
  <Navbar />
@@ -69,15 +91,9 @@ export default function About() {
  </h2>
  <div className="w-10 h-px bg-primary mb-8" />
  <div className="space-y-5 text-muted-foreground leading-relaxed">
- <p>Kaisen Travel Group grundades av ett erfaret reseproffs med stor erfarenhet i branschen. Vi har alltid trott att resor ska kännas personliga och inte som en produkt ur en hylla.
-
- </p>
- <p>
- Vi arrangerar allt från sportresor och elitevent till konferenser, incentive och skräddarsydda gruppresor — alltid med en dedikerad rådgivare som ansvarar för varje detalj.
- </p>
- <p>
- Idag har vi ett brett team med specialister inom alla resekategorier — men vår filosofi är densamma som dag ett: varje kund förtjänar personlig uppmärksamhet och en resa som är skräddarsydd just för dem.
- </p>
+ {story.map((paragraph, i) => (
+   <p key={i}>{paragraph}</p>
+ ))}
  </div>
  </div>
  <div className="relative">

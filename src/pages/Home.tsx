@@ -260,12 +260,45 @@ const Home = () => {
   const navigate = useNavigate();
   const [featured, setFeatured] = useState<FeaturedOffer[]>([]);
   const [heroSlides, setHeroSlides] = useState<HeroSlide[]>(fallbackHeroSlides);
+  const [testimonialsRows, setTestimonialsRows] = useState<typeof testimonials | null>(null);
+  const [whyUsRows, setWhyUsRows] = useState<typeof whyUs | null>(null);
 
   const handleHeroSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const q = heroQuery.trim();
     navigate(q ? `/search?q=${encodeURIComponent(q)}` : "/search");
   };
+
+  // Editable content from DB (testimonials, why-us). Falls back to the
+  // hardcoded constants in this file if the tables are empty or unreachable.
+  useEffect(() => {
+    (async () => {
+      const [{ data: t }, { data: w }] = await Promise.all([
+        (supabase as any)
+          .from("testimonials")
+          .select("quote, author, role, rating")
+          .eq("is_active", true)
+          .order("sort_order", { ascending: true }),
+        (supabase as any)
+          .from("why_us_cards")
+          .select("icon, title, description")
+          .eq("is_active", true)
+          .order("sort_order", { ascending: true }),
+      ]);
+      if (t && t.length) setTestimonialsRows(t as typeof testimonials);
+      if (w && w.length) {
+        // Map stored Lucide icon names back to imported components
+        const ICON_MAP: Record<string, typeof Users> = { Users, Trophy, Globe, Shield };
+        setWhyUsRows(
+          (w as Array<{ icon: string; title: string; description: string }>).map((row) => ({
+            icon: ICON_MAP[row.icon] ?? Users,
+            title: row.title,
+            description: row.description,
+          })) as typeof whyUs,
+        );
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -652,7 +685,7 @@ const Home = () => {
 
           <Carousel opts={{ align: "start", loop: true }}>
             <CarouselContent className="-ml-6">
-              {testimonials.map((t) => (
+              {(testimonialsRows ?? testimonials).map((t) => (
                 <CarouselItem key={t.author} className="pl-6 basis-[88%] md:basis-1/2 lg:basis-1/3">
                   <div className="bg-card p-8 border border-border h-full flex flex-col">
                     <div className="flex gap-1 mb-6">
