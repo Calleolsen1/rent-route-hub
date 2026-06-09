@@ -92,44 +92,34 @@ export default function Sportresor() {
  <div className="min-h-screen">
  <Navbar />
 
- {/* Hero */}
- <section className="relative h-[38vh] min-h-[280px] flex items-end">
+ {/* Hero with search bar — search is the first thing visible (above the fold) */}
+ <section className="relative min-h-[70vh] flex flex-col">
  <div className="absolute inset-0">
  <img src={sportsImage} alt="Sportresor" className="w-full h-full object-cover" />
- <div className="absolute inset-0 bg-navy/70" />
+ <div className="absolute inset-0 bg-navy/65" />
  </div>
- <div className="relative container mx-auto px-4 pb-14">
+ <div className="relative container mx-auto px-4 pt-24 md:pt-32 pb-12 flex-1 flex flex-col">
+ <div className="max-w-3xl">
  <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
  Tjänster — Sportresor
  </p>
- <h1 className="font-display text-4xl md:text-6xl text-white">
+ <h1 className="font-display text-4xl md:text-6xl text-white mb-3">
  Resor för <em className="italic font-light text-white">Sportälskare</em>
  </h1>
- </div>
- </section>
-
- {/* Intro */}
- <section className="bg-cream py-16">
- <div className="container mx-auto px-4 max-w-3xl text-center">
- <p className="font-display text-2xl md:text-3xl text-foreground italic font-light leading-relaxed">
- "Oavsett om det är din första F1-resa eller din tjugonde — vi ser till att du har en bra upplevelse."
+ <p className="text-white/80 text-sm md:text-base max-w-xl">
+ Köp biljetter till F1, Premier League, Champions League och fler. Sök på lag, race eller arena.
  </p>
- <div className="w-8 h-px bg-primary mx-auto mt-8" />
+ </div>
+
+ <div className="mt-auto pt-12 max-w-5xl w-full mx-auto">
+ <SportFilters value={filters} onChange={setFilters} />
+ </div>
  </div>
  </section>
 
-  {/* Live tickets with filters */}
-  <section className="py-14 bg-background">
+  {/* Live tickets results */}
+  <section className="py-12 md:py-14 bg-background">
   <div className="container mx-auto px-4 max-w-6xl">
-  <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans text-center">
-    Köp biljett direkt
-  </p>
-  <h2 className="font-display text-3xl md:text-4xl text-center mb-8">
-    Aktuella biljetter
-  </h2>
-  <div className="mb-8">
-    <SportFilters value={filters} onChange={setFilters} />
-  </div>
   <UpcomingEventsList
     sport={filters.sport}
     tournament={filters.tournament}
@@ -138,8 +128,8 @@ export default function Sportresor() {
     dateTo={filters.dateTo}
     sort={filters.sort}
     limit={24}
-    eyebrow=""
-    title=""
+    eyebrow="Köp biljett direkt"
+    title="Aktuella biljetter"
   />
   </div>
   </section>
