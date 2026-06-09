@@ -95,7 +95,14 @@ export default function MittKaisenForfragningar() {
           {rows.map((r) => {
             const StatusIcon = STATUS[r.status].icon;
             return (
-              <div key={r.id} className="rounded-xl p-5" style={{ backgroundColor: C.bgCard }}>
+              <div
+                key={r.id}
+                className="rounded-2xl p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_60px_-20px_rgba(3,15,35,0.7)] relative overflow-hidden"
+                style={{
+                  backgroundColor: C.bgCard,
+                  border: `1px solid ${C.bgCardBorder}`,
+                }}
+              >
                 <div className="flex items-start justify-between mb-3 gap-3">
                   <div className="min-w-0">
                     <p className="text-xs uppercase tracking-wider" style={{ color: C.textMuted }}>
