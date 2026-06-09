@@ -41,6 +41,7 @@ type EventRow = {
   starts_at: string;
   status: string;
   cover_image_url: string | null;
+  description: string | null;
   min_price_sek: number | null;
   compare_at_price_sek: number | null;
   compare_at_pct: number | null;
@@ -97,7 +98,7 @@ export default function AdminTickets() {
     const [{ data: ev }, { data: dels }, { data: logs }] = await Promise.all([
       (supabase as any)
         .from("events")
-        .select("id, source, is_featured, sport, tournament_name, home_team, away_team, race_name, venue_name, city, starts_at, status, cover_image_url, min_price_sek, compare_at_price_sek, compare_at_pct, ticket_categories(id, name, unit_price_sek, qty_available, stripe_price_id, markup_pct, markup_fixed_sek, compare_at_price_sek, compare_at_pct)")
+        .select("id, source, is_featured, sport, tournament_name, home_team, away_team, race_name, venue_name, city, starts_at, status, cover_image_url, description, min_price_sek, compare_at_price_sek, compare_at_pct, ticket_categories(id, name, unit_price_sek, qty_available, stripe_price_id, markup_pct, markup_fixed_sek, compare_at_price_sek, compare_at_pct)")
         .order("starts_at", { ascending: true }),
       supabase
         .from("ticket_deliveries")
@@ -259,6 +260,21 @@ export default function AdminTickets() {
     if (error) throw error;
     await load();
     return Number(data ?? 0);
+  };
+
+  const saveDescription = async (eventId: string, description: string | null) => {
+    const { error } = await (supabase as any)
+      .from("events")
+      .update({ description })
+      .eq("id", eventId);
+    if (error) {
+      toast.error(error.message ?? "Kunde inte spara beskrivning");
+      return;
+    }
+    setEvents((prev) =>
+      prev.map((e) => (e.id === eventId ? { ...e, description } : e)),
+    );
+    toast.success("Beskrivning sparad");
   };
 
   const setCoverImage = async (eventId: string, url: string | null) => {
@@ -647,16 +663,38 @@ export default function AdminTickets() {
                   <Badge variant={ev.status === "upcoming" ? "default" : "outline"}>{ev.status}</Badge>
                 </div>
               </div>
-              <div className="mb-4 pb-4 border-b border-border">
-                <p className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground mb-2">
-                  Omslagsbild
-                </p>
-                <ImageUploader
-                  value={ev.cover_image_url}
-                  prefix={`event-covers/${ev.id}`}
-                  onUploaded={(url) => setCoverImage(ev.id, url)}
-                  onCleared={() => setCoverImage(ev.id, null)}
-                />
+              <div className="mb-4 pb-4 border-b border-border grid md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground mb-2">
+                    Omslagsbild
+                  </p>
+                  <ImageUploader
+                    value={ev.cover_image_url}
+                    prefix={`event-covers/${ev.id}`}
+                    onUploaded={(url) => setCoverImage(ev.id, url)}
+                    onCleared={() => setCoverImage(ev.id, null)}
+                  />
+                </div>
+                <div>
+                  <p className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground mb-2">
+                    "Om evenemanget"-text
+                  </p>
+                  <textarea
+                    defaultValue={ev.description ?? ""}
+                    onBlur={(e) => {
+                      const next = e.target.value.trim() || null;
+                      if (next !== (ev.description ?? null)) {
+                        saveDescription(ev.id, next);
+                      }
+                    }}
+                    placeholder="t.ex. Toppmatch i Premier League på Emirates Stadium. Upplev stämningen live."
+                    rows={4}
+                    className="w-full text-sm rounded-md border border-input bg-background px-3 py-2 resize-none"
+                  />
+                  <p className="text-[10px] text-muted-foreground mt-1">
+                    Visas under "Om evenemanget" på event-sidan. Sparas när du klickar bort.
+                  </p>
+                </div>
               </div>
 
               <EventDefaultsPanel
