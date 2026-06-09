@@ -12,10 +12,12 @@ dist
 dist-ssr
 *.local
 
-# Environment files — never commit secrets even by accident
-.env
-.env.*
-!.env.example
+# Environment files
+# .env and .env.development are committed because Lovable's build pipeline
+# reads them to inject VITE_* vars (anon JWT + pk_test_ — both public).
+# .env.local and .env.*.local stay ignored for any future real secrets.
+.env.local
+.env.*.local
 
 # Editor directories and files
 .vscode/*
