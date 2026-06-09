@@ -45,7 +45,9 @@ const Navbar = () => {
     <>
       <nav className="border-b border-border/40 bg-card/95 backdrop-blur-sm sticky top-0 z-50">
         <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
-          <div className="flex items-center justify-between h-16 md:h-20">
+          {/* 3-col grid keeps the menu group dead-centered regardless of how wide
+              the logo or right-side controls become */}
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center h-16 md:h-20 gap-4">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3 flex-shrink-0">
               <div className="flex flex-col leading-none">
@@ -146,7 +148,7 @@ const Navbar = () => {
             </div>
 
             {/* Right side */}
-            <div className="flex items-center gap-3 flex-shrink-0">
+            <div className="flex items-center gap-3 justify-end flex-shrink-0">
               {/* Language */}
               <div className="hidden lg:block relative" onMouseEnter={() => setOpenMenu("sprak")} onMouseLeave={() => setOpenMenu(null)}>
                 <button className="flex items-center gap-1 text-sm text-foreground/70 hover:text-primary transition-colors py-2" aria-label="Språk">
