@@ -321,29 +321,12 @@ export default function EventDetail() {
                   Om evenemanget
                 </p>
                 <p className="text-foreground/80 leading-relaxed text-base">
-                  {event.description}
+                  {event.description.replace(/<[^>]+>/g, "")}
                 </p>
               </div>
             )}
 
-            <div>
-              <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
-                Vad ingår
-              </p>
-              <ul className="grid sm:grid-cols-2 gap-3 text-sm">
-                {[
-                  "E-biljetter levereras digitalt",
-                  "Personlig support från Kaisen",
-                  "Trygg betalning via Stripe",
-                  "Faktura och kvitto i Mitt Kaisen",
-                ].map((f) => (
-                  <li key={f} className="flex items-start gap-2 bg-card border border-border rounded-lg p-3">
-                    <Ticket className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+
 
             <div>
               <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
@@ -368,9 +351,10 @@ export default function EventDetail() {
                           <p className="font-medium">{o.name}</p>
                           {o.description && (
                             <p className="text-xs text-muted-foreground mt-1">
-                              {o.description}
+                              {o.description.replace(/<[^>]+>/g, "")}
                             </p>
                           )}
+
                           <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
                             <Users className="h-3 w-3" />
                             Sittning ihop: upp till {o.party_size_together} pers
