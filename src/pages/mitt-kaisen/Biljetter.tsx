@@ -35,8 +35,13 @@ type OrderWithItems = {
   invoice_number: string | null;
   xs2_booking_id: string | null;
   notes: string | null;
+  fulfillment_attempt_count: number | null;
   order_items: OrderItem[];
 };
+
+// xs2-retry-pending gives up after 48 attempts (~2 days). At that point
+// the order genuinely needs ops intervention — UI flips to the warning.
+const FULFILLMENT_RETRY_MAX = 48;
 
 const STATUS_LABELS: Record<string, string> = {
   pending: "Pågående",
@@ -70,7 +75,7 @@ export default function MittKaisenBiljetter() {
       const { data } = await (supabase as any)
         .from("orders")
         .select(
-          "id, status, total_sek, refunded_sek, created_at, invoice_number, xs2_booking_id, notes, order_items(id, qty, unit_price_sek, events(sport, tournament_name, home_team, away_team, race_name, venue_name, city, starts_at), ticket_categories(name), ticket_deliveries(file_url, delivered_at))",
+          "id, status, total_sek, refunded_sek, created_at, invoice_number, xs2_booking_id, notes, fulfillment_attempt_count, order_items(id, qty, unit_price_sek, events(sport, tournament_name, home_team, away_team, race_name, venue_name, city, starts_at), ticket_categories(name), ticket_deliveries(file_url, delivered_at))",
         )
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
@@ -131,7 +136,15 @@ function EmptyState() {
 
 function OrderCard({ order }: { order: OrderWithItems }) {
   const isFulfilled = order.status === "paid" || order.status === "fulfilled";
-  const confirmFailed = !!(order.notes && order.notes.startsWith("xs2 confirm failed"));
+  const hasAnyTicketFile = order.order_items.some((it) =>
+    it.ticket_deliveries?.some((d) => !!d.file_url),
+  );
+  const attempts = order.fulfillment_attempt_count ?? 0;
+  const isPaidButPending = isFulfilled && !hasAnyTicketFile;
+  // Friendly "tickets coming soon" while retry job is still working.
+  const ticketsPending = isPaidButPending && attempts < FULFILLMENT_RETRY_MAX;
+  // Hard failure — retry exhausted, ops needs to step in.
+  const fulfillmentStuck = isPaidButPending && attempts >= FULFILLMENT_RETRY_MAX;
   const orderRef = order.invoice_number ?? order.id.slice(0, 8).toUpperCase();
 
   return (
@@ -159,8 +172,19 @@ function OrderCard({ order }: { order: OrderWithItems }) {
         </span>
       </div>
 
-      {/* Fulfillment-failure banner */}
-      {confirmFailed && (
+      {/* Status banner — calm while retry job works, warning only after retries exhausted */}
+      {ticketsPending && (
+        <div
+          className="rounded-lg p-3 mb-3 flex items-start gap-2 text-xs"
+          style={{ backgroundColor: "rgba(120, 180, 220, 0.12)", color: C.textMuted }}
+        >
+          <Ticket className="h-4 w-4 flex-shrink-0 mt-0.5" />
+          <span>
+            Betalningen är klar. Biljetterna släpps från arrangören närmare evenemanget — vi mejlar dig direkt när de finns att ladda ner.
+          </span>
+        </div>
+      )}
+      {fulfillmentStuck && (
         <div
           className="rounded-lg p-3 mb-3 flex items-start gap-2 text-xs"
           style={{ backgroundColor: "rgba(220, 150, 30, 0.15)", color: C.warning }}
@@ -175,7 +199,7 @@ function OrderCard({ order }: { order: OrderWithItems }) {
       {/* Items */}
       <div className="space-y-3 mb-3">
         {order.order_items.map((it) => (
-          <ItemRow key={it.id} it={it} isFulfilled={isFulfilled && !confirmFailed} />
+          <ItemRow key={it.id} it={it} isFulfilled={isFulfilled && !fulfillmentStuck} />
         ))}
       </div>
 

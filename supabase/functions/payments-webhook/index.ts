@@ -30,6 +30,20 @@ async function sendOrderConfirmationEmail(orderId: string) {
     .maybeSingle();
   if (!order || !order.customer_email) return;
 
+  // If xs2 already returned a ticket bundle URL (delivered at confirm time),
+  // include a download button in the confirmation email. Otherwise the copy
+  // promises a follow-up — fired by xs2-retry-pending once tickets issue.
+  let ticketFileUrl: string | null = null;
+  if (!order.quote_id) {
+    const { data: deliveries } = await supabase
+      .from("ticket_deliveries")
+      .select("file_url, order_items!inner(order_id)")
+      .eq("order_items.order_id", orderId)
+      .not("file_url", "is", null)
+      .limit(1);
+    ticketFileUrl = (deliveries?.[0] as any)?.file_url ?? null;
+  }
+
   // Ticket orders have order_items; quote orders have line items on quote_items.
   let rows = "";
   if (order.quote_id) {
@@ -92,8 +106,16 @@ async function sendOrderConfirmationEmail(orderId: string) {
       <h1 style="font-size:24px;margin:0 0 8px;">Tack för din beställning!</h1>
       <p style="color:#475569;line-height:1.6;margin:0 0 24px;">
         Hej ${order.customer_name ?? ""},<br/>
-        Vi har tagit emot din betalning. Biljetter och fullständig reseinformation skickas separat så snart de är klara.
+        ${ticketFileUrl
+          ? "Vi har tagit emot din betalning. Biljetterna ligger redan klara — ladda ner dem nedan."
+          : "Vi har tagit emot din betalning. Biljetterna släpps från arrangören närmare evenemanget och mejlas till dig så snart de är klara — du behöver inte göra något."}
       </p>
+      ${ticketFileUrl ? `
+      <p style="text-align:center;margin:24px 0;">
+        <a href="${ticketFileUrl}" style="display:inline-block;background:#0f172a;color:#fff;padding:14px 32px;text-decoration:none;letter-spacing:.1em;text-transform:uppercase;font-size:13px;border-radius:6px;">
+          Hämta dina biljetter
+        </a>
+      </p>` : ""}
       <table style="width:100%;border-collapse:collapse;margin:16px 0;">${rows}</table>
       <table style="width:100%;border-collapse:collapse;margin-top:8px;">
         <tr><td style="padding:12px 0;font-weight:700;">Totalt</td>
