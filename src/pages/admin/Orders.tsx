@@ -34,7 +34,7 @@ import {
   DialogFooter,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { AlertTriangle, RefreshCcw, Ban, Loader2, Sparkles, CheckCircle2 } from "lucide-react";
+import { AlertTriangle, RefreshCcw, Ban, Loader2, Sparkles, CheckCircle2, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { formatSek } from "@/lib/formatSek";
 import { getStripeEnvironment } from "@/lib/stripe";
@@ -56,6 +56,7 @@ type OrderRow = {
   quote_id: string | null;
   notes: string | null;
   last_refund_reason: string | null;
+  stripe_checkout_session_id: string | null;
   order_items: Array<{
     id: string;
     qty: number;
@@ -117,7 +118,7 @@ export default function AdminOrders() {
     const { data } = await (supabase as any)
       .from("orders")
       .select(
-        "id, status, total_sek, total_paid_sek, refunded_sek, currency, customer_email, customer_name, customer_phone, created_at, invoice_number, xs2_reservation_id, xs2_booking_id, quote_id, notes, last_refund_reason, order_items(id, qty, unit_price_sek, sub_category, events(sport, tournament_name, home_team, away_team, race_name, venue_name, city, starts_at), ticket_categories(name))",
+        "id, status, total_sek, total_paid_sek, refunded_sek, currency, customer_email, customer_name, customer_phone, created_at, invoice_number, xs2_reservation_id, xs2_booking_id, quote_id, notes, last_refund_reason, stripe_checkout_session_id, order_items(id, qty, unit_price_sek, sub_category, events(sport, tournament_name, home_team, away_team, race_name, venue_name, city, starts_at), ticket_categories(name))",
       )
       .order("created_at", { ascending: false });
     setOrders((data as unknown as OrderRow[]) ?? []);
@@ -514,6 +515,19 @@ function OrderDetail({
 
         {/* Actions */}
         <div className="border-t border-border pt-4 space-y-2">
+          {order.stripe_checkout_session_id && (
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => {
+                const url = `/order/${order.id}?session_id=${encodeURIComponent(order.stripe_checkout_session_id!)}`;
+                window.open(url, "_blank", "noopener");
+              }}
+            >
+              <ExternalLink className="h-3.5 w-3.5 mr-2" />
+              Visa som kund
+            </Button>
+          )}
           {canRefund && (
             <Button onClick={onRefundClick} className="w-full" variant="outline">
               <RefreshCcw className="h-3.5 w-3.5 mr-2" />

@@ -11,6 +11,7 @@ import {
   Menu,
   X,
   ArrowLeft,
+  Inbox,
 } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -18,6 +19,7 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { to: "/mitt-kaisen/dashboard", label: "Översikt", icon: LayoutDashboard },
   { to: "/mitt-kaisen/biljetter", label: "Mina biljetter", icon: Ticket },
+  { to: "/mitt-kaisen/forfragningar", label: "Förfrågningar", icon: Inbox },
   { to: "/mitt-kaisen/fakturor", label: "Fakturor", icon: FileText },
   { to: "/mitt-kaisen/profil", label: "Min Profil", icon: User },
 ];

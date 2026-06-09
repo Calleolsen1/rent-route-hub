@@ -15,6 +15,7 @@ import MittKaisenResetPassword from "./pages/MittKaisenResetPassword";
 import MittKaisenLayout from "./layouts/MittKaisenLayout";
 import MittKaisenDashboard from "./pages/mitt-kaisen/Dashboard";
 import MittKaisenBiljetter from "./pages/mitt-kaisen/Biljetter";
+import MittKaisenForfragningar from "./pages/mitt-kaisen/Forfragningar";
 import MittKaisenFakturor from "./pages/mitt-kaisen/Fakturor";
 import MittKaisenProfil from "./pages/mitt-kaisen/Profil";
 import FAQ from "./pages/FAQ";
@@ -31,6 +32,7 @@ import AdminTickets from "./pages/admin/Tickets";
 import AdminBanners from "./pages/admin/Banners";
 import AdminMarkupDefaults from "./pages/admin/MarkupDefaults";
 import AdminDiagnostics from "./pages/admin/Diagnostics";
+import AdminMediaLibrary from "./pages/admin/MediaLibrary";
 import Integritetspolicy from "./pages/Integritetspolicy";
 import Anvandarvillkor from "./pages/Anvandarvillkor";
 import CookieConsent from "./components/CookieConsent";
@@ -104,6 +106,7 @@ const App = () => (
                 <Route path="banners" element={<AdminBanners />} />
                 <Route path="markup-defaults" element={<AdminMarkupDefaults />} />
                 <Route path="diagnostics" element={<AdminDiagnostics />} />
+                <Route path="media" element={<AdminMediaLibrary />} />
                 <Route path="users" element={<UsersManagement />} />
                 <Route path="support" element={<AdminSupport />} />
                 <Route path="content" element={<ContentManagementPage />} />
@@ -116,6 +119,7 @@ const App = () => (
               <Route path="/mitt-kaisen" element={<MittKaisenLayout />}>
                 <Route path="dashboard" element={<MittKaisenDashboard />} />
                 <Route path="biljetter" element={<MittKaisenBiljetter />} />
+                <Route path="forfragningar" element={<MittKaisenForfragningar />} />
                 <Route path="fakturor" element={<MittKaisenFakturor />} />
                 <Route path="profil" element={<MittKaisenProfil />} />
               </Route>
