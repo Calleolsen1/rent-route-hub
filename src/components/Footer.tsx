@@ -45,18 +45,19 @@ const Footer = () => {
 
   return (
     <footer className="bg-navy text-white">
-      <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10 py-8 md:py-10">
+      <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10 pt-14 md:pt-20 pb-8 md:pb-10">
         {/* Newsletter */}
-        <div className="grid md:grid-cols-2 gap-6 md:gap-10 items-start pb-6">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-end pb-12 md:pb-16">
           <div>
-            <h2 className="font-sans font-semibold text-2xl md:text-3xl text-white">
-              Anmäl dig och håll dig uppdaterad!
+            <p className="text-[11px] tracking-[0.3em] text-white/60 uppercase mb-4 font-sans">Nyhetsbrev</p>
+            <h2 className="font-display text-3xl md:text-5xl text-white leading-[1.05]">
+              Anmäl dig och håll dig <em className="italic font-light">uppdaterad</em>
             </h2>
           </div>
           <div>
             <form
               onSubmit={handleSubscribe}
-              className="flex items-end gap-3 border-b border-white/40 pb-1.5"
+              className="flex items-end gap-3 border-b border-white/40 pb-2"
             >
               <input
                 type="email"
@@ -64,19 +65,18 @@ const Footer = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Ange din e-postadress...*"
-                className="flex-1 bg-transparent text-white placeholder:text-white/60 text-base focus:outline-none py-2"
+                className="flex-1 bg-transparent text-white placeholder:text-white/50 text-base focus:outline-none py-2"
                 disabled={submitting}
               />
               <button
                 type="submit"
                 disabled={submitting}
-                className="border border-white text-white text-sm font-medium px-6 py-2 rounded-full hover:bg-white hover:text-navy transition-colors disabled:opacity-50"
+                className="border border-white text-white text-xs tracking-[0.2em] uppercase font-sans px-6 py-2.5 rounded-full hover:bg-white hover:text-navy transition-colors disabled:opacity-50"
               >
                 {submitting ? "Skickar..." : "Anmäl"}
               </button>
             </form>
-            <p className="text-sm text-white/70 mt-3 leading-relaxed">
-
+            <p className="text-xs text-white/60 mt-3 leading-relaxed">
               Genom att skicka in detta formulär godkänner jag att Kaisen Travel Group lagrar och behandlar mina personuppgifter enligt våra{" "}
               <Link to="/anvandarvillkor" className="underline hover:text-white">Användarvillkor</Link>{" "}
               &amp;{" "}
@@ -85,31 +85,23 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Logo + social */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pt-1 pb-5">
-          <Link to="/" className="inline-block">
-            <div className="font-display text-2xl md:text-3xl font-semibold text-white tracking-[0.25em]">KAISEN</div>
-            <div className="text-xs tracking-[0.3em] text-white/70 font-sans uppercase mt-1">Travel Group</div>
-          </Link>
-          {/* TODO: ersätt # med riktiga sociala media-länkar
-          <div className="flex gap-4 text-white">
-            <a href="#" aria-label="Facebook" className="hover:text-white transition-colors"><Facebook className="h-4 w-4" /></a>
-            <a href="#" aria-label="Twitter" className="hover:text-white transition-colors"><Twitter className="h-4 w-4" /></a>
-            <a href="#" aria-label="Instagram" className="hover:text-white transition-colors"><Instagram className="h-4 w-4" /></a>
-            <a href="#" aria-label="LinkedIn" className="hover:text-white transition-colors"><Linkedin className="h-4 w-4" /></a>
+        <div className="border-t border-white/15" />
+
+        {/* Logo + link columns */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12 py-12 md:py-16">
+          <div className="md:col-span-4">
+            <Link to="/" className="inline-block">
+              <div className="font-display text-3xl text-white tracking-[0.25em]">KAISEN</div>
+              <div className="text-[10px] tracking-[0.3em] text-white/60 font-sans uppercase mt-1.5">Travel Group</div>
+            </Link>
+            <p className="text-sm text-white/60 leading-relaxed mt-6 max-w-xs">
+              Skräddarsydda upplevelser för sport, gruppresor och affärsresor — med personlig service hela vägen.
+            </p>
           </div>
-          */}
-        </div>
 
-        <div className="border-t border-white/20" />
-
-        {/* Link columns */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 py-7">
-          <div>
-            <h3 className="text-white font-sans font-semibold text-base mb-4">Tjänster</h3>
-            <ul className="space-y-2.5 text-sm text-white/80">
-
-
+          <div className="md:col-span-3">
+            <h3 className="text-[11px] tracking-[0.3em] text-white/60 uppercase font-sans mb-5">Tjänster</h3>
+            <ul className="space-y-3 text-sm text-white/85">
               <li><Link to="/services/sportresor" className="hover:text-white transition-colors">Sportresor</Link></li>
               <li><Link to="/group-travel" className="hover:text-white transition-colors">Gruppresor</Link></li>
               <li><Link to="/services/weekend-getaway" className="hover:text-white transition-colors">Weekendresor</Link></li>
@@ -119,10 +111,9 @@ const Footer = () => {
             </ul>
           </div>
 
-          <div>
-            <h3 className="text-white font-sans font-semibold text-base mb-4">Företaget</h3>
-            <ul className="space-y-2.5 text-sm text-white/80">
-
+          <div className="md:col-span-2">
+            <h3 className="text-[11px] tracking-[0.3em] text-white/60 uppercase font-sans mb-5">Företaget</h3>
+            <ul className="space-y-3 text-sm text-white/85">
               <li><Link to="/about" className="hover:text-white transition-colors">Om oss</Link></li>
               <li><Link to="/contact" className="hover:text-white transition-colors">Planera din resa</Link></li>
               <li><Link to="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
@@ -131,28 +122,25 @@ const Footer = () => {
             </ul>
           </div>
 
-          <div>
-            <h3 className="text-white font-sans font-semibold text-base mb-4">Kontakt</h3>
-            <ul className="space-y-2.5 text-sm text-white/80">
-
+          <div className="md:col-span-3">
+            <h3 className="text-[11px] tracking-[0.3em] text-white/60 uppercase font-sans mb-5">Kontakt</h3>
+            <ul className="space-y-3 text-sm text-white/85">
               <li>Kaisen Travel Group AB</li>
-              {/* TODO: fyll i riktigt telefonnummer */}
               <li><a href="mailto:info@kaisengroup.se" className="hover:text-white transition-colors">info@kaisengroup.se</a></li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-white/20" />
+        <div className="border-t border-white/15" />
 
         {/* Bottom row */}
-        <div className="pt-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-sm text-white/70">
-
+        <div className="pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs text-white/60">
           <p>© {new Date().getFullYear()} Kaisen Travel Group. Alla rättigheter förbehållna.</p>
           <div className="flex flex-wrap gap-x-5 gap-y-2">
             <Link to="/integritetspolicy" className="hover:text-white transition-colors">Integritetspolicy</Link>
-            <span className="text-white/30">|</span>
+            <span className="text-white/25">|</span>
             <Link to="/anvandarvillkor" className="hover:text-white transition-colors">Användarvillkor</Link>
-            <span className="text-white/30">|</span>
+            <span className="text-white/25">|</span>
             <button onClick={clearCookieConsent} className="hover:text-white transition-colors">Cookie-inställningar</button>
           </div>
         </div>
