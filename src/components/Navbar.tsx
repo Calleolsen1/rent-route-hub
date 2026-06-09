@@ -75,7 +75,15 @@ const Navbar = () => {
                       <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
                     </button>
                     {isOpen && sport.menu_style === "grouped" && (
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 bg-card border border-border shadow-xl z-50 w-[760px] p-6 grid grid-cols-4 gap-6">
+                      <div
+                        className="absolute top-full left-0 bg-card border border-border shadow-xl z-50 p-6 gap-6 grid"
+                        style={{
+                          // Size to actual league count so 3-league sports don't render an empty column
+                          // and 5+ league sports don't get clipped. Cap at viewport width minus margin.
+                          width: `min(${Math.max(groupedFor(sport.id).length, 1) * 190}px, calc(100vw - 3rem))`,
+                          gridTemplateColumns: `repeat(${Math.max(groupedFor(sport.id).length, 1)}, minmax(0, 1fr))`,
+                        }}
+                      >
                         {groupedFor(sport.id).map(([groupLabel, items]) => (
                           <div key={groupLabel}>
                             <Link
