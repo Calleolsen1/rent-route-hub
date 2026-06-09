@@ -342,6 +342,7 @@ export type Database = {
           is_active: boolean
           name: string
           short_date: string | null
+          show_in_menu: boolean
           slug: string
           sort_order: number
           sport_id: string
@@ -361,6 +362,7 @@ export type Database = {
           is_active?: boolean
           name: string
           short_date?: string | null
+          show_in_menu?: boolean
           slug: string
           sort_order?: number
           sport_id: string
@@ -380,6 +382,7 @@ export type Database = {
           is_active?: boolean
           name?: string
           short_date?: string | null
+          show_in_menu?: boolean
           slug?: string
           sort_order?: number
           sport_id?: string
