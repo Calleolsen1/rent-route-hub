@@ -84,8 +84,11 @@ export default function MittKaisenFakturor() {
           {rows.map((o) => (
             <div
               key={o.id}
-              className="rounded-xl p-5 flex items-center justify-between"
-              style={{ backgroundColor: "hsl(222 40% 18%)" }}
+              className="rounded-2xl p-5 flex items-center justify-between transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_60px_-20px_rgba(3,15,35,0.7)]"
+              style={{
+                backgroundColor: "hsl(222 40% 18%)",
+                border: "1px solid hsl(222 40% 25%)",
+              }}
             >
               <div>
                 <p className="text-sm" style={{ color: "hsl(210 30% 92%)" }}>
