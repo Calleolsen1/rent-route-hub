@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           away_team: string | null
           city: string | null
+          compare_at_price_sek: number | null
           country: string | null
           cover_image_url: string | null
           created_at: string
@@ -29,6 +30,8 @@ export type Database = {
           id: string
           is_featured: boolean
           last_synced_at: string | null
+          max_price_sek: number | null
+          min_price_sek: number | null
           race_name: string | null
           source: string
           sport: Database["public"]["Enums"]["event_sport"]
@@ -41,6 +44,7 @@ export type Database = {
         Insert: {
           away_team?: string | null
           city?: string | null
+          compare_at_price_sek?: number | null
           country?: string | null
           cover_image_url?: string | null
           created_at?: string
@@ -52,6 +56,8 @@ export type Database = {
           id?: string
           is_featured?: boolean
           last_synced_at?: string | null
+          max_price_sek?: number | null
+          min_price_sek?: number | null
           race_name?: string | null
           source?: string
           sport: Database["public"]["Enums"]["event_sport"]
@@ -64,6 +70,7 @@ export type Database = {
         Update: {
           away_team?: string | null
           city?: string | null
+          compare_at_price_sek?: number | null
           country?: string | null
           cover_image_url?: string | null
           created_at?: string
@@ -75,6 +82,8 @@ export type Database = {
           id?: string
           is_featured?: boolean
           last_synced_at?: string | null
+          max_price_sek?: number | null
+          min_price_sek?: number | null
           race_name?: string | null
           source?: string
           sport?: Database["public"]["Enums"]["event_sport"]
@@ -409,6 +418,8 @@ export type Database = {
           customer_email: string
           customer_name: string | null
           customer_phone: string | null
+          fulfillment_attempt_count: number
+          fulfillment_last_attempt_at: string | null
           id: string
           invoice_number: string | null
           last_refund_reason: string | null
@@ -420,6 +431,7 @@ export type Database = {
           status: Database["public"]["Enums"]["order_status"]
           stripe_checkout_session_id: string | null
           stripe_payment_intent_id: string | null
+          tickets_ready_email_sent_at: string | null
           total_paid_sek: number | null
           total_sek: number
           updated_at: string
@@ -433,6 +445,8 @@ export type Database = {
           customer_email: string
           customer_name?: string | null
           customer_phone?: string | null
+          fulfillment_attempt_count?: number
+          fulfillment_last_attempt_at?: string | null
           id?: string
           invoice_number?: string | null
           last_refund_reason?: string | null
@@ -444,6 +458,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["order_status"]
           stripe_checkout_session_id?: string | null
           stripe_payment_intent_id?: string | null
+          tickets_ready_email_sent_at?: string | null
           total_paid_sek?: number | null
           total_sek?: number
           updated_at?: string
@@ -457,6 +472,8 @@ export type Database = {
           customer_email?: string
           customer_name?: string | null
           customer_phone?: string | null
+          fulfillment_attempt_count?: number
+          fulfillment_last_attempt_at?: string | null
           id?: string
           invoice_number?: string | null
           last_refund_reason?: string | null
@@ -468,6 +485,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["order_status"]
           stripe_checkout_session_id?: string | null
           stripe_payment_intent_id?: string | null
+          tickets_ready_email_sent_at?: string | null
           total_paid_sek?: number | null
           total_sek?: number
           updated_at?: string
