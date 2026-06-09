@@ -93,32 +93,32 @@ export default function Sportresor() {
  <Navbar />
 
  {/* Hero with search bar — search is the first thing visible (above the fold) */}
- <section className="relative min-h-[70vh] flex flex-col">
+ <section className="relative flex flex-col">
  <div className="absolute inset-0">
  <img src={sportsImage} alt="Sportresor" className="w-full h-full object-cover" />
- <div className="absolute inset-0 bg-navy/65" />
+ <div className="absolute inset-0 bg-navy/70" />
  </div>
- <div className="relative container mx-auto px-4 pt-24 md:pt-32 pb-12 flex-1 flex flex-col">
+ <div className="relative container mx-auto px-4 pt-24 md:pt-28 pb-8 flex flex-col">
  <div className="max-w-3xl">
- <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
+ <p className="text-xs tracking-[0.3em] text-primary uppercase mb-2 font-sans">
  Tjänster — Sportresor
  </p>
- <h1 className="font-display text-4xl md:text-6xl text-white mb-3">
+ <h1 className="font-display text-3xl md:text-5xl text-white mb-2">
  Resor för <em className="italic font-light text-white">Sportälskare</em>
  </h1>
- <p className="text-white/80 text-sm md:text-base max-w-xl">
- Köp biljetter till F1, Premier League, Champions League och fler. Sök på lag, race eller arena.
+ <p className="text-white/80 text-sm max-w-xl">
+ Köp biljetter till F1, Premier League, Champions League och fler.
  </p>
  </div>
 
- <div className="mt-auto pt-12 max-w-5xl w-full mx-auto">
+ <div className="mt-6 max-w-5xl w-full mx-auto">
  <SportFilters value={filters} onChange={setFilters} />
  </div>
  </div>
  </section>
 
-  {/* Live tickets results */}
-  <section className="py-12 md:py-14 bg-background">
+  {/* Live tickets results — visible immediately on entry */}
+  <section className="py-8 md:py-10 bg-background">
   <div className="container mx-auto px-4 max-w-6xl">
   <UpcomingEventsList
     sport={filters.sport}
