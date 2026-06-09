@@ -35,12 +35,43 @@ Deno.serve(async (req) => {
     if (orderErr || !order) throw new Error("Order not found");
     if (order.status === "paid") throw new Error("Order already paid");
 
-    // xs2 orders have a 10-minute hold — refuse checkout if expired so the
-    // customer doesn't pay for tickets we can no longer claim.
+    // xs2 orders have a 10-minute hold. If less than 5 minutes remain when
+    // the customer initiates checkout, renew the hold up-front so the full
+    // 10-minute window starts at checkout time — protects against the
+    // confirmBooking-422-after-payment race where the reservation expires
+    // mid-payment and we end up charging for a booking we can't fulfill.
+    let renewedReservationExpiresAt: string | null = null;
     if (order.xs2_reservation_id && order.reservation_expires_at) {
       const expiresAt = new Date(order.reservation_expires_at).getTime();
-      if (Date.now() >= expiresAt) {
-        throw new Error("Reservation expired — please reserve again");
+      const msLeft = expiresAt - Date.now();
+      if (msLeft < 5 * 60_000) {
+        try {
+          const renewRes = await fetch(
+            `${Deno.env.get("SUPABASE_URL")}/functions/v1/xs2-renew-reservation`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
+              },
+              body: JSON.stringify({ order_id: orderId }),
+            },
+          );
+          const renewBody = await renewRes.json().catch(() => ({}));
+          if (!renewRes.ok) {
+            throw new Error(
+              renewBody?.error ?? "Kunde inte förnya reservationen — vänligen reservera igen",
+            );
+          }
+          renewedReservationExpiresAt = renewBody?.reservation_expires_at ?? null;
+          // If renewal repriced any items, reload them so the Stripe session
+          // gets the fresh unit_price_sek (subsequent items query below).
+        } catch (renewErr: any) {
+          // Hard fail rather than letting the customer pay against a stale hold
+          throw new Error(
+            renewErr?.message ?? "Reservationen kunde inte förnyas — vänligen reservera igen",
+          );
+        }
       }
     }
 
@@ -151,11 +182,17 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Cap the Stripe checkout session lifetime to 30 minutes (Stripe minimum).
+    // The default is 24 hours, which guarantees an xs2-hold-expiry race for
+    // any customer who lingers. With expires_at set, a session that isn't
+    // paid in 30 min auto-cancels with no charge.
+    const sessionExpiresAt = Math.floor(Date.now() / 1000) + 30 * 60;
     const session = await stripe.checkout.sessions.create({
       line_items,
       mode: "payment",
       ui_mode: "embedded_page",
       return_url: returnUrl,
+      expires_at: sessionExpiresAt,
       ...(customerId && { customer: customerId }),
       // automatic_tax requires a customer billing address. Collect it during
       // checkout and merge onto the Stripe customer for repeat purchases.

@@ -305,6 +305,110 @@ async function handleCheckoutCompleted(session: any, env: StripeEnv) {
   await sendOrderConfirmationEmail(orderId);
 }
 
+// Auto-refund for orders where xs2 confirm is terminally impossible (hold
+// expired or reservation unknown). Stripe charged the customer; we can't
+// deliver tickets; the only honest response is to give the money back
+// immediately + tell the customer what happened.
+//
+// Uses sandbox/live based on env var STRIPE_ENV (set per project). Records
+// the refund in `refunds` table so it shows up in admin reporting alongside
+// manual refunds.
+async function autoRefundForFailedBooking(orderId: string, reasonDetail: string) {
+  const supabase = getSupabase();
+  const { data: order } = await supabase
+    .from("orders")
+    .select("id, status, total_paid_sek, total_sek, refunded_sek, stripe_payment_intent_id, customer_email, customer_name, invoice_number")
+    .eq("id", orderId)
+    .maybeSingle();
+  if (!order || !order.stripe_payment_intent_id) {
+    console.error("auto-refund: order or PI missing", { orderId });
+    return;
+  }
+  if (!["paid", "fulfilled"].includes(order.status as string)) {
+    console.log("auto-refund: order not in refundable state", { orderId, status: order.status });
+    return;
+  }
+  const paid = Number(order.total_paid_sek ?? order.total_sek);
+  const alreadyRefunded = Number(order.refunded_sek ?? 0);
+  const refundable = Math.max(0, paid - alreadyRefunded);
+  if (refundable <= 0) {
+    console.log("auto-refund: nothing left to refund", { orderId });
+    return;
+  }
+
+  const env: StripeEnv = (Deno.env.get("STRIPE_ENV") === "live" ? "live" : "sandbox") as StripeEnv;
+  const stripe = createStripeClient(env);
+  const refund = await stripe.refunds.create({
+    payment_intent: order.stripe_payment_intent_id as string,
+    amount: Math.round(refundable * 100),
+    reason: "requested_by_customer",
+    metadata: { orderId, auto_refund_reason: `xs2_confirm_terminal: ${reasonDetail.slice(0, 200)}` },
+  });
+  await supabase.from("refunds").insert({
+    order_id: orderId,
+    amount_sek: refundable,
+    reason: `Automatisk: xs2 kunde inte fullfölja bokningen (${reasonDetail.slice(0, 240)})`,
+    stripe_refund_id: refund.id,
+    processed_by: null,
+  });
+  await supabase
+    .from("orders")
+    .update({
+      refunded_sek: alreadyRefunded + refundable,
+      last_refund_reason: "xs2 reservation expired before booking could be confirmed",
+      status: "refunded",
+    })
+    .eq("id", orderId);
+
+  // Customer email
+  if (LOVABLE_API_KEY && RESEND_API_KEY && order.customer_email) {
+    const orderRef = order.invoice_number ?? (order.id as string).slice(0, 8).toUpperCase();
+    const html = `
+      <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:560px;margin:0 auto;background:#fff;color:#0f172a;">
+        <div style="background:#0f172a;color:#fff;padding:32px;text-align:center;">
+          <div style="font-size:22px;font-weight:700;letter-spacing:0.04em;">KAISEN TRAVEL GROUP</div>
+        </div>
+        <div style="padding:32px;">
+          <h1 style="font-size:22px;margin:0 0 12px;">Vi kunde tyvärr inte slutföra din bokning</h1>
+          <p style="color:#475569;line-height:1.6;">
+            Hej ${order.customer_name ?? ""},<br/><br/>
+            Vi har tyvärr inte kunnat säkra biljetterna för din beställning <strong>${orderRef}</strong>.
+            Det här händer ibland när biljetterna säljs slut i samma ögonblick som betalningen behandlas.
+          </p>
+          <p style="color:#475569;line-height:1.6;">
+            Vi har redan återbetalat hela beloppet på <strong>${new Intl.NumberFormat("sv-SE").format(refundable)} SEK</strong> till samma kort du betalade med. Det tar normalt 3–10 bankdagar innan beloppet syns på ditt konto.
+          </p>
+          <p style="color:#475569;line-height:1.6;">
+            Vill du försöka boka igen finns evenemanget kvar på vår sida — biljetter kan ha släppts på nytt.
+            Behöver du hjälp att hitta motsvarande biljett? Svara på det här mejlet så löser vi det åt dig.
+          </p>
+          <p style="color:#94a3b8;font-size:12px;margin-top:32px;">
+            Order-ID: ${order.id}<br/>
+            Återbetalnings-ID: ${refund.id}
+          </p>
+        </div>
+        <div style="background:#f8fafc;padding:20px;text-align:center;color:#64748b;font-size:12px;">
+          Kaisen Travel Group · info@kaisengroup.se
+        </div>
+      </div>`;
+    await fetch(`${GATEWAY_URL}/emails`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "X-Connection-Api-Key": RESEND_API_KEY,
+      },
+      body: JSON.stringify({
+        from: "Kaisen Travel Group <info@kaisengroup.se>",
+        to: [order.customer_email],
+        subject: `Återbetalning genomförd · ${orderRef}`,
+        html,
+        reply_to: "info@kaisengroup.se",
+      }),
+    }).catch((e) => console.error("auto-refund email failed", e));
+  }
+}
+
 async function confirmXs2Booking(
   orderId: string,
   order: { customer_email: string | null; xs2_reservation_id: string | null },
@@ -327,15 +431,29 @@ async function confirmXs2Booking(
     });
   } catch (e) {
     const status = e instanceof Xs2Error ? e.status : "unknown";
+    const msg = e instanceof Error ? e.message : "unknown";
     console.error("xs2 confirmBooking failed", { orderId, status, error: e });
-    // Don't mark the order failed — Stripe payment succeeded, this needs
-    // ops intervention. Stamp the order with a fulfillment_error.
     await getSupabase()
       .from("orders")
-      .update({
-        notes: `xs2 confirm failed (${status}): ${e instanceof Error ? e.message : "unknown"}`,
-      })
+      .update({ notes: `xs2 confirm failed (${status}): ${msg}` })
       .eq("id", orderId);
+
+    // Terminal "reservation gone" responses — xs2 can't fulfill no matter how
+    // many times we retry. Auto-refund instead of leaving the customer
+    // charged and waiting on ops.
+    //
+    // 422 with "no items" / "quantities are 0" → hold expired between Stripe
+    // payment and our confirm. 410 Gone → reservation_id literally
+    // unrecognized. Either way, the booking will never succeed.
+    const isTerminalHoldGone =
+      status === 422 ||
+      status === 410 ||
+      /reservation has no items|quantities are 0|reservation .* (expired|not found)/i.test(msg);
+    if (isTerminalHoldGone) {
+      await autoRefundForFailedBooking(orderId, msg).catch((err) =>
+        console.error("auto-refund failed", { orderId, err }),
+      );
+    }
     return;
   }
 
