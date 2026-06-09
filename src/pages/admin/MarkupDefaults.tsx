@@ -16,6 +16,7 @@ export default function AdminMarkupDefaults() {
   const [pct, setPct] = useState("15");
   const [fixed, setFixed] = useState("0");
   const [eurRate, setEurRate] = useState("11.5");
+  const [compareAtPct, setCompareAtPct] = useState("0");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [applying, setApplying] = useState(false);
@@ -25,14 +26,16 @@ export default function AdminMarkupDefaults() {
     const { data } = await (supabase as any)
       .from("platform_settings")
       .select("setting_key, setting_value, description")
-      .in("setting_key", ["default_markup_pct", "default_markup_fixed_sek", "eur_to_sek_rate"]);
+      .in("setting_key", ["default_markup_pct", "default_markup_fixed_sek", "eur_to_sek_rate", "compare_at_default_pct"]);
     const rows = (data as SettingRow[]) ?? [];
     const pctRow = rows.find((r) => r.setting_key === "default_markup_pct");
     const fixedRow = rows.find((r) => r.setting_key === "default_markup_fixed_sek");
     const rateRow = rows.find((r) => r.setting_key === "eur_to_sek_rate");
+    const compareRow = rows.find((r) => r.setting_key === "compare_at_default_pct");
     if (pctRow) setPct(pctRow.setting_value);
     if (fixedRow) setFixed(fixedRow.setting_value);
     if (rateRow) setEurRate(rateRow.setting_value);
+    if (compareRow) setCompareAtPct(compareRow.setting_value);
     setLoading(false);
   };
 
@@ -54,6 +57,11 @@ export default function AdminMarkupDefaults() {
     }
     if (!Number.isFinite(rateNum) || rateNum <= 0 || rateNum > 50) {
       toast.error("EUR-kursen ska vara mellan 0 och 50");
+      return;
+    }
+    const compareNum = Number(compareAtPct);
+    if (!Number.isFinite(compareNum) || compareNum < 0 || compareNum > 200) {
+      toast.error("Jämförelsepris-påslag ska vara mellan 0 och 200");
       return;
     }
     setSaving(true);
@@ -81,6 +89,13 @@ export default function AdminMarkupDefaults() {
               setting_type: "decimal",
               description:
                 "Växelkurs EUR → SEK för xs2event-biljetter. Påverkar nya prisberäkningar omedelbart.",
+            },
+            {
+              setting_key: "compare_at_default_pct",
+              setting_value: String(compareNum),
+              setting_type: "decimal",
+              description:
+                "Procent över aktuellt pris som visas som överstruket jämförelsepris på event utan eget compare_at. 0 = av.",
             },
           ],
           { onConflict: "setting_key" },
@@ -212,6 +227,36 @@ export default function AdminMarkupDefaults() {
             {saving && <Loader2 className="h-3 w-3 animate-spin mr-2" />}
             <Save className="h-3 w-3 mr-2" /> Spara
           </Button>
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-border bg-card p-6 space-y-4">
+        <div>
+          <h2 className="font-display text-lg">Jämförelsepris (rabatt-streck)</h2>
+          <p className="text-xs text-muted-foreground mt-1">
+            Visar ett överstruket högre pris bredvid det riktiga priset, t.ex. <span className="line-through">3&nbsp;600&nbsp;kr</span>&nbsp;<strong>3&nbsp;000&nbsp;kr&nbsp;–17%</strong>. Används bara när eventet saknar ett eget compare_at-värde (sätts då automatiskt från xs2event-biljettens face value, eller manuellt per event i Biljetter).
+          </p>
+        </div>
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">
+          ⚠️ <strong>Prisinformationslagen + Marknadsföringslagen</strong> kräver att överstrukna priser ska vara verkliga tidigare priser inom 30 dagar. Att visa ett uppskruvat jämförelsepris utan att priset faktiskt varit högre kan leda till sanktionsavgift från Konsumentverket. Använd endast om du har historik på högre prissättning, eller låt xs2-face-värdet (box office-pris) styra automatiskt.
+        </div>
+        <div className="max-w-[200px]">
+          <Label htmlFor="compare-pct" className="text-xs uppercase tracking-wider">
+            Standard-påslag på jämförelsepris
+          </Label>
+          <div className="relative mt-1">
+            <Input
+              id="compare-pct"
+              type="number"
+              min={0}
+              max={200}
+              step="1"
+              value={compareAtPct}
+              onChange={(e) => setCompareAtPct(e.target.value)}
+            />
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">%</span>
+          </div>
+          <p className="text-[10px] text-muted-foreground mt-1">0 = ingen syntetisk rabatt</p>
         </div>
       </div>
 

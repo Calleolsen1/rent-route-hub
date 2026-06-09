@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { formatEventDateTime } from "@/lib/formatSek";
 import { resolveImageUrl } from "@/components/admin/ImageUploader";
+import { PriceTag } from "@/components/PriceTag";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, Users, Trophy, Star, Shield, Globe, Calendar, MapPin, Flag, Search } from "lucide-react";
@@ -97,10 +98,10 @@ const fallbackHeroSlides: HeroSlide[] = [
 
 // Inquiry-funnel tiles (group / training / conference) — these aren't xs2
 // ticket events, they're CTAs into the inquiry form, so they stay static.
-const inquiryOffers = [
-  { image: offerLisbon, title: "Gruppresa Lissabon", date: "Q1 2027", tag: "Grupp", days: "5 dagar", fromPrice: null, href: "/group-travel", isNew: false },
-  { image: offerLaManga, title: "Träningsläger La Manga", date: "Mars 2027", tag: "Träning", days: "7 dagar", fromPrice: null, href: "/services/traningslager", isNew: false },
-  { image: offerMallorca, title: "Konferens Mallorca", date: "Maj 2027", tag: "Konferens", days: "4 dagar", fromPrice: null, href: "/group-travel", isNew: false },
+const inquiryOffers: FeaturedOffer[] = [
+  { image: offerLisbon, title: "Gruppresa Lissabon", date: "Q1 2027", tag: "Grupp", days: "5 dagar", fromPrice: null, compareAtPrice: null, currentPriceSek: null, href: "/group-travel", isNew: false },
+  { image: offerLaManga, title: "Träningsläger La Manga", date: "Mars 2027", tag: "Träning", days: "7 dagar", fromPrice: null, compareAtPrice: null, currentPriceSek: null, href: "/services/traningslager", isNew: false },
+  { image: offerMallorca, title: "Konferens Mallorca", date: "Maj 2027", tag: "Konferens", days: "4 dagar", fromPrice: null, compareAtPrice: null, currentPriceSek: null, href: "/group-travel", isNew: false },
 ];
 
 type FeaturedOffer = {
@@ -110,6 +111,8 @@ type FeaturedOffer = {
   tag: string;
   days: string | null;
   fromPrice: string | null;
+  compareAtPrice: number | null;
+  currentPriceSek: number | null;
   href: string;
   isNew: boolean;
 };
@@ -131,6 +134,7 @@ function mapEventToOffer(ev: {
   cover_image_url: string | null;
   ends_at: string | null;
   min_price_sek: number | null;
+  compare_at_price_sek: number | null;
 }): FeaturedOffer {
   const title = ev.sport === "soccer"
     ? `${ev.home_team ?? ""} – ${ev.away_team ?? ""}`.trim()
@@ -145,6 +149,8 @@ function mapEventToOffer(ev: {
     tag: ev.sport === "soccer" ? "Fotboll" : "F1",
     days,
     fromPrice: ev.min_price_sek ? new Intl.NumberFormat("sv-SE").format(ev.min_price_sek) : null,
+    compareAtPrice: ev.compare_at_price_sek != null ? Number(ev.compare_at_price_sek) : null,
+    currentPriceSek: ev.min_price_sek != null ? Number(ev.min_price_sek) : null,
     href: `/sport/event/${ev.id}`,
     isNew: false,
   };
@@ -260,6 +266,17 @@ const Home = () => {
   const navigate = useNavigate();
   const [featured, setFeatured] = useState<FeaturedOffer[]>([]);
   const [heroSlides, setHeroSlides] = useState<HeroSlide[]>(fallbackHeroSlides);
+  const [compareAtDefaultPct, setCompareAtDefaultPct] = useState<number>(0);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await (supabase as any).rpc("get_platform_decimal", {
+        p_key: "compare_at_default_pct",
+        p_default: 0,
+      });
+      setCompareAtDefaultPct(Number(data ?? 0));
+    })();
+  }, []);
   const [testimonialsRows, setTestimonialsRows] = useState<typeof testimonials | null>(null);
   const [whyUsRows, setWhyUsRows] = useState<typeof whyUs | null>(null);
 
@@ -342,23 +359,14 @@ const Home = () => {
       const { data } = await (supabase as any)
         .from("events")
         .select(
-          "id, sport, home_team, away_team, race_name, tournament_name, starts_at, ends_at, cover_image_url, ticket_categories(unit_price_sek)",
+          "id, sport, home_team, away_team, race_name, tournament_name, starts_at, ends_at, cover_image_url, min_price_sek, compare_at_price_sek",
         )
         .eq("is_featured", true)
         .eq("status", "upcoming")
         .gte("starts_at", new Date().toISOString())
         .order("starts_at", { ascending: true })
         .limit(8);
-
-      const rows = (data ?? []).map((ev: any) => {
-        const prices = (ev.ticket_categories ?? [])
-          .map((c: any) => Number(c.unit_price_sek))
-          .filter((n: number) => Number.isFinite(n) && n > 0);
-        return mapEventToOffer({
-          ...ev,
-          min_price_sek: prices.length ? Math.min(...prices) : null,
-        });
-      });
+      const rows = (data ?? []).map((ev: any) => mapEventToOffer(ev));
       setFeatured(rows);
     })();
   }, []);
@@ -565,15 +573,12 @@ const Home = () => {
                       <p className="font-sans font-semibold text-foreground text-base mb-5 leading-snug">
                         {offer.tag} · {offer.date}
                       </p>
-                      <div className="border-t border-border/60 pt-4 text-right text-sm">
-                        {offer.fromPrice ? (
-                          <>
-                            <span className="text-foreground/50">Från </span>
-                            <span className="font-bold text-foreground">{offer.fromPrice} SEK</span>
-                          </>
-                        ) : (
-                          <span className="font-semibold text-primary">Se biljetter →</span>
-                        )}
+                      <div className="border-t border-border/60 pt-4">
+                        <PriceTag
+                          currentSek={offer.currentPriceSek}
+                          compareAtSek={offer.compareAtPrice}
+                          defaultPct={compareAtDefaultPct}
+                        />
                       </div>
                     </div>
                   </Link>

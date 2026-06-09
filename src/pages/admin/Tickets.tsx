@@ -38,6 +38,8 @@ type EventRow = {
   starts_at: string;
   status: string;
   cover_image_url: string | null;
+  min_price_sek: number | null;
+  compare_at_price_sek: number | null;
   ticket_categories: Category[];
 };
 
@@ -85,7 +87,7 @@ export default function AdminTickets() {
     const [{ data: ev }, { data: dels }, { data: logs }] = await Promise.all([
       (supabase as any)
         .from("events")
-        .select("id, source, is_featured, sport, tournament_name, home_team, away_team, race_name, venue_name, city, starts_at, status, cover_image_url, ticket_categories(id, name, unit_price_sek, qty_available, stripe_price_id, markup_pct, markup_fixed_sek)")
+        .select("id, source, is_featured, sport, tournament_name, home_team, away_team, race_name, venue_name, city, starts_at, status, cover_image_url, min_price_sek, compare_at_price_sek, ticket_categories(id, name, unit_price_sek, qty_available, stripe_price_id, markup_pct, markup_fixed_sek)")
         .order("starts_at", { ascending: true }),
       supabase
         .from("ticket_deliveries")
@@ -144,6 +146,25 @@ export default function AdminTickets() {
       );
     } catch (e: any) {
       toast.error(e.message ?? "Kunde inte uppdatera");
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const saveCompareAt = async (eventId: string, value: number | null) => {
+    setBusy(eventId);
+    try {
+      const { error } = await (supabase as any)
+        .from("events")
+        .update({ compare_at_price_sek: value })
+        .eq("id", eventId);
+      if (error) throw error;
+      setEvents((prev) =>
+        prev.map((e) => (e.id === eventId ? { ...e, compare_at_price_sek: value } : e)),
+      );
+      toast.success(value == null ? "Jämförelsepris rensat" : "Jämförelsepris sparat");
+    } catch (e: any) {
+      toast.error(e.message ?? "Kunde inte spara");
     } finally {
       setBusy(null);
     }
@@ -476,6 +497,14 @@ export default function AdminTickets() {
                 />
               </div>
 
+              <CompareAtEditor
+                eventId={ev.id}
+                minPriceSek={ev.min_price_sek}
+                value={ev.compare_at_price_sek}
+                busy={busy === ev.id}
+                onSave={saveCompareAt}
+              />
+
               <div className="space-y-2">
                 {ev.ticket_categories?.map((c) => (
                   <CategoryRow
@@ -598,6 +627,101 @@ export default function AdminTickets() {
           })
         )}
       </section>
+    </div>
+  );
+}
+
+function CompareAtEditor({
+  eventId,
+  minPriceSek,
+  value,
+  busy,
+  onSave,
+}: {
+  eventId: string;
+  minPriceSek: number | null;
+  value: number | null;
+  busy: boolean;
+  onSave: (eventId: string, value: number | null) => void;
+}) {
+  const [text, setText] = useState<string>(value != null ? String(value) : "");
+  useEffect(() => {
+    setText(value != null ? String(value) : "");
+  }, [value]);
+
+  const cur = Number(minPriceSek);
+  const compare = Number(text);
+  const pctOff =
+    Number.isFinite(cur) && cur > 0 && Number.isFinite(compare) && compare > cur
+      ? Math.round(((compare - cur) / compare) * 100)
+      : null;
+
+  const commit = () => {
+    const trimmed = text.trim();
+    if (trimmed === "") {
+      if (value != null) onSave(eventId, null);
+      return;
+    }
+    const n = Number(trimmed);
+    if (!Number.isFinite(n) || n < 0) {
+      toast.error("Ange ett giltigt belopp eller lämna tomt");
+      setText(value != null ? String(value) : "");
+      return;
+    }
+    if (n === Number(value)) return;
+    onSave(eventId, n);
+  };
+
+  return (
+    <div className="mb-4 pb-4 border-b border-border">
+      <div className="flex items-end gap-3 flex-wrap">
+        <div className="flex-1 min-w-[200px] max-w-[260px]">
+          <label className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground block mb-1">
+            Jämförelsepris (överstruket)
+          </label>
+          <div className="relative">
+            <Input
+              type="number"
+              min={0}
+              step="1"
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              onBlur={commit}
+              placeholder={cur > 0 ? `t.ex. ${Math.round(cur * 1.2)}` : "tomt = av"}
+              disabled={busy}
+              className="h-9 pr-12"
+            />
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">SEK</span>
+          </div>
+        </div>
+        <div className="text-xs text-muted-foreground pb-2">
+          {cur > 0 ? (
+            <>
+              Pris från <strong>{formatSek(cur)}</strong>
+              {pctOff != null && <> · visas som <strong>−{pctOff}%</strong></>}
+            </>
+          ) : (
+            <>Pris saknas — kör xs2-synk eller lägg till kategori först.</>
+          )}
+        </div>
+        {value != null && (
+          <Button
+            size="sm"
+            variant="ghost"
+            disabled={busy}
+            onClick={() => {
+              setText("");
+              onSave(eventId, null);
+            }}
+            className="h-9 text-xs"
+          >
+            Rensa
+          </Button>
+        )}
+      </div>
+      <p className="text-[10px] text-amber-700 mt-1.5">
+        ⚠️ Måste vara ett verkligt tidigare pris (Prisinformationslagen). xs2-synk fyller automatiskt med biljettens face value när det finns.
+      </p>
     </div>
   );
 }

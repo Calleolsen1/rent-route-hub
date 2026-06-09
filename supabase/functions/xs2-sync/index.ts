@@ -61,7 +61,26 @@ async function syncEvents(
 
   if (events.length === 0) return { fetched: 0, upserted: 0 };
 
-  const rows = events.map((e) => mapEventRow(e));
+  // Fetch the platform's current EUR→SEK rate + default markup, used to
+  // convert xs2's EUR-cents price hints into SEK for list-view rendering.
+  const { data: rateRaw } = await admin.rpc("get_platform_decimal", {
+    p_key: "eur_to_sek_rate",
+    p_default: 11.5,
+  });
+  const { data: mkPctRaw } = await admin.rpc("get_platform_decimal", {
+    p_key: "default_markup_pct",
+    p_default: 15,
+  });
+  const eurToSek = Number(rateRaw ?? 11.5);
+  const markupPct = Number(mkPctRaw ?? 15);
+  const eurCentsToSekWithMarkup = (cents: number | null | undefined): number | null => {
+    if (cents == null) return null;
+    const eur = Number(cents) / 100;
+    if (!Number.isFinite(eur) || eur <= 0) return null;
+    return Math.round(eur * eurToSek * (1 + markupPct / 100));
+  };
+
+  const rows = events.map((e) => mapEventRow(e, eurCentsToSekWithMarkup));
   const { error, count } = await admin
     .from("events")
     .upsert(rows, {
@@ -74,9 +93,22 @@ async function syncEvents(
   return { fetched: events.length, upserted: count ?? rows.length };
 }
 
-function mapEventRow(e: Xs2Event) {
+function mapEventRow(
+  e: Xs2Event,
+  toSek: (cents: number | null | undefined) => number | null,
+) {
   const isSoccer = e.sport_type === "soccer";
   const eventName = (e.event_name as string | undefined) ?? null;
+  // xs2 returns these as EUR cents at the event aggregate. Convert with
+  // markup applied so the list-view "Från X kr" matches what the buyer
+  // sees in EventDetail (approximately — exact prices are still computed
+  // live per category).
+  const minEurCents = e.min_ticket_price_eur as number | null | undefined;
+  const maxEurCents = e.max_ticket_price_eur as number | null | undefined;
+  // face_value lives on tickets, not events — but xs2's event aggregate
+  // sometimes exposes it. If present, it's the box-office price and a
+  // legitimate strikethrough comparison.
+  const faceCents = e.face_value as number | null | undefined;
   return {
     source: "xs2event",
     external_event_id: e.event_id,
@@ -85,9 +117,6 @@ function mapEventRow(e: Xs2Event) {
     tournament_name: e.tournament_name ?? "Unknown tournament",
     home_team: isSoccer ? (e.hometeam_name ?? null) : null,
     away_team: isSoccer ? (e.visiting_name ?? null) : null,
-    // F1: prefer xs2's specific event_name ("Spanish Grand Prix") over the
-    // generic tournament_name ("Formula 1"). Strip the redundant "Formula 1 "
-    // prefix if xs2 included it in event_name.
     race_name: isSoccer
       ? null
       : (eventName ? eventName.replace(/^Formula 1\s+/i, "") : e.tournament_name ?? null),
@@ -96,6 +125,9 @@ function mapEventRow(e: Xs2Event) {
     country: (e.iso_country as string | undefined) ?? null,
     starts_at: e.date_start,
     ends_at: e.date_stop ?? null,
+    min_price_sek: toSek(minEurCents),
+    max_price_sek: toSek(maxEurCents),
+    compare_at_price_sek: toSek(faceCents),
     last_synced_at: new Date().toISOString(),
   };
 }

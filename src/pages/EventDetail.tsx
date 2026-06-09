@@ -10,6 +10,7 @@ import Navbar from "@/components/Navbar";
 import { formatEventDateTime, formatSek } from "@/lib/formatSek";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { usePageMeta } from "@/lib/usePageMeta";
+import { PriceTag, resolveCompareAt } from "@/components/PriceTag";
 
 type EventRow = {
   id: string;
@@ -27,6 +28,8 @@ type EventRow = {
   cover_image_url: string | null;
   description: string | null;
   status: string;
+  min_price_sek: number | null;
+  compare_at_price_sek: number | null;
 };
 
 type CategoryRow = {
@@ -74,6 +77,17 @@ export default function EventDetail() {
   const [selectedCatId, setSelectedCatId] = useState<string | null>(null);
   const [qty, setQty] = useState(2);
   const [busy, setBusy] = useState(false);
+  const [compareAtDefaultPct, setCompareAtDefaultPct] = useState<number>(0);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await (supabase as any).rpc("get_platform_decimal", {
+        p_key: "compare_at_default_pct",
+        p_default: 0,
+      });
+      setCompareAtDefaultPct(Number(data ?? 0));
+    })();
+  }, []);
 
   const isXs2 = event?.source === "xs2event";
 
@@ -359,10 +373,16 @@ export default function EventDetail() {
                           </p>
                         </div>
                         <div className="text-right">
-                          <p className="font-display text-xl">
-                            {pricesLoading ? "…" : formatSek(o.price)}
-                          </p>
-                          <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                          {pricesLoading ? (
+                            <p className="font-display text-xl">…</p>
+                          ) : (
+                            <PriceTag
+                              currentSek={o.price}
+                              defaultPct={compareAtDefaultPct}
+                              showFrom={false}
+                            />
+                          )}
+                          <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">
                             per biljett
                           </p>
                         </div>
@@ -389,7 +409,23 @@ export default function EventDetail() {
                 <>
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-sm">{selected.name}</span>
-                    <span className="text-sm">{pricesLoading ? "…" : formatSek(selected.price)}</span>
+                    <span className="text-sm">
+                      {pricesLoading ? (
+                        "…"
+                      ) : (
+                        (() => {
+                          const compare = resolveCompareAt(selected.price, null, compareAtDefaultPct);
+                          return compare ? (
+                            <>
+                              <span className="text-foreground/40 line-through mr-1.5">{formatSek(compare)}</span>
+                              <span className="font-medium">{formatSek(selected.price)}</span>
+                            </>
+                          ) : (
+                            <>{formatSek(selected.price)}</>
+                          );
+                        })()
+                      )}
+                    </span>
                   </div>
 
                   <div className="flex items-center justify-between mb-6">
@@ -421,7 +457,17 @@ export default function EventDetail() {
 
                   <div className="flex items-center justify-between border-t border-border pt-4 mb-6">
                     <span className="font-medium">Totalt</span>
-                    <span className="font-display text-2xl">{formatSek(total)}</span>
+                    {(() => {
+                      const compare = resolveCompareAt(total, null, compareAtDefaultPct);
+                      return compare ? (
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-base text-foreground/40 line-through">{formatSek(compare)}</span>
+                          <span className="font-display text-2xl">{formatSek(total)}</span>
+                        </div>
+                      ) : (
+                        <span className="font-display text-2xl">{formatSek(total)}</span>
+                      );
+                    })()}
                   </div>
 
                   <Button

@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ArrowRight, Calendar, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatEventDate } from "@/lib/formatSek";
+import { PriceTag } from "@/components/PriceTag";
 
 type EventRow = {
   id: string;
@@ -18,6 +19,8 @@ type EventRow = {
   starts_at: string;
   cover_image_url: string | null;
   status: string;
+  min_price_sek: number | null;
+  compare_at_price_sek: number | null;
 };
 
 type Props = {
@@ -54,14 +57,20 @@ export default function UpcomingEventsList({
 }: Props) {
   const [events, setEvents] = useState<EventRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [defaultPct, setDefaultPct] = useState<number>(0);
 
   useEffect(() => {
     (async () => {
       setLoading(true);
-      let q = supabase
+      const { data: pct } = await (supabase as any).rpc("get_platform_decimal", {
+        p_key: "compare_at_default_pct",
+        p_default: 0,
+      });
+      setDefaultPct(Number(pct ?? 0));
+      let q = (supabase as any)
         .from("events")
         .select(
-          "id, sport, tournament_name, home_team, away_team, race_name, venue_name, city, country, starts_at, cover_image_url, status",
+          "id, sport, tournament_name, home_team, away_team, race_name, venue_name, city, country, starts_at, cover_image_url, status, min_price_sek, compare_at_price_sek",
         )
         .eq("status", "upcoming")
         .gte("starts_at", dateFrom ?? new Date().toISOString())
@@ -151,13 +160,16 @@ export default function UpcomingEventsList({
                     {e.city ? `, ${e.city}` : ""}
                   </span>
                 </div>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="rounded-full text-xs"
-                >
-                  Visa biljetter <ArrowRight className="ml-1 h-3 w-3" />
-                </Button>
+                <div className="flex items-center justify-between gap-3">
+                  <Button size="sm" variant="outline" className="rounded-full text-xs">
+                    Visa biljetter <ArrowRight className="ml-1 h-3 w-3" />
+                  </Button>
+                  <PriceTag
+                    currentSek={e.min_price_sek}
+                    compareAtSek={e.compare_at_price_sek}
+                    defaultPct={defaultPct}
+                  />
+                </div>
               </div>
             </Link>
           );
