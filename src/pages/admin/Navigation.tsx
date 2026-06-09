@@ -14,7 +14,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Plus, Trash2, Loader2, AlertTriangle, ChevronDown, ChevronRight, X, ExternalLink } from "lucide-react";
+import { Plus, Trash2, Loader2, AlertTriangle, ChevronDown, ChevronRight, X, ExternalLink, Check, AlertCircle } from "lucide-react";
 import { invalidateNavigation } from "@/hooks/useNavigation";
 import { ImageUploader } from "@/components/admin/ImageUploader";
 
@@ -57,6 +57,96 @@ type Entry = {
 
 const slugify = (s: string) =>
   s.toLowerCase().replace(/å|ä/g, "a").replace(/ö/g, "o").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
+/**
+ * Validates a team / race name against the synced events table in real time.
+ * `events.home_team` (or away_team) for teams, `events.race_name` for races.
+ *
+ * Returns:
+ *   - status: "idle" while name is empty/short
+ *             "loading" during debounce + query
+ *             "match" when at least one event exact-matches
+ *             "no-match" when nothing found (with `suggestions` of similar names)
+ *   - count:  number of upcoming events matching the name exactly
+ */
+type Xs2MatchStatus = "idle" | "loading" | "match" | "no-match";
+type Xs2Match = {
+  status: Xs2MatchStatus;
+  count: number;
+  suggestions: string[];
+};
+
+function useXs2NameMatch(name: string, kind: "team" | "race"): Xs2Match {
+  const [result, setResult] = useState<Xs2Match>({ status: "idle", count: 0, suggestions: [] });
+  useEffect(() => {
+    const trimmed = name.trim();
+    if (trimmed.length < 2) {
+      setResult({ status: "idle", count: 0, suggestions: [] });
+      return;
+    }
+    setResult((r) => ({ ...r, status: "loading" }));
+    const handle = setTimeout(async () => {
+      try {
+        if (kind === "team") {
+          // Exact match check — home_team or away_team
+          const { data: exactRows } = await (supabase as any)
+            .from("events")
+            .select("id, home_team, away_team, starts_at, status")
+            .or(`home_team.eq.${trimmed},away_team.eq.${trimmed}`)
+            .gte("starts_at", new Date().toISOString());
+          const count = (exactRows ?? []).length;
+          if (count > 0) {
+            setResult({ status: "match", count, suggestions: [] });
+            return;
+          }
+          // Fuzzy fallback — show top suggestions
+          const { data: fuzzyRows } = await (supabase as any)
+            .from("events")
+            .select("home_team, away_team")
+            .or(`home_team.ilike.%${trimmed}%,away_team.ilike.%${trimmed}%`)
+            .limit(20);
+          const suggestions = Array.from(
+            new Set(
+              ((fuzzyRows ?? []) as Array<{ home_team: string | null; away_team: string | null }>)
+                .flatMap((r) => [r.home_team, r.away_team])
+                .filter((v): v is string => !!v && v !== trimmed)
+            ),
+          ).slice(0, 5);
+          setResult({ status: "no-match", count: 0, suggestions });
+        } else {
+          const { data: exactRows } = await (supabase as any)
+            .from("events")
+            .select("id, race_name, starts_at, status")
+            .eq("race_name", trimmed)
+            .gte("starts_at", new Date().toISOString());
+          const count = (exactRows ?? []).length;
+          if (count > 0) {
+            setResult({ status: "match", count, suggestions: [] });
+            return;
+          }
+          const { data: fuzzyRows } = await (supabase as any)
+            .from("events")
+            .select("race_name")
+            .ilike("race_name", `%${trimmed}%`)
+            .limit(10);
+          const suggestions = Array.from(
+            new Set(
+              ((fuzzyRows ?? []) as Array<{ race_name: string | null }>)
+                .map((r) => r.race_name)
+                .filter((v): v is string => !!v && v !== trimmed)
+            ),
+          ).slice(0, 5);
+          setResult({ status: "no-match", count: 0, suggestions });
+        }
+      } catch (e) {
+        console.warn("[useXs2NameMatch]", e);
+        setResult({ status: "no-match", count: 0, suggestions: [] });
+      }
+    }, 300);
+    return () => clearTimeout(handle);
+  }, [name, kind]);
+  return result;
+}
 
 export default function AdminNavigation() {
   return (
@@ -542,6 +632,8 @@ function EntryDialog({ open, onOpenChange, sport, initial, nextOrder, onSaved }:
   const [heroImageUrl, setHeroImageUrl] = useState<string | null>(null);
   const [features, setFeatures] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [forceSave, setForceSave] = useState(false);
+  const xs2 = useXs2NameMatch(name, sport.entry_kind);
 
   useEffect(() => {
     if (!open) return;
@@ -558,10 +650,12 @@ function EntryDialog({ open, onOpenChange, sport, initial, nextOrder, onSaved }:
       setDescription(initial.description ?? "");
       setHeroImageUrl(initial.hero_image_url);
       setFeatures(initial.features_json ?? []);
+      setForceSave(true); // existing entries can be re-saved without re-validation
     } else {
       setName(""); setSlug(""); setSlugTouched(false); setGroupLabel("");
       setCity(""); setVenue(""); setDateText(""); setShortDate("");
       setTagline(""); setDescription(""); setHeroImageUrl(null); setFeatures([]);
+      setForceSave(false);
     }
   }, [open, initial]);
 
@@ -613,8 +707,25 @@ function EntryDialog({ open, onOpenChange, sport, initial, nextOrder, onSaved }:
           <div className="grid grid-cols-2 gap-3">
             <div>
               <Label>{isRace ? "Race-namn" : "Lagets namn"} <span className="text-destructive">*</span></Label>
-              <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={isRace ? "t.ex. Monacos Grand Prix" : "t.ex. Arsenal"} autoFocus />
-              <p className="text-[11px] text-amber-700 mt-1">⚠️ Måste matcha xs2events {isRace ? "race_name" : "home_team"} exakt.</p>
+              <div className="relative">
+                <Input
+                  value={name}
+                  onChange={(e) => { setName(e.target.value); setForceSave(false); }}
+                  placeholder={isRace ? "t.ex. Monacos Grand Prix" : "t.ex. Arsenal"}
+                  autoFocus
+                  className={
+                    xs2.status === "match" ? "border-green-500 pr-9" :
+                    xs2.status === "no-match" ? "border-amber-500 pr-9" :
+                    "pr-9"
+                  }
+                />
+                <span className="absolute right-2 top-1/2 -translate-y-1/2">
+                  {xs2.status === "loading" && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+                  {xs2.status === "match" && <Check className="h-4 w-4 text-green-600" />}
+                  {xs2.status === "no-match" && <AlertCircle className="h-4 w-4 text-amber-600" />}
+                </span>
+              </div>
+              <Xs2MatchHint xs2={xs2} isRace={isRace} onPickSuggestion={(s) => { setName(s); setForceSave(false); }} />
             </div>
             <div>
               <Label>URL-slug</Label>
@@ -699,14 +810,74 @@ function EntryDialog({ open, onOpenChange, sport, initial, nextOrder, onSaved }:
           </div>
         </div>
 
-        <DialogFooter>
+        <DialogFooter className="gap-2 flex-col sm:flex-row sm:items-center">
+          {xs2.status === "no-match" && name.trim().length >= 2 && !forceSave && (
+            <label className="text-xs text-amber-700 flex items-center gap-2 mr-auto">
+              <input type="checkbox" checked={forceSave} onChange={(e) => setForceSave(e.target.checked)} />
+              Spara ändå — sidan visar inga biljetter förrän xs2 har en match
+            </label>
+          )}
           <Button variant="ghost" onClick={() => onOpenChange(false)}>Avbryt</Button>
-          <Button onClick={submit} disabled={submitting}>
+          <Button
+            onClick={submit}
+            disabled={
+              submitting ||
+              xs2.status === "loading" ||
+              (xs2.status === "no-match" && !forceSave)
+            }
+          >
             {submitting && <Loader2 className="h-3 w-3 animate-spin mr-2" />}
             {isEdit ? "Spara" : "Skapa"}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function Xs2MatchHint({ xs2, isRace, onPickSuggestion }: { xs2: Xs2Match; isRace: boolean; onPickSuggestion: (s: string) => void }) {
+  if (xs2.status === "idle") {
+    return <p className="text-[11px] text-muted-foreground mt-1">Måste matcha xs2events {isRace ? "race_name" : "home_team"} exakt — vi söker direkt när du skriver.</p>;
+  }
+  if (xs2.status === "loading") {
+    return <p className="text-[11px] text-muted-foreground mt-1">Söker i xs2-data…</p>;
+  }
+  if (xs2.status === "match") {
+    return (
+      <p className="text-[11px] text-green-700 mt-1 flex items-center gap-1">
+        <Check className="h-3 w-3" /> Hittade {xs2.count} kommande {xs2.count === 1 ? "event" : "event"} i xs2.
+      </p>
+    );
+  }
+  // no-match
+  return (
+    <div className="text-[11px] mt-1">
+      <p className="text-amber-700 flex items-start gap-1">
+        <AlertCircle className="h-3 w-3 mt-0.5 flex-shrink-0" />
+        <span>Ingen exakt matchning i xs2-data. Sidan kommer att visa noll biljetter.</span>
+      </p>
+      {xs2.suggestions.length > 0 && (
+        <div className="mt-1.5">
+          <p className="text-muted-foreground mb-1">Liknande namn i xs2 (klicka för att använda):</p>
+          <div className="flex flex-wrap gap-1.5">
+            {xs2.suggestions.map((s) => (
+              <button
+                key={s}
+                type="button"
+                onClick={() => onPickSuggestion(s)}
+                className="text-[11px] px-2 py-0.5 rounded-full border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-900"
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+      {xs2.suggestions.length === 0 && (
+        <p className="text-muted-foreground mt-1">
+          Tips: kör "Synka allt" i Admin → Biljetter om du tror namnet borde finnas.
+        </p>
+      )}
+    </div>
   );
 }
