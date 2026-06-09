@@ -17,6 +17,32 @@ const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
 const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
+/**
+ * Structured error logging. Writes a row to public.system_errors so admins
+ * can review failures in /admin/diagnostics. Falls back to console.error
+ * only when even the DB insert fails — we never re-throw so the webhook
+ * keeps processing.
+ */
+async function logSystemError(
+  kind: string,
+  message: string,
+  opts: { orderId?: string | null; details?: unknown } = {},
+) {
+  console.error(`[system_error:${kind}]`, message, opts.details ?? "");
+  try {
+    await getSupabase().from("system_errors").insert({
+      kind,
+      message: message.slice(0, 1000),
+      order_id: opts.orderId ?? null,
+      details: opts.details
+        ? JSON.parse(JSON.stringify(opts.details, (_, v) => v instanceof Error ? { name: v.name, message: v.message, stack: v.stack } : v))
+        : null,
+    });
+  } catch (e) {
+    console.error("[system_error] DB insert itself failed", e);
+  }
+}
+
 async function sendOrderConfirmationEmail(orderId: string) {
   if (!LOVABLE_API_KEY || !RESEND_API_KEY) {
     console.warn("Resend not configured; skipping email");
@@ -148,9 +174,12 @@ async function sendOrderConfirmationEmail(orderId: string) {
         html,
       }),
     });
-    if (!res.ok) console.error("Resend error", await res.text());
+    if (!res.ok) {
+      const body = await res.text().catch(() => "(no body)");
+      await logSystemError("order_confirmation_email_resend_error", body, { orderId });
+    }
   } catch (e) {
-    console.error("Email send failed", e);
+    await logSystemError("order_confirmation_email_failed", e instanceof Error ? e.message : String(e), { orderId, details: e });
   }
 }
 
@@ -214,7 +243,7 @@ async function ensureUserForGuestOrder(orderId: string) {
             subject: "Välkommen till Mitt Kaisen – sätt ditt lösenord",
             html,
           }),
-        }).catch((e) => console.error("Welcome email failed", e));
+        }).catch((e) => logSystemError("welcome_email_failed", e instanceof Error ? e.message : String(e), { orderId, details: e }));
       }
     }
   }
@@ -405,7 +434,7 @@ async function autoRefundForFailedBooking(orderId: string, reasonDetail: string)
         html,
         reply_to: "info@kaisengroup.se",
       }),
-    }).catch((e) => console.error("auto-refund email failed", e));
+    }).catch((e) => logSystemError("auto_refund_email_failed", e instanceof Error ? e.message : String(e), { orderId, details: e }));
   }
 }
 
@@ -432,7 +461,7 @@ async function confirmXs2Booking(
   } catch (e) {
     const status = e instanceof Xs2Error ? e.status : "unknown";
     const msg = e instanceof Error ? e.message : "unknown";
-    console.error("xs2 confirmBooking failed", { orderId, status, error: e });
+    await logSystemError("xs2_confirm_failed", `${status}: ${msg}`, { orderId, details: { status, error: msg } });
     await getSupabase()
       .from("orders")
       .update({ notes: `xs2 confirm failed (${status}): ${msg}` })
@@ -451,7 +480,7 @@ async function confirmXs2Booking(
       /reservation has no items|quantities are 0|reservation .* (expired|not found)/i.test(msg);
     if (isTerminalHoldGone) {
       await autoRefundForFailedBooking(orderId, msg).catch((err) =>
-        console.error("auto-refund failed", { orderId, err }),
+        logSystemError("auto_refund_failed", err instanceof Error ? err.message : String(err), { orderId, details: err }),
       );
     }
     return;
@@ -472,7 +501,7 @@ async function confirmXs2Booking(
     const r = await xs2.getETicketZipUrl({ booking_id: booking.booking_id });
     zipUrl = r.url;
   } catch (e) {
-    console.error("xs2 getETicketZipUrl failed", { orderId, error: e });
+    await logSystemError("xs2_ticket_url_failed", e instanceof Error ? e.message : String(e), { orderId, details: e });
   }
 
   for (const it of items) {
@@ -557,7 +586,7 @@ Deno.serve(async (req) => {
       headers: { "Content-Type": "application/json" },
     });
   } catch (e) {
-    console.error("Webhook error:", e);
+    await logSystemError("webhook_handler_failed", e instanceof Error ? e.message : String(e), { details: e });
     return new Response("Webhook error", { status: 400 });
   }
 });

@@ -25,7 +25,7 @@
 // Checkout.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-import { Xs2Client, applyMarkup, eurCentsToSek, Xs2Error } from "../_shared/xs2event.ts";
+import { Xs2Client, applyMarkup, eurCentsToSek, groupTickets, Xs2Error } from "../_shared/xs2event.ts";
 import { checkRateLimit } from "../_shared/rate_limit.ts";
 
 const corsHeaders = {
@@ -105,9 +105,9 @@ Deno.serve(async (req) => {
 
     if (!event_id || typeof event_id !== "string") throw new Error("event_id required");
     if (!Number.isInteger(qty) || qty < 1 || qty > 50) throw new Error("qty must be 1-50");
-    if (!Array.isArray(reserve_lines) || reserve_lines.length === 0) {
-      throw new Error("reserve_lines required");
-    }
+    // reserve_lines is now ignored (server re-fetches live xs2 data); kept in
+    // the body type for backward compat with older clients during rollout.
+    void reserve_lines;
 
     const admin = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -136,16 +136,8 @@ Deno.serve(async (req) => {
       .maybeSingle();
     if (!event) throw new Error("Event not found");
     if (event.source !== "xs2event") throw new Error("Event is not xs2-sourced");
+    if (!event.external_event_id) throw new Error("Event missing external_event_id");
 
-    // All reserve_lines share the same (category_id, sub_category) because
-    // they came from a single group in xs2-get-event-tickets. Fetch the
-    // ticket_categories row that matches the first line's external_ticket_id.
-    // Simpler: client should also pass external_category_id + external_sub_category.
-    // For MVP we re-derive: look up the ticket on xs2 to get its category info.
-    // Actually — we trust the prior xs2-get-event-tickets sync. Fetch any
-    // ticket_categories row that has the same external_category_id and
-    // external_sub_category as one of these tickets. We need that info from
-    // the request.
     const { external_category_id, external_sub_category } = body as {
       external_category_id?: string;
       external_sub_category?: string;
@@ -165,10 +157,35 @@ Deno.serve(async (req) => {
       throw new Error("Category not found — run xs2-get-event-tickets first");
     }
 
-    const allocations = allocateTickets(reserve_lines, qty);
-
-    // Call xs2event to create the reservation
+    // Server-side reprice: ignore client-sent reserve_lines and re-fetch
+    // live xs2 ticket data. The client may have submitted stale/spoofed
+    // prices or stock; we recompute from xs2's authoritative response so
+    // the reservation we POST always uses the price xs2 currently sells at.
     const xs2 = new Xs2Client();
+    const liveTickets = await xs2.listTickets({
+      event_id: event.external_event_id,
+      stock_gt: 0,
+    });
+    const liveGroups = groupTickets(liveTickets);
+    const matchingGroup = liveGroups.find(
+      (g) =>
+        g.category_id === external_category_id &&
+        g.sub_category === external_sub_category,
+    );
+    if (!matchingGroup) {
+      throw new Error(
+        "Den valda biljettkategorin är inte längre tillgänglig — gå tillbaka och välj en annan.",
+      );
+    }
+    const serverLines: ReserveLine[] = matchingGroup.tickets.map((t) => ({
+      ticket_id: t.ticket_id,
+      net_rate: t.net_rate,
+      currency_code: t.currency_code,
+      stock: t.stock,
+    }));
+    const allocations = allocateTickets(serverLines, qty);
+
+    // Call xs2event to create the reservation (reuses the xs2 client from above)
     let reservation;
     try {
       reservation = await xs2.createReservation({

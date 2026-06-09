@@ -245,14 +245,30 @@ Deno.serve(async (req) => {
     for (const o of pending) {
       const r = await processOrder(o);
       results.push({ orderId: o.id, ...r });
+      const nextAttemptCount = (o.fulfillment_attempt_count ?? 0) + 1;
       const update: Record<string, unknown> = {
-        fulfillment_attempt_count: (o.fulfillment_attempt_count ?? 0) + 1,
+        fulfillment_attempt_count: nextAttemptCount,
         fulfillment_last_attempt_at: new Date().toISOString(),
       };
       if (r.status === "confirm_failed" || r.status === "ticket_url_failed") {
         update.notes = `xs2 retry ${r.status}: ${r.reason ?? "unknown"}`;
       }
       await supabase.from("orders").update(update).eq("id", o.id);
+
+      // Surface a system_error row when an order is about to fall off the
+      // retry queue — admin needs to ship tickets manually or refund.
+      if (nextAttemptCount >= MAX_ATTEMPTS - 1 && r.status !== "delivered") {
+        try {
+          await supabase.from("system_errors").insert({
+            kind: "fulfillment_max_attempts",
+            message: `Order ${o.id} reached ${nextAttemptCount}/${MAX_ATTEMPTS} attempts without ticket delivery — manual fulfillment required`,
+            order_id: o.id,
+            details: { last_status: r.status, last_reason: r.reason ?? null },
+          });
+        } catch (logErr) {
+          console.error("[xs2-retry-pending] system_errors insert failed", logErr);
+        }
+      }
     }
 
     return new Response(
