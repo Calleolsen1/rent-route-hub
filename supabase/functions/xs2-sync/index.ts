@@ -214,6 +214,30 @@ Deno.serve(async (req) => {
     });
   }
 
+  // Top-level try/catch so config errors (missing XS2_BASE_URL etc.) surface
+  // as a 500 with the actual error message rather than an opaque platform
+  // error. Returns enough detail that the admin Diagnostics page + frontend
+  // toast can show what went wrong.
+  try {
+    return await handleSyncRequest(req);
+  } catch (e: any) {
+    console.error("xs2-sync top-level error:", e);
+    return new Response(
+      JSON.stringify({
+        error: e?.message ?? "Internal error",
+        hint: typeof e?.message === "string" && e.message.includes("not configured")
+          ? "Saknad edge-function secret — kontrollera Supabase Settings → Edge Functions → Secrets"
+          : undefined,
+      }),
+      {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      },
+    );
+  }
+});
+
+async function handleSyncRequest(req: Request): Promise<Response> {
   const body = await req.json().catch(() => ({} as Record<string, unknown>));
   const resource = (body.resource as string) ?? "events";
   const trigger = (body.trigger as string) ?? "manual";
@@ -282,4 +306,4 @@ Deno.serve(async (req) => {
   return new Response(JSON.stringify({ ok: true, summary }), {
     headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
-});
+}
