@@ -37,6 +37,7 @@ export function ImageUploader({
 }: Props) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
 
   const handleFiles = async (files: FileList | null) => {
     const file = files?.[0];
@@ -69,10 +70,29 @@ export function ImageUploader({
     }
   };
 
+  // Drag-drop handlers — entire component is a drop zone, even when an image
+  // is already showing (drop replaces it).
+  const onDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(true);
+  };
+  const onDragLeave = () => setDragOver(false);
+  const onDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    if (busy) return;
+    handleFiles(e.dataTransfer.files);
+  };
+
   const previewUrl = value && !value.startsWith("asset:") ? value : null;
 
   return (
-    <div className={`flex items-start gap-3 ${className ?? ""}`}>
+    <div
+      className={`flex items-start gap-3 rounded-lg transition-colors ${dragOver ? "bg-primary/5 ring-2 ring-primary" : ""} ${className ?? ""}`}
+      onDragOver={onDragOver}
+      onDragLeave={onDragLeave}
+      onDrop={onDrop}
+    >
       {previewUrl ? (
         <div className="relative w-32 aspect-[4/3] rounded-lg overflow-hidden border border-border bg-muted/30 flex-shrink-0">
           <img src={previewUrl} alt="" className="w-full h-full object-cover" />
@@ -92,8 +112,8 @@ export function ImageUploader({
           Inbyggd bild
         </div>
       ) : (
-        <div className="w-32 aspect-[4/3] rounded-lg border border-dashed border-border flex items-center justify-center text-[10px] uppercase tracking-wider text-muted-foreground flex-shrink-0">
-          Ingen bild
+        <div className="w-32 aspect-[4/3] rounded-lg border border-dashed border-border flex items-center justify-center text-[10px] uppercase tracking-wider text-muted-foreground flex-shrink-0 text-center px-2">
+          {dragOver ? "Släpp bilden" : "Ingen bild"}
         </div>
       )}
 
@@ -120,7 +140,7 @@ export function ImageUploader({
           {busy ? "Laddar upp..." : value ? "Byt bild" : "Ladda upp bild"}
         </Button>
         <p className="text-[10px] text-muted-foreground">
-          JPG, PNG, WebP eller AVIF. Max 10 MB.
+          Eller dra och släpp en bild här. JPG, PNG, WebP eller AVIF. Max 10 MB.
         </p>
       </div>
     </div>

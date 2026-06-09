@@ -525,7 +525,18 @@ function CategoryRow({
 }) {
   const [pct, setPct] = useState<string>(String(c.markup_pct ?? 0));
   const [fixed, setFixed] = useState<string>(String(c.markup_fixed_sek ?? 0));
-  const dirty = Number(pct) !== Number(c.markup_pct) || Number(fixed) !== Number(c.markup_fixed_sek);
+  const [saved, setSaved] = useState(false);
+
+  // Autosave on blur if either field actually changed. The visible "Sparad"
+  // pill confirms the write so operators don't have to hunt for a save button.
+  const maybeSave = () => {
+    const nextPct = Number(pct) || 0;
+    const nextFixed = Number(fixed) || 0;
+    if (nextPct === Number(c.markup_pct) && nextFixed === Number(c.markup_fixed_sek)) return;
+    onSaveMarkup(c.id, nextPct, nextFixed);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 1500);
+  };
 
   return (
     <div className="border-t border-border pt-3 space-y-3">
@@ -568,6 +579,7 @@ function CategoryRow({
             step="0.01"
             value={pct}
             onChange={(e) => setPct(e.target.value)}
+            onBlur={maybeSave}
             className="h-9"
           />
         </div>
@@ -578,18 +590,15 @@ function CategoryRow({
             step="1"
             value={fixed}
             onChange={(e) => setFixed(e.target.value)}
+            onBlur={maybeSave}
             className="h-9"
           />
         </div>
-        <Button
-          size="sm"
-          variant={dirty ? "default" : "outline"}
-          disabled={!dirty || busy === c.id}
-          onClick={() => onSaveMarkup(c.id, Number(pct) || 0, Number(fixed) || 0)}
-        >
-          <Save className="h-3 w-3 mr-1" />
-          Spara påslag
-        </Button>
+        {saved && (
+          <span className="text-xs text-green-700 flex items-center gap-1 pb-2">
+            <CheckCircle2 className="h-3 w-3" /> Sparad
+          </span>
+        )}
       </div>
     </div>
   );
