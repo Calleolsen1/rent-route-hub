@@ -279,7 +279,7 @@ export default function EventDetail() {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative h-[55vh] min-h-[400px] flex items-end">
+      <section className="relative h-[28vh] min-h-[200px] flex items-end">
         <div className="absolute inset-0">
           {event.cover_image_url && (
             <img
@@ -290,14 +290,14 @@ export default function EventDetail() {
           )}
           <div className="absolute inset-0 bg-navy/75" />
         </div>
-        <div className="relative container mx-auto px-4 pb-14">
-          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
+        <div className="relative container mx-auto px-4 pb-6">
+          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-2 font-sans">
             {event.tournament_name}
           </p>
-          <h1 className="font-display text-4xl md:text-6xl text-white mb-3">
+          <h1 className="font-display text-3xl md:text-4xl text-white mb-2">
             {headline}
           </h1>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-white/80 text-sm">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-white/80 text-sm">
             <span className="flex items-center gap-2">
               <Calendar className="h-4 w-4" /> {formatEventDateTime(event.starts_at)}
             </span>
@@ -310,7 +310,8 @@ export default function EventDetail() {
       </section>
 
       {/* Body */}
-      <section className="py-14 bg-background">
+      <section className="py-6 md:py-8 bg-background">
+
         <div className="container mx-auto px-4 grid lg:grid-cols-3 gap-10 max-w-6xl">
           {/* Left */}
           <div className="lg:col-span-2 space-y-10">
