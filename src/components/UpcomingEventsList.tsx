@@ -41,6 +41,7 @@ type Props = {
   limit?: number;
   title?: string;
   eyebrow?: string;
+  compact?: boolean;
 };
 
 export default function UpcomingEventsList({
@@ -55,6 +56,7 @@ export default function UpcomingEventsList({
   limit = 6,
   title = "Aktuella biljetter",
   eyebrow = "Köp biljett",
+  compact = false,
 }: Props) {
   const [events, setEvents] = useState<EventRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -115,16 +117,16 @@ export default function UpcomingEventsList({
   return (
     <div>
       {eyebrow && (
-        <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans text-center">
+        <p className={`text-xs tracking-[0.3em] text-primary uppercase font-sans text-center ${compact ? "mb-2" : "mb-3"}`}>
           {eyebrow}
         </p>
       )}
       {title && (
-        <h2 className="font-display text-3xl md:text-4xl text-center mb-10">
+        <h2 className={`font-display text-center ${compact ? "text-2xl md:text-3xl mb-5" : "text-3xl md:text-4xl mb-10"}`}>
           {title}
         </h2>
       )}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className={`grid md:grid-cols-2 lg:grid-cols-3 ${compact ? "gap-4" : "gap-6"}`}>
         {events.map((e) => {
           const headline =
             e.sport === "soccer"
@@ -137,7 +139,7 @@ export default function UpcomingEventsList({
               className="group bg-card border border-border rounded-xl overflow-hidden hover:shadow-xl hover:-translate-y-0.5 transition-all flex flex-col"
             >
               {e.cover_image_url && (
-                <div className="aspect-[16/10] overflow-hidden relative">
+                <div className={`${compact ? "aspect-[16/8]" : "aspect-[16/10]"} overflow-hidden relative`}>
                   <img
                     src={e.cover_image_url}
                     alt={headline ?? ""}
@@ -160,23 +162,23 @@ export default function UpcomingEventsList({
                   )}
                 </div>
               )}
-              <div className="p-5 flex flex-col flex-1">
+              <div className={`${compact ? "p-4" : "p-5"} flex flex-col flex-1`}>
                 <p className="text-[10px] tracking-[0.25em] uppercase text-primary font-sans mb-2">
                   {e.tournament_name}
                 </p>
-                <h3 className="font-display text-xl mb-3">{headline}</h3>
+                <h3 className={`font-display ${compact ? "text-lg mb-2" : "text-xl mb-3"}`}>{headline}</h3>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
                   <Calendar className="h-3.5 w-3.5" />
                   <span>{formatEventDate(e.starts_at)}</span>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
+                <div className={`flex items-center gap-2 text-xs text-muted-foreground ${compact ? "mb-3" : "mb-4"}`}>
                   <MapPin className="h-3.5 w-3.5" />
                   <span>
                     {e.venue_name}
                     {e.city ? `, ${e.city}` : ""}
                   </span>
                 </div>
-                <div className="mt-auto pt-4 border-t border-border flex items-end justify-between gap-3">
+                <div className={`mt-auto border-t border-border flex items-end justify-between gap-3 ${compact ? "pt-3" : "pt-4"}`}>
                   <PriceTag
                     currentSek={e.min_price_sek}
                     compareAt={{
