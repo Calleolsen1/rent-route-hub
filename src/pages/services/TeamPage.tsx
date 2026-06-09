@@ -30,27 +30,27 @@ export default function TeamPage() {
     <div className="min-h-screen">
       <Navbar />
 
-      {/* Hero */}
-      <section className="relative h-[42vh] min-h-[320px] flex items-end">
+      {/* Hero — compact so tickets are visible right away */}
+      <section className="relative h-[28vh] min-h-[220px] flex items-end">
         <div className="absolute inset-0">
           <img src={fotbollImage} alt={info.name} className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-navy/75" />
         </div>
-        <div className="relative container mx-auto px-4 pb-14">
-          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
+        <div className="relative container mx-auto px-4 pb-8">
+          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-2 font-sans">
             Fotbollsresor — {info.league}
           </p>
-          <h1 className="font-display text-4xl md:text-6xl text-white mb-3">
+          <h1 className="font-display text-3xl md:text-5xl text-white mb-1">
             {info.name}
           </h1>
-          <p className="font-display italic font-light text-white text-xl md:text-2xl">
+          <p className="font-display italic font-light text-white text-lg md:text-xl">
             {info.tagline}
           </p>
         </div>
       </section>
 
       {/* Live tickets — visible on entry */}
-      <section className="py-10 md:py-14 bg-background">
+      <section className="py-8 md:py-10 bg-background">
         <div className="container mx-auto px-4 max-w-6xl">
           <UpcomingEventsList
             team={info.name}
