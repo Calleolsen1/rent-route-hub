@@ -77,6 +77,8 @@ Deno.serve(async (req) => {
             currency,
             product_data: {
               name: categoryName ? `${productName} — ${categoryName}` : productName,
+              // Required by automatic_tax. txcd_20030000 = Admission to sporting events.
+              tax_code: "txcd_20030000",
             },
             unit_amount: Math.round(finalSek * 100),
             tax_behavior: "inclusive" as const,
