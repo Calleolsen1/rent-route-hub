@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           away_team: string | null
           city: string | null
+          compare_at_pct: number | null
           compare_at_price_sek: number | null
           country: string | null
           cover_image_url: string | null
@@ -44,6 +45,7 @@ export type Database = {
         Insert: {
           away_team?: string | null
           city?: string | null
+          compare_at_pct?: number | null
           compare_at_price_sek?: number | null
           country?: string | null
           cover_image_url?: string | null
@@ -70,6 +72,7 @@ export type Database = {
         Update: {
           away_team?: string | null
           city?: string | null
+          compare_at_pct?: number | null
           compare_at_price_sek?: number | null
           country?: string | null
           cover_image_url?: string | null
@@ -833,6 +836,8 @@ export type Database = {
       }
       ticket_categories: {
         Row: {
+          compare_at_pct: number | null
+          compare_at_price_sek: number | null
           created_at: string
           currency: string
           description: string | null
@@ -851,6 +856,8 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          compare_at_pct?: number | null
+          compare_at_price_sek?: number | null
           created_at?: string
           currency?: string
           description?: string | null
@@ -869,6 +876,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          compare_at_pct?: number | null
+          compare_at_price_sek?: number | null
           created_at?: string
           currency?: string
           description?: string | null
@@ -1258,6 +1267,10 @@ export type Database = {
           thread_id: string
           unread_count: number
         }[]
+      }
+      set_group_compare_at_pct: {
+        Args: { p_pct: number; p_sport?: string; p_tournament_name?: string }
+        Returns: number
       }
     }
     Enums: {
