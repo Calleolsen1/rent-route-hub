@@ -155,7 +155,13 @@ Deno.serve(async (req) => {
       ui_mode: "embedded_page",
       return_url: returnUrl,
       ...(customerId && { customer: customerId }),
+      // automatic_tax requires a customer billing address. Collect it during
+      // checkout and merge onto the Stripe customer for repeat purchases.
       automatic_tax: { enabled: true },
+      billing_address_collection: "required",
+      ...(customerId && {
+        customer_update: { address: "auto", name: "auto" },
+      }),
       payment_intent_data: { description: `Kaisen biljetter – order ${orderId.slice(0, 8)}` },
       metadata: { orderId, ...(order.user_id && { userId: order.user_id }) },
     });

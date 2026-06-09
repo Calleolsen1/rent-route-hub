@@ -148,7 +148,14 @@ Deno.serve(async (req) => {
       ui_mode: "embedded_page",
       return_url: returnUrl,
       ...(customerId && { customer: customerId }),
+      // automatic_tax needs a customer address. Collect during checkout and
+      // sync onto the Stripe customer so we have it for future refunds /
+      // tax reports.
       automatic_tax: { enabled: true },
+      billing_address_collection: "required",
+      ...(customerId && {
+        customer_update: { address: "auto", name: "auto" },
+      }),
       payment_intent_data: {
         description: `Kaisen offert ${quote.id.slice(0, 8).toUpperCase()}`,
       },

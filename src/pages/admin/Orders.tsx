@@ -34,7 +34,7 @@ import {
   DialogFooter,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { AlertTriangle, RefreshCcw, Ban, Loader2, Sparkles } from "lucide-react";
+import { AlertTriangle, RefreshCcw, Ban, Loader2, Sparkles, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { formatSek } from "@/lib/formatSek";
 import { getStripeEnvironment } from "@/lib/stripe";
@@ -182,6 +182,24 @@ export default function AdminOrders() {
     }
   };
 
+  const resolveConfirmFailure = async (orderId: string) => {
+    const stamp = new Date().toISOString();
+    const { error } = await (supabase as any)
+      .from("orders")
+      .update({
+        status: "fulfilled",
+        notes: `Manuellt löst av admin ${stamp}`,
+      })
+      .eq("id", orderId);
+    if (error) {
+      toast.error(error.message ?? "Kunde inte markera som löst");
+      return;
+    }
+    toast.success("Markerad som manuellt löst");
+    setSelected(null);
+    load();
+  };
+
   const cancelPending = async (orderId: string) => {
     const { error } = await (supabase as any)
       .from("orders")
@@ -305,6 +323,7 @@ export default function AdminOrders() {
               refunds={refunds}
               onRefundClick={() => setRefundOpen(true)}
               onCancelPending={() => cancelPending(selected.id)}
+              onResolveFailure={() => resolveConfirmFailure(selected.id)}
             />
           )}
         </SheetContent>
@@ -331,11 +350,13 @@ function OrderDetail({
   refunds,
   onRefundClick,
   onCancelPending,
+  onResolveFailure,
 }: {
   order: OrderRow;
   refunds: RefundRow[];
   onRefundClick: () => void;
   onCancelPending: () => void;
+  onResolveFailure: () => void;
 }) {
   const paid = Number(order.total_paid_sek ?? order.total_sek);
   const refunded = Number(order.refunded_sek ?? 0);
@@ -345,6 +366,7 @@ function OrderDetail({
   const isQuote = !!order.quote_id;
   const isXs2 = !!order.xs2_reservation_id;
   const orderRef = order.invoice_number ?? order.id.slice(0, 8).toUpperCase();
+  const needsManualFulfillment = !!(order.notes && order.notes.startsWith("xs2 confirm failed"));
 
   return (
     <>
@@ -467,6 +489,26 @@ function OrderDetail({
             <p className="mt-1 text-xs text-muted-foreground bg-muted/30 p-3 rounded whitespace-pre-wrap">
               {order.notes}
             </p>
+          </div>
+        )}
+
+        {/* Manual-fulfillment banner — Stripe paid but xs2 confirm failed */}
+        {needsManualFulfillment && (
+          <div className="rounded-lg border border-amber-300 bg-amber-50 p-3 space-y-2">
+            <div className="flex items-start gap-2 text-xs text-amber-900">
+              <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="font-semibold mb-1">Manuell bokning krävs</p>
+                <p>
+                  Kunden har betalat men xs2-bokningen kunde inte slutföras automatiskt.
+                  Kontakta xs2event-support och bekräfta bokningen där. Klicka sedan
+                  "Markera som löst" — kunden får ingen ny aviseringsmail automatiskt.
+                </p>
+              </div>
+            </div>
+            <Button onClick={onResolveFailure} size="sm" className="w-full" variant="default">
+              <CheckCircle2 className="h-3.5 w-3.5 mr-2" /> Markera som löst
+            </Button>
           </div>
         )}
 
