@@ -53,6 +53,8 @@ export interface Xs2Tournament {
 
 export interface Xs2Event {
   event_id: string;
+  event_name?: string;
+  slug?: string;
   tournament_id?: string;
   tournament_name?: string;
   sport_type: string;
@@ -62,6 +64,9 @@ export interface Xs2Event {
   visiting_name?: string;
   venue_id?: string;
   venue_name?: string;
+  city?: string;
+  iso_country?: string;
+  event_status?: string;
   date_start: string;
   date_stop?: string;
   [k: string]: unknown;
@@ -286,16 +291,22 @@ export class Xs2Client {
   async listCategories(opts: {
     event_id?: string;
     category_id?: string | readonly string[];
+    page_size?: number;
   } = {}): Promise<Xs2Category[]> {
     if (this.mock) {
       if (!opts.event_id) return [];
       return MOCK_FIXTURES[opts.event_id]?.categories ?? [];
     }
+    // Default page_size 500 — xs2's natural default of 50 is too small for
+    // F1 events with extensive grandstand/hospitality categories, leading
+    // to "Unknown" category-name fallbacks when ticket category_ids reference
+    // categories on later pages.
     const q = buildQuery({
       event_id: opts.event_id,
       category_id: Array.isArray(opts.category_id)
         ? inFilter(opts.category_id)
         : opts.category_id as string | undefined,
+      page_size: opts.page_size ?? 500,
     });
     return this.list<Xs2Category>(`/v1/categories${q}`);
   }
@@ -311,14 +322,18 @@ export class Xs2Client {
     event_id: string;
     ticket_status?: string;
     stock_gt?: number;
+    page_size?: number;
   }): Promise<Xs2Ticket[]> {
     if (this.mock) {
       const arr = MOCK_FIXTURES[opts.event_id]?.tickets ?? [];
       return opts.stock_gt != null ? arr.filter((t) => t.stock > opts.stock_gt!) : arr;
     }
+    // Default page_size 500 to cover multi-supplier events that exceed xs2's
+    // natural 50-row default page.
     const params: Record<string, QueryValue> = {
       event_id: opts.event_id,
       ticket_status: opts.ticket_status ?? "available",
+      page_size: opts.page_size ?? 500,
     };
     const tickets = await this.list<Xs2Ticket>(`/v1/tickets${buildQuery(params)}`);
     if (opts.stock_gt != null) {

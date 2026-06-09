@@ -76,6 +76,7 @@ async function syncEvents(
 
 function mapEventRow(e: Xs2Event) {
   const isSoccer = e.sport_type === "soccer";
+  const eventName = (e.event_name as string | undefined) ?? null;
   return {
     source: "xs2event",
     external_event_id: e.event_id,
@@ -84,12 +85,15 @@ function mapEventRow(e: Xs2Event) {
     tournament_name: e.tournament_name ?? "Unknown tournament",
     home_team: isSoccer ? (e.hometeam_name ?? null) : null,
     away_team: isSoccer ? (e.visiting_name ?? null) : null,
-    // F1 events: xs2event may use the tournament name as race identifier; we
-    // refine the mapping once real F1 payloads land.
-    race_name: isSoccer ? null : (e.tournament_name ?? null),
-    venue_name: e.venue_name ?? null,
-    city: (e.venue_city as string | undefined) ?? null,
-    country: (e.venue_country as string | undefined) ?? null,
+    // F1: prefer xs2's specific event_name ("Spanish Grand Prix") over the
+    // generic tournament_name ("Formula 1"). Strip the redundant "Formula 1 "
+    // prefix if xs2 included it in event_name.
+    race_name: isSoccer
+      ? null
+      : (eventName ? eventName.replace(/^Formula 1\s+/i, "") : e.tournament_name ?? null),
+    venue_name: (e.venue_name as string | undefined) ?? null,
+    city: (e.city as string | undefined) ?? null,
+    country: (e.iso_country as string | undefined) ?? null,
     starts_at: e.date_start,
     ends_at: e.date_stop ?? null,
     last_synced_at: new Date().toISOString(),
