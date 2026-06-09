@@ -135,10 +135,28 @@ export interface Xs2Config {
  * the Xs2Client's mock mode — it returns fixture data instead of calling the
  * real API. This lets the whole booking flow run end-to-end against the seeded
  * demo events before xs2event credentials arrive.
+ *
+ * Production guard: when DEPLOY_ENV=production (or STRIPE_ENV=live as a
+ * fallback signal) AND XS2_MOCK_ALLOW is not "true", throws instead of
+ * returning null. This stops the silent fallback that would otherwise let
+ * real customers transact against the evt_demo_* fixtures if the live
+ * XS2_API_KEY secret is missing or misnamed.
  */
 export function loadConfig(): Xs2Config | null {
   const apiKey = envOptional("XS2_API_KEY");
-  if (!apiKey) return null;
+  if (!apiKey) {
+    const isProd =
+      envOptional("DEPLOY_ENV") === "production" ||
+      envOptional("STRIPE_ENV") === "live";
+    const mockAllowed = envOptional("XS2_MOCK_ALLOW") === "true";
+    if (isProd && !mockAllowed) {
+      throw new Xs2Error(
+        "xs2event mock mode is disabled in production — set XS2_API_KEY or XS2_MOCK_ALLOW=true",
+        500,
+      );
+    }
+    return null;
+  }
   return {
     baseUrl: env("XS2_BASE_URL").replace(/\/+$/, ""),
     apiKey,

@@ -1,9 +1,36 @@
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
 const FROM_EMAIL = "Kaisen Travel Group <info@kaisengroup.se>";
+
+/**
+ * Verify the caller has the admin role. Throws on missing/invalid token or
+ * non-admin user. Without this any logged-in user could trigger transactional
+ * email from the company address — a real impersonation vector.
+ */
+async function requireAdmin(req: Request): Promise<string> {
+  const authHeader = req.headers.get("Authorization");
+  if (!authHeader) throw new Error("Missing Authorization header");
+  const token = authHeader.replace(/^Bearer\s+/i, "");
+  const supabase = createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+  );
+  const { data: { user }, error } = await supabase.auth.getUser(token);
+  if (error || !user) throw new Error("Unauthorized");
+  const { data: role } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", user.id)
+    .eq("role", "admin")
+    .maybeSingle();
+  if (!role) throw new Error("Forbidden — admin role required");
+  return user.id;
+}
 const LOGO_URL = "https://itaefkyfuvwicvarnfke.supabase.co/storage/v1/object/public/email-assets/kaisen-logo.png";
 
 function messageTemplate(toName: string, subject: string, body: string): string {
@@ -73,6 +100,7 @@ Deno.serve(async (req) => {
   }
 
   try {
+    await requireAdmin(req);
     const { toEmail, toName, subject, body } = await req.json();
 
     if (!toEmail || !subject || !body) {
@@ -109,9 +137,11 @@ Deno.serve(async (req) => {
       status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err) {
-    console.error("Unexpected error:", err);
-    return new Response(JSON.stringify({ error: String(err) }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    const msg = err instanceof Error ? err.message : String(err);
+    const status = /unauthorized|forbidden|missing authorization/i.test(msg) ? 403 : 500;
+    if (status === 500) console.error("admin-send-message error:", err);
+    return new Response(JSON.stringify({ error: msg }), {
+      status, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 });

@@ -120,19 +120,19 @@ Deno.serve(async (req) => {
       order_id,
       amount_sek,
       reason,
-      environment,
       notify_customer = true,
     } = body as {
       order_id: string;
       amount_sek: number;
       reason?: string;
-      environment: "sandbox" | "live";
       notify_customer?: boolean;
     };
 
     if (!order_id) throw new Error("order_id required");
     if (!Number.isFinite(amount_sek) || amount_sek <= 0) throw new Error("amount_sek must be positive");
-    if (environment !== "sandbox" && environment !== "live") throw new Error("Invalid environment");
+    // Stripe env is server-controlled (see create-checkout for rationale).
+    const envFromSecret = Deno.env.get("STRIPE_ENV");
+    const environment: "sandbox" | "live" = envFromSecret === "live" ? "live" : "sandbox";
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,

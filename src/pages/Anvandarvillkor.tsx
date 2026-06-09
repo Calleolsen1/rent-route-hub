@@ -1,6 +1,5 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { AlertTriangle } from "lucide-react";
 
 export default function Anvandarvillkor() {
   return (
@@ -19,13 +18,6 @@ export default function Anvandarvillkor() {
 
       <section className="py-12 bg-background">
         <div className="container mx-auto px-4 max-w-3xl space-y-10">
-          <div className="rounded-xl border border-amber-300 bg-amber-50 p-4 flex items-start gap-3">
-            <AlertTriangle className="h-5 w-5 text-amber-700 flex-shrink-0 mt-0.5" />
-            <p className="text-xs text-amber-900 leading-relaxed">
-              <strong>Förlagskontext för redigering:</strong> Innehållet nedan är ett startförslag och ska granskas av jurist innan publicering — särskilt avsnitten om avbokning, ansvarsbegränsning, och force majeure (de varierar med leverantörsavtal och konsumentlagstiftning). Ta bort denna ruta innan lansering.
-            </p>
-          </div>
-
           <Section title="1. Tjänsten">
             <p>
               Kaisen Travel Group AB ("Kaisen") tillhandahåller försäljning av biljetter till sportevenemang samt skräddarsydda resepaket via webbplatsen <code>kaisengroup.se</code> och Mitt Kaisen. Dessa villkor reglerar din användning av tjänsten.
@@ -53,15 +45,15 @@ export default function Anvandarvillkor() {
             </p>
           </Section>
 
-          <Section title="4. Avbokning och återbetalning">
+          <Section title="4. Ångerrätt, avbokning och återbetalning">
             <p>
-              <strong>Sportbiljetter:</strong> Biljetter är ej återköpsbara efter att vi mottagit din betalning, då de är specifika datum- och platsbundna prestationer. Detta gäller även vid sjukdom eller hinder.
+              <strong>Ingen ångerrätt för sportbiljetter:</strong> Köp av biljetter till sport- och underhållningsevenemang som ska äga rum på ett bestämt datum är undantagna från konsumentens ångerrätt enligt 2 kap. 11 § punkt 12 distansavtalslagen (2005:59). Genom att slutföra köpet bekräftar du att du tagit del av detta undantag. Detta gäller även vid sjukdom, hinder eller ändrad reseplan.
             </p>
             <p>
-              <strong>Skräddarsydda resor:</strong> Avbokningsvillkor framgår av varje offert. Vi följer i tillämpliga delar paketreselagen (2018:1217).
+              <strong>Skräddarsydda resor (paketresor):</strong> Avbokningsvillkor framgår av varje offert. Vi följer paketreselagen (2018:1217) inklusive konsumentens rätt att häva avtalet vid väsentlig ändring eller force majeure.
             </p>
             <p>
-              <strong>Vid evenemang som ställs in:</strong> Vi återbetalar betalt belopp till samma kort du betalade med, dock kan administrativa avgifter undantagas enligt vad som anges i offerten.
+              <strong>Vid evenemang som ställs in eller flyttas väsentligt:</strong> Vi återbetalar betalt belopp till samma kort du betalade med så snart vi själva fått återbetalning från arrangören eller biljettleverantören. Administrativa avgifter kan dras av om det framgår av offerten.
             </p>
           </Section>
 

@@ -34,11 +34,12 @@ Deno.serve(async (req) => {
   if (!rl.allowed) return rl.response;
 
   try {
-    const { public_token, environment, returnBase } = await req.json();
+    const { public_token, returnBase } = await req.json();
     if (!public_token) throw new Error("public_token required");
-    if (environment !== "sandbox" && environment !== "live") throw new Error("Invalid environment");
     if (!returnBase) throw new Error("returnBase required");
-    const env: StripeEnv = environment;
+    // Stripe env is server-controlled (see create-checkout for rationale).
+    const envFromSecret = Deno.env.get("STRIPE_ENV");
+    const env: StripeEnv = envFromSecret === "live" ? "live" : "sandbox";
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,

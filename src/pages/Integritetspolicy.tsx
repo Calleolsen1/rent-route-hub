@@ -1,7 +1,5 @@
-import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { AlertTriangle } from "lucide-react";
 
 export default function Integritetspolicy() {
   return (
@@ -20,14 +18,6 @@ export default function Integritetspolicy() {
 
       <section className="py-12 bg-background">
         <div className="container mx-auto px-4 max-w-3xl space-y-10">
-          {/* Lawyer-flag callout — REMOVE before going live */}
-          <div className="rounded-xl border border-amber-300 bg-amber-50 p-4 flex items-start gap-3">
-            <AlertTriangle className="h-5 w-5 text-amber-700 flex-shrink-0 mt-0.5" />
-            <p className="text-xs text-amber-900 leading-relaxed">
-              <strong>Förlagskontext för redigering:</strong> Innehållet nedan är ett startförslag och ska granskas av jurist innan publicering. Texten täcker generell GDPR-information men måste anpassas till Kaisens faktiska behandling och avtal med underleverantörer (xs2event, Stripe, Resend, Supabase). Ta bort denna ruta innan lansering.
-            </p>
-          </div>
-
           <Section title="1. Personuppgiftsansvarig">
             <p>
               Kaisen Travel Group AB ("Kaisen", "vi") är personuppgiftsansvarig för behandlingen av personuppgifter på{" "}
@@ -67,6 +57,8 @@ export default function Integritetspolicy() {
               <li><strong>xs2event</strong> (EU) — biljettleverantör; bokningsmottagare och e-postadress lämnas vid bokning.</li>
               <li><strong>Resend</strong> (USA) — utskick av e-post (orderbekräftelse, lösenordsåterställning).</li>
               <li><strong>Supabase</strong> (EU) — databas, autentisering och fillagring.</li>
+              <li><strong>Cloudflare</strong> (USA / EU) — botskydd via Turnstile på formulär (IP-adress och webbläsarsignaler behandlas tillfälligt).</li>
+              <li><strong>Sentry</strong> (USA) — felövervakning i frontend (anonym sessions-id, webbläsarstack och URL vid fel).</li>
             </ul>
             <p>
               Vi har ingått personuppgiftsbiträdesavtal (DPA) med samtliga och tillämpar standardavtalsklausuler för överföringar utanför EU/EES.
@@ -78,7 +70,7 @@ export default function Integritetspolicy() {
               Vi använder cookies som är nödvändiga för att webbplatsen ska fungera (inloggning, kundvagn, betalsession). Vid första besöket frågar vi om ditt samtycke till valfria cookies via vår cookie-banner. Du kan när som helst ändra ditt val via länken längst ner på sidan.
             </p>
             <p>
-              Se vår <Link to="/cookies" className="underline">cookie-information</Link> för fullständig lista.
+              Nödvändiga cookies omfattar bland annat session-cookies för Mitt Kaisen-inloggning, Stripe-betalsessions-cookies och vårt eget cookie-samtyckes-val (sparat i localStorage). Vi använder för närvarande inga marknadsförings- eller analyscookies.
             </p>
           </Section>
 

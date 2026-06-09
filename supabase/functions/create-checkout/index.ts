@@ -17,11 +17,16 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { orderId, environment, returnUrl } = await req.json();
+    const { orderId, returnUrl } = await req.json();
     if (!orderId || typeof orderId !== "string") throw new Error("orderId required");
-    if (environment !== "sandbox" && environment !== "live") throw new Error("Invalid environment");
 
-    const env: StripeEnv = environment;
+    // Stripe env is server-controlled — clients used to pass it via the
+    // request body, which let a downgraded client charge against sandbox
+    // if both Stripe keys coexisted. Read from STRIPE_ENV (set per Supabase
+    // project), defaulting to sandbox so a misconfig fails loud, not quietly
+    // against live.
+    const envFromSecret = Deno.env.get("STRIPE_ENV");
+    const env: StripeEnv = envFromSecret === "live" ? "live" : "sandbox";
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
