@@ -22,6 +22,7 @@ type EventRow = {
   min_price_sek: number | null;
   compare_at_price_sek: number | null;
   compare_at_pct: number | null;
+  ticket_categories: Array<{ unit_price_sek: number | null }> | null;
 };
 
 type Props = {
@@ -73,7 +74,7 @@ export default function UpcomingEventsList({
       let q = (supabase as any)
         .from("events")
         .select(
-          "id, sport, tournament_name, home_team, away_team, race_name, venue_name, city, country, starts_at, cover_image_url, status, min_price_sek, compare_at_price_sek, compare_at_pct",
+          "id, sport, tournament_name, home_team, away_team, race_name, venue_name, city, country, starts_at, cover_image_url, status, min_price_sek, compare_at_price_sek, compare_at_pct, ticket_categories(unit_price_sek)",
         )
         .eq("status", "upcoming")
         .gte("starts_at", dateFrom ?? new Date().toISOString())
@@ -132,6 +133,16 @@ export default function UpcomingEventsList({
             e.sport === "soccer"
               ? `${e.home_team} vs ${e.away_team}`
               : e.race_name;
+          // Fall back to cheapest ticket_categories.unit_price_sek when the
+          // events.min_price_sek column is null (e.g. xs2-sync hasn't run yet
+          // since the price columns were added).
+          const categoryMin = (e.ticket_categories ?? [])
+            .map((c) => Number(c.unit_price_sek))
+            .filter((n) => Number.isFinite(n) && n > 0)
+            .reduce((m, n) => (m == null || n < m ? n : m), null as number | null);
+          const displayPrice = e.min_price_sek != null && e.min_price_sek > 0
+            ? e.min_price_sek
+            : categoryMin;
           return (
             <Link
               key={e.id}
@@ -145,10 +156,10 @@ export default function UpcomingEventsList({
                     alt={headline ?? ""}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                  {e.min_price_sek != null && e.min_price_sek > 0 && (
+                  {displayPrice != null && displayPrice > 0 && (
                     <div className="absolute top-3 right-3 bg-background/95 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-lg border border-border">
                       <PriceTag
-                        currentSek={e.min_price_sek}
+                        currentSek={displayPrice}
                         compareAt={{
                           eventSek: e.compare_at_price_sek,
                           eventPct: e.compare_at_pct,
@@ -180,7 +191,7 @@ export default function UpcomingEventsList({
                 </div>
                 <div className={`mt-auto border-t border-border flex items-end justify-between gap-3 ${compact ? "pt-3" : "pt-4"}`}>
                   <PriceTag
-                    currentSek={e.min_price_sek}
+                    currentSek={displayPrice}
                     compareAt={{
                       eventSek: e.compare_at_price_sek,
                       eventPct: e.compare_at_pct,
