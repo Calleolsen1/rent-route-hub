@@ -5,10 +5,12 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { CheckCircle2, AlertCircle, Loader2, Upload, Save, RefreshCw, Star } from "lucide-react";
+import { CheckCircle2, AlertCircle, Loader2, Upload, Save, RefreshCw, Star, Plus } from "lucide-react";
 import { formatSek, formatEventDateTime } from "@/lib/formatSek";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { ImageUploader } from "@/components/admin/ImageUploader";
+import { ManualEventDialog } from "@/components/admin/ManualEventDialog";
+import { CategoryDialog } from "@/components/admin/CategoryDialog";
 
 type Category = {
   id: string;
@@ -69,6 +71,8 @@ export default function AdminTickets() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
+  const [manualEventOpen, setManualEventOpen] = useState(false);
+  const [categoryTarget, setCategoryTarget] = useState<{ eventId: string; label: string } | null>(null);
 
   const load = async () => {
     const [{ data: ev }, { data: dels }, { data: logs }] = await Promise.all([
@@ -288,7 +292,12 @@ export default function AdminTickets() {
 
       {/* Events + categories */}
       <section className="space-y-6">
-        <h2 className="font-display text-xl">Evenemang</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="font-display text-xl">Evenemang</h2>
+          <Button size="sm" onClick={() => setManualEventOpen(true)}>
+            <Plus className="h-3 w-3 mr-1.5" /> Skapa manuellt event
+          </Button>
+        </div>
         {events.map((ev) => {
           const headline = ev.sport === "soccer" ? `${ev.home_team} vs ${ev.away_team}` : ev.race_name;
           const isXs2 = ev.source === "xs2event";
@@ -350,11 +359,43 @@ export default function AdminTickets() {
                       : "Inga biljettkategorier för detta evenemang."}
                   </p>
                 )}
+                {!isXs2 && (
+                  <div className="pt-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() =>
+                        setCategoryTarget({
+                          eventId: ev.id,
+                          label: headline ?? ev.tournament_name,
+                        })
+                      }
+                    >
+                      <Plus className="h-3 w-3 mr-1.5" /> Lägg till kategori
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           );
         })}
       </section>
+
+      <ManualEventDialog
+        open={manualEventOpen}
+        onOpenChange={setManualEventOpen}
+        onCreated={load}
+      />
+
+      {categoryTarget && (
+        <CategoryDialog
+          eventId={categoryTarget.eventId}
+          eventLabel={categoryTarget.label}
+          open={!!categoryTarget}
+          onOpenChange={(o) => !o && setCategoryTarget(null)}
+          onCreated={load}
+        />
+      )}
 
       {/* Deliveries */}
       <section className="space-y-4">
