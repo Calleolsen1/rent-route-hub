@@ -14,7 +14,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Plus, Trash2, Loader2, AlertTriangle, ChevronDown, ChevronRight, X, ExternalLink, Check, AlertCircle } from "lucide-react";
+import { Plus, Trash2, Loader2, AlertTriangle, ChevronDown, ChevronRight, X, ExternalLink, Check, AlertCircle, Pencil } from "lucide-react";
 import { invalidateNavigation } from "@/hooks/useNavigation";
 import { ImageUploader } from "@/components/admin/ImageUploader";
 
@@ -382,6 +382,36 @@ function SportsEditor() {
     invalidateNavigation();
   };
 
+  const renameLeague = async (sportId: string, oldLabel: string, newLabel: string) => {
+    const trimmed = newLabel.trim();
+    if (!trimmed || trimmed === oldLabel) return;
+    const { error } = await (supabase as any)
+      .from("nav_menu_entries")
+      .update({ group_label: trimmed })
+      .eq("sport_id", sportId)
+      .eq("group_label", oldLabel);
+    if (error) return toast.error(error.message);
+    setEntries(entries.map((e) =>
+      e.sport_id === sportId && e.group_label === oldLabel ? { ...e, group_label: trimmed } : e,
+    ));
+    invalidateNavigation();
+    toast.success(`Bytte namn på "${oldLabel}" till "${trimmed}"`);
+  };
+
+  const deleteLeague = async (sportId: string, label: string) => {
+    const { error } = await (supabase as any)
+      .from("nav_menu_entries")
+      .update({ group_label: null })
+      .eq("sport_id", sportId)
+      .eq("group_label", label);
+    if (error) return toast.error(error.message);
+    setEntries(entries.map((e) =>
+      e.sport_id === sportId && e.group_label === label ? { ...e, group_label: null } : e,
+    ));
+    invalidateNavigation();
+    toast.success(`Tog bort gruppen "${label}". Sidorna finns kvar utan grupp.`);
+  };
+
   if (loading) return <p className="text-sm text-muted-foreground">Laddar…</p>;
 
   return (
@@ -450,6 +480,8 @@ function SportsEditor() {
                     onDelete={delEntry}
                     onToggleActive={toggleEntryActive}
                     onToggleShowInMenu={toggleEntryShowInMenu}
+                    onRenameLeague={(oldLabel, newLabel) => renameLeague(sport.id, oldLabel, newLabel)}
+                    onDeleteLeague={(label) => deleteLeague(sport.id, label)}
                   />
                 )}
               </div>
@@ -503,6 +535,8 @@ function EntriesList({
   onDelete,
   onToggleActive,
   onToggleShowInMenu,
+  onRenameLeague,
+  onDeleteLeague,
 }: {
   sport: Sport;
   entries: Entry[];
@@ -511,6 +545,8 @@ function EntriesList({
   onDelete: (entry: Entry) => void;
   onToggleActive: (entry: Entry, v: boolean) => void;
   onToggleShowInMenu: (entry: Entry, v: boolean) => void;
+  onRenameLeague: (oldLabel: string, newLabel: string) => Promise<void>;
+  onDeleteLeague: (label: string) => Promise<void>;
 }) {
   // For grouped sports (Fotboll), group entries by league inside the sport.
   // For list sports (F1), render flat.
@@ -530,13 +566,13 @@ function EntriesList({
       {groups.map(([groupLabel, items]) => (
         <div key={groupLabel || "__flat__"}>
           {groupLabel && (
-            <div className="flex items-center gap-2 mb-1.5 px-1">
-              <span className="text-[10px] tracking-[0.25em] uppercase font-semibold text-primary">
-                {groupLabel}
-              </span>
-              <span className="text-[10px] text-muted-foreground">({items.length})</span>
-              <div className="flex-1 border-t border-border/50 ml-1" />
-            </div>
+            <LeagueHeader
+              label={groupLabel}
+              count={items.length}
+              isRealLeague={groupLabel !== "Övriga (ingen liga)"}
+              onRename={async (newLabel) => onRenameLeague(groupLabel, newLabel)}
+              onDelete={async () => onDeleteLeague(groupLabel)}
+            />
           )}
           <div className="space-y-1">
             {items.map((entry) => (
@@ -578,6 +614,105 @@ function EntriesList({
           </div>
         </div>
       ))}
+    </div>
+  );
+}
+
+/* --------------------------- LEAGUE HEADER ----------------------------- */
+
+function LeagueHeader({
+  label,
+  count,
+  isRealLeague,
+  onRename,
+  onDelete,
+}: {
+  label: string;
+  count: number;
+  isRealLeague: boolean;
+  onRename: (newLabel: string) => Promise<void>;
+  onDelete: () => Promise<void>;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(label);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => { setDraft(label); }, [label]);
+
+  const commit = async () => {
+    const next = draft.trim();
+    if (!next || next === label) {
+      setEditing(false);
+      setDraft(label);
+      return;
+    }
+    setBusy(true);
+    try {
+      await onRename(next);
+      setEditing(false);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const remove = async () => {
+    if (!confirm(`Ta bort gruppen "${label}"? Sidorna stannar kvar men flyttas till "Övriga".`)) return;
+    setBusy(true);
+    try {
+      await onDelete();
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="flex items-center gap-2 mb-1.5 px-1 group">
+      {editing ? (
+        <>
+          <Input
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") commit();
+              if (e.key === "Escape") { setEditing(false); setDraft(label); }
+            }}
+            onBlur={commit}
+            autoFocus
+            disabled={busy}
+            className="h-7 text-xs uppercase tracking-[0.2em] font-semibold text-primary max-w-[280px]"
+          />
+          {busy && <Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />}
+        </>
+      ) : (
+        <>
+          <span className="text-[10px] tracking-[0.25em] uppercase font-semibold text-primary">
+            {label}
+          </span>
+          <span className="text-[10px] text-muted-foreground">({count})</span>
+          {isRealLeague && (
+            <>
+              <button
+                type="button"
+                onClick={() => setEditing(true)}
+                className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 hover:text-primary"
+                title="Döp om hela ligan"
+              >
+                <Pencil className="h-3 w-3" />
+              </button>
+              <button
+                type="button"
+                onClick={remove}
+                disabled={busy}
+                className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 hover:text-destructive"
+                title="Ta bort gruppen (sidorna behålls)"
+              >
+                <Trash2 className="h-3 w-3" />
+              </button>
+            </>
+          )}
+          <div className="flex-1 border-t border-border/50 ml-1" />
+        </>
+      )}
     </div>
   );
 }
