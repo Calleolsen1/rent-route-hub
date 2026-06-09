@@ -119,7 +119,13 @@ export default function MittKaisenLayout() {
   );
 
   return (
-    <div className="flex min-h-screen" style={{ backgroundColor: "hsl(210 20% 97%)" }}>
+    <div
+      className="flex min-h-screen"
+      style={{
+        background:
+          "radial-gradient(1200px 600px at 80% -10%, hsl(201 100% 18% / 0.35), transparent 60%), radial-gradient(900px 500px at -10% 100%, hsl(222 60% 16% / 0.6), transparent 55%), hsl(222 50% 9%)",
+      }}
+    >
       {/* Desktop sidebar */}
       <aside
         className="hidden lg:flex w-64 flex-col fixed inset-y-0 left-0 z-30"
