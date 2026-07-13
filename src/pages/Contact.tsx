@@ -29,7 +29,7 @@ export default function Contact() {
   const contactInfo = [
     { icon: Phone, label: "Telefon", value: phone, href: `tel:${phone.replace(/\s+/g, "")}` },
     { icon: Mail, label: "E-post", value: email, href: `mailto:${email}` },
-    { icon: MapPin, label: "Adress", value: get("contact_address", "Stockholm, Sverige") },
+    { icon: MapPin, label: "Adress", value: get("contact_address", "Helsingborg, Sweden") },
     { icon: Clock, label: "Öppettider", value: get("contact_hours", "Mån–Fre 09–18") },
   ];
   return (
