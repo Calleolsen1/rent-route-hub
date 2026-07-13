@@ -1,0 +1,1 @@
+UPDATE site_content SET value = '"Helsingborg, Sweden"' WHERE key = 'contact_address';
