@@ -140,11 +140,13 @@ export type Database = {
           cta_label: string | null
           cta_to: string | null
           description: string | null
+          draft_data: Json | null
           eyebrow: string | null
           id: string
           image_url: string
           is_active: boolean
           italic: string | null
+          published_at: string | null
           sort_order: number
           title: string
           updated_at: string
@@ -154,11 +156,13 @@ export type Database = {
           cta_label?: string | null
           cta_to?: string | null
           description?: string | null
+          draft_data?: Json | null
           eyebrow?: string | null
           id?: string
           image_url: string
           is_active?: boolean
           italic?: string | null
+          published_at?: string | null
           sort_order?: number
           title: string
           updated_at?: string
@@ -168,11 +172,13 @@ export type Database = {
           cta_label?: string | null
           cta_to?: string | null
           description?: string | null
+          draft_data?: Json | null
           eyebrow?: string | null
           id?: string
           image_url?: string
           is_active?: boolean
           italic?: string | null
+          published_at?: string | null
           sort_order?: number
           title?: string
           updated_at?: string
@@ -917,21 +923,27 @@ export type Database = {
       site_content: {
         Row: {
           description: string | null
+          draft_value: string | null
           key: string
+          published_at: string | null
           updated_at: string
           updated_by: string | null
           value: Json
         }
         Insert: {
           description?: string | null
+          draft_value?: string | null
           key: string
+          published_at?: string | null
           updated_at?: string
           updated_by?: string | null
           value: Json
         }
         Update: {
           description?: string | null
+          draft_value?: string | null
           key?: string
+          published_at?: string | null
           updated_at?: string
           updated_by?: string | null
           value?: Json
@@ -981,6 +993,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      team_members: {
+        Row: {
+          bio: string | null
+          created_at: string
+          email: string | null
+          id: string
+          is_published: boolean
+          name: string
+          phone: string | null
+          photo_url: string | null
+          role_title: string | null
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_published?: boolean
+          name: string
+          phone?: string | null
+          photo_url?: string | null
+          role_title?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_published?: boolean
+          name?: string
+          phone?: string | null
+          photo_url?: string | null
+          role_title?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
       }
       testimonials: {
         Row: {
