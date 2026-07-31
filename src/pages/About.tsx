@@ -188,6 +188,8 @@ export default function About() {
  </div>
  </section>
 
+ <TeamSection />
+
  {/* CTA */}
  <section className="bg-cream py-20 border-t border-border">
  <div className="container mx-auto px-4 text-center">
