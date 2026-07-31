@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import TeamSection from "@/components/TeamSection";
 import heroImage from "@/assets/about-hero.jpg";
 import founderImage from "@/assets/about-founder.jpg";
 
@@ -186,6 +187,8 @@ export default function About() {
  </div>
  </div>
  </section>
+
+ <TeamSection />
 
  {/* CTA */}
  <section className="bg-cream py-20 border-t border-border">
