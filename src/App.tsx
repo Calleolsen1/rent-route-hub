@@ -34,6 +34,7 @@ import AdminMarkupDefaults from "./pages/admin/MarkupDefaults";
 import AdminNavigation from "./pages/admin/Navigation";
 import AdminDiagnostics from "./pages/admin/Diagnostics";
 import AdminMediaLibrary from "./pages/admin/MediaLibrary";
+import AdminTeam from "./pages/admin/Team";
 import Integritetspolicy from "./pages/Integritetspolicy";
 import Anvandarvillkor from "./pages/Anvandarvillkor";
 import CookieConsent from "./components/CookieConsent";
@@ -107,6 +108,7 @@ const App = () => (
                 <Route path="markup-defaults" element={<AdminMarkupDefaults />} />
                 <Route path="diagnostics" element={<AdminDiagnostics />} />
                 <Route path="media" element={<AdminMediaLibrary />} />
+                <Route path="team" element={<AdminTeam />} />
                 <Route path="users" element={<UsersManagement />} />
                 <Route path="support" element={<AdminSupport />} />
                 <Route path="content" element={<ContentManagementPage />} />
