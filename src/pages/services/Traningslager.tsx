@@ -47,11 +47,11 @@ const camps = [
  price: "från 7 900 kr / person",
  },
  {
- image: mallorcaSwimImg,
+ image: torremolinosSwimAsset.url,
  sport: "Simning",
- location: "Mallorca, Spanien",
+ location: "Torremolinos, Spanien",
  title: "50-metersbassäng under öppen himmel",
- desc: "Olympisk utomhusbassäng med hela banor till förfogande, varma morgnar och boenden direkt vid anläggningen. Ideal för seriösa simläger.",
+ desc: "Olympisk utomhusbassäng med hela banor till förfogande, varma morgnar och boenden med gångavstånd till anläggningen. Ideal för seriösa simläger.",
  price: "från 8 900 kr / person",
  },
  {
