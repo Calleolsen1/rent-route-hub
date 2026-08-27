@@ -50,7 +50,7 @@ const camps = [
  image: torremolinosSwimAsset.url,
  sport: "Simning",
  location: "Torremolinos, Spanien",
- title: "50-metersbassäng under öppen himmel",
+  title: "Boenden med gångavstånd till anläggningen",
  desc: "Olympisk utomhusbassäng med hela banor till förfogande, varma morgnar och boenden med gångavstånd till anläggningen. Ideal för seriösa simläger.",
  price: "från 8 900 kr / person",
  },
