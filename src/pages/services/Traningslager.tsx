@@ -10,7 +10,7 @@ import laMangaImg from "@/assets/camp-lamanga.jpg";
 import algarveImg from "@/assets/camp-algarve.jpg";
 import belekImg from "@/assets/camp-belek.jpg";
 import italyImg from "@/assets/camp-italy.jpg";
-import torremolinosSwimImg from "@/assets/camp-torremolinos-pool-new.jpg";
+import torremolinosSwimAsset from "@/assets/torremolinos-pool.jpg.asset.json";
 import monteGordoImg from "@/assets/camp-montegordo.jpg";
 
 const camps = [
@@ -47,8 +47,8 @@ const camps = [
  price: "från 7 900 kr / person",
  },
  {
- image: torremolinosSwimImg,
-    objectPosition: "75% 50%",
+ image: torremolinosSwimAsset.url,
+    objectPosition: "100% 50%",
  sport: "Simning",
  location: "Torremolinos, Spanien",
   title: "Boenden med gångavstånd till anläggningen",
