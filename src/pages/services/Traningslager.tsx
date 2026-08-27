@@ -10,7 +10,7 @@ import laMangaImg from "@/assets/camp-lamanga.jpg";
 import algarveImg from "@/assets/camp-algarve.jpg";
 import belekImg from "@/assets/camp-belek.jpg";
 import italyImg from "@/assets/camp-italy.jpg";
-import mallorcaSwimImg from "@/assets/camp-mallorca-swim.jpg";
+import torremolinosSwimAsset from "@/assets/camp-torremolinos-pool.jpg.asset.json";
 import monteGordoImg from "@/assets/camp-montegordo.jpg";
 
 const camps = [
