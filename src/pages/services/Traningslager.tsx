@@ -10,7 +10,7 @@ import laMangaImg from "@/assets/camp-lamanga.jpg";
 import algarveImg from "@/assets/camp-algarve.jpg";
 import belekImg from "@/assets/camp-belek.jpg";
 import italyImg from "@/assets/camp-italy.jpg";
-import torremolinosSwimAsset from "@/assets/torremolinos-pool.jpg.asset.json";
+import torremolinosSwimAsset from "@/assets/torremolinos-50m.jpg.asset.json";
 import monteGordoImg from "@/assets/camp-montegordo.jpg";
 
 const camps = [
@@ -48,10 +48,10 @@ const camps = [
  },
  {
  image: torremolinosSwimAsset.url,
-    objectPosition: "100% 50%",
+    objectPosition: "center",
  sport: "Simning",
  location: "Torremolinos, Spanien",
-  title: "Boenden med gångavstånd till anläggningen",
+  title: "50-metersbassäng under öppen himmel",
  desc: "Olympisk utomhusbassäng med hela banor till förfogande, varma morgnar och boenden med gångavstånd till anläggningen. Ideal för seriösa simläger.",
  price: "från 8 900 kr / person",
  },
