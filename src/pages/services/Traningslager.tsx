@@ -27,7 +27,7 @@ const camps = [
  sport: "Fotboll",
  location: "Valencia, Spanien",
  title: "Träningsläger för lag med ambitioner",
- desc: "Parador de El Saler ligger naturskönt mellan Albufera naturpark och Medelhavet, ca 18 km från Valencia. Egen naturgräsplan i perfekt skick samt training center med gym och spa. Klubbar som Valencia CF, Levante UD och UD Las Palmas lägger ofta sina läger här.",
+ desc: "Parador de El Saler ligger naturskönt mellan Albufera naturpark och Medelhavet, cirka 18 km från Valencia. Egen naturgräsplan i perfekt skick samt training center med gym och spa. Klubbar som Valencia CF, Levante UD och UD Las Palmas lägger ofta sina läger här.",
  price: "från 7 500 kr / person",
  },
  {
