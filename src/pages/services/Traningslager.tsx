@@ -27,7 +27,7 @@ const camps = [
  sport: "Fotboll",
  location: "Valencia, Spanien",
  title: "Träningsläger för lag med ambitioner",
- desc: "Parador de El Saler ligger naturskönt mellan Albufera naturpark och Medelhavet, ca 18 km från Valencia. Egen naturgräsplan i perfekt skick samt training center med gym och spa. Klubbar som Valencia CF, Levante UD och UD Las Palmas lägger ofta sina läger här.",
+ desc: "Parador de El Saler ligger naturskönt mellan Albufera naturpark och Medelhavet, cirka 18 km från Valencia. Egen naturgräsplan i perfekt skick samt training center med gym och spa. Klubbar som Valencia CF, Levante UD och UD Las Palmas lägger ofta sina läger här.",
  price: "från 7 500 kr / person",
  },
  {
@@ -35,7 +35,7 @@ const camps = [
  sport: "Fotboll",
  location: "Antalya, Turkiet",
  title: "Allt-inkluderat i förstklassig miljö",
- desc: "Ramada Resort är ett mycket prisvärt och högkvalitativt alternativ för träningsläger, där hög hotellstandard kombineras med riktigt fina fotbollsplaner och ett fullt utrustat gym & spa. Perfekt för lag som söker maximalt sportsligt värde och hög komfort.",
+ desc: "Ramada Resort är ett mycket prisvärt och högfunktionellt alternativ för träningsläger, där hög hotellstandard kombineras med riktigt fina fotbollsplaner och ett fullt utrustat gym & spa. Anläggningen passar perfekt för lag som söker maximalt sportsligt värde och hög komfort.",
  price: "från 5 900 kr / person",
  },
  {
