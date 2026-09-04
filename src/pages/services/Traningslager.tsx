@@ -7,8 +7,8 @@ import InquiryForm from "@/components/InquiryForm";
 import FloatingInquiryButton from "@/components/FloatingInquiryButton";
 import heroImage from "@/assets/camps-hero.jpg";
 import laMangaImg from "@/assets/camp-lamanga.jpg";
-import algarveImg from "@/assets/camp-algarve.jpg";
-import belekImg from "@/assets/camp-belek.jpg";
+import valenciaImg from "@/assets/camp-valencia-elsaler.jpg.asset.json";
+import antalyaImg from "@/assets/camp-antalya-ramada.jpg.asset.json";
 import italyImg from "@/assets/camp-italy.jpg";
 import torremolinosSwimAsset from "@/assets/torremolinos-50m.jpg.asset.json";
 import monteGordoImg from "@/assets/camp-montegordo.jpg";
@@ -23,20 +23,20 @@ const camps = [
  price: "från 6 900 kr / person",
  },
  {
- image: algarveImg,
+ image: valenciaImg.url,
  sport: "Fotboll",
- location: "Algarve, Portugal",
- title: "Vinterläger vid Atlanten",
- desc: "Solsäkra vintrar, professionella anläggningar och ett brett utbud av planer. Populärt bland både ungdomslag och seniorlag i förberedelseperioden.",
+ location: "Valencia, Spanien",
+ title: "Träningsläger för lag med ambitioner",
+ desc: "Parador de El Saler ligger naturskönt mellan Albufera naturpark och Medelhavet, ca 18 km från Valencia. Egen naturgräsplan i perfekt skick samt training center med gym och spa. Klubbar som Valencia CF, Levante UD och UD Las Palmas lägger ofta sina läger här.",
  price: "från 7 500 kr / person",
  },
  {
- image: belekImg,
+ image: antalyaImg.url,
  sport: "Fotboll",
- location: "Belek, Turkiet",
+ location: "Antalya, Turkiet",
  title: "Allt-inkluderat i förstklassig miljö",
- desc: "Stora hotellanläggningar med flera planer på samma område, träningstider efter behov och full service. Perfekt för läger med kort framförhållning.",
- price: "från 8 200 kr / person",
+ desc: "Ramada Resort är ett mycket prisvärt och högkvalitativt alternativ för träningsläger, där hög hotellstandard kombineras med riktigt fina fotbollsplaner och ett fullt utrustat gym & spa. Perfekt för lag som söker maximalt sportsligt värde och hög komfort.",
+ price: "från 5 900 kr / person",
  },
  {
  image: italyImg,
@@ -52,7 +52,7 @@ const camps = [
  sport: "Simning",
  location: "Torremolinos, Spanien",
   title: "50-metersbassäng under öppen himmel",
- desc: "Olympisk utomhusbassäng med hela banor till förfogande, varma morgnar och boenden med gångavstånd till anläggningen. Ideal för seriösa simläger.",
+ desc: "Sol, värme och hårda träningspass i uppvärmd 50-metersbassäng — ett simläger i Torremolinos är den perfekta kombinationen av träning och gemenskap. Med bra träningsmöjligheter, härligt klimat och roliga aktiviteter får simmarna chansen att utvecklas både i bassängen och som lag.",
  price: "från 8 900 kr / person",
  },
  {
