@@ -53,7 +53,7 @@ const camps = [
  sport: "Simning",
  location: "Torremolinos, Spanien",
   title: "50-metersbassäng under öppen himmel",
- desc: "Olympisk utomhusbassäng med hela banor till förfogande, varma morgnar och boenden med gångavstånd till anläggningen. Ideal för seriösa simläger.",
+ desc: "Sol, värme och hårda träningspass i uppvärmd 50-metersbassäng — ett simläger i Torremolinos är den perfekta kombinationen av träning och gemenskap. Med bra träningsmöjligheter, härligt klimat och roliga aktiviteter får simmarna chansen att utvecklas både i bassängen och som lag.",
  price: "från 8 900 kr / person",
  },
  {
