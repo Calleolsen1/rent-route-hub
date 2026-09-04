@@ -9,7 +9,6 @@ import heroImage from "@/assets/camps-hero.jpg";
 import laMangaImg from "@/assets/camp-lamanga.jpg";
 import valenciaImg from "@/assets/camp-valencia-elsaler.jpg.asset.json";
 import antalyaImg from "@/assets/camp-antalya-ramada.jpg.asset.json";
-import belekImg from "@/assets/camp-belek.jpg";
 import italyImg from "@/assets/camp-italy.jpg";
 import torremolinosSwimAsset from "@/assets/torremolinos-50m.jpg.asset.json";
 import monteGordoImg from "@/assets/camp-montegordo.jpg";
