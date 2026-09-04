@@ -35,7 +35,7 @@ const camps = [
  sport: "Fotboll",
  location: "Antalya, Turkiet",
  title: "Allt-inkluderat i förstklassig miljö",
- desc: "Ramada Resort är ett mycket prisvärt och högkvalitativt alternativ för träningsläger, där hög hotellstandard kombineras med riktigt fina fotbollsplaner och ett fullt utrustat gym & spa. Perfekt för lag som söker maximalt sportsligt värde och hög komfort.",
+ desc: "Ramada Resort är ett mycket prisvärt och högfunktionellt alternativ för träningsläger, där hög hotellstandard kombineras med riktigt fina fotbollsplaner och ett fullt utrustat gym & spa. Anläggningen passar perfekt för lag som söker maximalt sportsligt värde och hög komfort.",
  price: "från 5 900 kr / person",
  },
  {
