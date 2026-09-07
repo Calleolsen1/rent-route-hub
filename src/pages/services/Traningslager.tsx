@@ -8,11 +8,11 @@ import InquiryForm from "@/components/InquiryForm";
 import FloatingInquiryButton from "@/components/FloatingInquiryButton";
 import heroImage from "@/assets/camps-hero.jpg";
 import valenciaImg from "@/assets/camp-valencia-elsaler.jpg.asset.json";
-import antalyaImg from "@/assets/camp-antalya-ramada.jpg.asset.json";
-import ayiaNapaImg from "@/assets/camp-ayianapa-v2.jpg.asset.json";
+import antalyaImg from "@/assets/camp-antalya-pitch.jpg.asset.json";
+import ayiaNapaImg from "@/assets/camp-ayianapa-pitch.jpg.asset.json";
 import torremolinosSwimAsset from "@/assets/torremolinos-50m.jpg.asset.json";
 import nerjaImg from "@/assets/camp-nerja-athletics-v2.jpg.asset.json";
-import santaSusannaImg from "@/assets/camp-santa-susanna.jpg.asset.json";
+import santaSusannaImg from "@/assets/camp-santa-susanna-pitch.jpg.asset.json";
 
 const camps = [
   {
