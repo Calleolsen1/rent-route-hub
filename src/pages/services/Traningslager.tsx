@@ -10,7 +10,7 @@ import heroImage from "@/assets/camps-hero.jpg";
 import laMangaImg from "@/assets/camp-lamanga.jpg";
 import valenciaImg from "@/assets/camp-valencia-elsaler.jpg.asset.json";
 import antalyaImg from "@/assets/camp-antalya-ramada.jpg.asset.json";
-import italyImg from "@/assets/camp-italy.jpg";
+import ayiaNapaImg from "@/assets/camp-ayianapa-milea.jpg.asset.json";
 import torremolinosSwimAsset from "@/assets/torremolinos-50m.jpg.asset.json";
 import monteGordoImg from "@/assets/camp-montegordo.jpg";
 import nerjaImg from "@/assets/camp-nerja-athletics.jpg.asset.json";
@@ -41,12 +41,12 @@ const camps = [
  price: "från 5 900 kr / person",
  },
  {
- image: italyImg,
+ image: ayiaNapaImg.url,
  sport: "Fotboll",
- location: "Norra Italien",
- title: "Träning i bergslandskap",
- desc: "Välskötta planer i lugn miljö, högkvalitativ italiensk gastronomi och nära till sjöar och berg för aktiv återhämtning mellan passen.",
- price: "från 7 900 kr / person",
+ location: "Ayia Napa, Cypern",
+ title: "Där fotboll möter perfekta förhållanden",
+ desc: "Träna tillsammans, umgås tillsammans och skapa minnen tillsammans — Milea Hotel blir er bas under ett träningsläger ni sent kommer att glömma. Nära stranden och centralt beläget med allt laget behöver för en härlig vistelse på solsäkra Cypern.",
+ price: "från 6 200 kr / person",
  },
  {
  image: torremolinosSwimAsset.url,
