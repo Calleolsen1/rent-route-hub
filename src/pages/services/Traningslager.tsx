@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, MapPin, MessageSquare } from "lucide-react";
 import Footer from "@/components/Footer";
@@ -97,7 +98,12 @@ const FALLBACK_TRAINING_FEATURES = [
 ];
 
 export default function Traningslager() {
- const { get, getArray } = useSiteContent(TRAINING_KEYS);
+  const { get, getArray } = useSiteContent(TRAINING_KEYS);
+  const [selectedDestination, setSelectedDestination] = useState<string | undefined>(undefined);
+  const chooseCamp = (location: string, sport: string) => {
+    setSelectedDestination(`${location} (${sport})`);
+    document.getElementById("forfragan")?.scrollIntoView({ behavior: "smooth" });
+  };
  const editableFeatures = getArray("training_features", FALLBACK_TRAINING_FEATURES);
  return (
  <div className="min-h-screen">
