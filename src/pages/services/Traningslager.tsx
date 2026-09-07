@@ -12,6 +12,7 @@ import antalyaImg from "@/assets/camp-antalya-ramada.jpg.asset.json";
 import italyImg from "@/assets/camp-italy.jpg";
 import torremolinosSwimAsset from "@/assets/torremolinos-50m.jpg.asset.json";
 import monteGordoImg from "@/assets/camp-montegordo.jpg";
+import nerjaImg from "@/assets/camp-nerja-athletics.jpg.asset.json";
 
 const camps = [
  {
@@ -62,6 +63,14 @@ const camps = [
  title: "Tartanbana med havet runt hörnet",
  desc: "Fullstor friidrottsanläggning med kastbur, längdhoppsgrop och milt vinterklimat. En favorit för svenska friidrottsklubbar i februari–mars.",
  price: "från 7 200 kr / person",
+ },
+ {
+ image: nerjaImg.url,
+ sport: "Friidrott",
+ location: "Nerja, Spanien",
+ title: "Optimala träningsförhållanden vid Medelhavet",
+ desc: "Ladda upp inför säsongen med en träningsvecka utöver det vanliga. I Nerja väntar en inspirerande miljö för friidrottare som vill kombinera seriös träning med gemenskap och nya upplevelser. Med fina träningsanläggningar, behagligt klimat och närhet till strand, stad och träning får ni en perfekt kombination av fokuserad träning och en härlig lägerupplevelse. Detta är ett träningsläger där ni kan utvecklas tillsammans och skapa minnen för livet.",
+ price: "från 8 100 kr / person",
  },
 ];
 
