@@ -25,6 +25,8 @@ type Props = {
   intro?: string;
   /** Optional preset value placed in the sport_or_topic field, hidden from user. */
   presetTopic?: string;
+  /** Optional preset value for the destination field. */
+  defaultDestination?: string;
   /** Show the Group Size field. Default: true for group/conference/training_camp. */
   showGroupSize?: boolean;
   /** Show destination field. Default: true for group/training_camp. */
@@ -65,6 +67,7 @@ export default function InquiryForm({
   heading = "Berätta om er resa",
   intro,
   presetTopic,
+  defaultDestination,
   showGroupSize,
   showDestination,
   showDates,
@@ -214,7 +217,7 @@ export default function InquiryForm({
         {fieldShowDestination && (
           <div>
             <Label htmlFor="destination" className="text-xs uppercase tracking-wider">Destination</Label>
-            <Input id="destination" name="destination" maxLength={160} className={inputCls} />
+            <Input id="destination" name="destination" maxLength={160} defaultValue={defaultDestination} key={defaultDestination} className={inputCls} />
           </div>
         )}
         {fieldShowDates && (

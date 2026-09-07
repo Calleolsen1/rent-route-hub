@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, MapPin, MessageSquare } from "lucide-react";
 import Footer from "@/components/Footer";
@@ -97,7 +98,12 @@ const FALLBACK_TRAINING_FEATURES = [
 ];
 
 export default function Traningslager() {
- const { get, getArray } = useSiteContent(TRAINING_KEYS);
+  const { get, getArray } = useSiteContent(TRAINING_KEYS);
+  const [selectedDestination, setSelectedDestination] = useState<string | undefined>(undefined);
+  const chooseCamp = (location: string, sport: string) => {
+    setSelectedDestination(`${location} (${sport})`);
+    document.getElementById("forfragan")?.scrollIntoView({ behavior: "smooth" });
+  };
  const editableFeatures = getArray("training_features", FALLBACK_TRAINING_FEATURES);
  return (
  <div className="min-h-screen">
@@ -144,8 +150,12 @@ export default function Traningslager() {
  </div>
 
  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
- {camps.map((camp) => (
- <article key={camp.title} className="group bg-background overflow-hidden flex flex-col">
+  {camps.map((camp) => (
+  <article
+    key={camp.title}
+    onClick={() => chooseCamp(camp.location, camp.sport)}
+    className="group bg-background overflow-hidden flex flex-col cursor-pointer transition-shadow hover:shadow-lg"
+  >
  <div className="aspect-[4/3] overflow-hidden">
  <img
  src={camp.image}
@@ -170,7 +180,10 @@ export default function Traningslager() {
  <h3 className="font-display text-xl text-foreground mb-2">{camp.title}</h3>
  <div className="w-8 h-px bg-primary mb-3" />
  <p className="text-muted-foreground text-sm leading-relaxed flex-1">{camp.desc}</p>
- <p className="mt-4 pt-4 border-t border-border text-sm font-sans text-navy font-medium">{camp.price}</p>
+  <p className="mt-4 pt-4 border-t border-border text-sm font-sans text-navy font-medium">{camp.price}</p>
+  <span className="mt-3 inline-flex items-center gap-1.5 text-xs tracking-[0.15em] uppercase font-sans text-primary group-hover:gap-2.5 transition-all">
+    Skicka förfrågan <ArrowRight className="h-3.5 w-3.5" />
+  </span>
  </div>
  </article>
  ))}
@@ -257,9 +270,10 @@ export default function Traningslager() {
  {/* Inquiry form */}
  <section id="forfragan" className="bg-cream py-16 md:py-24">
  <div className="container mx-auto px-4 max-w-3xl">
- <InquiryForm
- type="training_camp"
- eyebrow="Förfrågan träningsläger"
+  <InquiryForm
+  type="training_camp"
+  defaultDestination={selectedDestination}
+  eyebrow="Förfrågan träningsläger"
  heading="Berätta om ert lag"
  intro="Sport, antal spelare och stab, önskad period och destination — vi tar fram ett upplägg som passar just ert lag."
  />
