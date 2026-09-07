@@ -12,6 +12,7 @@ import antalyaImg from "@/assets/camp-antalya-ramada.jpg.asset.json";
 import italyImg from "@/assets/camp-italy.jpg";
 import torremolinosSwimAsset from "@/assets/torremolinos-50m.jpg.asset.json";
 import monteGordoImg from "@/assets/camp-montegordo.jpg";
+import nerjaImg from "@/assets/camp-nerja-athletics.jpg.asset.json";
 
 const camps = [
  {
