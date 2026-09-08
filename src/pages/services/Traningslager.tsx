@@ -7,7 +7,7 @@ import Navbar from "@/components/Navbar";
 import InquiryForm from "@/components/InquiryForm";
 import FloatingInquiryButton from "@/components/FloatingInquiryButton";
 import heroImage from "@/assets/camps-hero.jpg";
-import valenciaImg from "@/assets/camp-valencia-elsaler.jpg.asset.json";
+import valenciaImg from "@/assets/camp-valencia-pitch.jpg.asset.json";
 import antalyaImg from "@/assets/camp-antalya-pitch.jpg.asset.json";
 import ayiaNapaImg from "@/assets/camp-ayianapa-pitch.jpg.asset.json";
 import torremolinosSwimAsset from "@/assets/torremolinos-50m.jpg.asset.json";
