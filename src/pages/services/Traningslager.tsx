@@ -7,7 +7,7 @@ import Navbar from "@/components/Navbar";
 import InquiryForm from "@/components/InquiryForm";
 import FloatingInquiryButton from "@/components/FloatingInquiryButton";
 import heroImage from "@/assets/camps-hero.jpg";
-import valenciaImg from "@/assets/camp-valencia-elsaler.jpg.asset.json";
+import valenciaImg from "@/assets/camp-valencia-pitch.jpg.asset.json";
 import antalyaImg from "@/assets/camp-antalya-pitch.jpg.asset.json";
 import ayiaNapaImg from "@/assets/camp-ayianapa-pitch.jpg.asset.json";
 import torremolinosSwimAsset from "@/assets/torremolinos-50m.jpg.asset.json";
@@ -16,29 +16,12 @@ import santaSusannaImg from "@/assets/camp-santa-susanna-pitch.jpg.asset.json";
 
 const camps = [
   {
-    image: nerjaImg.url,
-    sport: "Friidrott",
-    location: "Nerja, Spanien",
-    title: "Optimala träningsförhållanden vid Medelhavet",
-    desc: "Ladda upp inför säsongen med en träningsvecka utöver det vanliga. I Nerja väntar en inspirerande miljö för friidrottare som vill kombinera seriös träning med gemenskap och nya upplevelser. Med fina träningsanläggningar, behagligt klimat och närhet till strand, stad och träning får ni en perfekt kombination av fokuserad träning och en härlig lägerupplevelse. Detta är ett träningsläger där ni kan utvecklas tillsammans och skapa minnen för livet.",
-    price: "från 8 100 kr / person",
-  },
-  {
     image: valenciaImg.url,
     sport: "Fotboll",
     location: "Valencia, Spanien",
     title: "Träningsläger för lag med ambitioner",
     desc: "Parador de El Saler ligger naturskönt mellan Albufera naturpark och Medelhavet, cirka 18 km från Valencia. Egen naturgräsplan i perfekt skick samt training center med gym och spa. Klubbar som Valencia CF, Levante UD och UD Las Palmas lägger ofta sina läger här.",
-    price: "från 7 500 kr / person",
-  },
-  {
-    image: torremolinosSwimAsset.url,
-    objectPosition: "center",
-    sport: "Simning",
-    location: "Torremolinos, Spanien",
-    title: "50-metersbassäng under öppen himmel",
-    desc: "Sol, värme och hårda träningspass i uppvärmd 50-metersbassäng — ett simläger i Torremolinos är den perfekta kombinationen av träning och gemenskap. Med bra träningsmöjligheter, härligt klimat och roliga aktiviteter får simmarna chansen att utvecklas både i bassängen och som lag.",
-    price: "från 8 900 kr / person",
+    price: "från 12 500 kr / person",
   },
   {
     image: antalyaImg.url,
@@ -54,15 +37,32 @@ const camps = [
     location: "Ayia Napa, Cypern",
     title: "Där fotboll möter perfekta förhållanden",
     desc: "Träna tillsammans, umgås tillsammans och skapa minnen tillsammans — Milea Hotel blir er bas under ett träningsläger ni sent kommer att glömma. Nära stranden och centralt beläget med allt laget behöver för en härlig vistelse på solsäkra Cypern.",
-    price: "från 6 200 kr / person",
+    price: "från 7 100 kr / person",
   },
   {
     image: santaSusannaImg.url,
     sport: "Fotboll",
     location: "Santa Susanna, Spanien",
-    title: "Skandinaviens favoritdestination för fotbollsläger",
-    desc: "Santa Susanna är en av Spaniens mest populära platser för skandinaviska fotbollslag. Här väntar fina naturgräsplaner, bra hotellstandard och närhet till både strand och Barcelona. Ett perfekt val för lag som vill kombinera seriös träning med gemenskap och härligt klimat.",
-    price: "från 6 500 kr / person",
+    title: "Fotbollsläger med semesterkänsla",
+    desc: "Med sitt läge vid den spanska Medelhavskusten erbjuder Santa Susanna och hotell Don Ángel en härlig inramning för ett träningsläger. Här kombineras fotbollen med sol, hav och en miljö som gör vistelsen till något mer än bara några dagar av träning. Passa också på att göra ett besök i världsmetropolen Barcelona och varför inte en match på Camp Nou. Vi löser självklart fotbollsbiljetter åt er.",
+    price: "från 6 800 kr / person",
+  },
+  {
+    image: torremolinosSwimAsset.url,
+    objectPosition: "center",
+    sport: "Simning",
+    location: "Torremolinos, Spanien",
+    title: "50-metersbassäng under öppen himmel",
+    desc: "Sol, värme och hårda träningspass i uppvärmd 50-metersbassäng — ett simläger i Torremolinos är den perfekta kombinationen av träning och gemenskap. Med bra träningsmöjligheter, härligt klimat och roliga aktiviteter får simmarna chansen att utvecklas både i bassängen och som lag.",
+    price: "från 8 700 kr / person",
+  },
+  {
+    image: nerjaImg.url,
+    sport: "Friidrott",
+    location: "Nerja, Spanien",
+    title: "Optimala träningsförhållanden vid Medelhavet",
+    desc: "I Nerja väntar en inspirerande miljö för friidrottare som vill kombinera seriös träning med gemenskap och nya upplevelser. Med fina träningsanläggningar, behagligt klimat och närhet till strand, stad och träning får ni en perfekt kombination av fokuserad träning och en härlig lägerupplevelse.",
+    price: "från 8 200 kr / person",
   },
 ];
 
@@ -107,7 +107,7 @@ export default function Traningslager() {
  <div className="absolute inset-0 bg-navy/65" />
  </div>
  <div className="relative container mx-auto px-4 pb-14">
- <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
+ <p className="text-xs tracking-[0.3em] text-white uppercase mb-3 font-sans">
  {get("training_hero_eyebrow", "Tjänster — Träningsläger")}
  </p>
  <h1 className="font-display text-4xl md:text-6xl text-white leading-tight">
