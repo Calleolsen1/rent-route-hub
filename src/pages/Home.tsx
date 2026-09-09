@@ -26,7 +26,7 @@ import vipImage from "@/assets/kaisen-vip.jpg";
 import luxuryImage from "@/assets/kaisen-luxury.jpg";
 import offerF1Monza from "@/assets/offer-f1-monza.jpg";
 import offerLisbon from "@/assets/offer-lisbon.jpg";
-import offerLaManga from "@/assets/offer-lamanga.jpg";
+
 import offerLiverpool from "@/assets/offer-liverpool.jpg";
 import offerMallorca from "@/assets/offer-mallorca.jpg";
 
@@ -101,7 +101,6 @@ const fallbackHeroSlides: HeroSlide[] = [
 // ticket events, they're CTAs into the inquiry form, so they stay static.
 const inquiryOffers: FeaturedOffer[] = [
   { image: offerLisbon, title: "Gruppresa Lissabon", date: "Q1 2027", tag: "Grupp", days: "5 dagar", fromPrice: null, compareAtPrice: null, compareAtPct: null, currentPriceSek: null, href: "/group-travel", isNew: false },
-  { image: offerLaManga, title: "Träningsläger La Manga", date: "Mars 2027", tag: "Träning", days: "7 dagar", fromPrice: null, compareAtPrice: null, compareAtPct: null, currentPriceSek: null, href: "/services/traningslager", isNew: false },
   { image: offerMallorca, title: "Konferens Mallorca", date: "Maj 2027", tag: "Konferens", days: "4 dagar", fromPrice: null, compareAtPrice: null, compareAtPct: null, currentPriceSek: null, href: "/group-travel", isNew: false },
 ];
 
