@@ -1168,19 +1168,72 @@ export default function BackofficeBookingDetail() {
             </p>
           ) : (
             <ul className="divide-y divide-border rounded-lg border border-border">
-              {invoices.map((inv) => (
-                <li key={inv.id} className="flex items-center justify-between px-4 py-3 text-sm">
-                  <span>
-                    {inv.invoice_number} · förfaller {inv.due_date}
-                  </span>
-                  <span className="flex items-center gap-3">
-                    {formatSek(inv.total_sek)}
-                    <Button asChild variant="ghost" size="sm">
-                      <Link to={`/admin/backoffice/fakturor?invoice=${inv.id}`}>Öppna</Link>
-                    </Button>
-                  </span>
-                </li>
-              ))}
+              {invoices.map((inv) => {
+                const paid = Number(inv.paid_sek ?? 0);
+                const remaining = Math.max(0, Number(inv.total_sek) - paid);
+                return (
+                  <li key={inv.id} className="px-4 py-4 text-sm">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div>
+                        <p className="font-medium">
+                          {inv.invoice_number ?? "Utkast"}{" "}
+                          <Badge variant="secondary" className="ml-2">
+                            {INVOICE_STATUS_LABEL[inv.status as InvoiceStatus] ?? inv.status}
+                          </Badge>
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          Förfaller {inv.due_date} · Totalt {formatSek(inv.total_sek)} · Betalt{" "}
+                          {formatSek(paid)} · Kvar {formatSek(remaining)}
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={busy || remaining <= 0}
+                          onClick={() => openPayment(inv, false)}
+                        >
+                          Delbetalning
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={busy || remaining <= 0}
+                          onClick={() => openPayment(inv, true)}
+                        >
+                          Markera betald
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          disabled={busy || paid <= 0}
+                          onClick={() => clearPayments(inv)}
+                        >
+                          Markera obetald
+                        </Button>
+                        <Select
+                          value={inv.status}
+                          onValueChange={(v) => setInvoiceStatus(inv, v as InvoiceStatus)}
+                        >
+                          <SelectTrigger className="h-9 w-36">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Object.entries(INVOICE_STATUS_LABEL).map(([k, v]) => (
+                              <SelectItem key={k} value={k}>
+                                {v}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <Button asChild variant="ghost" size="sm">
+                          <Link to={`/admin/backoffice/fakturor?invoice=${inv.id}`}>Öppna</Link>
+                        </Button>
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </TabsContent>
