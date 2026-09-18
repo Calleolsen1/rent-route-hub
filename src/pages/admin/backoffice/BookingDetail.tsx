@@ -515,7 +515,55 @@ export default function BackofficeBookingDetail() {
     );
     setBusy(false);
     toast.success("Fakturaunderlag skapat");
-    navigate(`/admin/backoffice/fakturor?invoice=${inv.id}`);
+    setTab("invoices");
+    load();
+  };
+
+  const openPayment = (inv: any, full: boolean) => {
+    const remaining = Math.max(0, Number(inv.total_sek) - Number(inv.paid_sek ?? 0));
+    setPayInvoice(inv);
+    setPayAmount(full ? remaining : 0);
+    setPayDate(new Date().toISOString().slice(0, 10));
+    setPayMethod("");
+    setPayOpen(true);
+  };
+
+  const savePayment = async () => {
+    if (!payInvoice) return;
+    if (!payAmount || payAmount <= 0) return toast.error("Ange ett belopp");
+    setBusy(true);
+    const { error } = await supabase.from("invoice_payments").insert({
+      invoice_id: payInvoice.id,
+      amount_sek: payAmount,
+      paid_on: payDate,
+      method: payMethod || null,
+    });
+    setBusy(false);
+    if (error) return toast.error(error.message);
+    setPayOpen(false);
+    toast.success("Betalningen är registrerad");
+    load();
+  };
+
+  const clearPayments = async (inv: any) => {
+    setBusy(true);
+    const { error } = await supabase.from("invoice_payments").delete().eq("invoice_id", inv.id);
+    if (!error) {
+      await supabase
+        .from("invoices")
+        .update({ status: inv.sent_at ? "sent" : "draft", paid_sek: 0, paid_at: null })
+        .eq("id", inv.id);
+    }
+    setBusy(false);
+    if (error) return toast.error(error.message);
+    toast.success("Fakturan är markerad som obetald");
+    load();
+  };
+
+  const setInvoiceStatus = async (inv: any, status: InvoiceStatus) => {
+    const { error } = await supabase.from("invoices").update({ status }).eq("id", inv.id);
+    if (error) return toast.error(error.message);
+    load();
   };
 
   if (loading) {
