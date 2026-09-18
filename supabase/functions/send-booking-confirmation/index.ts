@@ -64,10 +64,13 @@ Deno.serve(async (req) => {
     const to = customer?.email;
     if (!to) return json({ error: "Kunden saknar e-postadress" }, 400);
 
-    const total = (items ?? []).reduce(
+    const subtotal = (items ?? []).reduce(
       (s: number, i: any) => s + Number(i.sale_sek) * Number(i.qty),
       0,
     );
+    const vatRate = booking.vat_enabled ? Number(booking.vat_rate ?? 0) : 0;
+    const vatAmount = Math.round(subtotal * (vatRate / 100));
+    const total = subtotal + vatAmount;
 
     const rows = (items ?? [])
       .map(
