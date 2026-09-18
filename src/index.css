@@ -140,6 +140,17 @@
     font-weight: 400;
     letter-spacing: -0.01em;
   }
+
+  /* Hide number input spinners so values are typed freely */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
 }
 
 @layer utilities {
