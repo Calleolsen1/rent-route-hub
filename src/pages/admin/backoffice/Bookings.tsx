@@ -298,6 +298,10 @@ export default function BackofficeBookings() {
               ))}
             </tbody>
           </table>
+                  </div>
+                </section>
+              ),
+          )}
         </div>
       )}
 
