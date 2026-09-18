@@ -77,13 +77,14 @@ Deno.serve(async (req) => {
       subtotal > 0 ? Math.round((vatAmount / subtotal) * 10000) / 100 : 0;
     const total = subtotal + vatAmount;
 
+    const showItemPrices = booking.show_item_prices === true;
     const rows = (items ?? [])
       .map(
         (i: any) => `<tr>
           <td style="padding:8px;border-bottom:1px solid #e5e7eb">${ITEM_LABEL[i.item_type] ?? i.item_type}</td>
           <td style="padding:8px;border-bottom:1px solid #e5e7eb">${i.description}</td>
           <td style="padding:8px;border-bottom:1px solid #e5e7eb;text-align:right">${i.qty}</td>
-          <td style="padding:8px;border-bottom:1px solid #e5e7eb;text-align:right">${sek(Number(i.sale_sek) * Number(i.qty))}</td>
+          ${showItemPrices ? `<td style="padding:8px;border-bottom:1px solid #e5e7eb;text-align:right">${sek(Number(i.sale_sek) * Number(i.qty))}</td>` : ""}
         </tr>`,
       )
       .join("");
