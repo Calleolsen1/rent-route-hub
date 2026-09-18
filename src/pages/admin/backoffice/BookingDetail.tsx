@@ -972,6 +972,22 @@ export default function BackofficeBookingDetail() {
             <p className="mt-2 text-sm text-muted-foreground">Ingen moms läggs på</p>
           )}
         </div>
+        <div className="rounded-lg border border-border bg-card p-4">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground">
+              Visa pris per rad
+            </p>
+            <Switch
+              checked={showItemPrices}
+              onCheckedChange={(v) => saveBooking({ show_item_prices: v })}
+            />
+          </div>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {showItemPrices
+              ? "Kunden ser priset för varje rad"
+              : "Kunden ser bara paketpriset (standard)"}
+          </p>
+        </div>
       </div>
 
       <Tabs value={tab} onValueChange={setTab}>
