@@ -38,8 +38,19 @@ type Row = {
   margin_sek: number;
 };
 
+type WebOrderRow = {
+  id: string;
+  status: string;
+  total_sek: number;
+  customer_email: string;
+  customer_name: string | null;
+  created_at: string;
+  items: { event_name: string; qty: number }[];
+};
+
 export default function BackofficeBookings() {
   const [rows, setRows] = useState<Row[]>([]);
+  const [webOrders, setWebOrders] = useState<WebOrderRow[]>([]);
   const [customers, setCustomers] = useState<{ id: string; label: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
