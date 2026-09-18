@@ -897,7 +897,14 @@ export default function BackofficeBookingDetail() {
                           )}
                         </td>
                         <td className="px-4 py-3">{ITEM_LABEL[i.item_type]}</td>
-                        <td className="px-4 py-3">{i.description}</td>
+                        <td className="px-4 py-3">
+                          {i.description}
+                          {itemVatRate(i) > 0 && (
+                            <span className="ml-2 rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foreground">
+                              moms {itemVatRate(i)} %
+                            </span>
+                          )}
+                        </td>
                         <td className="px-4 py-3 text-muted-foreground">{i.supplier ?? "—"}</td>
                         <td className="px-4 py-3 text-right">{i.qty}</td>
                         <td className="px-4 py-3 text-right text-muted-foreground">
