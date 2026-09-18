@@ -568,6 +568,28 @@ export default function BackofficeBookingDetail() {
         </DialogContent>
       </Dialog>
 
+      <Dialog open={!!confirmPreview} onOpenChange={(o) => !o && setConfirmPreview(null)}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Så här ser bekräftelsen ut</DialogTitle>
+          </DialogHeader>
+          <iframe
+            title="Förhandsgranskning av bekräftelse"
+            srcDoc={confirmPreview ?? ""}
+            className="h-[60vh] w-full rounded-md border border-border bg-white"
+          />
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setConfirmPreview(null)}>
+              Stäng
+            </Button>
+            <Button onClick={sendConfirmation} disabled={busy}>
+              {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Skicka bekräftelse
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={!!quotePreview} onOpenChange={(o) => !o && setQuotePreview(null)}>
         <DialogContent className="max-w-3xl">
           <DialogHeader>
