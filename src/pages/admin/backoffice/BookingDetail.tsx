@@ -162,10 +162,31 @@ export default function BackofficeBookingDetail() {
     if (error) toast.error(error.message);
   };
 
+  const buildDescription = (d: Partial<Item>): string => {
+    if (d.description?.trim()) return d.description.trim();
+    switch (d.item_type) {
+      case "hotel": {
+        const h = hotels.find((x) => x.id === d.hotel_id);
+        return h?.name ?? d.room_type ?? "Hotell";
+      }
+      case "flight":
+        return (
+          [d.airline, d.flight_number,
+            d.from_airport && d.to_airport ? `${d.from_airport}–${d.to_airport}` : null,
+          ].filter(Boolean).join(" ") || "Flyg"
+        );
+      case "ticket":
+        return [d.event_name, d.ticket_category].filter(Boolean).join(", ") || "Biljett";
+      case "transfer":
+        return [d.transfer_from, d.transfer_to].filter(Boolean).join(" – ") || "Transfer";
+      default:
+        return "Rad";
+    }
+  };
+
   const saveItem = async () => {
-    if (!itemDraft.description?.trim()) return toast.error("Beskrivning krävs");
     const { id: itemId, ...rest } = itemDraft as Item;
-    const payload = { ...rest, booking_id: booking!.id };
+    const payload = { ...rest, booking_id: booking!.id, description: buildDescription(itemDraft) };
     const { error } = itemId
       ? await supabase.from("booking_items").update(payload).eq("id", itemId)
       : await supabase.from("booking_items").insert(payload);
@@ -604,12 +625,6 @@ export default function BackofficeBookingDetail() {
               placeholder="Leverantör"
               value={itemDraft.supplier ?? ""}
               onChange={(e) => setItemDraft({ ...itemDraft, supplier: e.target.value })}
-            />
-            <Input
-              className="sm:col-span-2"
-              placeholder="Beskrivning *"
-              value={itemDraft.description ?? ""}
-              onChange={(e) => setItemDraft({ ...itemDraft, description: e.target.value })}
             />
 
             {itemDraft.item_type === "hotel" && (
