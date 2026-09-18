@@ -97,6 +97,22 @@ export default function BackofficeBookings() {
     });
   }, [rows, query, statusFilter]);
 
+  const today = new Date().toISOString().slice(0, 10);
+
+  const { upcoming, past } = useMemo(() => {
+    const isPast = (r: Row) => {
+      const end = r.return_date || r.depart_date;
+      return !!end && end < today;
+    };
+    const up = filtered
+      .filter((r) => !isPast(r))
+      .sort((a, b) => (a.depart_date ?? "9999").localeCompare(b.depart_date ?? "9999"));
+    const pa = filtered
+      .filter(isPast)
+      .sort((a, b) => (b.depart_date ?? "").localeCompare(a.depart_date ?? ""));
+    return { upcoming: up, past: pa };
+  }, [filtered, today]);
+
   const sendConfirmation = async (bookingId: string) => {
     setSending(bookingId);
     const { error } = await supabase.functions.invoke("send-booking-confirmation", {
@@ -209,7 +225,21 @@ export default function BackofficeBookings() {
           Inga bokningar ännu.
         </p>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-border">
+        <div className="space-y-8">
+          {[
+            { label: "Kommande resor", items: upcoming },
+            { label: "Genomförda resor", items: past },
+          ].map(
+            (group) =>
+              group.items.length > 0 && (
+                <section key={group.label}>
+                  <div className="mb-2 flex items-baseline gap-2">
+                    <h2 className="font-display text-lg text-foreground">{group.label}</h2>
+                    <span className="text-xs text-muted-foreground">
+                      {group.items.length} st
+                    </span>
+                  </div>
+                  <div className="overflow-x-auto rounded-lg border border-border">
           <table className="w-full text-sm">
             <thead className="bg-muted/50 text-left text-xs uppercase tracking-wider text-muted-foreground">
               <tr>
@@ -226,7 +256,7 @@ export default function BackofficeBookings() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((r) => (
+              {group.items.map((r) => (
                 <tr key={r.booking_id} className="border-t border-border">
                   <td className="px-4 py-3 text-muted-foreground">{r.booking_number}</td>
                   <td className="px-4 py-3">
@@ -268,6 +298,10 @@ export default function BackofficeBookings() {
               ))}
             </tbody>
           </table>
+                  </div>
+                </section>
+              ),
+          )}
         </div>
       )}
 
