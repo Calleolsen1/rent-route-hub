@@ -328,6 +328,8 @@ export type Database = {
           title: string
           travellers_count: number
           updated_at: string
+          vat_enabled: boolean
+          vat_rate: number
         }
         Insert: {
           booking_number?: string | null
@@ -347,6 +349,8 @@ export type Database = {
           title: string
           travellers_count?: number
           updated_at?: string
+          vat_enabled?: boolean
+          vat_rate?: number
         }
         Update: {
           booking_number?: string | null
@@ -366,6 +370,8 @@ export type Database = {
           title?: string
           travellers_count?: number
           updated_at?: string
+          vat_enabled?: boolean
+          vat_rate?: number
         }
         Relationships: [
           {

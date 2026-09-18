@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import {
   ArrowLeft,
   Loader2,
@@ -55,6 +56,8 @@ type Booking = {
   status: BookingStatus;
   notes: string | null;
   internal_notes: string | null;
+  vat_enabled: boolean;
+  vat_rate: number;
 };
 
 type Item = {
@@ -197,6 +200,9 @@ export default function BackofficeBookingDetail() {
 
   const saleTotal = items.reduce((s, i) => s + Number(i.sale_sek) * i.qty, 0);
   const costTotal = items.reduce((s, i) => s + Number(i.cost_sek) * i.qty, 0);
+  const vatRate = booking?.vat_enabled ? Number(booking.vat_rate ?? 0) : 0;
+  const vatAmount = Math.round(saleTotal * (vatRate / 100));
+  const grandTotal = saleTotal + vatAmount;
 
   const saveBooking = async (patch: Partial<Booking>) => {
     if (!booking) return;
@@ -385,7 +391,7 @@ export default function BackofficeBookingDetail() {
       customer_name: customer.contact_name || customer.company_name || null,
       title: quoteTitle.trim(),
       intro_message: quoteIntro.trim() || null,
-      total_sek: saleTotal,
+      total_sek: grandTotal,
       currency: "SEK",
       expires_at: new Date(quoteExpiry + "T23:59:59").toISOString(),
     };
@@ -406,15 +412,23 @@ export default function BackofficeBookingDetail() {
       setQuoteId(id);
     }
 
-    const { error: iErr } = await supabase.from("quote_items").insert(
-      items.map((i, idx) => ({
+    const quoteRows = items.map((i, idx) => ({
+      quote_id: id!,
+      description: `${ITEM_LABEL[i.item_type]}: ${i.description}`,
+      qty: i.qty,
+      unit_price_sek: i.sale_sek,
+      sort_order: idx,
+    }));
+    if (vatAmount > 0) {
+      quoteRows.push({
         quote_id: id!,
-        description: `${ITEM_LABEL[i.item_type]}: ${i.description}`,
-        qty: i.qty,
-        unit_price_sek: i.sale_sek,
-        sort_order: idx,
-      })),
-    );
+        description: `Moms (${vatRate} %)`,
+        qty: 1,
+        unit_price_sek: vatAmount,
+        sort_order: items.length,
+      });
+    }
+    const { error: iErr } = await supabase.from("quote_items").insert(quoteRows);
     if (iErr) throw new Error(iErr.message);
     return id!;
   };
@@ -461,9 +475,8 @@ export default function BackofficeBookingDetail() {
   const createInvoice = async () => {
     if (items.length === 0) return toast.error("Lägg till minst en rad först");
     setBusy(true);
-    const vatRate = 25;
     const subtotal = saleTotal;
-    const vat = Math.round(subtotal * (vatRate / 100));
+    const vat = vatAmount;
     const { data: inv, error } = await supabase
       .from("invoices")
       .insert({
@@ -610,9 +623,21 @@ export default function BackofficeBookingDetail() {
                   <span>{formatSek(i.sale_sek * i.qty)}</span>
                 </div>
               ))}
+              {vatAmount > 0 && (
+                <>
+                  <div className="mt-2 flex justify-between border-t pt-2 text-muted-foreground">
+                    <span>Delsumma</span>
+                    <span>{formatSek(saleTotal)}</span>
+                  </div>
+                  <div className="flex justify-between text-muted-foreground">
+                    <span>Moms ({vatRate} %)</span>
+                    <span>{formatSek(vatAmount)}</span>
+                  </div>
+                </>
+              )}
               <div className="mt-2 flex justify-between border-t pt-2 font-medium">
                 <span>Totalt</span>
-                <span>{formatSek(saleTotal)}</span>
+                <span>{formatSek(grandTotal)}</span>
               </div>
             </div>
           </div>
@@ -676,10 +701,15 @@ export default function BackofficeBookingDetail() {
         </DialogContent>
       </Dialog>
 
-      <div className="mb-6 grid gap-4 sm:grid-cols-3">
+      <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-lg border border-border bg-card p-4">
           <p className="text-xs uppercase tracking-wider text-muted-foreground">Försäljning</p>
           <p className="text-xl font-medium">{formatSek(saleTotal)}</p>
+          {vatAmount > 0 && (
+            <p className="mt-1 text-xs text-muted-foreground">
+              + moms {formatSek(vatAmount)} = {formatSek(grandTotal)}
+            </p>
+          )}
         </div>
         <div className="rounded-lg border border-border bg-card p-4">
           <p className="text-xs uppercase tracking-wider text-muted-foreground">Inköp</p>
@@ -688,6 +718,35 @@ export default function BackofficeBookingDetail() {
         <div className="rounded-lg border border-border bg-card p-4">
           <p className="text-xs uppercase tracking-wider text-muted-foreground">Vinst</p>
           <p className="text-xl font-medium">{formatSek(saleTotal - costTotal)}</p>
+        </div>
+        <div className="rounded-lg border border-border bg-card p-4">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground">Moms</p>
+            <Switch
+              checked={!!booking.vat_enabled}
+              onCheckedChange={(v) =>
+                saveBooking({ vat_enabled: v, vat_rate: Number(booking.vat_rate) || 2.67 })
+              }
+            />
+          </div>
+          {booking.vat_enabled ? (
+            <div className="mt-2 flex items-center gap-2">
+              <Input
+                type="number"
+                step="0.01"
+                className="h-9 w-24"
+                value={booking.vat_rate ?? 0}
+                onFocus={(e) => e.currentTarget.select()}
+                onChange={(e) =>
+                  setBooking({ ...booking, vat_rate: Number(e.target.value) } as Booking)
+                }
+                onBlur={(e) => saveBooking({ vat_rate: Number(e.target.value) })}
+              />
+              <span className="text-sm text-muted-foreground">% = {formatSek(vatAmount)}</span>
+            </div>
+          ) : (
+            <p className="mt-2 text-sm text-muted-foreground">Ingen moms läggs på</p>
+          )}
         </div>
       </div>
 

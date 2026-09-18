@@ -64,10 +64,13 @@ Deno.serve(async (req) => {
     const to = customer?.email;
     if (!to) return json({ error: "Kunden saknar e-postadress" }, 400);
 
-    const total = (items ?? []).reduce(
+    const subtotal = (items ?? []).reduce(
       (s: number, i: any) => s + Number(i.sale_sek) * Number(i.qty),
       0,
     );
+    const vatRate = booking.vat_enabled ? Number(booking.vat_rate ?? 0) : 0;
+    const vatAmount = Math.round(subtotal * (vatRate / 100));
+    const total = subtotal + vatAmount;
 
     const rows = (items ?? [])
       .map(
@@ -92,7 +95,8 @@ Deno.serve(async (req) => {
           <tr><td style="padding:4px 0;color:#64748b">Antal resenärer</td><td style="text-align:right">${travellers?.length || booking.travellers_count || 0}</td></tr>
         </table>
         <table style="width:100%;border-collapse:collapse;font-size:14px;color:#0f172a">${rows}</table>
-        <p style="text-align:right;font-size:16px;margin-top:12px;color:#0f172a"><strong>Totalt: ${sek(total)}</strong></p>
+        ${vatRate > 0 ? `<p style="text-align:right;font-size:14px;margin:12px 0 0;color:#64748b">Delsumma: ${sek(subtotal)}<br/>Moms (${vatRate} %): ${sek(vatAmount)}</p>` : ""}
+        <p style="text-align:right;font-size:16px;margin-top:8px;color:#0f172a"><strong>Totalt: ${sek(total)}</strong></p>
         ${booking.notes ? `<p style="color:#334155;white-space:pre-wrap">${booking.notes}</p>` : ""}
         <p style="color:#64748b;font-size:13px;margin-top:24px">Kaisen Travel Group · info@kaisengroup.se</p>
       </div></body></html>`;
