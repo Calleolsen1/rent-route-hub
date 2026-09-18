@@ -1285,8 +1285,26 @@ export default function BackofficeBookingDetail() {
                             ))}
                           </SelectContent>
                         </Select>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={busy}
+                          onClick={() => openCancelInvoice(inv)}
+                        >
+                          Makulera & meddela kund
+                        </Button>
                         <Button asChild variant="ghost" size="sm">
                           <Link to={`/admin/backoffice/fakturor?invoice=${inv.id}`}>Öppna</Link>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-destructive"
+                          disabled={busy}
+                          onClick={() => setDelInvoice(inv)}
+                          title="Radera faktura"
+                        >
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     </div>
