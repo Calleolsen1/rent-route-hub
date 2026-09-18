@@ -20,4 +20,6 @@ if (dsn) {
   });
 }
 
+installNumberInputHelpers();
+
 createRoot(document.getElementById("root")!).render(<App />);
