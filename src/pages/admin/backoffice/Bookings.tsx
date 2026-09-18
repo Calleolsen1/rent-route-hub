@@ -225,7 +225,21 @@ export default function BackofficeBookings() {
           Inga bokningar ännu.
         </p>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-border">
+        <div className="space-y-8">
+          {[
+            { label: "Kommande resor", items: upcoming },
+            { label: "Genomförda resor", items: past },
+          ].map(
+            (group) =>
+              group.items.length > 0 && (
+                <section key={group.label}>
+                  <div className="mb-2 flex items-baseline gap-2">
+                    <h2 className="font-display text-lg text-foreground">{group.label}</h2>
+                    <span className="text-xs text-muted-foreground">
+                      {group.items.length} st
+                    </span>
+                  </div>
+                  <div className="overflow-x-auto rounded-lg border border-border">
           <table className="w-full text-sm">
             <thead className="bg-muted/50 text-left text-xs uppercase tracking-wider text-muted-foreground">
               <tr>
@@ -242,7 +256,7 @@ export default function BackofficeBookings() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((r) => (
+              {group.items.map((r) => (
                 <tr key={r.booking_id} className="border-t border-border">
                   <td className="px-4 py-3 text-muted-foreground">{r.booking_number}</td>
                   <td className="px-4 py-3">
