@@ -553,9 +553,9 @@ export default function BackofficeBookingDetail() {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {Object.entries(STATUS_LABEL).map(([k, v]) => (
+              {BOOKING_STATUS_OPTIONS.map((k) => (
                 <SelectItem key={k} value={k}>
-                  {v}
+                  {STATUS_LABEL[k]}
                 </SelectItem>
               ))}
             </SelectContent>
