@@ -489,7 +489,7 @@ export default function BackofficeBookingDetail() {
         booking_id: booking!.id,
         customer_id: booking!.customer_id,
         due_date: new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10),
-        vat_rate: vatRate,
+        vat_rate: effectiveVatRate,
         subtotal_sek: subtotal,
         vat_sek: vat,
         total_sek: subtotal + vat,
