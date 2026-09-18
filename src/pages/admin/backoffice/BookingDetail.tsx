@@ -108,6 +108,8 @@ type DocRow = {
   error_message: string | null;
   sent_at: string;
   html: string | null;
+  invoice_id: string | null;
+  quote_id: string | null;
 };
 
 const DOC_LABEL: Record<string, string> = {
@@ -173,7 +175,7 @@ export default function BackofficeBookingDetail() {
       supabase.from("invoices").select("*").eq("booking_id", id).order("created_at"),
       supabase
         .from("booking_documents")
-        .select("id, doc_type, recipient_email, subject, status, error_message, sent_at, html")
+        .select("id, doc_type, recipient_email, subject, status, error_message, sent_at, html, invoice_id, quote_id")
         .eq("booking_id", id)
         .order("sent_at", { ascending: false }),
     ]);
@@ -292,6 +294,38 @@ export default function BackofficeBookingDetail() {
       /* ignore */
     }
     return msg;
+  };
+
+  // Older log rows were written before we started saving the email body — in
+  // that case we rebuild the document with the same preview endpoints.
+  const openDoc = async (d: DocRow) => {
+    if (d.html) return setDocView(d);
+    setBusy(true);
+    try {
+      let fn = "";
+      let body: Record<string, unknown> = {};
+      if (d.doc_type === "confirmation") {
+        fn = "send-booking-confirmation";
+        body = { booking_id: booking!.id, preview: true };
+      } else if (d.doc_type === "invoice" && d.invoice_id) {
+        fn = "send-booking-invoice";
+        body = { invoice_id: d.invoice_id, preview: true };
+      } else if (d.doc_type === "quote" && d.quote_id) {
+        fn = "send-quote-email";
+        body = { quote_id: d.quote_id, preview: true };
+      } else {
+        throw new Error("Dokumentet kan inte visas");
+      }
+      const { data, error } = await supabase.functions.invoke(fn, { body });
+      if (error || (data as any)?.error) {
+        throw new Error(await fnError(error, data, "Kunde inte visa dokumentet"));
+      }
+      setDocView({ ...d, html: (data as any).html });
+    } catch (e: any) {
+      toast.error(e.message ?? "Något gick fel");
+    } finally {
+      setBusy(false);
+    }
   };
 
   const previewConfirmation = async () => {
@@ -698,12 +732,7 @@ export default function BackofficeBookingDetail() {
                       )}
                     </td>
                     <td className="px-4 py-3 text-right">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        disabled={!d.html}
-                        onClick={() => setDocView(d)}
-                      >
+                      <Button variant="ghost" size="sm" onClick={() => openDoc(d)}>
                         <Eye className="h-4 w-4" />
                       </Button>
                     </td>
