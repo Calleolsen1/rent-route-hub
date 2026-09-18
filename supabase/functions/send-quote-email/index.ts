@@ -55,7 +55,7 @@ Deno.serve(async (req) => {
   try {
     await requireAdmin(req);
 
-    const { quote_id } = await req.json();
+    const { quote_id, preview } = await req.json();
     if (!quote_id) throw new Error("quote_id required");
 
     const admin = createClient(
@@ -71,7 +71,7 @@ Deno.serve(async (req) => {
     if (quote.status === "cancelled") throw new Error("Quote är avbruten");
 
     const apiKey = Deno.env.get("RESEND_API_KEY");
-    if (!apiKey) throw new Error("RESEND_API_KEY missing");
+    if (!apiKey && !preview) throw new Error("RESEND_API_KEY missing");
 
     const link = `${SITE_URL.replace(/\/+$/, "")}/quote/${quote.public_token}`;
     const expiresFmt = new Date(quote.expires_at).toLocaleDateString("sv-SE", {
@@ -136,6 +136,15 @@ Deno.serve(async (req) => {
   </div>
 </div>`.trim();
 
+    const subject = `Din offert från Kaisen Travel Group — ${quote.title}`;
+
+    if (preview) {
+      return new Response(
+        JSON.stringify({ preview: true, html, subject, to: quote.customer_email }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -145,7 +154,7 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         from: SENDER,
         to: [quote.customer_email],
-        subject: `Din offert från Kaisen Travel Group — ${quote.title}`,
+        subject,
         html,
         reply_to: "info@kaisengroup.se",
       }),

@@ -25,6 +25,7 @@ import {
   ArrowLeft,
   Loader2,
   Mail,
+  Eye,
   Send,
   Plus,
   FileText,
@@ -124,6 +125,8 @@ export default function BackofficeBookingDetail() {
   const [quoteTitle, setQuoteTitle] = useState("");
   const [quoteIntro, setQuoteIntro] = useState("");
   const [quoteExpiry, setQuoteExpiry] = useState("");
+  const [quoteId, setQuoteId] = useState<string | null>(null);
+  const [quotePreview, setQuotePreview] = useState<string | null>(null);
   const [travOpen, setTravOpen] = useState(false);
   const [travDraft, setTravDraft] = useState<Partial<Traveller>>({});
 
@@ -266,49 +269,86 @@ export default function BackofficeBookingDetail() {
       `Hej ${name.split(" ")[0] || ""},\n\nNedan följer vårt förslag. Hör av dig om något ska justeras.`.trim(),
     );
     setQuoteExpiry(new Date(Date.now() + 14 * 86400000).toISOString().slice(0, 10));
+    setQuoteId(null);
+    setQuotePreview(null);
     setQuoteOpen(true);
   };
 
-  const sendQuote = async () => {
-    if (!customer?.email) return toast.error("Kunden saknar e-postadress");
-    if (!quoteTitle.trim()) return toast.error("Titel krävs");
-    setBusy(true);
-    try {
-      const { data: quote, error: qErr } = await supabase
+  // Creates the draft quote (or updates the existing draft) so it can be
+  // previewed and sent.
+  const saveQuoteDraft = async (): Promise<string> => {
+    if (!customer?.email) throw new Error("Kunden saknar e-postadress");
+    if (!quoteTitle.trim()) throw new Error("Titel krävs");
+    const payload = {
+      customer_email: customer.email,
+      customer_name: customer.contact_name || customer.company_name || null,
+      title: quoteTitle.trim(),
+      intro_message: quoteIntro.trim() || null,
+      total_sek: saleTotal,
+      currency: "SEK",
+      expires_at: new Date(quoteExpiry + "T23:59:59").toISOString(),
+    };
+
+    let id = quoteId;
+    if (id) {
+      const { error } = await supabase.from("quotes").update(payload).eq("id", id);
+      if (error) throw new Error(error.message);
+      await supabase.from("quote_items").delete().eq("quote_id", id);
+    } else {
+      const { data, error } = await supabase
         .from("quotes")
-        .insert({
-          customer_email: customer.email,
-          customer_name: customer.contact_name || customer.company_name || null,
-          title: quoteTitle.trim(),
-          intro_message: quoteIntro.trim() || null,
-          total_sek: saleTotal,
-          currency: "SEK",
-          status: "draft",
-          expires_at: new Date(quoteExpiry + "T23:59:59").toISOString(),
-        })
+        .insert({ ...payload, status: "draft" })
         .select("id")
         .single();
-      if (qErr || !quote) throw new Error(qErr?.message ?? "Kunde inte spara offerten");
+      if (error || !data) throw new Error(error?.message ?? "Kunde inte spara offerten");
+      id = data.id;
+      setQuoteId(id);
+    }
 
-      const { error: iErr } = await supabase.from("quote_items").insert(
-        items.map((i, idx) => ({
-          quote_id: quote.id,
-          description: `${ITEM_LABEL[i.item_type]}: ${i.description}`,
-          qty: i.qty,
-          unit_price_sek: i.sale_sek,
-          sort_order: idx,
-        })),
-      );
-      if (iErr) throw new Error(iErr.message);
+    const { error: iErr } = await supabase.from("quote_items").insert(
+      items.map((i, idx) => ({
+        quote_id: id!,
+        description: `${ITEM_LABEL[i.item_type]}: ${i.description}`,
+        qty: i.qty,
+        unit_price_sek: i.sale_sek,
+        sort_order: idx,
+      })),
+    );
+    if (iErr) throw new Error(iErr.message);
+    return id!;
+  };
 
+  const previewQuote = async () => {
+    setBusy(true);
+    try {
+      const id = await saveQuoteDraft();
+      const { data, error } = await supabase.functions.invoke("send-quote-email", {
+        body: { quote_id: id, preview: true },
+      });
+      if (error || (data as any)?.error) {
+        throw new Error(error?.message ?? (data as any)?.error ?? "Kunde inte visa offerten");
+      }
+      setQuotePreview((data as any).html);
+    } catch (e: any) {
+      toast.error(e.message ?? "Något gick fel");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const sendQuote = async () => {
+    setBusy(true);
+    try {
+      const id = await saveQuoteDraft();
       const { error: sErr, data: sData } = await supabase.functions.invoke("send-quote-email", {
-        body: { quote_id: quote.id },
+        body: { quote_id: id },
       });
       if (sErr || (sData as any)?.error) {
         throw new Error(sErr?.message ?? (sData as any)?.error ?? "Kunde inte skicka mejl");
       }
       toast.success(`Offerten är skickad till ${customer.email}`);
       setQuoteOpen(false);
+      setQuotePreview(null);
     } catch (e: any) {
       toast.error(e.message ?? "Något gick fel");
     } finally {
@@ -477,6 +517,32 @@ export default function BackofficeBookingDetail() {
           <DialogFooter>
             <Button variant="ghost" onClick={() => setQuoteOpen(false)}>
               Avbryt
+            </Button>
+            <Button variant="outline" onClick={previewQuote} disabled={busy}>
+              <Eye className="mr-2 h-4 w-4" />
+              Förhandsgranska mejl
+            </Button>
+            <Button onClick={sendQuote} disabled={busy}>
+              {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Skicka offert
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!quotePreview} onOpenChange={(o) => !o && setQuotePreview(null)}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Så här ser mejlet ut</DialogTitle>
+          </DialogHeader>
+          <iframe
+            title="Förhandsgranskning av offert"
+            srcDoc={quotePreview ?? ""}
+            className="h-[60vh] w-full rounded-md border border-border bg-white"
+          />
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setQuotePreview(null)}>
+              Stäng
             </Button>
             <Button onClick={sendQuote} disabled={busy}>
               {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
