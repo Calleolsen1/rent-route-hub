@@ -43,7 +43,7 @@ Deno.serve(async (req) => {
     const { data: isAdmin } = await admin.rpc("has_role", { _user_id: userId, _role: "admin" });
     if (!isAdmin) return json({ error: "Forbidden" }, 403);
 
-    const { booking_id } = await req.json();
+    const { booking_id, preview } = await req.json();
     if (!booking_id || typeof booking_id !== "string") {
       return json({ error: "booking_id krävs" }, 400);
     }
