@@ -109,9 +109,12 @@ export type Database = {
           from_airport: string | null
           hotel_id: string | null
           id: string
+          is_round_trip: boolean
           item_type: Database["public"]["Enums"]["booking_item_type"]
           notes: string | null
           qty: number
+          return_depart_at: string | null
+          return_flight_number: string | null
           room_type: string | null
           rooms: number | null
           sale_sek: number
@@ -141,9 +144,12 @@ export type Database = {
           from_airport?: string | null
           hotel_id?: string | null
           id?: string
+          is_round_trip?: boolean
           item_type: Database["public"]["Enums"]["booking_item_type"]
           notes?: string | null
           qty?: number
+          return_depart_at?: string | null
+          return_flight_number?: string | null
           room_type?: string | null
           rooms?: number | null
           sale_sek?: number
@@ -173,9 +179,12 @@ export type Database = {
           from_airport?: string | null
           hotel_id?: string | null
           id?: string
+          is_round_trip?: boolean
           item_type?: Database["public"]["Enums"]["booking_item_type"]
           notes?: string | null
           qty?: number
+          return_depart_at?: string | null
+          return_flight_number?: string | null
           room_type?: string | null
           rooms?: number | null
           sale_sek?: number
