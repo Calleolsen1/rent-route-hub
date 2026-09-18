@@ -475,9 +475,8 @@ export default function BackofficeBookingDetail() {
   const createInvoice = async () => {
     if (items.length === 0) return toast.error("Lägg till minst en rad först");
     setBusy(true);
-    const vatRate = 25;
     const subtotal = saleTotal;
-    const vat = Math.round(subtotal * (vatRate / 100));
+    const vat = vatAmount;
     const { data: inv, error } = await supabase
       .from("invoices")
       .insert({
