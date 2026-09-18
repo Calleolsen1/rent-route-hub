@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -60,6 +60,7 @@ type WebOrderRow = {
 };
 
 export default function BackofficeBookings() {
+  const navigate = useNavigate();
   const [rows, setRows] = useState<Row[]>([]);
   const [webOrders, setWebOrders] = useState<WebOrderRow[]>([]);
   const [customers, setCustomers] = useState<{ id: string; label: string }[]>([]);
@@ -278,16 +279,20 @@ export default function BackofficeBookings() {
     }
 
     setSaving(true);
-    const { error } = await supabase.from("bookings").insert({
-      customer_id: customerId,
-      title: draft.title,
-      destination: draft.destination || null,
-      depart_date: draft.depart_date || null,
-      return_date: draft.return_date || null,
-      travellers_count: Number(draft.travellers_count) || 0,
-    });
+    const { data: created, error } = await supabase
+      .from("bookings")
+      .insert({
+        customer_id: customerId,
+        title: draft.title,
+        destination: draft.destination || null,
+        depart_date: draft.depart_date || null,
+        return_date: draft.return_date || null,
+        travellers_count: Number(draft.travellers_count) || 0,
+      })
+      .select("id")
+      .single();
     setSaving(false);
-    if (error) return toast.error(error.message);
+    if (error || !created) return toast.error(error?.message ?? "Kunde inte skapa bokningen");
     toast.success("Bokningen skapad");
     setOpen(false);
     setDraft({
@@ -300,7 +305,8 @@ export default function BackofficeBookings() {
     });
     setNewCustomer(false);
     setCustDraft({ contact_name: "", company_name: "", email: "", phone: "" });
-    load();
+    // Öppna den nya bokningen direkt
+    navigate(`/admin/backoffice/bokningar/${created.id}`);
   };
 
   return (
