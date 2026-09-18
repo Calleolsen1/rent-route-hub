@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Plus, Search, ArrowRight, Mail } from "lucide-react";
+import { Loader2, Plus, Search, ArrowRight, Mail, Trash2 } from "lucide-react";
 import { formatSek, STATUS_LABEL, type BookingStatus } from "./shared";
 
 type Row = {
@@ -61,6 +61,8 @@ export default function BackofficeBookings() {
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [sending, setSending] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<Row | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const [newCustomer, setNewCustomer] = useState(false);
   const [custDraft, setCustDraft] = useState({
     contact_name: "",
