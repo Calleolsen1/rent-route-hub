@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Plus, Search, ArrowRight, Mail, Trash2 } from "lucide-react";
+import { Loader2, Plus, Search, ArrowRight, Mail, Trash2, Undo2 } from "lucide-react";
 import { formatSek, STATUS_LABEL, type BookingStatus } from "./shared";
 
 type Row = {
@@ -36,6 +36,17 @@ type Row = {
   sale_total_sek: number;
   cost_total_sek: number;
   margin_sek: number;
+};
+
+type DeletedRow = {
+  id: string;
+  booking_number: string | null;
+  title: string;
+  destination: string | null;
+  depart_date: string | null;
+  deleted_at: string | null;
+  company_name: string | null;
+  contact_name: string | null;
 };
 
 type WebOrderRow = {
@@ -63,6 +74,8 @@ export default function BackofficeBookings() {
   const [sending, setSending] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<Row | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [deletedRows, setDeletedRows] = useState<DeletedRow[]>([]);
+  const [confirmPermanent, setConfirmPermanent] = useState<DeletedRow | null>(null);
   const [newCustomer, setNewCustomer] = useState(false);
   const [custDraft, setCustDraft] = useState({
     contact_name: "",
@@ -112,6 +125,23 @@ export default function BackofficeBookings() {
       (cust ?? []).map((c: any) => ({
         id: c.id,
         label: c.company_name ? `${c.company_name} (${c.contact_name})` : c.contact_name,
+      })),
+    );
+    const { data: del } = await supabase
+      .from("bookings")
+      .select("id, booking_number, title, destination, depart_date, deleted_at, customers(company_name, contact_name)")
+      .not("deleted_at", "is", null)
+      .order("deleted_at", { ascending: false });
+    setDeletedRows(
+      (del ?? []).map((b: any) => ({
+        id: b.id,
+        booking_number: b.booking_number,
+        title: b.title,
+        destination: b.destination,
+        depart_date: b.depart_date,
+        deleted_at: b.deleted_at,
+        company_name: b.customers?.company_name ?? null,
+        contact_name: b.customers?.contact_name ?? null,
       })),
     );
     setLoading(false);
@@ -170,17 +200,42 @@ export default function BackofficeBookings() {
     );
   }, [webOrders, query]);
 
+  // Mjuk radering: resan markeras som raderad och kan återställas
   const doDelete = async () => {
     if (!confirmDelete) return;
     setDeleting(true);
     const { error } = await supabase
       .from("bookings")
-      .delete()
+      .update({ deleted_at: new Date().toISOString() })
       .eq("id", confirmDelete.booking_id);
     setDeleting(false);
     setConfirmDelete(null);
     if (error) return toast.error(error.message);
-    toast.success("Resan är raderad");
+    toast.success("Resan är raderad — återställ den under Raderade resor");
+    load();
+  };
+
+  const restore = async (r: DeletedRow) => {
+    const { error } = await supabase
+      .from("bookings")
+      .update({ deleted_at: null })
+      .eq("id", r.id);
+    if (error) return toast.error(error.message);
+    toast.success(`"${r.title}" är återställd`);
+    load();
+  };
+
+  const doPermanentDelete = async () => {
+    if (!confirmPermanent) return;
+    setDeleting(true);
+    const { error } = await supabase
+      .from("bookings")
+      .delete()
+      .eq("id", confirmPermanent.id);
+    setDeleting(false);
+    setConfirmPermanent(null);
+    if (error) return toast.error(error.message);
+    toast.success("Resan är permanent raderad");
     load();
   };
 
@@ -288,6 +343,7 @@ export default function BackofficeBookings() {
               <SelectItem value="all">Alla resor</SelectItem>
               <SelectItem value="upcoming">Kommande</SelectItem>
               <SelectItem value="past">Genomförda</SelectItem>
+              <SelectItem value="deleted">Raderade</SelectItem>
             </SelectContent>
           </Select>
           <Input
@@ -330,6 +386,68 @@ export default function BackofficeBookings() {
         <div className="flex h-40 items-center justify-center text-muted-foreground">
           <Loader2 className="h-5 w-5 animate-spin" />
         </div>
+      ) : viewFilter === "deleted" ? (
+        deletedRows.length === 0 ? (
+          <p className="rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
+            Inga raderade resor.
+          </p>
+        ) : (
+          <section>
+            <div className="mb-2 flex items-baseline gap-2">
+              <h2 className="font-display text-lg text-foreground">Raderade resor</h2>
+              <span className="text-xs text-muted-foreground">{deletedRows.length} st</span>
+            </div>
+            <div className="overflow-x-auto rounded-lg border border-border">
+              <table className="w-full text-sm">
+                <thead className="bg-muted/50 text-left text-xs uppercase tracking-wider text-muted-foreground">
+                  <tr>
+                    <th className="px-4 py-3">Nr</th>
+                    <th className="px-4 py-3">Resa</th>
+                    <th className="px-4 py-3">Kund</th>
+                    <th className="px-4 py-3">Avresa</th>
+                    <th className="px-4 py-3">Raderad</th>
+                    <th className="px-4 py-3" />
+                  </tr>
+                </thead>
+                <tbody>
+                  {deletedRows.map((r) => (
+                    <tr key={r.id} className="border-t border-border">
+                      <td className="px-4 py-3 text-muted-foreground">{r.booking_number}</td>
+                      <td className="px-4 py-3">
+                        <div className="font-medium">{r.title}</div>
+                        <div className="text-xs text-muted-foreground">{r.destination}</div>
+                      </td>
+                      <td className="px-4 py-3">{r.company_name || r.contact_name}</td>
+                      <td className="px-4 py-3">{r.depart_date ?? "—"}</td>
+                      <td className="px-4 py-3 text-muted-foreground">
+                        {r.deleted_at?.slice(0, 10) ?? "—"}
+                      </td>
+                      <td className="px-4 py-3 text-right whitespace-nowrap">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          title="Återställ resa"
+                          onClick={() => restore(r)}
+                        >
+                          <Undo2 className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          title="Radera permanent"
+                          className="text-destructive hover:text-destructive"
+                          onClick={() => setConfirmPermanent(r)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )
       ) : filtered.length === 0 ? (
         <p className="rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
           {hasDateFilter || viewFilter !== "all" || statusFilter !== "all" || query
@@ -604,9 +722,10 @@ export default function BackofficeBookings() {
             <DialogTitle>Radera resa?</DialogTitle>
           </DialogHeader>
           <p className="text-sm text-muted-foreground">
-            "{confirmDelete?.title}" raderas permanent tillsammans med alla rader
-            (hotell, flyg, biljetter, transfer) och resenärslistan. Skickade fakturor
-            och dokument finns kvar på kundkortet. Detta går inte att ångra.
+            "{confirmDelete?.title}" flyttas till Raderade resor tillsammans med alla
+            rader (hotell, flyg, biljetter, transfer) och resenärslistan. Den syns inte
+            längre i listor eller rapporter, men du kan återställa den när som helst
+            under vyn "Raderade".
           </p>
           <DialogFooter>
             <Button variant="outline" onClick={() => setConfirmDelete(null)}>
@@ -615,6 +734,28 @@ export default function BackofficeBookings() {
             <Button variant="destructive" onClick={doDelete} disabled={deleting}>
               {deleting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Radera
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!confirmPermanent} onOpenChange={(v) => !v && setConfirmPermanent(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Radera permanent?</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            "{confirmPermanent?.title}" raderas permanent tillsammans med alla rader
+            (hotell, flyg, biljetter, transfer) och resenärslistan. Skickade fakturor
+            och dokument finns kvar på kundkortet. Detta går inte att ångra.
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmPermanent(null)}>
+              Avbryt
+            </Button>
+            <Button variant="destructive" onClick={doPermanentDelete} disabled={deleting}>
+              {deleting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Radera permanent
             </Button>
           </DialogFooter>
         </DialogContent>
