@@ -1117,36 +1117,48 @@ export default function BackofficeBookingDetail() {
 
             {itemDraft.item_type === "flight" && (
               <>
-                <div className="col-span-2 rounded-lg border border-border p-3 space-y-3">
+                <div className="col-span-2 rounded-lg border border-border bg-muted/30 p-3 space-y-3">
                   <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     Utresa
                   </p>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Input
-                      placeholder="Flygbolag"
-                      value={itemDraft.airline ?? ""}
-                      onChange={(e) => setItemDraft({ ...itemDraft, airline: e.target.value })}
-                    />
-                    <Input
-                      placeholder="Flightnummer dit"
-                      value={itemDraft.flight_number ?? ""}
-                      onChange={(e) =>
-                        setItemDraft({ ...itemDraft, flight_number: e.target.value })
-                      }
-                    />
-                    <Input
-                      placeholder="Från (flygplats)"
-                      value={itemDraft.from_airport ?? ""}
-                      onChange={(e) =>
-                        setItemDraft({ ...itemDraft, from_airport: e.target.value })
-                      }
-                    />
-                    <Input
-                      placeholder="Till (flygplats)"
-                      value={itemDraft.to_airport ?? ""}
-                      onChange={(e) => setItemDraft({ ...itemDraft, to_airport: e.target.value })}
-                    />
-                    <div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="text-xs text-muted-foreground">Flygbolag</label>
+                      <Input
+                        placeholder="T.ex. SAS"
+                        value={itemDraft.airline ?? ""}
+                        onChange={(e) => setItemDraft({ ...itemDraft, airline: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs text-muted-foreground">Flightnummer dit</label>
+                      <Input
+                        placeholder="T.ex. SK123"
+                        value={itemDraft.flight_number ?? ""}
+                        onChange={(e) =>
+                          setItemDraft({ ...itemDraft, flight_number: e.target.value })
+                        }
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs text-muted-foreground">Från (flygplats)</label>
+                      <Input
+                        placeholder="T.ex. GOT"
+                        value={itemDraft.from_airport ?? ""}
+                        onChange={(e) =>
+                          setItemDraft({ ...itemDraft, from_airport: e.target.value })
+                        }
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs text-muted-foreground">Till (flygplats)</label>
+                      <Input
+                        placeholder="T.ex. VLC"
+                        value={itemDraft.to_airport ?? ""}
+                        onChange={(e) => setItemDraft({ ...itemDraft, to_airport: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-1">
                       <label className="text-xs text-muted-foreground">Avgång dit</label>
                       <Input
                         type="datetime-local"
@@ -1183,19 +1195,22 @@ export default function BackofficeBookingDetail() {
                 </label>
 
                 {itemDraft.is_round_trip && (
-                  <div className="col-span-2 rounded-lg border border-border p-3 space-y-3">
+                  <div className="col-span-2 rounded-lg border border-border bg-muted/30 p-3 space-y-3">
                     <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                       Hemresa
                     </p>
-                    <div className="grid grid-cols-2 gap-2">
-                      <Input
-                        placeholder="Flightnummer hem"
-                        value={itemDraft.return_flight_number ?? ""}
-                        onChange={(e) =>
-                          setItemDraft({ ...itemDraft, return_flight_number: e.target.value })
-                        }
-                      />
-                      <div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <label className="text-xs text-muted-foreground">Flightnummer hem</label>
+                        <Input
+                          placeholder="T.ex. SK124"
+                          value={itemDraft.return_flight_number ?? ""}
+                          onChange={(e) =>
+                            setItemDraft({ ...itemDraft, return_flight_number: e.target.value })
+                          }
+                        />
+                      </div>
+                      <div className="space-y-1">
                         <label className="text-xs text-muted-foreground">Avgång hem</label>
                         <Input
                           type="datetime-local"
