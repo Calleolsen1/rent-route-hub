@@ -1280,6 +1280,9 @@ export default function BackofficeBookingDetail() {
                         </p>
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
+                        <Button size="sm" disabled={busy} onClick={() => previewInvoice(inv)}>
+                          Visa & skicka faktura
+                        </Button>
                         <Button
                           variant="outline"
                           size="sm"
