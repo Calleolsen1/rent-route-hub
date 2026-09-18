@@ -2253,7 +2253,13 @@ export type Database = {
         | "overdue"
         | "cancelled"
       booking_item_type: "hotel" | "flight" | "ticket" | "transfer" | "other"
-      booking_status: "draft" | "confirmed" | "paid" | "completed" | "cancelled"
+      booking_status:
+        | "draft"
+        | "unanswered"
+        | "confirmed"
+        | "paid"
+        | "completed"
+        | "cancelled"
       event_sport: "soccer" | "formula1"
       event_status: "upcoming" | "sold_out" | "completed" | "cancelled"
       inquiry_status: "new" | "in_progress" | "quoted" | "won" | "lost"
@@ -2405,7 +2411,14 @@ export const Constants = {
         "cancelled",
       ],
       booking_item_type: ["hotel", "flight", "ticket", "transfer", "other"],
-      booking_status: ["draft", "confirmed", "paid", "completed", "cancelled"],
+      booking_status: [
+        "draft",
+        "unanswered",
+        "confirmed",
+        "paid",
+        "completed",
+        "cancelled",
+      ],
       event_sport: ["soccer", "formula1"],
       event_status: ["upcoming", "sold_out", "completed", "cancelled"],
       inquiry_status: ["new", "in_progress", "quoted", "won", "lost"],
