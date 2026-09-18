@@ -65,6 +65,8 @@ export default function BackofficeBookings() {
 
   const load = async () => {
     setLoading(true);
+    // Sätt automatiskt resor vars datum passerat till "Genomförd"
+    await supabase.rpc("complete_past_bookings");
     const [{ data, error }, { data: cust }] = await Promise.all([
       supabase.from("booking_margin_view").select("*").order("depart_date", { ascending: true }),
       supabase.from("customers").select("id, company_name, contact_name").order("contact_name"),
