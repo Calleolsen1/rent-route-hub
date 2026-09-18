@@ -278,14 +278,14 @@ export default function BackofficeBookings() {
             type="date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
-            className="w-38"
+            className="w-40"
             title="Visa resor från och med detta datum"
           />
           <Input
             type="date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
-            className="w-38"
+            className="w-40"
             title="Visa resor fram till detta datum"
           />
           {(fromDate || toDate || viewFilter !== "all" || statusFilter !== "all" || query) && (
