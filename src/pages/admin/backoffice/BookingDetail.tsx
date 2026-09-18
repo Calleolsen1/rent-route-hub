@@ -624,13 +624,23 @@ export default function BackofficeBookingDetail() {
       return toast.error(error?.message ?? "Kunde inte skapa fakturan");
     }
     await supabase.from("invoice_items").insert(
-      items.map((i, idx) => ({
-        invoice_id: inv.id,
-        description: `${ITEM_LABEL[i.item_type]}: ${i.description}`,
-        qty: i.qty,
-        unit_price_sek: i.sale_sek,
-        sort_order: idx,
-      })),
+      showItemPrices
+        ? items.map((i, idx) => ({
+            invoice_id: inv.id,
+            description: `${ITEM_LABEL[i.item_type]}: ${i.description}`,
+            qty: i.qty,
+            unit_price_sek: i.sale_sek,
+            sort_order: idx,
+          }))
+        : [
+            {
+              invoice_id: inv.id,
+              description: `${booking!.title}${booking!.destination ? ` – ${booking!.destination}` : ""} (paketpris)`,
+              qty: 1,
+              unit_price_sek: subtotal,
+              sort_order: 0,
+            },
+          ],
     );
     setBusy(false);
     toast.success("Fakturaunderlag skapat");
