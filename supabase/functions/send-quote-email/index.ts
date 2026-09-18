@@ -55,7 +55,7 @@ Deno.serve(async (req) => {
   try {
     await requireAdmin(req);
 
-    const { quote_id, preview } = await req.json();
+    const { quote_id, preview, booking_id } = await req.json();
     if (!quote_id) throw new Error("quote_id required");
 
     const admin = createClient(
@@ -162,6 +162,16 @@ Deno.serve(async (req) => {
     if (!res.ok) {
       throw new Error(`Resend ${res.status}: ${await res.text()}`);
     }
+
+    await admin.from("booking_documents").insert({
+      booking_id: booking_id ?? null,
+      quote_id,
+      doc_type: "quote",
+      recipient_email: quote.customer_email,
+      subject,
+      status: "sent",
+      html,
+    });
 
     // First-send bookkeeping
     const updates: Record<string, unknown> = { status: "sent" };
