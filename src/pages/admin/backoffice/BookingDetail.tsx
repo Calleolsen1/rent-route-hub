@@ -125,6 +125,7 @@ export default function BackofficeBookingDetail() {
   const load = useCallback(async () => {
     if (!id) return;
     setLoading(true);
+    await supabase.rpc("complete_past_bookings");
     const { data: b, error } = await supabase.from("bookings").select("*").eq("id", id).maybeSingle();
     if (error || !b) {
       toast.error(error?.message ?? "Bokningen hittades inte");
