@@ -125,6 +125,7 @@ const DOC_LABEL: Record<string, string> = {
   confirmation: "Bokningsbekräftelse",
   quote: "Offert",
   invoice: "Faktura",
+  invoice_cancelled: "Makulerad faktura",
 };
 
 const emptyItem = (booking_id: string): Partial<Item> => ({
@@ -151,6 +152,11 @@ export default function BackofficeBookingDetail() {
   const [payAmount, setPayAmount] = useState(0);
   const [payDate, setPayDate] = useState(new Date().toISOString().slice(0, 10));
   const [payMethod, setPayMethod] = useState("");
+  const [cancelOpen, setCancelOpen] = useState(false);
+  const [cancelInvoice, setCancelInvoice] = useState<any>(null);
+  const [cancelMessage, setCancelMessage] = useState("");
+  const [cancelPreview, setCancelPreview] = useState<string | null>(null);
+  const [delInvoice, setDelInvoice] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
 
@@ -349,6 +355,60 @@ export default function BackofficeBookingDetail() {
     } finally {
       setBusy(false);
     }
+  };
+
+  const openCancelInvoice = (inv: any) => {
+    setCancelInvoice(inv);
+    setCancelMessage("");
+    setCancelPreview(null);
+    setCancelOpen(true);
+  };
+
+  const previewCancellation = async () => {
+    if (!cancelInvoice) return;
+    setBusy(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("send-invoice-cancellation", {
+        body: { invoice_id: cancelInvoice.id, message: cancelMessage, preview: true },
+      });
+      if (error || (data as any)?.error) {
+        throw new Error(await fnError(error, data, "Kunde inte visa mejlet"));
+      }
+      setCancelPreview((data as any).html);
+    } catch (e: any) {
+      toast.error(e.message ?? "Något gick fel");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const sendCancellation = async () => {
+    if (!cancelInvoice) return;
+    setBusy(true);
+    const { data, error } = await supabase.functions.invoke("send-invoice-cancellation", {
+      body: { invoice_id: cancelInvoice.id, message: cancelMessage },
+    });
+    setBusy(false);
+    if (error || (data as any)?.error) {
+      return toast.error(await fnError(error, data, "Mejlet kunde inte skickas"));
+    }
+    setCancelPreview(null);
+    setCancelOpen(false);
+    toast.success("Kunden är meddelad och fakturan är makulerad");
+    load();
+  };
+
+  const deleteInvoice = async () => {
+    if (!delInvoice) return;
+    setBusy(true);
+    await supabase.from("invoice_payments").delete().eq("invoice_id", delInvoice.id);
+    await supabase.from("invoice_items").delete().eq("invoice_id", delInvoice.id);
+    const { error } = await supabase.from("invoices").delete().eq("id", delInvoice.id);
+    setBusy(false);
+    if (error) return toast.error(error.message);
+    setDelInvoice(null);
+    toast.success("Fakturan är raderad");
+    load();
   };
 
   const previewConfirmation = async () => {
@@ -1225,8 +1285,26 @@ export default function BackofficeBookingDetail() {
                             ))}
                           </SelectContent>
                         </Select>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={busy}
+                          onClick={() => openCancelInvoice(inv)}
+                        >
+                          Makulera & meddela kund
+                        </Button>
                         <Button asChild variant="ghost" size="sm">
                           <Link to={`/admin/backoffice/fakturor?invoice=${inv.id}`}>Öppna</Link>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-destructive"
+                          disabled={busy}
+                          onClick={() => setDelInvoice(inv)}
+                          title="Radera faktura"
+                        >
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     </div>
@@ -1237,6 +1315,77 @@ export default function BackofficeBookingDetail() {
           )}
         </TabsContent>
       </Tabs>
+
+      <Dialog open={cancelOpen} onOpenChange={setCancelOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>
+              Makulera faktura {cancelInvoice?.invoice_number ?? ""} och meddela kunden
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              Kunden får ett mejl om att fakturan är makulerad och inte ska betalas. Fakturan får
+              status Avbruten.
+            </p>
+            <Textarea
+              rows={4}
+              placeholder="Eget meddelande till kunden (valfritt)"
+              value={cancelMessage}
+              onChange={(e) => setCancelMessage(e.target.value)}
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={previewCancellation} disabled={busy}>
+              Förhandsgranska mejl
+            </Button>
+            <Button onClick={sendCancellation} disabled={busy}>
+              Makulera och skicka
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!cancelPreview} onOpenChange={(o) => !o && setCancelPreview(null)}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Så här ser mejlet ut</DialogTitle>
+          </DialogHeader>
+          <iframe
+            title="Förhandsgranskning"
+            srcDoc={cancelPreview ?? ""}
+            className="h-[60vh] w-full rounded-lg border border-border bg-white"
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCancelPreview(null)}>
+              Stäng
+            </Button>
+            <Button onClick={sendCancellation} disabled={busy}>
+              Makulera och skicka
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!delInvoice} onOpenChange={(o) => !o && setDelInvoice(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Radera faktura {delInvoice?.invoice_number ?? ""}?</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            Fakturan med alla rader och registrerade betalningar tas bort permanent. Redan skickade
+            mejl ligger kvar under Skickat.
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDelInvoice(null)}>
+              Avbryt
+            </Button>
+            <Button variant="destructive" onClick={deleteInvoice} disabled={busy}>
+              Radera faktura
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={payOpen} onOpenChange={setPayOpen}>
         <DialogContent className="max-w-md">
