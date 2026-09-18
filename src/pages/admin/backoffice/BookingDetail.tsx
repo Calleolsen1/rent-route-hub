@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -138,7 +138,6 @@ const emptyItem = (booking_id: string): Partial<Item> => ({
 
 export default function BackofficeBookingDetail() {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const [booking, setBooking] = useState<Booking | null>(null);
   const [customer, setCustomer] = useState<any>(null);
   const [items, setItems] = useState<Item[]>([]);
