@@ -344,6 +344,62 @@ export default function BackofficeBookings() {
                 </section>
               ),
           )}
+          {filteredWebOrders.length > 0 && (
+            <section>
+              <div className="mb-2 flex items-baseline gap-2">
+                <h2 className="font-display text-lg text-foreground">Biljettkö via webben</h2>
+                <span className="text-xs text-muted-foreground">{filteredWebOrders.length} st</span>
+              </div>
+              <div className="overflow-x-auto rounded-lg border border-border">
+                <table className="w-full text-sm">
+                  <thead className="bg-muted/50 text-left text-xs uppercase tracking-wider text-muted-foreground">
+                    <tr>
+                      <th className="px-4 py-3">Datum</th>
+                      <th className="px-4 py-3">Köp</th>
+                      <th className="px-4 py-3">Kund</th>
+                      <th className="px-4 py-3 text-right">Belopp</th>
+                      <th className="px-4 py-3">Status</th>
+                      <th className="px-4 py-3" />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredWebOrders.map((o) => (
+                      <tr key={o.id} className="border-t border-border">
+                        <td className="px-4 py-3 text-muted-foreground">
+                          {o.created_at.slice(0, 10)}
+                        </td>
+                        <td className="px-4 py-3">
+                          {o.items.map((i, idx) => (
+                            <div key={idx}>
+                              <span className="font-medium">{i.event_name}</span>
+                              <span className="text-xs text-muted-foreground"> × {i.qty}</span>
+                            </div>
+                          ))}
+                        </td>
+                        <td className="px-4 py-3">
+                          <div>{o.customer_name || o.customer_email}</div>
+                          {o.customer_name && (
+                            <div className="text-xs text-muted-foreground">{o.customer_email}</div>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-right font-medium">{formatSek(o.total_sek)}</td>
+                        <td className="px-4 py-3">
+                          <Badge variant="secondary">{o.status}</Badge>
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <Button asChild variant="ghost" size="sm">
+                            <Link to={`/admin/orders`}>
+                              <ArrowRight className="h-4 w-4" />
+                            </Link>
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          )}
         </div>
       )}
 
