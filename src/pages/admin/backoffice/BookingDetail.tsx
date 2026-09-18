@@ -1316,6 +1316,77 @@ export default function BackofficeBookingDetail() {
         </TabsContent>
       </Tabs>
 
+      <Dialog open={cancelOpen} onOpenChange={setCancelOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>
+              Makulera faktura {cancelInvoice?.invoice_number ?? ""} och meddela kunden
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              Kunden får ett mejl om att fakturan är makulerad och inte ska betalas. Fakturan får
+              status Avbruten.
+            </p>
+            <Textarea
+              rows={4}
+              placeholder="Eget meddelande till kunden (valfritt)"
+              value={cancelMessage}
+              onChange={(e) => setCancelMessage(e.target.value)}
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={previewCancellation} disabled={busy}>
+              Förhandsgranska mejl
+            </Button>
+            <Button onClick={sendCancellation} disabled={busy}>
+              Makulera och skicka
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!cancelPreview} onOpenChange={(o) => !o && setCancelPreview(null)}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Så här ser mejlet ut</DialogTitle>
+          </DialogHeader>
+          <iframe
+            title="Förhandsgranskning"
+            srcDoc={cancelPreview ?? ""}
+            className="h-[60vh] w-full rounded-lg border border-border bg-white"
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCancelPreview(null)}>
+              Stäng
+            </Button>
+            <Button onClick={sendCancellation} disabled={busy}>
+              Makulera och skicka
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!delInvoice} onOpenChange={(o) => !o && setDelInvoice(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Radera faktura {delInvoice?.invoice_number ?? ""}?</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            Fakturan med alla rader och registrerade betalningar tas bort permanent. Redan skickade
+            mejl ligger kvar under Skickat.
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDelInvoice(null)}>
+              Avbryt
+            </Button>
+            <Button variant="destructive" onClick={deleteInvoice} disabled={busy}>
+              Radera faktura
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={payOpen} onOpenChange={setPayOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
