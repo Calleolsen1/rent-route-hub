@@ -517,6 +517,32 @@ export default function BackofficeBookingDetail() {
             <Button variant="ghost" onClick={() => setQuoteOpen(false)}>
               Avbryt
             </Button>
+            <Button variant="outline" onClick={previewQuote} disabled={busy}>
+              <Eye className="mr-2 h-4 w-4" />
+              Förhandsgranska mejl
+            </Button>
+            <Button onClick={sendQuote} disabled={busy}>
+              {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Skicka offert
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!quotePreview} onOpenChange={(o) => !o && setQuotePreview(null)}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Så här ser mejlet ut</DialogTitle>
+          </DialogHeader>
+          <iframe
+            title="Förhandsgranskning av offert"
+            srcDoc={quotePreview ?? ""}
+            className="h-[60vh] w-full rounded-md border border-border bg-white"
+          />
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setQuotePreview(null)}>
+              Stäng
+            </Button>
             <Button onClick={sendQuote} disabled={busy}>
               {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Skicka offert
