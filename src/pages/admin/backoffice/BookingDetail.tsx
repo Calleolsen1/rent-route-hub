@@ -477,7 +477,7 @@ export default function BackofficeBookingDetail() {
               ))}
             </SelectContent>
           </Select>
-          <Button variant="outline" onClick={sendConfirmation} disabled={busy}>
+          <Button variant="outline" onClick={previewConfirmation} disabled={busy}>
             <Mail className="mr-2 h-4 w-4" />
             Skicka bekräftelse
           </Button>
