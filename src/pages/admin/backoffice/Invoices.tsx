@@ -303,6 +303,19 @@ export default function BackofficeInvoices() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={!!previewHtml} onOpenChange={(o) => !o && setPreviewHtml(null)}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>{previewTitle}</DialogTitle>
+          </DialogHeader>
+          <iframe
+            title="Fakturaförhandsvisning"
+            srcDoc={previewHtml ?? ""}
+            className="h-[70vh] w-full rounded-md border border-border bg-white"
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
