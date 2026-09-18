@@ -8,30 +8,50 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import AdminPreviewPane from "@/components/admin/AdminPreviewPane";
 
-const navItems = [
-  { to: "/admin/dashboard", label: "Översikt", icon: LayoutDashboard },
-  { to: "/admin/inquiries", label: "Förfrågningar", icon: Inbox },
-  { to: "/admin/orders", label: "Beställningar", icon: ShoppingBag },
-  { to: "/admin/tickets", label: "Biljetter & Stripe", icon: Ticket },
-  { to: "/admin/banners", label: "Hero-banners", icon: Image },
-  { to: "/admin/team", label: "Team", icon: UserSquare2 },
-  { to: "/admin/media", label: "Bildbibliotek", icon: Images },
-  { to: "/admin/markup-defaults", label: "Påslag", icon: Percent },
-  { to: "/admin/diagnostics", label: "Diagnostik", icon: Stethoscope },
-  { to: "/admin/users", label: "Användare", icon: Users },
-  { to: "/admin/support", label: "Support", icon: MessageSquare },
-  { to: "/admin/content", label: "Innehåll", icon: FileText },
-  { to: "/admin/navigation", label: "Navigation", icon: Menu },
+/** Alltid överst, utanför grupperna. */
+const overviewItem = { to: "/admin/dashboard", label: "Översikt", icon: LayoutDashboard };
+
+/** Menygrupper: allt som rör order- och bokningshantering ligger i Back office. */
+const navGroups = [
+  {
+    label: "Back office",
+    items: [
+      { to: "/admin/inquiries", label: "Förfrågningar", icon: Inbox },
+      { to: "/admin/orders", label: "Beställningar", icon: ShoppingBag },
+      { to: "/admin/backoffice/bokningar", label: "Bokningar", icon: Plane },
+      { to: "/admin/backoffice/kunder", label: "Kunder", icon: Contact2 },
+      { to: "/admin/backoffice/hotell", label: "Hotell", icon: Building2 },
+      { to: "/admin/backoffice/fakturor", label: "Fakturor", icon: Receipt },
+      { to: "/admin/backoffice/rapporter", label: "Rapporter", icon: BarChart3 },
+    ],
+  },
+  {
+    label: "Hemsidan",
+    items: [
+      { to: "/admin/banners", label: "Hero-banners", icon: Image },
+      { to: "/admin/content", label: "Innehåll", icon: FileText },
+      { to: "/admin/navigation", label: "Navigation", icon: Menu },
+      { to: "/admin/team", label: "Team", icon: UserSquare2 },
+      { to: "/admin/media", label: "Bildbibliotek", icon: Images },
+      { to: "/admin/tickets", label: "Biljetter & Stripe", icon: Ticket },
+      { to: "/admin/markup-defaults", label: "Påslag", icon: Percent },
+    ],
+  },
+  {
+    label: "System",
+    items: [
+      { to: "/admin/users", label: "Användare", icon: Users },
+      { to: "/admin/support", label: "Support", icon: MessageSquare },
+      { to: "/admin/diagnostics", label: "Diagnostik", icon: Stethoscope },
+    ],
+  },
 ];
 
-/** Back office — kunder, hotell, bokningar, fakturor och rapporter. */
-const backofficeItems = [
-  { to: "/admin/backoffice/bokningar", label: "Bokningar", icon: Plane },
-  { to: "/admin/backoffice/kunder", label: "Kunder", icon: Contact2 },
-  { to: "/admin/backoffice/hotell", label: "Hotell", icon: Building2 },
-  { to: "/admin/backoffice/fakturor", label: "Fakturor", icon: Receipt },
-  { to: "/admin/backoffice/rapporter", label: "Rapporter", icon: BarChart3 },
-];
+const navLinkClass = ({ isActive }: { isActive: boolean }) =>
+  cn(
+    "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+    isActive ? "bg-primary text-primary-foreground" : "text-foreground hover:bg-accent"
+  );
 
 /**
  * Which public page the live preview should open on for a given admin page.
