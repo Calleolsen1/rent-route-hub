@@ -8,14 +8,14 @@ import { toast } from "sonner";
  * Reusable image upload widget. Uploads to a Supabase Storage bucket under a
  * caller-supplied prefix, returns the public URL via `onUploaded`.
  *
- * Permissions are enforced server-side by storage RLS (kaisen-media bucket
+ * Permissions are enforced server-side by storage RLS (email-assets bucket
  * allows writes only when the caller is an admin), so we don't need a custom
  * edge function — the browser SDK call is fine.
  */
 type Props = {
   /** Current image URL, if any. Renders as preview. */
   value?: string | null;
-  /** Storage bucket id. Defaults to kaisen-media. */
+  /** Storage bucket id. Defaults to email-assets. */
   bucket?: string;
   /** Path prefix inside the bucket — e.g. "event-covers". */
   prefix: string;
@@ -29,7 +29,7 @@ type Props = {
 
 export function ImageUploader({
   value,
-  bucket = "kaisen-media",
+  bucket = "email-assets",
   prefix,
   onUploaded,
   onCleared,

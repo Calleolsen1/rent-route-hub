@@ -17,10 +17,10 @@ import { cn } from "@/lib/utils";
 /**
  * Reusable image field: shows the current image, and opens a dialog where the
  * admin can either upload a new file or pick an existing one from the media
- * library (kaisen-media bucket).
+ * library (email-assets bucket).
  */
 
-const BUCKET = "kaisen-media";
+const BUCKET = "email-assets";
 const PREFIXES = ["library", "event-covers", "home-slides", "team", ""];
 
 type LibraryItem = { path: string; url: string; updated_at: string | null };
