@@ -316,7 +316,9 @@ export default function BackofficeBookings() {
         </div>
       ) : filtered.length === 0 ? (
         <p className="rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-          Inga bokningar ännu.
+          {hasDateFilter || viewFilter !== "all" || statusFilter !== "all" || query
+            ? "Inga bokningar matchar filtret."
+            : "Inga bokningar ännu."}
         </p>
       ) : (
         <div className="space-y-8">
