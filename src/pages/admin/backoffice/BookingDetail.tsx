@@ -636,7 +636,7 @@ export default function BackofficeBookingDetail() {
                     <span>{formatSek(saleTotal)}</span>
                   </div>
                   <div className="flex justify-between text-muted-foreground">
-                    <span>Moms ({vatRate} %)</span>
+                    <span>Moms ({effectiveVatRate} %)</span>
                     <span>{formatSek(vatAmount)}</span>
                   </div>
                 </>
