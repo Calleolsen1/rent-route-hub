@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Plus, Search, ArrowRight, Mail } from "lucide-react";
+import { Loader2, Plus, Search, ArrowRight, Mail, Trash2 } from "lucide-react";
 import { formatSek, STATUS_LABEL, type BookingStatus } from "./shared";
 
 type Row = {
@@ -61,6 +61,8 @@ export default function BackofficeBookings() {
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [sending, setSending] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<Row | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const [newCustomer, setNewCustomer] = useState(false);
   const [custDraft, setCustDraft] = useState({
     contact_name: "",
@@ -167,6 +169,20 @@ export default function BackofficeBookings() {
         .some((v) => String(v).toLowerCase().includes(q)),
     );
   }, [webOrders, query]);
+
+  const doDelete = async () => {
+    if (!confirmDelete) return;
+    setDeleting(true);
+    const { error } = await supabase
+      .from("bookings")
+      .delete()
+      .eq("id", confirmDelete.booking_id);
+    setDeleting(false);
+    setConfirmDelete(null);
+    if (error) return toast.error(error.message);
+    toast.success("Resan är raderad");
+    load();
+  };
 
   const sendConfirmation = async (bookingId: string) => {
     setSending(bookingId);
@@ -376,7 +392,7 @@ export default function BackofficeBookings() {
                   <td className="px-4 py-3">
                     <Badge variant="secondary">{STATUS_LABEL[r.status]}</Badge>
                   </td>
-                  <td className="px-4 py-3 text-right">
+                  <td className="px-4 py-3 text-right whitespace-nowrap">
                     <Button
                       variant="ghost"
                       size="sm"
@@ -389,6 +405,15 @@ export default function BackofficeBookings() {
                       ) : (
                         <Mail className="h-4 w-4" />
                       )}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      title="Radera resa"
+                      className="text-destructive hover:text-destructive"
+                      onClick={() => setConfirmDelete(r)}
+                    >
+                      <Trash2 className="h-4 w-4" />
                     </Button>
                     <Button asChild variant="ghost" size="sm">
                       <Link to={`/admin/backoffice/bokningar/${r.booking_id}`}>
@@ -568,6 +593,28 @@ export default function BackofficeBookings() {
             <Button onClick={create} disabled={saving}>
               {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Skapa
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!confirmDelete} onOpenChange={(v) => !v && setConfirmDelete(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Radera resa?</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            "{confirmDelete?.title}" raderas permanent tillsammans med alla rader
+            (hotell, flyg, biljetter, transfer) och resenärslistan. Skickade fakturor
+            och dokument finns kvar på kundkortet. Detta går inte att ångra.
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmDelete(null)}>
+              Avbryt
+            </Button>
+            <Button variant="destructive" onClick={doDelete} disabled={deleting}>
+              {deleting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Radera
             </Button>
           </DialogFooter>
         </DialogContent>
