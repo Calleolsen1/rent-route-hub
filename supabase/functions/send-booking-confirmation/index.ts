@@ -98,6 +98,9 @@ Deno.serve(async (req) => {
       </div></body></html>`;
 
     const subject = `Bokningsbekräftelse ${booking.booking_number ?? ""} – ${booking.title}`;
+
+    if (preview === true) return json({ preview: true, html, subject, to });
+
     const resendKey = Deno.env.get("RESEND_API_KEY");
     let status = "sent";
     let errorMessage: string | null = null;
