@@ -61,6 +61,7 @@ type Booking = {
   internal_notes: string | null;
   vat_enabled: boolean;
   vat_rate: number;
+  show_item_prices: boolean;
 };
 
 type Item = {
