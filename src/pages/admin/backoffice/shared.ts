@@ -1,12 +1,27 @@
-export type BookingStatus = "draft" | "confirmed" | "paid" | "completed" | "cancelled";
+export type BookingStatus =
+  | "draft"
+  | "unanswered"
+  | "confirmed"
+  | "paid"
+  | "completed"
+  | "cancelled";
 
 export const STATUS_LABEL: Record<BookingStatus, string> = {
   draft: "Utkast",
+  unanswered: "Obesvarad",
   confirmed: "Bekräftad",
   paid: "Betald",
   completed: "Genomförd",
   cancelled: "Avbokad",
 };
+
+/** Statusar som kan väljas i menyerna. */
+export const BOOKING_STATUS_OPTIONS: BookingStatus[] = [
+  "draft",
+  "unanswered",
+  "confirmed",
+  "completed",
+];
 
 export type ItemType = "hotel" | "flight" | "ticket" | "transfer" | "other";
 

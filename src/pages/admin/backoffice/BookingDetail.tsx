@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -37,10 +37,13 @@ import {
   ChevronRight,
 } from "lucide-react";
 import {
+  BOOKING_STATUS_OPTIONS,
   formatSek,
+  INVOICE_STATUS_LABEL,
   ITEM_LABEL,
   STATUS_LABEL,
   type BookingStatus,
+  type InvoiceStatus,
   type ItemType,
 } from "./shared";
 
@@ -135,7 +138,6 @@ const emptyItem = (booking_id: string): Partial<Item> => ({
 
 export default function BackofficeBookingDetail() {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const [booking, setBooking] = useState<Booking | null>(null);
   const [customer, setCustomer] = useState<any>(null);
   const [items, setItems] = useState<Item[]>([]);
@@ -143,6 +145,12 @@ export default function BackofficeBookingDetail() {
   const [travellers, setTravellers] = useState<Traveller[]>([]);
   const [hotels, setHotels] = useState<{ id: string; name: string; city: string | null }[]>([]);
   const [invoices, setInvoices] = useState<any[]>([]);
+  const [tab, setTab] = useState("items");
+  const [payOpen, setPayOpen] = useState(false);
+  const [payInvoice, setPayInvoice] = useState<any>(null);
+  const [payAmount, setPayAmount] = useState(0);
+  const [payDate, setPayDate] = useState(new Date().toISOString().slice(0, 10));
+  const [payMethod, setPayMethod] = useState("");
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
 
@@ -512,7 +520,55 @@ export default function BackofficeBookingDetail() {
     );
     setBusy(false);
     toast.success("Fakturaunderlag skapat");
-    navigate(`/admin/backoffice/fakturor?invoice=${inv.id}`);
+    setTab("invoices");
+    load();
+  };
+
+  const openPayment = (inv: any, full: boolean) => {
+    const remaining = Math.max(0, Number(inv.total_sek) - Number(inv.paid_sek ?? 0));
+    setPayInvoice(inv);
+    setPayAmount(full ? remaining : 0);
+    setPayDate(new Date().toISOString().slice(0, 10));
+    setPayMethod("");
+    setPayOpen(true);
+  };
+
+  const savePayment = async () => {
+    if (!payInvoice) return;
+    if (!payAmount || payAmount <= 0) return toast.error("Ange ett belopp");
+    setBusy(true);
+    const { error } = await supabase.from("invoice_payments").insert({
+      invoice_id: payInvoice.id,
+      amount_sek: payAmount,
+      paid_on: payDate,
+      method: payMethod || null,
+    });
+    setBusy(false);
+    if (error) return toast.error(error.message);
+    setPayOpen(false);
+    toast.success("Betalningen är registrerad");
+    load();
+  };
+
+  const clearPayments = async (inv: any) => {
+    setBusy(true);
+    const { error } = await supabase.from("invoice_payments").delete().eq("invoice_id", inv.id);
+    if (!error) {
+      await supabase
+        .from("invoices")
+        .update({ status: inv.sent_at ? "sent" : "draft", paid_sek: 0, paid_at: null })
+        .eq("id", inv.id);
+    }
+    setBusy(false);
+    if (error) return toast.error(error.message);
+    toast.success("Fakturan är markerad som obetald");
+    load();
+  };
+
+  const setInvoiceStatus = async (inv: any, status: InvoiceStatus) => {
+    const { error } = await supabase.from("invoices").update({ status }).eq("id", inv.id);
+    if (error) return toast.error(error.message);
+    load();
   };
 
   if (loading) {
@@ -553,9 +609,9 @@ export default function BackofficeBookingDetail() {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {Object.entries(STATUS_LABEL).map(([k, v]) => (
+              {BOOKING_STATUS_OPTIONS.map((k) => (
                 <SelectItem key={k} value={k}>
-                  {v}
+                  {STATUS_LABEL[k]}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -756,7 +812,7 @@ export default function BackofficeBookingDetail() {
         </div>
       </div>
 
-      <Tabs defaultValue="items">
+      <Tabs value={tab} onValueChange={setTab}>
         <TabsList>
           <TabsTrigger value="items">Innehåll</TabsTrigger>
           <TabsTrigger value="travellers">Resenärer ({travellers.length})</TabsTrigger>
@@ -1111,23 +1167,115 @@ export default function BackofficeBookingDetail() {
             </p>
           ) : (
             <ul className="divide-y divide-border rounded-lg border border-border">
-              {invoices.map((inv) => (
-                <li key={inv.id} className="flex items-center justify-between px-4 py-3 text-sm">
-                  <span>
-                    {inv.invoice_number} · förfaller {inv.due_date}
-                  </span>
-                  <span className="flex items-center gap-3">
-                    {formatSek(inv.total_sek)}
-                    <Button asChild variant="ghost" size="sm">
-                      <Link to={`/admin/backoffice/fakturor?invoice=${inv.id}`}>Öppna</Link>
-                    </Button>
-                  </span>
-                </li>
-              ))}
+              {invoices.map((inv) => {
+                const paid = Number(inv.paid_sek ?? 0);
+                const remaining = Math.max(0, Number(inv.total_sek) - paid);
+                return (
+                  <li key={inv.id} className="px-4 py-4 text-sm">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div>
+                        <p className="font-medium">
+                          {inv.invoice_number ?? "Utkast"}{" "}
+                          <Badge variant="secondary" className="ml-2">
+                            {INVOICE_STATUS_LABEL[inv.status as InvoiceStatus] ?? inv.status}
+                          </Badge>
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          Förfaller {inv.due_date} · Totalt {formatSek(inv.total_sek)} · Betalt{" "}
+                          {formatSek(paid)} · Kvar {formatSek(remaining)}
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={busy || remaining <= 0}
+                          onClick={() => openPayment(inv, false)}
+                        >
+                          Delbetalning
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={busy || remaining <= 0}
+                          onClick={() => openPayment(inv, true)}
+                        >
+                          Markera betald
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          disabled={busy || paid <= 0}
+                          onClick={() => clearPayments(inv)}
+                        >
+                          Markera obetald
+                        </Button>
+                        <Select
+                          value={inv.status}
+                          onValueChange={(v) => setInvoiceStatus(inv, v as InvoiceStatus)}
+                        >
+                          <SelectTrigger className="h-9 w-36">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Object.entries(INVOICE_STATUS_LABEL).map(([k, v]) => (
+                              <SelectItem key={k} value={k}>
+                                {v}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <Button asChild variant="ghost" size="sm">
+                          <Link to={`/admin/backoffice/fakturor?invoice=${inv.id}`}>Öppna</Link>
+                        </Button>
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </TabsContent>
       </Tabs>
+
+      <Dialog open={payOpen} onOpenChange={setPayOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Registrera betalning</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div>
+              <label className="text-xs text-muted-foreground">Belopp (kr)</label>
+              <Input
+                type="number"
+                value={payAmount}
+                onFocus={(e) => e.currentTarget.select()}
+                onChange={(e) => setPayAmount(Number(e.target.value))}
+              />
+            </div>
+            <div>
+              <label className="text-xs text-muted-foreground">Betaldatum</label>
+              <Input type="date" value={payDate} onChange={(e) => setPayDate(e.target.value)} />
+            </div>
+            <div>
+              <label className="text-xs text-muted-foreground">Betalsätt</label>
+              <Input
+                placeholder="Bankgiro, Swish, kort…"
+                value={payMethod}
+                onChange={(e) => setPayMethod(e.target.value)}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setPayOpen(false)}>
+              Avbryt
+            </Button>
+            <Button onClick={savePayment} disabled={busy}>
+              Spara betalning
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Item dialog */}
       <Dialog open={!!docView} onOpenChange={(o) => !o && setDocView(null)}>
