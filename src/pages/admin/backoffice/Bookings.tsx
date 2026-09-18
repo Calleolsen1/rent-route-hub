@@ -392,7 +392,7 @@ export default function BackofficeBookings() {
                   <td className="px-4 py-3">
                     <Badge variant="secondary">{STATUS_LABEL[r.status]}</Badge>
                   </td>
-                  <td className="px-4 py-3 text-right">
+                  <td className="px-4 py-3 text-right whitespace-nowrap">
                     <Button
                       variant="ghost"
                       size="sm"
@@ -405,6 +405,15 @@ export default function BackofficeBookings() {
                       ) : (
                         <Mail className="h-4 w-4" />
                       )}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      title="Radera resa"
+                      className="text-destructive hover:text-destructive"
+                      onClick={() => setConfirmDelete(r)}
+                    >
+                      <Trash2 className="h-4 w-4" />
                     </Button>
                     <Button asChild variant="ghost" size="sm">
                       <Link to={`/admin/backoffice/bokningar/${r.booking_id}`}>
