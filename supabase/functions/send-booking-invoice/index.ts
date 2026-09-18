@@ -119,6 +119,7 @@ Deno.serve(async (req) => {
       subject,
       status,
       error_message: errorMessage,
+      html,
     });
 
     if (status === "failed") return json({ error: errorMessage }, 500);

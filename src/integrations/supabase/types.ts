@@ -21,8 +21,10 @@ export type Database = {
           customer_id: string | null
           doc_type: string
           error_message: string | null
+          html: string | null
           id: string
           invoice_id: string | null
+          quote_id: string | null
           recipient_email: string
           sent_at: string
           status: string
@@ -34,8 +36,10 @@ export type Database = {
           customer_id?: string | null
           doc_type: string
           error_message?: string | null
+          html?: string | null
           id?: string
           invoice_id?: string | null
+          quote_id?: string | null
           recipient_email: string
           sent_at?: string
           status?: string
@@ -47,8 +51,10 @@ export type Database = {
           customer_id?: string | null
           doc_type?: string
           error_message?: string | null
+          html?: string | null
           id?: string
           invoice_id?: string | null
+          quote_id?: string | null
           recipient_email?: string
           sent_at?: string
           status?: string
@@ -88,6 +94,13 @@ export type Database = {
             columns: ["invoice_id"]
             isOneToOne: false
             referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "booking_documents_quote_id_fkey"
+            columns: ["quote_id"]
+            isOneToOne: false
+            referencedRelation: "quotes"
             referencedColumns: ["id"]
           },
         ]

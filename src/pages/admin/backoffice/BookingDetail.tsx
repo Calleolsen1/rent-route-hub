@@ -99,6 +99,23 @@ type Traveller = {
   phone: string | null;
 };
 
+type DocRow = {
+  id: string;
+  doc_type: string;
+  recipient_email: string;
+  subject: string | null;
+  status: string;
+  error_message: string | null;
+  sent_at: string;
+  html: string | null;
+};
+
+const DOC_LABEL: Record<string, string> = {
+  confirmation: "Bokningsbekräftelse",
+  quote: "Offert",
+  invoice: "Faktura",
+};
+
 const emptyItem = (booking_id: string): Partial<Item> => ({
   booking_id,
   item_type: "hotel",
@@ -131,6 +148,8 @@ export default function BackofficeBookingDetail() {
   const [quoteId, setQuoteId] = useState<string | null>(null);
   const [quotePreview, setQuotePreview] = useState<string | null>(null);
   const [confirmPreview, setConfirmPreview] = useState<string | null>(null);
+  const [docs, setDocs] = useState<DocRow[]>([]);
+  const [docView, setDocView] = useState<DocRow | null>(null);
   const [travOpen, setTravOpen] = useState(false);
   const [travDraft, setTravDraft] = useState<Partial<Traveller>>({});
 
@@ -145,18 +164,25 @@ export default function BackofficeBookingDetail() {
       return;
     }
     setBooking(b as Booking);
-    const [{ data: c }, { data: it }, { data: tr }, { data: h }, { data: inv }] = await Promise.all([
+    const [{ data: c }, { data: it }, { data: tr }, { data: h }, { data: inv }, { data: dc }] =
+      await Promise.all([
       supabase.from("customers").select("*").eq("id", (b as Booking).customer_id).maybeSingle(),
       supabase.from("booking_items").select("*").eq("booking_id", id).order("sort_order"),
       supabase.from("booking_travellers").select("*").eq("booking_id", id).order("full_name"),
       supabase.from("hotels").select("id, name, city").order("name"),
       supabase.from("invoices").select("*").eq("booking_id", id).order("created_at"),
+      supabase
+        .from("booking_documents")
+        .select("id, doc_type, recipient_email, subject, status, error_message, sent_at, html")
+        .eq("booking_id", id)
+        .order("sent_at", { ascending: false }),
     ]);
     setCustomer(c);
     setItems((it ?? []) as Item[]);
     setTravellers((tr ?? []) as Traveller[]);
     setHotels((h ?? []) as any);
     setInvoices(inv ?? []);
+    setDocs((dc ?? []) as DocRow[]);
     setLoading(false);
   }, [id]);
 
@@ -379,7 +405,7 @@ export default function BackofficeBookingDetail() {
     try {
       const id = await saveQuoteDraft();
       const { error: sErr, data: sData } = await supabase.functions.invoke("send-quote-email", {
-        body: { quote_id: id },
+        body: { quote_id: id, booking_id: booking!.id },
       });
       if (sErr || (sData as any)?.error) {
         throw new Error(sErr?.message ?? (sData as any)?.error ?? "Kunde inte skicka mejl");
@@ -387,6 +413,7 @@ export default function BackofficeBookingDetail() {
       toast.success(`Offerten är skickad till ${customer.email}`);
       setQuoteOpen(false);
       setQuotePreview(null);
+      load();
     } catch (e: any) {
       toast.error(e.message ?? "Något gick fel");
     } finally {
@@ -633,7 +660,66 @@ export default function BackofficeBookingDetail() {
           <TabsTrigger value="travellers">Resenärer ({travellers.length})</TabsTrigger>
           <TabsTrigger value="details">Uppgifter</TabsTrigger>
           <TabsTrigger value="invoices">Fakturor ({invoices.length})</TabsTrigger>
+          <TabsTrigger value="docs">Skickat ({docs.length})</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="docs" className="mt-4">
+          <div className="overflow-x-auto rounded-lg border border-border">
+            <table className="w-full text-sm">
+              <thead className="bg-muted/50 text-left text-xs uppercase tracking-wider text-muted-foreground">
+                <tr>
+                  <th className="px-4 py-3">Skickat</th>
+                  <th className="px-4 py-3">Dokument</th>
+                  <th className="px-4 py-3">Mottagare</th>
+                  <th className="px-4 py-3">Ämne</th>
+                  <th className="px-4 py-3">Status</th>
+                  <th className="px-4 py-3" />
+                </tr>
+              </thead>
+              <tbody>
+                {docs.map((d) => (
+                  <tr key={d.id} className="border-t border-border">
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      {new Date(d.sent_at).toLocaleString("sv-SE", {
+                        dateStyle: "short",
+                        timeStyle: "short",
+                      })}
+                    </td>
+                    <td className="px-4 py-3">{DOC_LABEL[d.doc_type] ?? d.doc_type}</td>
+                    <td className="px-4 py-3 text-muted-foreground">{d.recipient_email}</td>
+                    <td className="px-4 py-3">{d.subject ?? "—"}</td>
+                    <td className="px-4 py-3">
+                      {d.status === "sent" ? (
+                        <Badge variant="secondary">Skickat</Badge>
+                      ) : (
+                        <Badge variant="destructive" title={d.error_message ?? ""}>
+                          Misslyckades
+                        </Badge>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        disabled={!d.html}
+                        onClick={() => setDocView(d)}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+                {docs.length === 0 && (
+                  <tr>
+                    <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
+                      Inget har skickats ännu.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </TabsContent>
 
         <TabsContent value="items" className="mt-4 space-y-3">
           <Button
@@ -865,6 +951,22 @@ export default function BackofficeBookingDetail() {
       </Tabs>
 
       {/* Item dialog */}
+      <Dialog open={!!docView} onOpenChange={(o) => !o && setDocView(null)}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>
+              {docView ? DOC_LABEL[docView.doc_type] ?? docView.doc_type : ""} —{" "}
+              {docView?.recipient_email}
+            </DialogTitle>
+          </DialogHeader>
+          <iframe
+            title="Skickat dokument"
+            srcDoc={docView?.html ?? ""}
+            className="h-[60vh] w-full rounded border border-border bg-white"
+          />
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={itemOpen} onOpenChange={setItemOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
