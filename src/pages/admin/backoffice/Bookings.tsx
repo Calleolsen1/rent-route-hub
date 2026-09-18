@@ -104,7 +104,7 @@ export default function BackofficeBookings() {
   const { upcoming, past } = useMemo(() => {
     const isPast = (r: Row) => {
       const end = r.return_date || r.depart_date;
-      return !!end && end < today;
+      return (!!end && end < today) || r.status === "completed" || r.status === "cancelled";
     };
     const up = filtered
       .filter((r) => !isPast(r))
