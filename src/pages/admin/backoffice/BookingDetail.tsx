@@ -256,13 +256,44 @@ export default function BackofficeBookingDetail() {
     setTravellers((p) => p.filter((t) => t.id !== tid));
   };
 
+  const fnError = async (error: any, data: any, fallback: string) => {
+    let msg = (data as any)?.error ?? error?.message ?? fallback;
+    try {
+      const body = await error?.context?.json?.();
+      if (body?.error) msg = body.error;
+    } catch {
+      /* ignore */
+    }
+    return msg;
+  };
+
+  const previewConfirmation = async () => {
+    setBusy(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("send-booking-confirmation", {
+        body: { booking_id: booking!.id, preview: true },
+      });
+      if (error || (data as any)?.error) {
+        throw new Error(await fnError(error, data, "Kunde inte visa bekräftelsen"));
+      }
+      setConfirmPreview((data as any).html);
+    } catch (e: any) {
+      toast.error(e.message ?? "Något gick fel");
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const sendConfirmation = async () => {
     setBusy(true);
-    const { error } = await supabase.functions.invoke("send-booking-confirmation", {
+    const { data, error } = await supabase.functions.invoke("send-booking-confirmation", {
       body: { booking_id: booking!.id },
     });
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error || (data as any)?.error) {
+      return toast.error(await fnError(error, data, "Bekräftelsen kunde inte skickas"));
+    }
+    setConfirmPreview(null);
     toast.success("Bekräftelsen är skickad");
     load();
   };
