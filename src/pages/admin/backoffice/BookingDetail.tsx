@@ -724,7 +724,9 @@ export default function BackofficeBookingDetail() {
             <p className="text-xs uppercase tracking-wider text-muted-foreground">Moms</p>
             <Switch
               checked={!!booking.vat_enabled}
-              onCheckedChange={(v) => saveBooking({ vat_enabled: v })}
+              onCheckedChange={(v) =>
+                saveBooking({ vat_enabled: v, vat_rate: Number(booking.vat_rate) || 2.67 })
+              }
             />
           </div>
           {booking.vat_enabled ? (
