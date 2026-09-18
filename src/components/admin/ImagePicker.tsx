@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 /**
  * Reusable image field: shows the current image, and opens a dialog where the
  * admin can either upload a new file or pick an existing one from the media
- * library (kaisen-media bucket).
+ * library (email-assets bucket).
  */
 
 const BUCKET = "email-assets";

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Trash2, Copy, Upload, Loader2 } from "lucide-react";
 
 /**
- * Admin browser for the kaisen-media storage bucket — list, preview, copy URL,
+ * Admin browser for the email-assets storage bucket — list, preview, copy URL,
  * delete. Folders within the bucket (event-covers/, home-slides/) are flattened
  * into one list with a path prefix shown on each card.
  */
@@ -18,7 +18,7 @@ type FileEntry = {
   updated_at: string | null;
 };
 
-const BUCKET = "kaisen-media";
+const BUCKET = "email-assets";
 const PREFIXES = ["event-covers", "home-slides", ""]; // root + known folders
 
 async function listAll(): Promise<FileEntry[]> {
