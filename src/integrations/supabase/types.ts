@@ -2102,6 +2102,7 @@ export type Database = {
         Returns: Json
       }
       cleanup_rate_limits: { Args: never; Returns: number }
+      complete_past_bookings: { Args: never; Returns: number }
       consume_rate_limit: {
         Args: { p_key: string; p_max: number; p_window_sec: number }
         Returns: boolean
