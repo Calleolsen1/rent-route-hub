@@ -157,6 +157,7 @@ export default function BackofficeBookingDetail() {
   const [cancelMessage, setCancelMessage] = useState("");
   const [cancelPreview, setCancelPreview] = useState<string | null>(null);
   const [delInvoice, setDelInvoice] = useState<any>(null);
+  const [invPreview, setInvPreview] = useState<{ invoice: any; html: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
 
