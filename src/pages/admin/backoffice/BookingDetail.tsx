@@ -352,6 +352,60 @@ export default function BackofficeBookingDetail() {
     }
   };
 
+  const openCancelInvoice = (inv: any) => {
+    setCancelInvoice(inv);
+    setCancelMessage("");
+    setCancelPreview(null);
+    setCancelOpen(true);
+  };
+
+  const previewCancellation = async () => {
+    if (!cancelInvoice) return;
+    setBusy(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("send-invoice-cancellation", {
+        body: { invoice_id: cancelInvoice.id, message: cancelMessage, preview: true },
+      });
+      if (error || (data as any)?.error) {
+        throw new Error(await fnError(error, data, "Kunde inte visa mejlet"));
+      }
+      setCancelPreview((data as any).html);
+    } catch (e: any) {
+      toast.error(e.message ?? "Något gick fel");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const sendCancellation = async () => {
+    if (!cancelInvoice) return;
+    setBusy(true);
+    const { data, error } = await supabase.functions.invoke("send-invoice-cancellation", {
+      body: { invoice_id: cancelInvoice.id, message: cancelMessage },
+    });
+    setBusy(false);
+    if (error || (data as any)?.error) {
+      return toast.error(await fnError(error, data, "Mejlet kunde inte skickas"));
+    }
+    setCancelPreview(null);
+    setCancelOpen(false);
+    toast.success("Kunden är meddelad och fakturan är makulerad");
+    load();
+  };
+
+  const deleteInvoice = async () => {
+    if (!delInvoice) return;
+    setBusy(true);
+    await supabase.from("invoice_payments").delete().eq("invoice_id", delInvoice.id);
+    await supabase.from("invoice_items").delete().eq("invoice_id", delInvoice.id);
+    const { error } = await supabase.from("invoices").delete().eq("id", delInvoice.id);
+    setBusy(false);
+    if (error) return toast.error(error.message);
+    setDelInvoice(null);
+    toast.success("Fakturan är raderad");
+    load();
+  };
+
   const previewConfirmation = async () => {
     setBusy(true);
     try {
