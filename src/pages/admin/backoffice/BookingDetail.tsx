@@ -1469,6 +1469,55 @@ export default function BackofficeBookingDetail() {
                 />
               </div>
             </div>
+            <div className="rounded-md border border-border bg-muted/30 p-3 sm:col-span-2">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-xs uppercase tracking-wider text-muted-foreground">
+                    Moms på denna rad
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {itemDraft.vat_rate == null
+                      ? booking.vat_enabled
+                        ? `Följer bokningen (${Number(booking.vat_rate) || 0} %)`
+                        : "Ingen moms"
+                      : "Egen momssats för raden"}
+                  </p>
+                </div>
+                <Switch
+                  checked={itemDraft.vat_rate != null}
+                  onCheckedChange={(v) =>
+                    setItemDraft({
+                      ...itemDraft,
+                      vat_rate: v ? Number(booking.vat_rate) || 2.67 : null,
+                    })
+                  }
+                />
+              </div>
+              {itemDraft.vat_rate != null && (
+                <div className="mt-2 flex items-center gap-2">
+                  <Input
+                    type="number"
+                    step="0.01"
+                    className="h-9 w-24"
+                    value={itemDraft.vat_rate}
+                    onFocus={(e) => e.currentTarget.select()}
+                    onChange={(e) =>
+                      setItemDraft({ ...itemDraft, vat_rate: Number(e.target.value) })
+                    }
+                  />
+                  <span className="text-sm text-muted-foreground">
+                    % ={" "}
+                    {formatSek(
+                      Math.round(
+                        Number(itemDraft.sale_sek ?? 0) *
+                          Number(itemDraft.qty ?? 1) *
+                          (Number(itemDraft.vat_rate) / 100),
+                      ),
+                    )}
+                  </span>
+                </div>
+              )}
+            </div>
             <Textarea
               className="sm:col-span-2"
               rows={2}
