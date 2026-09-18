@@ -90,6 +90,7 @@ type Item = {
   transfer_at: string | null;
   vehicle: string | null;
   notes: string | null;
+  vat_rate: number | null;
 };
 
 type Traveller = {
