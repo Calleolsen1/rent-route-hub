@@ -240,6 +240,7 @@ export default function BackofficeBookingDetail() {
   const saleTotal = items.reduce((s, i) => s + Number(i.sale_sek) * i.qty, 0);
   const costTotal = items.reduce((s, i) => s + Number(i.cost_sek) * i.qty, 0);
   const vatRate = booking?.vat_enabled ? Number(booking.vat_rate ?? 0) : 0;
+  const showItemPrices = booking?.show_item_prices === true;
   const itemVatRate = (i: Item) => (i.vat_rate == null ? vatRate : Number(i.vat_rate));
   const vatAmount = items.reduce(
     (s, i) => s + Math.round(Number(i.sale_sek) * i.qty * (itemVatRate(i) / 100)),
