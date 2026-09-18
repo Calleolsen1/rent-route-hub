@@ -768,6 +768,7 @@ export default function BackofficeBookingDetail() {
             <table className="w-full text-sm">
               <thead className="bg-muted/50 text-left text-xs uppercase tracking-wider text-muted-foreground">
                 <tr>
+                  <th className="px-2 py-3 w-8" />
                   <th className="px-4 py-3">Typ</th>
                   <th className="px-4 py-3">Beskrivning</th>
                   <th className="px-4 py-3">Leverantör</th>
@@ -778,41 +779,115 @@ export default function BackofficeBookingDetail() {
                 </tr>
               </thead>
               <tbody>
-                {items.map((i) => (
-                  <tr key={i.id} className="border-t border-border">
-                    <td className="px-4 py-3">{ITEM_LABEL[i.item_type]}</td>
-                    <td className="px-4 py-3">{i.description}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{i.supplier ?? "—"}</td>
-                    <td className="px-4 py-3 text-right">{i.qty}</td>
-                    <td className="px-4 py-3 text-right text-muted-foreground">
-                      {formatSek(i.cost_sek)}
-                    </td>
-                    <td className="px-4 py-3 text-right">{formatSek(i.sale_sek)}</td>
-                    <td className="px-4 py-3 text-right">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          setItemDraft(i);
-                          setItemOpen(true);
-                        }}
+                {items.map((i) => {
+                  const details: [string, string][] = [];
+                  const fmtDt = (v: string | null) =>
+                    v ? new Date(v).toLocaleString("sv-SE", { dateStyle: "short", timeStyle: "short" }) : null;
+                  if (i.item_type === "hotel") {
+                    if (i.check_in) details.push(["Incheckning", i.check_in]);
+                    if (i.check_out) details.push(["Utcheckning", i.check_out]);
+                    if (i.room_type) details.push(["Rumstyp", i.room_type]);
+                    if (i.rooms) details.push(["Antal rum", String(i.rooms)]);
+                  }
+                  if (i.item_type === "flight") {
+                    if (i.airline) details.push(["Flygbolag", i.airline]);
+                    if (i.flight_number) details.push(["Flightnummer dit", i.flight_number]);
+                    if (i.from_airport || i.to_airport)
+                      details.push(["Sträcka", `${i.from_airport ?? "?"} → ${i.to_airport ?? "?"}`]);
+                    const dep = fmtDt(i.depart_at);
+                    if (dep) details.push(["Avgång dit", dep]);
+                    if (i.is_round_trip) {
+                      details.push(["Tur och retur", "Ja"]);
+                      if (i.return_flight_number)
+                        details.push(["Flightnummer hem", i.return_flight_number]);
+                      const ret = fmtDt(i.return_depart_at);
+                      if (ret) details.push(["Avgång hem", ret]);
+                    }
+                    if (i.booking_reference) details.push(["Bokningsreferens", i.booking_reference]);
+                  }
+                  if (i.item_type === "ticket") {
+                    if (i.event_name) details.push(["Event", i.event_name]);
+                    if (i.ticket_category) details.push(["Kategori", i.ticket_category]);
+                  }
+                  if (i.item_type === "transfer") {
+                    if (i.transfer_from || i.transfer_to)
+                      details.push(["Sträcka", `${i.transfer_from ?? "?"} → ${i.transfer_to ?? "?"}`]);
+                    const tr = fmtDt(i.transfer_at);
+                    if (tr) details.push(["Tid", tr]);
+                    if (i.vehicle) details.push(["Fordon", i.vehicle]);
+                  }
+                  if (i.notes) details.push(["Anteckningar", i.notes]);
+                  const isOpen = expandedItem === i.id;
+                  return (
+                    <Fragment key={i.id}>
+                      <tr
+                        className="border-t border-border cursor-pointer hover:bg-muted/30"
+                        onClick={() => setExpandedItem(isOpen ? null : i.id)}
                       >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-destructive"
-                        onClick={() => removeItem(i.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
+                        <td className="px-2 py-3 text-muted-foreground">
+                          {isOpen ? (
+                            <ChevronDown className="h-4 w-4" />
+                          ) : (
+                            <ChevronRight className="h-4 w-4" />
+                          )}
+                        </td>
+                        <td className="px-4 py-3">{ITEM_LABEL[i.item_type]}</td>
+                        <td className="px-4 py-3">{i.description}</td>
+                        <td className="px-4 py-3 text-muted-foreground">{i.supplier ?? "—"}</td>
+                        <td className="px-4 py-3 text-right">{i.qty}</td>
+                        <td className="px-4 py-3 text-right text-muted-foreground">
+                          {formatSek(i.cost_sek)}
+                        </td>
+                        <td className="px-4 py-3 text-right">{formatSek(i.sale_sek)}</td>
+                        <td className="px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setItemDraft(i);
+                              setItemOpen(true);
+                            }}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-destructive"
+                            onClick={() => removeItem(i.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </td>
+                      </tr>
+                      {isOpen && (
+                        <tr className="border-t border-border bg-muted/20">
+                          <td colSpan={8} className="px-6 py-4">
+                            {details.length > 0 ? (
+                              <dl className="grid grid-cols-2 gap-x-8 gap-y-2 sm:grid-cols-3">
+                                {details.map(([label, value]) => (
+                                  <div key={label}>
+                                    <dt className="text-xs uppercase tracking-wide text-muted-foreground">
+                                      {label}
+                                    </dt>
+                                    <dd className="text-sm font-medium">{value}</dd>
+                                  </div>
+                                ))}
+                              </dl>
+                            ) : (
+                              <p className="text-sm text-muted-foreground">
+                                Inga fler detaljer ifyllda.
+                              </p>
+                            )}
+                          </td>
+                        </tr>
+                      )}
+                    </Fragment>
+                  );
+                })}
                 {items.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">
+                    <td colSpan={8} className="px-4 py-8 text-center text-muted-foreground">
                       Inga rader ännu.
                     </td>
                   </tr>
