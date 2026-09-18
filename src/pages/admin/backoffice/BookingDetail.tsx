@@ -412,15 +412,23 @@ export default function BackofficeBookingDetail() {
       setQuoteId(id);
     }
 
-    const { error: iErr } = await supabase.from("quote_items").insert(
-      items.map((i, idx) => ({
+    const quoteRows = items.map((i, idx) => ({
+      quote_id: id!,
+      description: `${ITEM_LABEL[i.item_type]}: ${i.description}`,
+      qty: i.qty,
+      unit_price_sek: i.sale_sek,
+      sort_order: idx,
+    }));
+    if (vatAmount > 0) {
+      quoteRows.push({
         quote_id: id!,
-        description: `${ITEM_LABEL[i.item_type]}: ${i.description}`,
-        qty: i.qty,
-        unit_price_sek: i.sale_sek,
-        sort_order: idx,
-      })),
-    );
+        description: `Moms (${vatRate} %)`,
+        qty: 1,
+        unit_price_sek: vatAmount,
+        sort_order: items.length,
+      });
+    }
+    const { error: iErr } = await supabase.from("quote_items").insert(quoteRows);
     if (iErr) throw new Error(iErr.message);
     return id!;
   };
