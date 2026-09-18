@@ -205,7 +205,29 @@ export default function BackofficeBookingDetail() {
     setItems((it ?? []) as Item[]);
     setTravellers((tr ?? []) as Traveller[]);
     setHotels((h ?? []) as any);
-    setInvoices(inv ?? []);
+    // Sätt fakturastatus automatiskt utifrån belopp, utskick och förfallodatum.
+    const today = new Date().toISOString().slice(0, 10);
+    const synced = (inv ?? []).map((row: any) => {
+      if (row.status === "cancelled") return row;
+      const total = Number(row.total_sek ?? 0);
+      const paid = Number(row.paid_sek ?? 0);
+      let status: InvoiceStatus;
+      if (total > 0 && paid >= total) status = "paid";
+      else if (paid > 0) status = "partly_paid";
+      else if (!row.sent_at) status = "draft";
+      else if (row.due_date && row.due_date < today) status = "overdue";
+      else status = "sent";
+      return status === row.status ? row : { ...row, status };
+    });
+    const changed = synced.filter((row: any, i: number) => row.status !== (inv ?? [])[i].status);
+    if (changed.length) {
+      await Promise.all(
+        changed.map((row: any) =>
+          supabase.from("invoices").update({ status: row.status }).eq("id", row.id),
+        ),
+      );
+    }
+    setInvoices(synced);
     setDocs((dc ?? []) as DocRow[]);
     setLoading(false);
   }, [id]);
