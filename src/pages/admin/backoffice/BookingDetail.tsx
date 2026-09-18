@@ -813,6 +813,30 @@ export default function BackofficeBookingDetail() {
         </DialogContent>
       </Dialog>
 
+      <Dialog open={!!invPreview} onOpenChange={(o) => !o && setInvPreview(null)}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>
+              Faktura {invPreview?.invoice?.invoice_number ?? "(utkast)"}
+            </DialogTitle>
+          </DialogHeader>
+          <iframe
+            title="Förhandsgranskning av faktura"
+            srcDoc={invPreview?.html ?? ""}
+            className="h-[60vh] w-full rounded-md border border-border bg-white"
+          />
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setInvPreview(null)}>
+              Stäng
+            </Button>
+            <Button onClick={() => invPreview && sendInvoice(invPreview.invoice)} disabled={busy}>
+              {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Skicka faktura till kund
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={!!confirmPreview} onOpenChange={(o) => !o && setConfirmPreview(null)}>
         <DialogContent className="max-w-3xl">
           <DialogHeader>
