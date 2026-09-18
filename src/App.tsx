@@ -35,6 +35,12 @@ import AdminNavigation from "./pages/admin/Navigation";
 import AdminDiagnostics from "./pages/admin/Diagnostics";
 import AdminMediaLibrary from "./pages/admin/MediaLibrary";
 import AdminTeam from "./pages/admin/Team";
+import BackofficeCustomers from "./pages/admin/backoffice/Customers";
+import BackofficeHotels from "./pages/admin/backoffice/Hotels";
+import BackofficeBookings from "./pages/admin/backoffice/Bookings";
+import BackofficeBookingDetail from "./pages/admin/backoffice/BookingDetail";
+import BackofficeInvoices from "./pages/admin/backoffice/Invoices";
+import BackofficeReports from "./pages/admin/backoffice/Reports";
 import Integritetspolicy from "./pages/Integritetspolicy";
 import Anvandarvillkor from "./pages/Anvandarvillkor";
 import CookieConsent from "./components/CookieConsent";
@@ -113,6 +119,18 @@ const App = () => (
                 <Route path="support" element={<AdminSupport />} />
                 <Route path="content" element={<ContentManagementPage />} />
                 <Route path="navigation" element={<AdminNavigation />} />
+
+                {/* Back office */}
+                <Route
+                  path="backoffice"
+                  element={<Navigate to="/admin/backoffice/bokningar" replace />}
+                />
+                <Route path="backoffice/kunder" element={<BackofficeCustomers />} />
+                <Route path="backoffice/hotell" element={<BackofficeHotels />} />
+                <Route path="backoffice/bokningar" element={<BackofficeBookings />} />
+                <Route path="backoffice/bokningar/:id" element={<BackofficeBookingDetail />} />
+                <Route path="backoffice/fakturor" element={<BackofficeInvoices />} />
+                <Route path="backoffice/rapporter" element={<BackofficeReports />} />
               </Route>
 
               {/* Mitt Kaisen — public routes */}

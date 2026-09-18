@@ -3,7 +3,7 @@ import { Outlet, NavLink, useNavigate, useLocation, Link } from "react-router-do
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { supabase } from "@/integrations/supabase/client";
-import { LayoutDashboard, Inbox, ShoppingBag, Users, MessageSquare, FileText, LogOut, Ticket, Image, Percent, Stethoscope, Images, Menu, UserSquare2, Eye, EyeOff } from "lucide-react";
+import { LayoutDashboard, Inbox, ShoppingBag, Users, MessageSquare, FileText, LogOut, Ticket, Image, Percent, Stethoscope, Images, Menu, UserSquare2, Eye, EyeOff, Building2, Plane, Receipt, BarChart3, Contact2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import AdminPreviewPane from "@/components/admin/AdminPreviewPane";
