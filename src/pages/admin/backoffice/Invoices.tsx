@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, Mail, Search, Plus, Download } from "lucide-react";
+import { Loader2, Mail, Search, Plus, Download, Eye } from "lucide-react";
 import {
   formatSek,
   INVOICE_STATUS_LABEL,
@@ -56,6 +56,8 @@ export default function BackofficeInvoices() {
   const [payAmount, setPayAmount] = useState("");
   const [payDate, setPayDate] = useState(new Date().toISOString().slice(0, 10));
   const [payMethod, setPayMethod] = useState("Banköverföring");
+  const [previewHtml, setPreviewHtml] = useState<string | null>(null);
+  const [previewTitle, setPreviewTitle] = useState("");
 
   const load = async () => {
     setLoading(true);
@@ -101,6 +103,17 @@ export default function BackofficeInvoices() {
     if (error) return toast.error(error.message);
     toast.success("Fakturan är skickad");
     load();
+  };
+
+  const openPreview = async (inv: Invoice) => {
+    setBusy(inv.id);
+    const { data, error } = await supabase.functions.invoke("send-booking-invoice", {
+      body: { invoice_id: inv.id, preview: true },
+    });
+    setBusy(null);
+    if (error) return toast.error(error.message);
+    setPreviewTitle(`Faktura ${inv.invoice_number ?? ""}`);
+    setPreviewHtml((data as any)?.html ?? "");
   };
 
   const registerPayment = async () => {
@@ -220,6 +233,16 @@ export default function BackofficeInvoices() {
                     <Button
                       variant="ghost"
                       size="sm"
+                      title="Förhandsgranska"
+                      onClick={() => openPreview(r)}
+                      disabled={busy === r.id}
+                    >
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      title="Skicka"
                       onClick={() => send(r)}
                       disabled={busy === r.id}
                     >
@@ -278,6 +301,19 @@ export default function BackofficeInvoices() {
             </Button>
             <Button onClick={registerPayment}>Registrera</Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!previewHtml} onOpenChange={(o) => !o && setPreviewHtml(null)}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>{previewTitle}</DialogTitle>
+          </DialogHeader>
+          <iframe
+            title="Fakturaförhandsvisning"
+            srcDoc={previewHtml ?? ""}
+            className="h-[70vh] w-full rounded-md border border-border bg-white"
+          />
         </DialogContent>
       </Dialog>
     </div>
