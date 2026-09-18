@@ -180,12 +180,15 @@ export default function BackofficeBookingDetail() {
         const h = hotels.find((x) => x.id === d.hotel_id);
         return h?.name ?? d.room_type ?? "Hotell";
       }
-      case "flight":
-        return (
-          [d.airline, d.flight_number,
-            d.from_airport && d.to_airport ? `${d.from_airport}–${d.to_airport}` : null,
-          ].filter(Boolean).join(" ") || "Flyg"
-        );
+      case "flight": {
+        const route =
+          d.from_airport && d.to_airport
+            ? `${d.from_airport}${d.is_round_trip ? "⇄" : "–"}${d.to_airport}`
+            : null;
+        const base =
+          [d.airline, d.flight_number, route].filter(Boolean).join(" ") || "Flyg";
+        return d.is_round_trip ? `${base} (tur och retur)` : base;
+      }
       case "ticket":
         return [d.event_name, d.ticket_category].filter(Boolean).join(", ") || "Biljett";
       case "transfer":
