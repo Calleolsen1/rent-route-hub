@@ -74,6 +74,9 @@ type Item = {
   from_airport: string | null;
   to_airport: string | null;
   depart_at: string | null;
+  is_round_trip: boolean | null;
+  return_flight_number: string | null;
+  return_depart_at: string | null;
   booking_reference: string | null;
   event_name: string | null;
   ticket_category: string | null;
@@ -177,12 +180,15 @@ export default function BackofficeBookingDetail() {
         const h = hotels.find((x) => x.id === d.hotel_id);
         return h?.name ?? d.room_type ?? "Hotell";
       }
-      case "flight":
-        return (
-          [d.airline, d.flight_number,
-            d.from_airport && d.to_airport ? `${d.from_airport}–${d.to_airport}` : null,
-          ].filter(Boolean).join(" ") || "Flyg"
-        );
+      case "flight": {
+        const route =
+          d.from_airport && d.to_airport
+            ? `${d.from_airport}${d.is_round_trip ? "⇄" : "–"}${d.to_airport}`
+            : null;
+        const base =
+          [d.airline, d.flight_number, route].filter(Boolean).join(" ") || "Flyg";
+        return d.is_round_trip ? `${base} (tur och retur)` : base;
+      }
       case "ticket":
         return [d.event_name, d.ticket_category].filter(Boolean).join(", ") || "Biljett";
       case "transfer":
@@ -959,6 +965,49 @@ export default function BackofficeBookingDetail() {
                     }
                   />
                 </div>
+                <label className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 accent-primary"
+                    checked={!!itemDraft.is_round_trip}
+                    onChange={(e) =>
+                      setItemDraft({
+                        ...itemDraft,
+                        is_round_trip: e.target.checked,
+                        ...(e.target.checked
+                          ? {}
+                          : { return_flight_number: null, return_depart_at: null }),
+                      })
+                    }
+                  />
+                  Tur och retur
+                </label>
+                {itemDraft.is_round_trip && (
+                  <>
+                    <Input
+                      placeholder="Flightnummer hem"
+                      value={itemDraft.return_flight_number ?? ""}
+                      onChange={(e) =>
+                        setItemDraft({ ...itemDraft, return_flight_number: e.target.value })
+                      }
+                    />
+                    <div>
+                      <label className="text-xs text-muted-foreground">Hemresa avgång</label>
+                      <Input
+                        type="datetime-local"
+                        value={itemDraft.return_depart_at?.slice(0, 16) ?? ""}
+                        onChange={(e) =>
+                          setItemDraft({
+                            ...itemDraft,
+                            return_depart_at: e.target.value
+                              ? new Date(e.target.value).toISOString()
+                              : null,
+                          })
+                        }
+                      />
+                    </div>
+                  </>
+                )}
                 <Input
                   placeholder="Bokningsreferens"
                   value={itemDraft.booking_reference ?? ""}
