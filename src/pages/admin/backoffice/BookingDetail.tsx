@@ -130,6 +130,7 @@ export default function BackofficeBookingDetail() {
   const [quoteExpiry, setQuoteExpiry] = useState("");
   const [quoteId, setQuoteId] = useState<string | null>(null);
   const [quotePreview, setQuotePreview] = useState<string | null>(null);
+  const [confirmPreview, setConfirmPreview] = useState<string | null>(null);
   const [travOpen, setTravOpen] = useState(false);
   const [travDraft, setTravDraft] = useState<Partial<Traveller>>({});
 
@@ -256,13 +257,44 @@ export default function BackofficeBookingDetail() {
     setTravellers((p) => p.filter((t) => t.id !== tid));
   };
 
+  const fnError = async (error: any, data: any, fallback: string) => {
+    let msg = (data as any)?.error ?? error?.message ?? fallback;
+    try {
+      const body = await error?.context?.json?.();
+      if (body?.error) msg = body.error;
+    } catch {
+      /* ignore */
+    }
+    return msg;
+  };
+
+  const previewConfirmation = async () => {
+    setBusy(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("send-booking-confirmation", {
+        body: { booking_id: booking!.id, preview: true },
+      });
+      if (error || (data as any)?.error) {
+        throw new Error(await fnError(error, data, "Kunde inte visa bekräftelsen"));
+      }
+      setConfirmPreview((data as any).html);
+    } catch (e: any) {
+      toast.error(e.message ?? "Något gick fel");
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const sendConfirmation = async () => {
     setBusy(true);
-    const { error } = await supabase.functions.invoke("send-booking-confirmation", {
+    const { data, error } = await supabase.functions.invoke("send-booking-confirmation", {
       body: { booking_id: booking!.id },
     });
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error || (data as any)?.error) {
+      return toast.error(await fnError(error, data, "Bekräftelsen kunde inte skickas"));
+    }
+    setConfirmPreview(null);
     toast.success("Bekräftelsen är skickad");
     load();
   };
@@ -445,7 +477,7 @@ export default function BackofficeBookingDetail() {
               ))}
             </SelectContent>
           </Select>
-          <Button variant="outline" onClick={sendConfirmation} disabled={busy}>
+          <Button variant="outline" onClick={previewConfirmation} disabled={busy}>
             <Mail className="mr-2 h-4 w-4" />
             Skicka bekräftelse
           </Button>
@@ -531,6 +563,28 @@ export default function BackofficeBookingDetail() {
             <Button onClick={sendQuote} disabled={busy}>
               {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Skicka offert
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!confirmPreview} onOpenChange={(o) => !o && setConfirmPreview(null)}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Så här ser bekräftelsen ut</DialogTitle>
+          </DialogHeader>
+          <iframe
+            title="Förhandsgranskning av bekräftelse"
+            srcDoc={confirmPreview ?? ""}
+            className="h-[60vh] w-full rounded-md border border-border bg-white"
+          />
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setConfirmPreview(null)}>
+              Stäng
+            </Button>
+            <Button onClick={sendConfirmation} disabled={busy}>
+              {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Skicka bekräftelse
             </Button>
           </DialogFooter>
         </DialogContent>
