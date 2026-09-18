@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Plus, Search, ArrowRight, Mail, Trash2 } from "lucide-react";
+import { Loader2, Plus, Search, ArrowRight, Mail, Trash2, Undo2 } from "lucide-react";
 import { formatSek, STATUS_LABEL, type BookingStatus } from "./shared";
 
 type Row = {
@@ -36,6 +36,17 @@ type Row = {
   sale_total_sek: number;
   cost_total_sek: number;
   margin_sek: number;
+};
+
+type DeletedRow = {
+  id: string;
+  booking_number: string | null;
+  title: string;
+  destination: string | null;
+  depart_date: string | null;
+  deleted_at: string | null;
+  company_name: string | null;
+  contact_name: string | null;
 };
 
 type WebOrderRow = {
@@ -63,6 +74,8 @@ export default function BackofficeBookings() {
   const [sending, setSending] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<Row | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [deletedRows, setDeletedRows] = useState<DeletedRow[]>([]);
+  const [confirmPermanent, setConfirmPermanent] = useState<DeletedRow | null>(null);
   const [newCustomer, setNewCustomer] = useState(false);
   const [custDraft, setCustDraft] = useState({
     contact_name: "",
@@ -112,6 +125,23 @@ export default function BackofficeBookings() {
       (cust ?? []).map((c: any) => ({
         id: c.id,
         label: c.company_name ? `${c.company_name} (${c.contact_name})` : c.contact_name,
+      })),
+    );
+    const { data: del } = await supabase
+      .from("bookings")
+      .select("id, booking_number, title, destination, depart_date, deleted_at, customers(company_name, contact_name)")
+      .not("deleted_at", "is", null)
+      .order("deleted_at", { ascending: false });
+    setDeletedRows(
+      (del ?? []).map((b: any) => ({
+        id: b.id,
+        booking_number: b.booking_number,
+        title: b.title,
+        destination: b.destination,
+        depart_date: b.depart_date,
+        deleted_at: b.deleted_at,
+        company_name: b.customers?.company_name ?? null,
+        contact_name: b.customers?.contact_name ?? null,
       })),
     );
     setLoading(false);
@@ -170,17 +200,42 @@ export default function BackofficeBookings() {
     );
   }, [webOrders, query]);
 
+  // Mjuk radering: resan markeras som raderad och kan återställas
   const doDelete = async () => {
     if (!confirmDelete) return;
     setDeleting(true);
     const { error } = await supabase
       .from("bookings")
-      .delete()
+      .update({ deleted_at: new Date().toISOString() })
       .eq("id", confirmDelete.booking_id);
     setDeleting(false);
     setConfirmDelete(null);
     if (error) return toast.error(error.message);
-    toast.success("Resan är raderad");
+    toast.success("Resan är raderad — återställ den under Raderade resor");
+    load();
+  };
+
+  const restore = async (r: DeletedRow) => {
+    const { error } = await supabase
+      .from("bookings")
+      .update({ deleted_at: null })
+      .eq("id", r.id);
+    if (error) return toast.error(error.message);
+    toast.success(`"${r.title}" är återställd`);
+    load();
+  };
+
+  const doPermanentDelete = async () => {
+    if (!confirmPermanent) return;
+    setDeleting(true);
+    const { error } = await supabase
+      .from("bookings")
+      .delete()
+      .eq("id", confirmPermanent.id);
+    setDeleting(false);
+    setConfirmPermanent(null);
+    if (error) return toast.error(error.message);
+    toast.success("Resan är permanent raderad");
     load();
   };
 
