@@ -402,12 +402,88 @@ export default function BackofficeBookingDetail() {
             <Mail className="mr-2 h-4 w-4" />
             Skicka bekräftelse
           </Button>
+          <Button variant="outline" onClick={openQuote} disabled={busy}>
+            <Send className="mr-2 h-4 w-4" />
+            Skicka offert
+          </Button>
           <Button onClick={createInvoice} disabled={busy}>
             <FileText className="mr-2 h-4 w-4" />
             Skapa faktura
           </Button>
         </div>
       </div>
+
+      <Dialog open={quoteOpen} onOpenChange={setQuoteOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Skicka offert</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Skickas till {customer?.email}. Kunden får en länk där offerten kan granskas och
+              betalas.
+            </p>
+            <div>
+              <label className="text-xs uppercase tracking-wider text-muted-foreground">
+                Titel
+              </label>
+              <Input
+                value={quoteTitle}
+                onChange={(e) => setQuoteTitle(e.target.value)}
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <label className="text-xs uppercase tracking-wider text-muted-foreground">
+                Meddelande
+              </label>
+              <Textarea
+                rows={4}
+                value={quoteIntro}
+                onChange={(e) => setQuoteIntro(e.target.value)}
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <label className="text-xs uppercase tracking-wider text-muted-foreground">
+                Gäller till och med
+              </label>
+              <Input
+                type="date"
+                value={quoteExpiry}
+                onChange={(e) => setQuoteExpiry(e.target.value)}
+                className="mt-1 max-w-[200px]"
+              />
+            </div>
+            <div className="rounded-md border p-3 text-sm">
+              <div className="mb-2 text-xs uppercase tracking-wider text-muted-foreground">
+                Rader från bokningen
+              </div>
+              {items.map((i) => (
+                <div key={i.id} className="flex justify-between py-1">
+                  <span>
+                    {ITEM_LABEL[i.item_type]}: {i.description} × {i.qty}
+                  </span>
+                  <span>{formatSek(i.sale_sek * i.qty)}</span>
+                </div>
+              ))}
+              <div className="mt-2 flex justify-between border-t pt-2 font-medium">
+                <span>Totalt</span>
+                <span>{formatSek(saleTotal)}</span>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setQuoteOpen(false)}>
+              Avbryt
+            </Button>
+            <Button onClick={sendQuote} disabled={busy}>
+              {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Skicka offert
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <div className="mb-6 grid gap-4 sm:grid-cols-3">
         <div className="rounded-lg border border-border bg-card p-4">
