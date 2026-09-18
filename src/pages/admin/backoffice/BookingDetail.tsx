@@ -1163,33 +1163,48 @@ export default function BackofficeBookingDetail() {
                     </div>
                   </div>
                 )}
-                <Input
-                  placeholder="Rumstyp"
-                  value={itemDraft.room_type ?? ""}
-                  onChange={(e) => setItemDraft({ ...itemDraft, room_type: e.target.value })}
-                />
-                <div>
-                  <label className="text-xs text-muted-foreground">Incheckning</label>
-                  <Input
-                    type="date"
-                    value={itemDraft.check_in ?? ""}
-                    onChange={(e) => setItemDraft({ ...itemDraft, check_in: e.target.value })}
-                  />
+                <div className="col-span-2 rounded-lg border border-border bg-muted/30 p-3 space-y-3">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Vistelse
+                  </p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="text-xs text-muted-foreground">Rumstyp</label>
+                      <Input
+                        placeholder="T.ex. Dubbelrum"
+                        value={itemDraft.room_type ?? ""}
+                        onChange={(e) => setItemDraft({ ...itemDraft, room_type: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs text-muted-foreground">Antal rum</label>
+                      <Input
+                        type="number"
+                        placeholder="T.ex. 2"
+                        value={itemDraft.rooms ?? ""}
+                        onChange={(e) => setItemDraft({ ...itemDraft, rooms: Number(e.target.value) })}
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="text-xs text-muted-foreground">Incheckning</label>
+                      <Input
+                        type="date"
+                        value={itemDraft.check_in ?? ""}
+                        onChange={(e) => setItemDraft({ ...itemDraft, check_in: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs text-muted-foreground">Utcheckning</label>
+                      <Input
+                        type="date"
+                        value={itemDraft.check_out ?? ""}
+                        onChange={(e) => setItemDraft({ ...itemDraft, check_out: e.target.value })}
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <label className="text-xs text-muted-foreground">Utcheckning</label>
-                  <Input
-                    type="date"
-                    value={itemDraft.check_out ?? ""}
-                    onChange={(e) => setItemDraft({ ...itemDraft, check_out: e.target.value })}
-                  />
-                </div>
-                <Input
-                  type="number"
-                  placeholder="Antal rum"
-                  value={itemDraft.rooms ?? ""}
-                  onChange={(e) => setItemDraft({ ...itemDraft, rooms: Number(e.target.value) })}
-                />
               </>
             )}
 
