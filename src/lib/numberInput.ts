@@ -11,8 +11,9 @@ export function installNumberInputHelpers() {
 
   document.addEventListener("focusin", (e) => {
     if (isNumberInput(e.target)) {
+      const input = e.target;
       // Defer so the browser has finished its own focus handling first.
-      window.setTimeout(() => e.target.select(), 0);
+      window.setTimeout(() => input.select(), 0);
     }
   });
 
