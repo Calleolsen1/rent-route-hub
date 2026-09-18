@@ -146,6 +146,12 @@ export default function BackofficeBookingDetail() {
   const [travellers, setTravellers] = useState<Traveller[]>([]);
   const [hotels, setHotels] = useState<{ id: string; name: string; city: string | null }[]>([]);
   const [invoices, setInvoices] = useState<any[]>([]);
+  const [tab, setTab] = useState("items");
+  const [payOpen, setPayOpen] = useState(false);
+  const [payInvoice, setPayInvoice] = useState<any>(null);
+  const [payAmount, setPayAmount] = useState(0);
+  const [payDate, setPayDate] = useState(new Date().toISOString().slice(0, 10));
+  const [payMethod, setPayMethod] = useState("");
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
 
