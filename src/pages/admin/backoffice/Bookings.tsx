@@ -281,10 +281,16 @@ export default function BackofficeBookings() {
         </p>
       ) : (
         <div className="space-y-8">
-          {[
-            { label: "Kommande resor", items: upcoming },
-            { label: "Genomförda resor", items: past },
-          ].map(
+          {(
+            viewFilter === "past"
+              ? [{ label: "Genomförda resor", items: past }]
+              : viewFilter === "upcoming"
+                ? [{ label: "Kommande resor", items: upcoming }]
+                : [
+                    { label: "Kommande resor", items: upcoming },
+                    { label: "Genomförda resor", items: past },
+                  ]
+          ).map(
             (group) =>
               group.items.length > 0 && (
                 <section key={group.label}>
