@@ -46,3 +46,13 @@ verify_jwt = true
 # xs2-sync verifies the JWT inline (must be authenticated admin)
 [functions.xs2-sync]
 verify_jwt = true
+
+# Back office — alla tre verifierar admin-rollen i koden
+[functions.send-booking-confirmation]
+verify_jwt = true
+
+[functions.send-booking-invoice]
+verify_jwt = true
+
+[functions.export-accounting]
+verify_jwt = true

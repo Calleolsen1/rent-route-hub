@@ -14,6 +14,414 @@ export type Database = {
   }
   public: {
     Tables: {
+      booking_documents: {
+        Row: {
+          booking_id: string | null
+          created_at: string
+          customer_id: string | null
+          doc_type: string
+          error_message: string | null
+          id: string
+          invoice_id: string | null
+          recipient_email: string
+          sent_at: string
+          status: string
+          subject: string | null
+        }
+        Insert: {
+          booking_id?: string | null
+          created_at?: string
+          customer_id?: string | null
+          doc_type: string
+          error_message?: string | null
+          id?: string
+          invoice_id?: string | null
+          recipient_email: string
+          sent_at?: string
+          status?: string
+          subject?: string | null
+        }
+        Update: {
+          booking_id?: string | null
+          created_at?: string
+          customer_id?: string | null
+          doc_type?: string
+          error_message?: string | null
+          id?: string
+          invoice_id?: string | null
+          recipient_email?: string
+          sent_at?: string
+          status?: string
+          subject?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_documents_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "booking_margin_view"
+            referencedColumns: ["booking_id"]
+          },
+          {
+            foreignKeyName: "booking_documents_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "booking_documents_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "upcoming_departures_view"
+            referencedColumns: ["booking_id"]
+          },
+          {
+            foreignKeyName: "booking_documents_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "booking_documents_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      booking_items: {
+        Row: {
+          airline: string | null
+          arrive_at: string | null
+          booking_id: string
+          booking_reference: string | null
+          check_in: string | null
+          check_out: string | null
+          cost_sek: number
+          created_at: string
+          depart_at: string | null
+          description: string
+          event_name: string | null
+          flight_number: string | null
+          from_airport: string | null
+          hotel_id: string | null
+          id: string
+          item_type: Database["public"]["Enums"]["booking_item_type"]
+          notes: string | null
+          qty: number
+          room_type: string | null
+          rooms: number | null
+          sale_sek: number
+          sort_order: number
+          supplier: string | null
+          ticket_category: string | null
+          to_airport: string | null
+          transfer_at: string | null
+          transfer_from: string | null
+          transfer_to: string | null
+          updated_at: string
+          vehicle: string | null
+        }
+        Insert: {
+          airline?: string | null
+          arrive_at?: string | null
+          booking_id: string
+          booking_reference?: string | null
+          check_in?: string | null
+          check_out?: string | null
+          cost_sek?: number
+          created_at?: string
+          depart_at?: string | null
+          description: string
+          event_name?: string | null
+          flight_number?: string | null
+          from_airport?: string | null
+          hotel_id?: string | null
+          id?: string
+          item_type: Database["public"]["Enums"]["booking_item_type"]
+          notes?: string | null
+          qty?: number
+          room_type?: string | null
+          rooms?: number | null
+          sale_sek?: number
+          sort_order?: number
+          supplier?: string | null
+          ticket_category?: string | null
+          to_airport?: string | null
+          transfer_at?: string | null
+          transfer_from?: string | null
+          transfer_to?: string | null
+          updated_at?: string
+          vehicle?: string | null
+        }
+        Update: {
+          airline?: string | null
+          arrive_at?: string | null
+          booking_id?: string
+          booking_reference?: string | null
+          check_in?: string | null
+          check_out?: string | null
+          cost_sek?: number
+          created_at?: string
+          depart_at?: string | null
+          description?: string
+          event_name?: string | null
+          flight_number?: string | null
+          from_airport?: string | null
+          hotel_id?: string | null
+          id?: string
+          item_type?: Database["public"]["Enums"]["booking_item_type"]
+          notes?: string | null
+          qty?: number
+          room_type?: string | null
+          rooms?: number | null
+          sale_sek?: number
+          sort_order?: number
+          supplier?: string | null
+          ticket_category?: string | null
+          to_airport?: string | null
+          transfer_at?: string | null
+          transfer_from?: string | null
+          transfer_to?: string | null
+          updated_at?: string
+          vehicle?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_items_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "booking_margin_view"
+            referencedColumns: ["booking_id"]
+          },
+          {
+            foreignKeyName: "booking_items_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "booking_items_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "upcoming_departures_view"
+            referencedColumns: ["booking_id"]
+          },
+          {
+            foreignKeyName: "booking_items_hotel_id_fkey"
+            columns: ["hotel_id"]
+            isOneToOne: false
+            referencedRelation: "hotels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      booking_travellers: {
+        Row: {
+          booking_id: string
+          created_at: string
+          date_of_birth: string | null
+          email: string | null
+          full_name: string
+          id: string
+          nationality: string | null
+          notes: string | null
+          passport_expiry: string | null
+          passport_number: string | null
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string
+          date_of_birth?: string | null
+          email?: string | null
+          full_name: string
+          id?: string
+          nationality?: string | null
+          notes?: string | null
+          passport_expiry?: string | null
+          passport_number?: string | null
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string
+          date_of_birth?: string | null
+          email?: string | null
+          full_name?: string
+          id?: string
+          nationality?: string | null
+          notes?: string | null
+          passport_expiry?: string | null
+          passport_number?: string | null
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_travellers_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "booking_margin_view"
+            referencedColumns: ["booking_id"]
+          },
+          {
+            foreignKeyName: "booking_travellers_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "booking_travellers_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "upcoming_departures_view"
+            referencedColumns: ["booking_id"]
+          },
+        ]
+      }
+      bookings: {
+        Row: {
+          booking_number: string | null
+          created_at: string
+          created_by: string | null
+          currency: string
+          customer_id: string
+          depart_date: string | null
+          destination: string | null
+          id: string
+          inquiry_id: string | null
+          internal_notes: string | null
+          notes: string | null
+          return_date: string | null
+          status: Database["public"]["Enums"]["booking_status"]
+          title: string
+          travellers_count: number
+          updated_at: string
+        }
+        Insert: {
+          booking_number?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          customer_id: string
+          depart_date?: string | null
+          destination?: string | null
+          id?: string
+          inquiry_id?: string | null
+          internal_notes?: string | null
+          notes?: string | null
+          return_date?: string | null
+          status?: Database["public"]["Enums"]["booking_status"]
+          title: string
+          travellers_count?: number
+          updated_at?: string
+        }
+        Update: {
+          booking_number?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          customer_id?: string
+          depart_date?: string | null
+          destination?: string | null
+          id?: string
+          inquiry_id?: string | null
+          internal_notes?: string | null
+          notes?: string | null
+          return_date?: string | null
+          status?: Database["public"]["Enums"]["booking_status"]
+          title?: string
+          travellers_count?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_inquiry_id_fkey"
+            columns: ["inquiry_id"]
+            isOneToOne: false
+            referencedRelation: "inquiries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customers: {
+        Row: {
+          address_line1: string | null
+          address_line2: string | null
+          billing_address: string | null
+          billing_email: string | null
+          city: string | null
+          company_name: string | null
+          contact_name: string
+          country: string | null
+          created_at: string
+          customer_number: string | null
+          email: string
+          id: string
+          notes: string | null
+          org_number: string | null
+          phone: string | null
+          postal_code: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          address_line1?: string | null
+          address_line2?: string | null
+          billing_address?: string | null
+          billing_email?: string | null
+          city?: string | null
+          company_name?: string | null
+          contact_name: string
+          country?: string | null
+          created_at?: string
+          customer_number?: string | null
+          email: string
+          id?: string
+          notes?: string | null
+          org_number?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          address_line1?: string | null
+          address_line2?: string | null
+          billing_address?: string | null
+          billing_email?: string | null
+          city?: string | null
+          company_name?: string | null
+          contact_name?: string
+          country?: string | null
+          created_at?: string
+          customer_number?: string | null
+          email?: string
+          id?: string
+          notes?: string | null
+          org_number?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       events: {
         Row: {
           away_team: string | null
@@ -185,6 +593,60 @@ export type Database = {
         }
         Relationships: []
       }
+      hotels: {
+        Row: {
+          address_line1: string | null
+          city: string | null
+          contact_name: string | null
+          country: string | null
+          created_at: string
+          email: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          name: string
+          notes: string | null
+          phone: string | null
+          postal_code: string | null
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          address_line1?: string | null
+          city?: string | null
+          contact_name?: string | null
+          country?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name: string
+          notes?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          address_line1?: string | null
+          city?: string | null
+          contact_name?: string | null
+          country?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
       inquiries: {
         Row: {
           admin_notes: string | null
@@ -250,6 +712,186 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      invoice_items: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          invoice_id: string
+          qty: number
+          sort_order: number
+          unit_price_sek: number
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          invoice_id: string
+          qty?: number
+          sort_order?: number
+          unit_price_sek?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          invoice_id?: string
+          qty?: number
+          sort_order?: number
+          unit_price_sek?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoice_items_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoice_payments: {
+        Row: {
+          amount_sek: number
+          created_at: string
+          id: string
+          invoice_id: string
+          method: string | null
+          notes: string | null
+          paid_on: string
+          reference: string | null
+        }
+        Insert: {
+          amount_sek: number
+          created_at?: string
+          id?: string
+          invoice_id: string
+          method?: string | null
+          notes?: string | null
+          paid_on?: string
+          reference?: string | null
+        }
+        Update: {
+          amount_sek?: number
+          created_at?: string
+          id?: string
+          invoice_id?: string
+          method?: string | null
+          notes?: string | null
+          paid_on?: string
+          reference?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoice_payments_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoices: {
+        Row: {
+          accounting_account: string | null
+          booking_id: string | null
+          created_at: string
+          currency: string
+          customer_id: string
+          due_date: string
+          exported_at: string | null
+          id: string
+          invoice_number: string | null
+          issue_date: string
+          notes: string | null
+          paid_at: string | null
+          paid_sek: number
+          reference: string | null
+          sent_at: string | null
+          status: Database["public"]["Enums"]["bo_invoice_status"]
+          subtotal_sek: number
+          total_sek: number
+          updated_at: string
+          vat_rate: number
+          vat_sek: number
+        }
+        Insert: {
+          accounting_account?: string | null
+          booking_id?: string | null
+          created_at?: string
+          currency?: string
+          customer_id: string
+          due_date?: string
+          exported_at?: string | null
+          id?: string
+          invoice_number?: string | null
+          issue_date?: string
+          notes?: string | null
+          paid_at?: string | null
+          paid_sek?: number
+          reference?: string | null
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["bo_invoice_status"]
+          subtotal_sek?: number
+          total_sek?: number
+          updated_at?: string
+          vat_rate?: number
+          vat_sek?: number
+        }
+        Update: {
+          accounting_account?: string | null
+          booking_id?: string | null
+          created_at?: string
+          currency?: string
+          customer_id?: string
+          due_date?: string
+          exported_at?: string | null
+          id?: string
+          invoice_number?: string | null
+          issue_date?: string
+          notes?: string | null
+          paid_at?: string | null
+          paid_sek?: number
+          reference?: string | null
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["bo_invoice_status"]
+          subtotal_sek?: number
+          total_sek?: number
+          updated_at?: string
+          vat_rate?: number
+          vat_sek?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "booking_margin_view"
+            referencedColumns: ["booking_id"]
+          },
+          {
+            foreignKeyName: "invoices_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "upcoming_departures_view"
+            referencedColumns: ["booking_id"]
+          },
+          {
+            foreignKeyName: "invoices_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       message_threads: {
         Row: {
@@ -1276,6 +1918,33 @@ export type Database = {
       }
     }
     Views: {
+      booking_margin_view: {
+        Row: {
+          booking_id: string | null
+          booking_number: string | null
+          company_name: string | null
+          contact_name: string | null
+          cost_total_sek: number | null
+          customer_id: string | null
+          depart_date: string | null
+          destination: string | null
+          margin_sek: number | null
+          return_date: string | null
+          sale_total_sek: number | null
+          status: Database["public"]["Enums"]["booking_status"] | null
+          title: string | null
+          travellers_count: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       public_profiles: {
         Row: {
           about: string | null
@@ -1284,6 +1953,34 @@ export type Database = {
           first_name: string | null
           id: string | null
           last_name: string | null
+        }
+        Relationships: []
+      }
+      sales_forecast_view: {
+        Row: {
+          bookings_count: number | null
+          cost_total_sek: number | null
+          destination: string | null
+          margin_sek: number | null
+          month: string | null
+          sale_total_sek: number | null
+        }
+        Relationships: []
+      }
+      upcoming_departures_view: {
+        Row: {
+          booking_id: string | null
+          booking_number: string | null
+          company_name: string | null
+          contact_name: string | null
+          depart_date: string | null
+          destination: string | null
+          email: string | null
+          phone: string | null
+          return_date: string | null
+          status: Database["public"]["Enums"]["booking_status"] | null
+          title: string | null
+          travellers_count: number | null
         }
         Relationships: []
       }
@@ -1513,6 +2210,15 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "host" | "guest"
+      bo_invoice_status:
+        | "draft"
+        | "sent"
+        | "partly_paid"
+        | "paid"
+        | "overdue"
+        | "cancelled"
+      booking_item_type: "hotel" | "flight" | "ticket" | "transfer" | "other"
+      booking_status: "draft" | "confirmed" | "paid" | "completed" | "cancelled"
       event_sport: "soccer" | "formula1"
       event_status: "upcoming" | "sold_out" | "completed" | "cancelled"
       inquiry_status: "new" | "in_progress" | "quoted" | "won" | "lost"
@@ -1655,6 +2361,16 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "host", "guest"],
+      bo_invoice_status: [
+        "draft",
+        "sent",
+        "partly_paid",
+        "paid",
+        "overdue",
+        "cancelled",
+      ],
+      booking_item_type: ["hotel", "flight", "ticket", "transfer", "other"],
+      booking_status: ["draft", "confirmed", "paid", "completed", "cancelled"],
       event_sport: ["soccer", "formula1"],
       event_status: ["upcoming", "sold_out", "completed", "cancelled"],
       inquiry_status: ["new", "in_progress", "quoted", "won", "lost"],
