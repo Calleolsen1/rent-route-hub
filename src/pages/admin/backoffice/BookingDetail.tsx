@@ -636,6 +636,43 @@ export default function BackofficeBookingDetail() {
                     ))}
                   </SelectContent>
                 </Select>
+                <div className="flex items-center sm:col-span-2">
+                  <Button
+                    type="button"
+                    variant="link"
+                    size="sm"
+                    className="h-auto p-0 text-xs"
+                    onClick={() => setNewHotel((v) => !v)}
+                  >
+                    {newHotel ? "Avbryt nytt hotell" : "+ Nytt hotell"}
+                  </Button>
+                </div>
+                {newHotel && (
+                  <div className="grid gap-2 rounded-md border border-border p-3 sm:col-span-2 sm:grid-cols-3">
+                    <Input
+                      placeholder="Hotellets namn *"
+                      value={hotelDraft.name}
+                      onChange={(e) => setHotelDraft({ ...hotelDraft, name: e.target.value })}
+                    />
+                    <Input
+                      placeholder="Adress"
+                      value={hotelDraft.address_line1}
+                      onChange={(e) =>
+                        setHotelDraft({ ...hotelDraft, address_line1: e.target.value })
+                      }
+                    />
+                    <Input
+                      placeholder="Stad"
+                      value={hotelDraft.city}
+                      onChange={(e) => setHotelDraft({ ...hotelDraft, city: e.target.value })}
+                    />
+                    <div className="sm:col-span-3">
+                      <Button type="button" size="sm" onClick={saveHotel}>
+                        Spara hotell
+                      </Button>
+                    </div>
+                  </div>
+                )}
                 <Input
                   placeholder="Rumstyp"
                   value={itemDraft.room_type ?? ""}
