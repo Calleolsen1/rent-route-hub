@@ -253,6 +253,64 @@ export default function BackofficeBookingDetail() {
     load();
   };
 
+  const openQuote = () => {
+    if (items.length === 0) return toast.error("Lägg till minst en rad först");
+    const name = customer?.contact_name || customer?.company_name || "";
+    setQuoteTitle(booking!.title);
+    setQuoteIntro(
+      `Hej ${name.split(" ")[0] || ""},\n\nNedan följer vårt förslag. Hör av dig om något ska justeras.`.trim(),
+    );
+    setQuoteExpiry(new Date(Date.now() + 14 * 86400000).toISOString().slice(0, 10));
+    setQuoteOpen(true);
+  };
+
+  const sendQuote = async () => {
+    if (!customer?.email) return toast.error("Kunden saknar e-postadress");
+    if (!quoteTitle.trim()) return toast.error("Titel krävs");
+    setBusy(true);
+    try {
+      const { data: quote, error: qErr } = await supabase
+        .from("quotes")
+        .insert({
+          customer_email: customer.email,
+          customer_name: customer.contact_name || customer.company_name || null,
+          title: quoteTitle.trim(),
+          intro_message: quoteIntro.trim() || null,
+          total_sek: saleTotal,
+          currency: "SEK",
+          status: "draft",
+          expires_at: new Date(quoteExpiry + "T23:59:59").toISOString(),
+        })
+        .select("id")
+        .single();
+      if (qErr || !quote) throw new Error(qErr?.message ?? "Kunde inte spara offerten");
+
+      const { error: iErr } = await supabase.from("quote_items").insert(
+        items.map((i, idx) => ({
+          quote_id: quote.id,
+          description: `${ITEM_LABEL[i.item_type]}: ${i.description}`,
+          qty: i.qty,
+          unit_price_sek: i.sale_sek,
+          sort_order: idx,
+        })),
+      );
+      if (iErr) throw new Error(iErr.message);
+
+      const { error: sErr, data: sData } = await supabase.functions.invoke("send-quote-email", {
+        body: { quote_id: quote.id },
+      });
+      if (sErr || (sData as any)?.error) {
+        throw new Error(sErr?.message ?? (sData as any)?.error ?? "Kunde inte skicka mejl");
+      }
+      toast.success(`Offerten är skickad till ${customer.email}`);
+      setQuoteOpen(false);
+    } catch (e: any) {
+      toast.error(e.message ?? "Något gick fel");
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const createInvoice = async () => {
     if (items.length === 0) return toast.error("Lägg till minst en rad först");
     setBusy(true);
