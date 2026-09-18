@@ -399,6 +399,37 @@ export default function BackofficeBookingDetail() {
     load();
   };
 
+  const previewInvoice = async (inv: any) => {
+    setBusy(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("send-booking-invoice", {
+        body: { invoice_id: inv.id, preview: true },
+      });
+      if (error || (data as any)?.error) {
+        throw new Error(await fnError(error, data, "Kunde inte visa fakturan"));
+      }
+      setInvPreview({ invoice: inv, html: (data as any).html });
+    } catch (e: any) {
+      toast.error(e.message ?? "Något gick fel");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const sendInvoice = async (inv: any) => {
+    setBusy(true);
+    const { data, error } = await supabase.functions.invoke("send-booking-invoice", {
+      body: { invoice_id: inv.id },
+    });
+    setBusy(false);
+    if (error || (data as any)?.error) {
+      return toast.error(await fnError(error, data, "Fakturan kunde inte skickas"));
+    }
+    setInvPreview(null);
+    toast.success("Fakturan är skickad");
+    load();
+  };
+
   const deleteInvoice = async () => {
     if (!delInvoice) return;
     setBusy(true);
