@@ -391,7 +391,7 @@ export default function BackofficeBookingDetail() {
       customer_name: customer.contact_name || customer.company_name || null,
       title: quoteTitle.trim(),
       intro_message: quoteIntro.trim() || null,
-      total_sek: saleTotal,
+      total_sek: grandTotal,
       currency: "SEK",
       expires_at: new Date(quoteExpiry + "T23:59:59").toISOString(),
     };
