@@ -55,6 +55,8 @@ type Booking = {
   status: BookingStatus;
   notes: string | null;
   internal_notes: string | null;
+  vat_enabled: boolean;
+  vat_rate: number;
 };
 
 type Item = {
