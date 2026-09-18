@@ -128,9 +128,19 @@ export default function BackofficeBookings() {
         [r.title, r.destination, r.company_name, r.contact_name, r.booking_number]
           .filter(Boolean)
           .some((v) => String(v).toLowerCase().includes(q));
-      return matchStatus && matchQuery;
+      // Periodfilter: resan visas om den överlappar valt datumintervall
+      let matchDates = true;
+      if (fromDate || toDate) {
+        const start = r.depart_date;
+        const end = r.return_date || r.depart_date;
+        if (fromDate && end && end < fromDate) matchDates = false;
+        if (toDate && start && start > toDate) matchDates = false;
+      }
+      return matchStatus && matchQuery && matchDates;
     });
-  }, [rows, query, statusFilter]);
+  }, [rows, query, statusFilter, fromDate, toDate]);
+
+  const hasDateFilter = !!fromDate || !!toDate;
 
   const today = new Date().toISOString().slice(0, 10);
 
