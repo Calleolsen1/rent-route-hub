@@ -233,6 +233,16 @@ export default function BackofficeInvoices() {
                     <Button
                       variant="ghost"
                       size="sm"
+                      title="Förhandsgranska"
+                      onClick={() => openPreview(r)}
+                      disabled={busy === r.id}
+                    >
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      title="Skicka"
                       onClick={() => send(r)}
                       disabled={busy === r.id}
                     >
