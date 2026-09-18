@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -60,6 +60,7 @@ type WebOrderRow = {
 };
 
 export default function BackofficeBookings() {
+  const navigate = useNavigate();
   const [rows, setRows] = useState<Row[]>([]);
   const [webOrders, setWebOrders] = useState<WebOrderRow[]>([]);
   const [customers, setCustomers] = useState<{ id: string; label: string }[]>([]);
