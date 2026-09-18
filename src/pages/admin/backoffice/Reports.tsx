@@ -17,6 +17,7 @@ export default function BackofficeReports() {
   useEffect(() => {
     (async () => {
       setLoading(true);
+      await supabase.rpc("complete_past_bookings");
       const [d, f, m, u] = await Promise.all([
         supabase.from("upcoming_departures_view").select("*"),
         supabase.from("sales_forecast_view").select("*"),
