@@ -701,10 +701,15 @@ export default function BackofficeBookingDetail() {
         </DialogContent>
       </Dialog>
 
-      <div className="mb-6 grid gap-4 sm:grid-cols-3">
+      <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-lg border border-border bg-card p-4">
           <p className="text-xs uppercase tracking-wider text-muted-foreground">Försäljning</p>
           <p className="text-xl font-medium">{formatSek(saleTotal)}</p>
+          {vatAmount > 0 && (
+            <p className="mt-1 text-xs text-muted-foreground">
+              + moms {formatSek(vatAmount)} = {formatSek(grandTotal)}
+            </p>
+          )}
         </div>
         <div className="rounded-lg border border-border bg-card p-4">
           <p className="text-xs uppercase tracking-wider text-muted-foreground">Inköp</p>
@@ -713,6 +718,33 @@ export default function BackofficeBookingDetail() {
         <div className="rounded-lg border border-border bg-card p-4">
           <p className="text-xs uppercase tracking-wider text-muted-foreground">Vinst</p>
           <p className="text-xl font-medium">{formatSek(saleTotal - costTotal)}</p>
+        </div>
+        <div className="rounded-lg border border-border bg-card p-4">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground">Moms</p>
+            <Switch
+              checked={!!booking.vat_enabled}
+              onCheckedChange={(v) => saveBooking({ vat_enabled: v })}
+            />
+          </div>
+          {booking.vat_enabled ? (
+            <div className="mt-2 flex items-center gap-2">
+              <Input
+                type="number"
+                step="0.01"
+                className="h-9 w-24"
+                value={booking.vat_rate ?? 0}
+                onFocus={(e) => e.currentTarget.select()}
+                onChange={(e) =>
+                  setBooking({ ...booking, vat_rate: Number(e.target.value) } as Booking)
+                }
+                onBlur={(e) => saveBooking({ vat_rate: Number(e.target.value) })}
+              />
+              <span className="text-sm text-muted-foreground">% = {formatSek(vatAmount)}</span>
+            </div>
+          ) : (
+            <p className="mt-2 text-sm text-muted-foreground">Ingen moms läggs på</p>
+          )}
         </div>
       </div>
 
