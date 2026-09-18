@@ -157,6 +157,7 @@ export default function BackofficeBookingDetail() {
   const [cancelMessage, setCancelMessage] = useState("");
   const [cancelPreview, setCancelPreview] = useState<string | null>(null);
   const [delInvoice, setDelInvoice] = useState<any>(null);
+  const [invPreview, setInvPreview] = useState<{ invoice: any; html: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
 
@@ -398,6 +399,37 @@ export default function BackofficeBookingDetail() {
     load();
   };
 
+  const previewInvoice = async (inv: any) => {
+    setBusy(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("send-booking-invoice", {
+        body: { invoice_id: inv.id, preview: true },
+      });
+      if (error || (data as any)?.error) {
+        throw new Error(await fnError(error, data, "Kunde inte visa fakturan"));
+      }
+      setInvPreview({ invoice: inv, html: (data as any).html });
+    } catch (e: any) {
+      toast.error(e.message ?? "Något gick fel");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const sendInvoice = async (inv: any) => {
+    setBusy(true);
+    const { data, error } = await supabase.functions.invoke("send-booking-invoice", {
+      body: { invoice_id: inv.id },
+    });
+    setBusy(false);
+    if (error || (data as any)?.error) {
+      return toast.error(await fnError(error, data, "Fakturan kunde inte skickas"));
+    }
+    setInvPreview(null);
+    toast.success("Fakturan är skickad");
+    load();
+  };
+
   const deleteInvoice = async () => {
     if (!delInvoice) return;
     setBusy(true);
@@ -581,7 +613,9 @@ export default function BackofficeBookingDetail() {
     setBusy(false);
     toast.success("Fakturaunderlag skapat");
     setTab("invoices");
-    load();
+    await load();
+    // Visa fakturan direkt så den kan granskas och skickas härifrån.
+    previewInvoice(inv);
   };
 
   const openPayment = (inv: any, full: boolean) => {
@@ -774,6 +808,30 @@ export default function BackofficeBookingDetail() {
             <Button onClick={sendQuote} disabled={busy}>
               {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Skicka offert
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!invPreview} onOpenChange={(o) => !o && setInvPreview(null)}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>
+              Faktura {invPreview?.invoice?.invoice_number ?? "(utkast)"}
+            </DialogTitle>
+          </DialogHeader>
+          <iframe
+            title="Förhandsgranskning av faktura"
+            srcDoc={invPreview?.html ?? ""}
+            className="h-[60vh] w-full rounded-md border border-border bg-white"
+          />
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setInvPreview(null)}>
+              Stäng
+            </Button>
+            <Button onClick={() => invPreview && sendInvoice(invPreview.invoice)} disabled={busy}>
+              {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Skicka faktura till kund
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1246,6 +1304,9 @@ export default function BackofficeBookingDetail() {
                         </p>
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
+                        <Button size="sm" disabled={busy} onClick={() => previewInvoice(inv)}>
+                          Visa & skicka faktura
+                        </Button>
                         <Button
                           variant="outline"
                           size="sm"
