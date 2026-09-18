@@ -759,7 +759,7 @@ export default function BackofficeBookingDetail() {
         </div>
       </div>
 
-      <Tabs defaultValue="items">
+      <Tabs value={tab} onValueChange={setTab}>
         <TabsList>
           <TabsTrigger value="items">Innehåll</TabsTrigger>
           <TabsTrigger value="travellers">Resenärer ({travellers.length})</TabsTrigger>
