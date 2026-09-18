@@ -343,6 +343,7 @@ export default function BackofficeBookings() {
               <SelectItem value="all">Alla resor</SelectItem>
               <SelectItem value="upcoming">Kommande</SelectItem>
               <SelectItem value="past">Genomförda</SelectItem>
+              <SelectItem value="deleted">Raderade</SelectItem>
             </SelectContent>
           </Select>
           <Input
@@ -385,6 +386,68 @@ export default function BackofficeBookings() {
         <div className="flex h-40 items-center justify-center text-muted-foreground">
           <Loader2 className="h-5 w-5 animate-spin" />
         </div>
+      ) : viewFilter === "deleted" ? (
+        deletedRows.length === 0 ? (
+          <p className="rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
+            Inga raderade resor.
+          </p>
+        ) : (
+          <section>
+            <div className="mb-2 flex items-baseline gap-2">
+              <h2 className="font-display text-lg text-foreground">Raderade resor</h2>
+              <span className="text-xs text-muted-foreground">{deletedRows.length} st</span>
+            </div>
+            <div className="overflow-x-auto rounded-lg border border-border">
+              <table className="w-full text-sm">
+                <thead className="bg-muted/50 text-left text-xs uppercase tracking-wider text-muted-foreground">
+                  <tr>
+                    <th className="px-4 py-3">Nr</th>
+                    <th className="px-4 py-3">Resa</th>
+                    <th className="px-4 py-3">Kund</th>
+                    <th className="px-4 py-3">Avresa</th>
+                    <th className="px-4 py-3">Raderad</th>
+                    <th className="px-4 py-3" />
+                  </tr>
+                </thead>
+                <tbody>
+                  {deletedRows.map((r) => (
+                    <tr key={r.id} className="border-t border-border">
+                      <td className="px-4 py-3 text-muted-foreground">{r.booking_number}</td>
+                      <td className="px-4 py-3">
+                        <div className="font-medium">{r.title}</div>
+                        <div className="text-xs text-muted-foreground">{r.destination}</div>
+                      </td>
+                      <td className="px-4 py-3">{r.company_name || r.contact_name}</td>
+                      <td className="px-4 py-3">{r.depart_date ?? "—"}</td>
+                      <td className="px-4 py-3 text-muted-foreground">
+                        {r.deleted_at?.slice(0, 10) ?? "—"}
+                      </td>
+                      <td className="px-4 py-3 text-right whitespace-nowrap">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          title="Återställ resa"
+                          onClick={() => restore(r)}
+                        >
+                          <Undo2 className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          title="Radera permanent"
+                          className="text-destructive hover:text-destructive"
+                          onClick={() => setConfirmPermanent(r)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )
       ) : filtered.length === 0 ? (
         <p className="rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
           {hasDateFilter || viewFilter !== "all" || statusFilter !== "all" || query
@@ -659,9 +722,10 @@ export default function BackofficeBookings() {
             <DialogTitle>Radera resa?</DialogTitle>
           </DialogHeader>
           <p className="text-sm text-muted-foreground">
-            "{confirmDelete?.title}" raderas permanent tillsammans med alla rader
-            (hotell, flyg, biljetter, transfer) och resenärslistan. Skickade fakturor
-            och dokument finns kvar på kundkortet. Detta går inte att ångra.
+            "{confirmDelete?.title}" flyttas till Raderade resor tillsammans med alla
+            rader (hotell, flyg, biljetter, transfer) och resenärslistan. Den syns inte
+            längre i listor eller rapporter, men du kan återställa den när som helst
+            under vyn "Raderade".
           </p>
           <DialogFooter>
             <Button variant="outline" onClick={() => setConfirmDelete(null)}>
