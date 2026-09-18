@@ -199,6 +199,9 @@ export default function BackofficeBookingDetail() {
 
   const saleTotal = items.reduce((s, i) => s + Number(i.sale_sek) * i.qty, 0);
   const costTotal = items.reduce((s, i) => s + Number(i.cost_sek) * i.qty, 0);
+  const vatRate = booking?.vat_enabled ? Number(booking.vat_rate ?? 0) : 0;
+  const vatAmount = Math.round(saleTotal * (vatRate / 100));
+  const grandTotal = saleTotal + vatAmount;
 
   const saveBooking = async (patch: Partial<Booking>) => {
     if (!booking) return;
