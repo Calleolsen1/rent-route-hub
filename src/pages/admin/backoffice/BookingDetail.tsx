@@ -540,13 +540,23 @@ export default function BackofficeBookingDetail() {
       setQuoteId(id);
     }
 
-    const quoteRows = items.map((i, idx) => ({
-      quote_id: id!,
-      description: `${ITEM_LABEL[i.item_type]}: ${i.description}`,
-      qty: i.qty,
-      unit_price_sek: i.sale_sek,
-      sort_order: idx,
-    }));
+    const quoteRows = showItemPrices
+      ? items.map((i, idx) => ({
+          quote_id: id!,
+          description: `${ITEM_LABEL[i.item_type]}: ${i.description}`,
+          qty: i.qty,
+          unit_price_sek: i.sale_sek,
+          sort_order: idx,
+        }))
+      : [
+          {
+            quote_id: id!,
+            description: `${quoteTitle.trim()} (paketpris)`,
+            qty: 1,
+            unit_price_sek: saleTotal,
+            sort_order: 0,
+          },
+        ];
     if (vatAmount > 0) {
       quoteRows.push({
         quote_id: id!,
