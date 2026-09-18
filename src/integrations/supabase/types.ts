@@ -139,6 +139,7 @@ export type Database = {
           transfer_from: string | null
           transfer_to: string | null
           updated_at: string
+          vat_rate: number | null
           vehicle: string | null
         }
         Insert: {
@@ -174,6 +175,7 @@ export type Database = {
           transfer_from?: string | null
           transfer_to?: string | null
           updated_at?: string
+          vat_rate?: number | null
           vehicle?: string | null
         }
         Update: {
@@ -209,6 +211,7 @@ export type Database = {
           transfer_from?: string | null
           transfer_to?: string | null
           updated_at?: string
+          vat_rate?: number | null
           vehicle?: string | null
         }
         Relationships: [
