@@ -428,7 +428,7 @@ export default function BackofficeBookingDetail() {
     if (vatAmount > 0) {
       quoteRows.push({
         quote_id: id!,
-        description: `Moms (${vatRate} %)`,
+        description: `Moms (${effectiveVatRate} %)`,
         qty: 1,
         unit_price_sek: vatAmount,
         sort_order: items.length,
