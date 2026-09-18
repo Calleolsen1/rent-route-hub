@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
 import * as Sentry from "@sentry/react";
 import App from "./App.tsx";
+import { installNumberInputHelpers } from "./lib/numberInput";
 import "./index.css";
 
 // Frontend error monitoring. Defensive: only initializes when VITE_SENTRY_DSN
