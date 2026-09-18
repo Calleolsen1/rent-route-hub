@@ -613,7 +613,9 @@ export default function BackofficeBookingDetail() {
     setBusy(false);
     toast.success("Fakturaunderlag skapat");
     setTab("invoices");
-    load();
+    await load();
+    // Visa fakturan direkt så den kan granskas och skickas härifrån.
+    previewInvoice(inv);
   };
 
   const openPayment = (inv: any, full: boolean) => {
