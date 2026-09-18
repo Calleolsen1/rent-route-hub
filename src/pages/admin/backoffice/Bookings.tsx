@@ -277,21 +277,58 @@ export default function BackofficeBookings() {
             <DialogTitle>Ny bokning</DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
-            <Select
-              value={draft.customer_id}
-              onValueChange={(v) => setDraft({ ...draft, customer_id: v })}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Välj kund" />
-              </SelectTrigger>
-              <SelectContent>
-                {customers.map((c) => (
-                  <SelectItem key={c.id} value={c.id}>
-                    {c.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-muted-foreground">Kund</span>
+              <Button
+                type="button"
+                variant="link"
+                size="sm"
+                className="h-auto p-0 text-xs"
+                onClick={() => setNewCustomer((v) => !v)}
+              >
+                {newCustomer ? "Välj befintlig kund" : "+ Ny kund"}
+              </Button>
+            </div>
+            {newCustomer ? (
+              <div className="grid gap-2 rounded-md border border-border p-3 sm:grid-cols-2">
+                <Input
+                  placeholder="Kontaktperson *"
+                  value={custDraft.contact_name}
+                  onChange={(e) => setCustDraft({ ...custDraft, contact_name: e.target.value })}
+                />
+                <Input
+                  placeholder="Företag/lag"
+                  value={custDraft.company_name}
+                  onChange={(e) => setCustDraft({ ...custDraft, company_name: e.target.value })}
+                />
+                <Input
+                  placeholder="E-post *"
+                  value={custDraft.email}
+                  onChange={(e) => setCustDraft({ ...custDraft, email: e.target.value })}
+                />
+                <Input
+                  placeholder="Telefon"
+                  value={custDraft.phone}
+                  onChange={(e) => setCustDraft({ ...custDraft, phone: e.target.value })}
+                />
+              </div>
+            ) : (
+              <Select
+                value={draft.customer_id}
+                onValueChange={(v) => setDraft({ ...draft, customer_id: v })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Välj kund" />
+                </SelectTrigger>
+                <SelectContent>
+                  {customers.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
             <Input
               placeholder="Titel, t.ex. Träningsläger Valencia v.12"
               value={draft.title}
