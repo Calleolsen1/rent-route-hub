@@ -130,6 +130,7 @@ export default function BackofficeBookingDetail() {
   const [quoteExpiry, setQuoteExpiry] = useState("");
   const [quoteId, setQuoteId] = useState<string | null>(null);
   const [quotePreview, setQuotePreview] = useState<string | null>(null);
+  const [confirmPreview, setConfirmPreview] = useState<string | null>(null);
   const [travOpen, setTravOpen] = useState(false);
   const [travDraft, setTravDraft] = useState<Partial<Traveller>>({});
 
