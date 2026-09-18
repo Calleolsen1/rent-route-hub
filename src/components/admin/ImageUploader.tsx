@@ -29,7 +29,7 @@ type Props = {
 
 export function ImageUploader({
   value,
-  bucket = "kaisen-media",
+  bucket = "email-assets",
   prefix,
   onUploaded,
   onCleared,

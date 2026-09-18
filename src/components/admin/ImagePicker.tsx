@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils";
  * library (kaisen-media bucket).
  */
 
-const BUCKET = "kaisen-media";
+const BUCKET = "email-assets";
 const PREFIXES = ["library", "event-covers", "home-slides", "team", ""];
 
 type LibraryItem = { path: string; url: string; updated_at: string | null };
