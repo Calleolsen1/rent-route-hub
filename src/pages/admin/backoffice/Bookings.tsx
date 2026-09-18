@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Plus, Search, ArrowRight } from "lucide-react";
+import { Loader2, Plus, Search, ArrowRight, Mail } from "lucide-react";
 import { formatSek, STATUS_LABEL, type BookingStatus } from "./shared";
 
 type Row = {
@@ -46,6 +46,14 @@ export default function BackofficeBookings() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [sending, setSending] = useState<string | null>(null);
+  const [newCustomer, setNewCustomer] = useState(false);
+  const [custDraft, setCustDraft] = useState({
+    contact_name: "",
+    company_name: "",
+    email: "",
+    phone: "",
+  });
   const [draft, setDraft] = useState({
     customer_id: "",
     title: "",
@@ -89,13 +97,47 @@ export default function BackofficeBookings() {
     });
   }, [rows, query, statusFilter]);
 
+  const sendConfirmation = async (bookingId: string) => {
+    setSending(bookingId);
+    const { error } = await supabase.functions.invoke("send-booking-confirmation", {
+      body: { booking_id: bookingId },
+    });
+    setSending(null);
+    if (error) return toast.error(error.message);
+    toast.success("Bokningsbekräftelsen är skickad");
+  };
+
   const create = async () => {
-    if (!draft.customer_id || !draft.title.trim()) {
-      return toast.error("Välj kund och ange en titel");
+    if (!draft.title.trim()) return toast.error("Ange en titel");
+    let customerId = draft.customer_id;
+
+    if (newCustomer) {
+      if (!custDraft.contact_name.trim() || !custDraft.email.trim()) {
+        return toast.error("Ange kontaktperson och e-post för den nya kunden");
+      }
+      setSaving(true);
+      const { data: cust, error: custError } = await supabase
+        .from("customers")
+        .insert({
+          contact_name: custDraft.contact_name,
+          company_name: custDraft.company_name || null,
+          email: custDraft.email,
+          phone: custDraft.phone || null,
+        })
+        .select("id")
+        .single();
+      if (custError || !cust) {
+        setSaving(false);
+        return toast.error(custError?.message ?? "Kunde inte skapa kunden");
+      }
+      customerId = cust.id;
+    } else if (!customerId) {
+      return toast.error("Välj kund");
     }
+
     setSaving(true);
     const { error } = await supabase.from("bookings").insert({
-      customer_id: draft.customer_id,
+      customer_id: customerId,
       title: draft.title,
       destination: draft.destination || null,
       depart_date: draft.depart_date || null,
@@ -114,6 +156,8 @@ export default function BackofficeBookings() {
       return_date: "",
       travellers_count: 0,
     });
+    setNewCustomer(false);
+    setCustDraft({ contact_name: "", company_name: "", email: "", phone: "" });
     load();
   };
 
@@ -201,6 +245,19 @@ export default function BackofficeBookings() {
                     <Badge variant="secondary">{STATUS_LABEL[r.status]}</Badge>
                   </td>
                   <td className="px-4 py-3 text-right">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      title="Skicka bokningsbekräftelse"
+                      onClick={() => sendConfirmation(r.booking_id)}
+                      disabled={sending === r.booking_id}
+                    >
+                      {sending === r.booking_id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Mail className="h-4 w-4" />
+                      )}
+                    </Button>
                     <Button asChild variant="ghost" size="sm">
                       <Link to={`/admin/backoffice/bokningar/${r.booking_id}`}>
                         <ArrowRight className="h-4 w-4" />
@@ -220,21 +277,58 @@ export default function BackofficeBookings() {
             <DialogTitle>Ny bokning</DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
-            <Select
-              value={draft.customer_id}
-              onValueChange={(v) => setDraft({ ...draft, customer_id: v })}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Välj kund" />
-              </SelectTrigger>
-              <SelectContent>
-                {customers.map((c) => (
-                  <SelectItem key={c.id} value={c.id}>
-                    {c.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-muted-foreground">Kund</span>
+              <Button
+                type="button"
+                variant="link"
+                size="sm"
+                className="h-auto p-0 text-xs"
+                onClick={() => setNewCustomer((v) => !v)}
+              >
+                {newCustomer ? "Välj befintlig kund" : "+ Ny kund"}
+              </Button>
+            </div>
+            {newCustomer ? (
+              <div className="grid gap-2 rounded-md border border-border p-3 sm:grid-cols-2">
+                <Input
+                  placeholder="Kontaktperson *"
+                  value={custDraft.contact_name}
+                  onChange={(e) => setCustDraft({ ...custDraft, contact_name: e.target.value })}
+                />
+                <Input
+                  placeholder="Företag/lag"
+                  value={custDraft.company_name}
+                  onChange={(e) => setCustDraft({ ...custDraft, company_name: e.target.value })}
+                />
+                <Input
+                  placeholder="E-post *"
+                  value={custDraft.email}
+                  onChange={(e) => setCustDraft({ ...custDraft, email: e.target.value })}
+                />
+                <Input
+                  placeholder="Telefon"
+                  value={custDraft.phone}
+                  onChange={(e) => setCustDraft({ ...custDraft, phone: e.target.value })}
+                />
+              </div>
+            ) : (
+              <Select
+                value={draft.customer_id}
+                onValueChange={(v) => setDraft({ ...draft, customer_id: v })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Välj kund" />
+                </SelectTrigger>
+                <SelectContent>
+                  {customers.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
             <Input
               placeholder="Titel, t.ex. Träningsläger Valencia v.12"
               value={draft.title}

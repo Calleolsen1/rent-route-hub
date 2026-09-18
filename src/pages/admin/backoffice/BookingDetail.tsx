@@ -117,6 +117,8 @@ export default function BackofficeBookingDetail() {
 
   const [itemOpen, setItemOpen] = useState(false);
   const [itemDraft, setItemDraft] = useState<Partial<Item>>({});
+  const [newHotel, setNewHotel] = useState(false);
+  const [hotelDraft, setHotelDraft] = useState({ name: "", city: "", address_line1: "" });
   const [travOpen, setTravOpen] = useState(false);
   const [travDraft, setTravDraft] = useState<Partial<Traveller>>({});
 
@@ -169,6 +171,29 @@ export default function BackofficeBookingDetail() {
     if (error) return toast.error(error.message);
     setItemOpen(false);
     load();
+  };
+
+  const saveHotel = async () => {
+    if (!hotelDraft.name.trim()) return toast.error("Hotellets namn krävs");
+    const { data, error } = await supabase
+      .from("hotels")
+      .insert({
+        name: hotelDraft.name,
+        city: hotelDraft.city || null,
+        address_line1: hotelDraft.address_line1 || null,
+      })
+      .select("id, name, city")
+      .single();
+    if (error || !data) return toast.error(error?.message ?? "Kunde inte spara hotellet");
+    setHotels((p) => [...p, data as any].sort((a, b) => a.name.localeCompare(b.name)));
+    setItemDraft((d) => ({
+      ...d,
+      hotel_id: data.id,
+      description: d.description || data.name,
+    }));
+    setHotelDraft({ name: "", city: "", address_line1: "" });
+    setNewHotel(false);
+    toast.success("Hotellet är tillagt i registret");
   };
 
   const removeItem = async (itemId: string) => {
@@ -611,6 +636,43 @@ export default function BackofficeBookingDetail() {
                     ))}
                   </SelectContent>
                 </Select>
+                <div className="flex items-center sm:col-span-2">
+                  <Button
+                    type="button"
+                    variant="link"
+                    size="sm"
+                    className="h-auto p-0 text-xs"
+                    onClick={() => setNewHotel((v) => !v)}
+                  >
+                    {newHotel ? "Avbryt nytt hotell" : "+ Nytt hotell"}
+                  </Button>
+                </div>
+                {newHotel && (
+                  <div className="grid gap-2 rounded-md border border-border p-3 sm:col-span-2 sm:grid-cols-3">
+                    <Input
+                      placeholder="Hotellets namn *"
+                      value={hotelDraft.name}
+                      onChange={(e) => setHotelDraft({ ...hotelDraft, name: e.target.value })}
+                    />
+                    <Input
+                      placeholder="Adress"
+                      value={hotelDraft.address_line1}
+                      onChange={(e) =>
+                        setHotelDraft({ ...hotelDraft, address_line1: e.target.value })
+                      }
+                    />
+                    <Input
+                      placeholder="Stad"
+                      value={hotelDraft.city}
+                      onChange={(e) => setHotelDraft({ ...hotelDraft, city: e.target.value })}
+                    />
+                    <div className="sm:col-span-3">
+                      <Button type="button" size="sm" onClick={saveHotel}>
+                        Spara hotell
+                      </Button>
+                    </div>
+                  </div>
+                )}
                 <Input
                   placeholder="Rumstyp"
                   value={itemDraft.room_type ?? ""}
