@@ -170,6 +170,20 @@ export default function BackofficeBookings() {
     );
   }, [webOrders, query]);
 
+  const doDelete = async () => {
+    if (!confirmDelete) return;
+    setDeleting(true);
+    const { error } = await supabase
+      .from("bookings")
+      .delete()
+      .eq("id", confirmDelete.booking_id);
+    setDeleting(false);
+    setConfirmDelete(null);
+    if (error) return toast.error(error.message);
+    toast.success("Resan är raderad");
+    load();
+  };
+
   const sendConfirmation = async (bookingId: string) => {
     setSending(bookingId);
     const { error } = await supabase.functions.invoke("send-booking-confirmation", {
