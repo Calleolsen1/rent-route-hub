@@ -24,6 +24,15 @@ const navItems = [
   { to: "/admin/navigation", label: "Navigation", icon: Menu },
 ];
 
+/** Back office — kunder, hotell, bokningar, fakturor och rapporter. */
+const backofficeItems = [
+  { to: "/admin/backoffice/bokningar", label: "Bokningar", icon: Plane },
+  { to: "/admin/backoffice/kunder", label: "Kunder", icon: Contact2 },
+  { to: "/admin/backoffice/hotell", label: "Hotell", icon: Building2 },
+  { to: "/admin/backoffice/fakturor", label: "Fakturor", icon: Receipt },
+  { to: "/admin/backoffice/rapporter", label: "Rapporter", icon: BarChart3 },
+];
+
 /**
  * Which public page the live preview should open on for a given admin page.
  * Falls back to the start page.
