@@ -119,6 +119,10 @@ export default function BackofficeBookingDetail() {
   const [itemDraft, setItemDraft] = useState<Partial<Item>>({});
   const [newHotel, setNewHotel] = useState(false);
   const [hotelDraft, setHotelDraft] = useState({ name: "", city: "", address_line1: "" });
+  const [quoteOpen, setQuoteOpen] = useState(false);
+  const [quoteTitle, setQuoteTitle] = useState("");
+  const [quoteIntro, setQuoteIntro] = useState("");
+  const [quoteExpiry, setQuoteExpiry] = useState("");
   const [travOpen, setTravOpen] = useState(false);
   const [travDraft, setTravDraft] = useState<Partial<Traveller>>({});
 
