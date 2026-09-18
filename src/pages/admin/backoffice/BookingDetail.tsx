@@ -1239,6 +1239,45 @@ export default function BackofficeBookingDetail() {
         </TabsContent>
       </Tabs>
 
+      <Dialog open={payOpen} onOpenChange={setPayOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Registrera betalning</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div>
+              <label className="text-xs text-muted-foreground">Belopp (kr)</label>
+              <Input
+                type="number"
+                value={payAmount}
+                onFocus={(e) => e.currentTarget.select()}
+                onChange={(e) => setPayAmount(Number(e.target.value))}
+              />
+            </div>
+            <div>
+              <label className="text-xs text-muted-foreground">Betaldatum</label>
+              <Input type="date" value={payDate} onChange={(e) => setPayDate(e.target.value)} />
+            </div>
+            <div>
+              <label className="text-xs text-muted-foreground">Betalsätt</label>
+              <Input
+                placeholder="Bankgiro, Swish, kort…"
+                value={payMethod}
+                onChange={(e) => setPayMethod(e.target.value)}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setPayOpen(false)}>
+              Avbryt
+            </Button>
+            <Button onClick={savePayment} disabled={busy}>
+              Spara betalning
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Item dialog */}
       <Dialog open={!!docView} onOpenChange={(o) => !o && setDocView(null)}>
         <DialogContent className="max-w-3xl">
