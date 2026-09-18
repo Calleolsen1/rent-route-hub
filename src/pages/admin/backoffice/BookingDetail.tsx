@@ -61,6 +61,7 @@ type Booking = {
   internal_notes: string | null;
   vat_enabled: boolean;
   vat_rate: number;
+  show_item_prices: boolean;
 };
 
 type Item = {
@@ -239,6 +240,7 @@ export default function BackofficeBookingDetail() {
   const saleTotal = items.reduce((s, i) => s + Number(i.sale_sek) * i.qty, 0);
   const costTotal = items.reduce((s, i) => s + Number(i.cost_sek) * i.qty, 0);
   const vatRate = booking?.vat_enabled ? Number(booking.vat_rate ?? 0) : 0;
+  const showItemPrices = booking?.show_item_prices === true;
   const itemVatRate = (i: Item) => (i.vat_rate == null ? vatRate : Number(i.vat_rate));
   const vatAmount = items.reduce(
     (s, i) => s + Math.round(Number(i.sale_sek) * i.qty * (itemVatRate(i) / 100)),
@@ -540,13 +542,23 @@ export default function BackofficeBookingDetail() {
       setQuoteId(id);
     }
 
-    const quoteRows = items.map((i, idx) => ({
-      quote_id: id!,
-      description: `${ITEM_LABEL[i.item_type]}: ${i.description}`,
-      qty: i.qty,
-      unit_price_sek: i.sale_sek,
-      sort_order: idx,
-    }));
+    const quoteRows = showItemPrices
+      ? items.map((i, idx) => ({
+          quote_id: id!,
+          description: `${ITEM_LABEL[i.item_type]}: ${i.description}`,
+          qty: i.qty,
+          unit_price_sek: i.sale_sek,
+          sort_order: idx,
+        }))
+      : [
+          {
+            quote_id: id!,
+            description: `${quoteTitle.trim()} (paketpris)`,
+            qty: 1,
+            unit_price_sek: saleTotal,
+            sort_order: 0,
+          },
+        ];
     if (vatAmount > 0) {
       quoteRows.push({
         quote_id: id!,
@@ -624,13 +636,23 @@ export default function BackofficeBookingDetail() {
       return toast.error(error?.message ?? "Kunde inte skapa fakturan");
     }
     await supabase.from("invoice_items").insert(
-      items.map((i, idx) => ({
-        invoice_id: inv.id,
-        description: `${ITEM_LABEL[i.item_type]}: ${i.description}`,
-        qty: i.qty,
-        unit_price_sek: i.sale_sek,
-        sort_order: idx,
-      })),
+      showItemPrices
+        ? items.map((i, idx) => ({
+            invoice_id: inv.id,
+            description: `${ITEM_LABEL[i.item_type]}: ${i.description}`,
+            qty: i.qty,
+            unit_price_sek: i.sale_sek,
+            sort_order: idx,
+          }))
+        : [
+            {
+              invoice_id: inv.id,
+              description: `${booking!.title}${booking!.destination ? ` – ${booking!.destination}` : ""} (paketpris)`,
+              qty: 1,
+              unit_price_sek: subtotal,
+              sort_order: 0,
+            },
+          ],
     );
     setBusy(false);
     toast.success("Fakturaunderlag skapat");
@@ -949,6 +971,22 @@ export default function BackofficeBookingDetail() {
           ) : (
             <p className="mt-2 text-sm text-muted-foreground">Ingen moms läggs på</p>
           )}
+        </div>
+        <div className="rounded-lg border border-border bg-card p-4">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground">
+              Visa pris per rad
+            </p>
+            <Switch
+              checked={showItemPrices}
+              onCheckedChange={(v) => saveBooking({ show_item_prices: v })}
+            />
+          </div>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {showItemPrices
+              ? "Kunden ser priset för varje rad"
+              : "Kunden ser bara paketpriset (standard)"}
+          </p>
         </div>
       </div>
 

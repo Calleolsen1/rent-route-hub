@@ -327,6 +327,7 @@ export type Database = {
           internal_notes: string | null
           notes: string | null
           return_date: string | null
+          show_item_prices: boolean
           status: Database["public"]["Enums"]["booking_status"]
           title: string
           travellers_count: number
@@ -348,6 +349,7 @@ export type Database = {
           internal_notes?: string | null
           notes?: string | null
           return_date?: string | null
+          show_item_prices?: boolean
           status?: Database["public"]["Enums"]["booking_status"]
           title: string
           travellers_count?: number
@@ -369,6 +371,7 @@ export type Database = {
           internal_notes?: string | null
           notes?: string | null
           return_date?: string | null
+          show_item_prices?: boolean
           status?: Database["public"]["Enums"]["booking_status"]
           title?: string
           travellers_count?: number
