@@ -74,6 +74,9 @@ type Item = {
   from_airport: string | null;
   to_airport: string | null;
   depart_at: string | null;
+  is_round_trip: boolean | null;
+  return_flight_number: string | null;
+  return_depart_at: string | null;
   booking_reference: string | null;
   event_name: string | null;
   ticket_category: string | null;
