@@ -125,6 +125,7 @@ const DOC_LABEL: Record<string, string> = {
   confirmation: "Bokningsbekräftelse",
   quote: "Offert",
   invoice: "Faktura",
+  invoice_cancelled: "Makulerad faktura",
 };
 
 const emptyItem = (booking_id: string): Partial<Item> => ({
