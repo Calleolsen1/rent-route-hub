@@ -32,6 +32,8 @@ import {
   Trash2,
   Pencil,
   Save,
+  ChevronDown,
+  ChevronRight,
 } from "lucide-react";
 import {
   formatSek,
@@ -133,6 +135,7 @@ export default function BackofficeBookingDetail() {
   const [booking, setBooking] = useState<Booking | null>(null);
   const [customer, setCustomer] = useState<any>(null);
   const [items, setItems] = useState<Item[]>([]);
+  const [expandedItem, setExpandedItem] = useState<string | null>(null);
   const [travellers, setTravellers] = useState<Traveller[]>([]);
   const [hotels, setHotels] = useState<{ id: string; name: string; city: string | null }[]>([]);
   const [invoices, setInvoices] = useState<any[]>([]);
