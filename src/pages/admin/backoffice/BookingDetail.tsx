@@ -623,9 +623,21 @@ export default function BackofficeBookingDetail() {
                   <span>{formatSek(i.sale_sek * i.qty)}</span>
                 </div>
               ))}
+              {vatAmount > 0 && (
+                <>
+                  <div className="mt-2 flex justify-between border-t pt-2 text-muted-foreground">
+                    <span>Delsumma</span>
+                    <span>{formatSek(saleTotal)}</span>
+                  </div>
+                  <div className="flex justify-between text-muted-foreground">
+                    <span>Moms ({vatRate} %)</span>
+                    <span>{formatSek(vatAmount)}</span>
+                  </div>
+                </>
+              )}
               <div className="mt-2 flex justify-between border-t pt-2 font-medium">
                 <span>Totalt</span>
-                <span>{formatSek(saleTotal)}</span>
+                <span>{formatSek(grandTotal)}</span>
               </div>
             </div>
           </div>
