@@ -117,6 +117,8 @@ export default function BackofficeBookingDetail() {
 
   const [itemOpen, setItemOpen] = useState(false);
   const [itemDraft, setItemDraft] = useState<Partial<Item>>({});
+  const [newHotel, setNewHotel] = useState(false);
+  const [hotelDraft, setHotelDraft] = useState({ name: "", city: "", address_line1: "" });
   const [travOpen, setTravOpen] = useState(false);
   const [travDraft, setTravDraft] = useState<Partial<Traveller>>({});
 
@@ -169,6 +171,29 @@ export default function BackofficeBookingDetail() {
     if (error) return toast.error(error.message);
     setItemOpen(false);
     load();
+  };
+
+  const saveHotel = async () => {
+    if (!hotelDraft.name.trim()) return toast.error("Hotellets namn krävs");
+    const { data, error } = await supabase
+      .from("hotels")
+      .insert({
+        name: hotelDraft.name,
+        city: hotelDraft.city || null,
+        address_line1: hotelDraft.address_line1 || null,
+      })
+      .select("id, name, city")
+      .single();
+    if (error || !data) return toast.error(error?.message ?? "Kunde inte spara hotellet");
+    setHotels((p) => [...p, data as any].sort((a, b) => a.name.localeCompare(b.name)));
+    setItemDraft((d) => ({
+      ...d,
+      hotel_id: data.id,
+      description: d.description || data.name,
+    }));
+    setHotelDraft({ name: "", city: "", address_line1: "" });
+    setNewHotel(false);
+    toast.success("Hotellet är tillagt i registret");
   };
 
   const removeItem = async (itemId: string) => {
