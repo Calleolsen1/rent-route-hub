@@ -56,3 +56,6 @@ verify_jwt = true
 
 [functions.export-accounting]
 verify_jwt = true
+
+[functions.send-invoice-cancellation]
+verify_jwt = true
