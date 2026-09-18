@@ -3,7 +3,7 @@ import { Outlet, NavLink, useNavigate, useLocation, Link } from "react-router-do
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { supabase } from "@/integrations/supabase/client";
-import { LayoutDashboard, Inbox, ShoppingBag, Users, MessageSquare, FileText, LogOut, Ticket, Image, Percent, Stethoscope, Images, Menu, UserSquare2, Eye, EyeOff, Building2, Plane, Receipt, BarChart3, Contact2 } from "lucide-react";
+import { LayoutDashboard, Inbox, Users, MessageSquare, FileText, LogOut, Ticket, Image, Percent, Stethoscope, Images, Menu, UserSquare2, Eye, EyeOff, Building2, Plane, Receipt, BarChart3, Contact2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import AdminPreviewPane from "@/components/admin/AdminPreviewPane";
@@ -17,7 +17,6 @@ const navGroups = [
     label: "Back office",
     items: [
       { to: "/admin/inquiries", label: "Förfrågningar", icon: Inbox },
-      { to: "/admin/orders", label: "Beställningar", icon: ShoppingBag },
       { to: "/admin/backoffice/bokningar", label: "Bokningar", icon: Plane },
       { to: "/admin/backoffice/kunder", label: "Kunder", icon: Contact2 },
       { to: "/admin/backoffice/hotell", label: "Hotell", icon: Building2 },

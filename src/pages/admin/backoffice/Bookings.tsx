@@ -38,8 +38,19 @@ type Row = {
   margin_sek: number;
 };
 
+type WebOrderRow = {
+  id: string;
+  status: string;
+  total_sek: number;
+  customer_email: string;
+  customer_name: string | null;
+  created_at: string;
+  items: { event_name: string; qty: number }[];
+};
+
 export default function BackofficeBookings() {
   const [rows, setRows] = useState<Row[]>([]);
+  const [webOrders, setWebOrders] = useState<WebOrderRow[]>([]);
   const [customers, setCustomers] = useState<{ id: string; label: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
@@ -73,6 +84,25 @@ export default function BackofficeBookings() {
     ]);
     if (error) toast.error(error.message);
     setRows((data ?? []) as Row[]);
+    const { data: orderData } = await supabase
+      .from("orders")
+      .select("id, status, total_sek, customer_email, customer_name, created_at, order_items(qty, events(tournament_name))")
+      .order("created_at", { ascending: false })
+      .limit(50);
+    setWebOrders(
+      (orderData ?? []).map((o: any) => ({
+        id: o.id,
+        status: o.status,
+        total_sek: o.total_sek,
+        customer_email: o.customer_email,
+        customer_name: o.customer_name,
+        created_at: o.created_at,
+        items: (o.order_items ?? []).map((it: any) => ({
+          event_name: it.events?.tournament_name ?? "Biljettkö",
+          qty: it.qty,
+        })),
+      })),
+    );
     setCustomers(
       (cust ?? []).map((c: any) => ({
         id: c.id,
@@ -114,6 +144,16 @@ export default function BackofficeBookings() {
       .sort((a, b) => (b.depart_date ?? "").localeCompare(a.depart_date ?? ""));
     return { upcoming: up, past: pa };
   }, [filtered, today]);
+
+  const filteredWebOrders = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return webOrders;
+    return webOrders.filter((o) =>
+      [o.customer_name, o.customer_email, ...o.items.map((i) => i.event_name)]
+        .filter(Boolean)
+        .some((v) => String(v).toLowerCase().includes(q)),
+    );
+  }, [webOrders, query]);
 
   const sendConfirmation = async (bookingId: string) => {
     setSending(bookingId);
@@ -303,6 +343,62 @@ export default function BackofficeBookings() {
                   </div>
                 </section>
               ),
+          )}
+          {filteredWebOrders.length > 0 && (
+            <section>
+              <div className="mb-2 flex items-baseline gap-2">
+                <h2 className="font-display text-lg text-foreground">Biljettkö via webben</h2>
+                <span className="text-xs text-muted-foreground">{filteredWebOrders.length} st</span>
+              </div>
+              <div className="overflow-x-auto rounded-lg border border-border">
+                <table className="w-full text-sm">
+                  <thead className="bg-muted/50 text-left text-xs uppercase tracking-wider text-muted-foreground">
+                    <tr>
+                      <th className="px-4 py-3">Datum</th>
+                      <th className="px-4 py-3">Köp</th>
+                      <th className="px-4 py-3">Kund</th>
+                      <th className="px-4 py-3 text-right">Belopp</th>
+                      <th className="px-4 py-3">Status</th>
+                      <th className="px-4 py-3" />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredWebOrders.map((o) => (
+                      <tr key={o.id} className="border-t border-border">
+                        <td className="px-4 py-3 text-muted-foreground">
+                          {o.created_at.slice(0, 10)}
+                        </td>
+                        <td className="px-4 py-3">
+                          {o.items.map((i, idx) => (
+                            <div key={idx}>
+                              <span className="font-medium">{i.event_name}</span>
+                              <span className="text-xs text-muted-foreground"> × {i.qty}</span>
+                            </div>
+                          ))}
+                        </td>
+                        <td className="px-4 py-3">
+                          <div>{o.customer_name || o.customer_email}</div>
+                          {o.customer_name && (
+                            <div className="text-xs text-muted-foreground">{o.customer_email}</div>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-right font-medium">{formatSek(o.total_sek)}</td>
+                        <td className="px-4 py-3">
+                          <Badge variant="secondary">{o.status}</Badge>
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <Button asChild variant="ghost" size="sm">
+                            <Link to={`/admin/orders`}>
+                              <ArrowRight className="h-4 w-4" />
+                            </Link>
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
           )}
         </div>
       )}
