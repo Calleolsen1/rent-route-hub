@@ -986,40 +986,54 @@ export default function BackofficeBookingDetail() {
 
             {itemDraft.item_type === "flight" && (
               <>
-                <Input
-                  placeholder="Flygbolag"
-                  value={itemDraft.airline ?? ""}
-                  onChange={(e) => setItemDraft({ ...itemDraft, airline: e.target.value })}
-                />
-                <Input
-                  placeholder="Flightnummer"
-                  value={itemDraft.flight_number ?? ""}
-                  onChange={(e) => setItemDraft({ ...itemDraft, flight_number: e.target.value })}
-                />
-                <Input
-                  placeholder="Från (flygplats)"
-                  value={itemDraft.from_airport ?? ""}
-                  onChange={(e) => setItemDraft({ ...itemDraft, from_airport: e.target.value })}
-                />
-                <Input
-                  placeholder="Till (flygplats)"
-                  value={itemDraft.to_airport ?? ""}
-                  onChange={(e) => setItemDraft({ ...itemDraft, to_airport: e.target.value })}
-                />
-                <div>
-                  <label className="text-xs text-muted-foreground">Avgång</label>
-                  <Input
-                    type="datetime-local"
-                    value={itemDraft.depart_at?.slice(0, 16) ?? ""}
-                    onChange={(e) =>
-                      setItemDraft({
-                        ...itemDraft,
-                        depart_at: e.target.value ? new Date(e.target.value).toISOString() : null,
-                      })
-                    }
-                  />
+                <div className="col-span-2 rounded-lg border border-border p-3 space-y-3">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Utresa
+                  </p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Input
+                      placeholder="Flygbolag"
+                      value={itemDraft.airline ?? ""}
+                      onChange={(e) => setItemDraft({ ...itemDraft, airline: e.target.value })}
+                    />
+                    <Input
+                      placeholder="Flightnummer dit"
+                      value={itemDraft.flight_number ?? ""}
+                      onChange={(e) =>
+                        setItemDraft({ ...itemDraft, flight_number: e.target.value })
+                      }
+                    />
+                    <Input
+                      placeholder="Från (flygplats)"
+                      value={itemDraft.from_airport ?? ""}
+                      onChange={(e) =>
+                        setItemDraft({ ...itemDraft, from_airport: e.target.value })
+                      }
+                    />
+                    <Input
+                      placeholder="Till (flygplats)"
+                      value={itemDraft.to_airport ?? ""}
+                      onChange={(e) => setItemDraft({ ...itemDraft, to_airport: e.target.value })}
+                    />
+                    <div>
+                      <label className="text-xs text-muted-foreground">Avgång dit</label>
+                      <Input
+                        type="datetime-local"
+                        value={itemDraft.depart_at?.slice(0, 16) ?? ""}
+                        onChange={(e) =>
+                          setItemDraft({
+                            ...itemDraft,
+                            depart_at: e.target.value
+                              ? new Date(e.target.value).toISOString()
+                              : null,
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
                 </div>
-                <label className="flex items-center gap-2 text-sm">
+
+                <label className="col-span-2 flex items-center gap-2 text-sm">
                   <input
                     type="checkbox"
                     className="h-4 w-4 accent-primary"
@@ -1036,33 +1050,41 @@ export default function BackofficeBookingDetail() {
                   />
                   Tur och retur
                 </label>
+
                 {itemDraft.is_round_trip && (
-                  <>
-                    <Input
-                      placeholder="Flightnummer hem"
-                      value={itemDraft.return_flight_number ?? ""}
-                      onChange={(e) =>
-                        setItemDraft({ ...itemDraft, return_flight_number: e.target.value })
-                      }
-                    />
-                    <div>
-                      <label className="text-xs text-muted-foreground">Hemresa avgång</label>
+                  <div className="col-span-2 rounded-lg border border-border p-3 space-y-3">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                      Hemresa
+                    </p>
+                    <div className="grid grid-cols-2 gap-2">
                       <Input
-                        type="datetime-local"
-                        value={itemDraft.return_depart_at?.slice(0, 16) ?? ""}
+                        placeholder="Flightnummer hem"
+                        value={itemDraft.return_flight_number ?? ""}
                         onChange={(e) =>
-                          setItemDraft({
-                            ...itemDraft,
-                            return_depart_at: e.target.value
-                              ? new Date(e.target.value).toISOString()
-                              : null,
-                          })
+                          setItemDraft({ ...itemDraft, return_flight_number: e.target.value })
                         }
                       />
+                      <div>
+                        <label className="text-xs text-muted-foreground">Avgång hem</label>
+                        <Input
+                          type="datetime-local"
+                          value={itemDraft.return_depart_at?.slice(0, 16) ?? ""}
+                          onChange={(e) =>
+                            setItemDraft({
+                              ...itemDraft,
+                              return_depart_at: e.target.value
+                                ? new Date(e.target.value).toISOString()
+                                : null,
+                            })
+                          }
+                        />
+                      </div>
                     </div>
-                  </>
+                  </div>
                 )}
+
                 <Input
+                  className="col-span-2"
                   placeholder="Bokningsreferens"
                   value={itemDraft.booking_reference ?? ""}
                   onChange={(e) =>
