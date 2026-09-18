@@ -334,9 +334,9 @@ export default function BackofficeBookings() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Alla statusar</SelectItem>
-              {Object.entries(STATUS_LABEL).map(([k, v]) => (
+              {BOOKING_STATUS_OPTIONS.map((k) => (
                 <SelectItem key={k} value={k}>
-                  {v}
+                  {STATUS_LABEL[k]}
                 </SelectItem>
               ))}
             </SelectContent>
