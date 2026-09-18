@@ -738,6 +738,28 @@ export default function BackofficeBookings() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={!!confirmPermanent} onOpenChange={(v) => !v && setConfirmPermanent(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Radera permanent?</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            "{confirmPermanent?.title}" raderas permanent tillsammans med alla rader
+            (hotell, flyg, biljetter, transfer) och resenärslistan. Skickade fakturor
+            och dokument finns kvar på kundkortet. Detta går inte att ångra.
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmPermanent(null)}>
+              Avbryt
+            </Button>
+            <Button variant="destructive" onClick={doPermanentDelete} disabled={deleting}>
+              {deleting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Radera permanent
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
