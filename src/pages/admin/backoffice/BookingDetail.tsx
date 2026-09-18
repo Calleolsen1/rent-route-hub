@@ -152,6 +152,11 @@ export default function BackofficeBookingDetail() {
   const [payAmount, setPayAmount] = useState(0);
   const [payDate, setPayDate] = useState(new Date().toISOString().slice(0, 10));
   const [payMethod, setPayMethod] = useState("");
+  const [cancelOpen, setCancelOpen] = useState(false);
+  const [cancelInvoice, setCancelInvoice] = useState<any>(null);
+  const [cancelMessage, setCancelMessage] = useState("");
+  const [cancelPreview, setCancelPreview] = useState<string | null>(null);
+  const [delInvoice, setDelInvoice] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
 
