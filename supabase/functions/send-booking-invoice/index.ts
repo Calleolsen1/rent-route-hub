@@ -35,7 +35,7 @@ Deno.serve(async (req) => {
     const { data: isAdmin } = await admin.rpc("has_role", { _user_id: userId, _role: "admin" });
     if (!isAdmin) return json({ error: "Forbidden" }, 403);
 
-    const { invoice_id } = await req.json();
+    const { invoice_id, preview } = await req.json();
     if (!invoice_id || typeof invoice_id !== "string") {
       return json({ error: "invoice_id krävs" }, 400);
     }
@@ -53,7 +53,7 @@ Deno.serve(async (req) => {
     ]);
 
     const to = customer?.billing_email || customer?.email;
-    if (!to) return json({ error: "Kunden saknar e-postadress" }, 400);
+    if (!to && !preview) return json({ error: "Kunden saknar e-postadress" }, 400);
 
     const rows = (items ?? [])
       .map(
@@ -83,6 +83,9 @@ Deno.serve(async (req) => {
       </div></body></html>`;
 
     const subject = `Faktura ${invoice.invoice_number ?? ""} från Kaisen Travel Group`;
+
+    if (preview) return json({ html, subject, to: to ?? null });
+
     const resendKey = Deno.env.get("RESEND_API_KEY");
     let status = "sent";
     let errorMessage: string | null = null;
