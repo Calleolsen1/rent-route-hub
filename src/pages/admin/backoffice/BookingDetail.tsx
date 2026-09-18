@@ -37,10 +37,13 @@ import {
   ChevronRight,
 } from "lucide-react";
 import {
+  BOOKING_STATUS_OPTIONS,
   formatSek,
+  INVOICE_STATUS_LABEL,
   ITEM_LABEL,
   STATUS_LABEL,
   type BookingStatus,
+  type InvoiceStatus,
   type ItemType,
 } from "./shared";
 
