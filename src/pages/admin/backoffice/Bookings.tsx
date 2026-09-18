@@ -264,6 +264,45 @@ export default function BackofficeBookings() {
               ))}
             </SelectContent>
           </Select>
+          <Select value={viewFilter} onValueChange={setViewFilter}>
+            <SelectTrigger className="w-40">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Alla resor</SelectItem>
+              <SelectItem value="upcoming">Kommande</SelectItem>
+              <SelectItem value="past">Genomförda</SelectItem>
+            </SelectContent>
+          </Select>
+          <Input
+            type="date"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+            className="w-38"
+            title="Visa resor från och med detta datum"
+          />
+          <Input
+            type="date"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+            className="w-38"
+            title="Visa resor fram till detta datum"
+          />
+          {(fromDate || toDate || viewFilter !== "all" || statusFilter !== "all" || query) && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setFromDate("");
+                setToDate("");
+                setViewFilter("all");
+                setStatusFilter("all");
+                setQuery("");
+              }}
+            >
+              Rensa filter
+            </Button>
+          )}
           <Button size="sm" onClick={() => setOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
             Ny bokning
