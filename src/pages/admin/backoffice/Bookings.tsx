@@ -20,7 +20,12 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Plus, Search, ArrowRight, Mail, Trash2, Undo2 } from "lucide-react";
-import { formatSek, STATUS_LABEL, type BookingStatus } from "./shared";
+import {
+  BOOKING_STATUS_OPTIONS,
+  formatSek,
+  STATUS_LABEL,
+  type BookingStatus,
+} from "./shared";
 
 type Row = {
   booking_id: string;
