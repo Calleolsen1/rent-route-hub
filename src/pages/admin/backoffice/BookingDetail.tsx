@@ -25,6 +25,7 @@ import {
   ArrowLeft,
   Loader2,
   Mail,
+  Send,
   Plus,
   FileText,
   Trash2,
@@ -119,6 +120,10 @@ export default function BackofficeBookingDetail() {
   const [itemDraft, setItemDraft] = useState<Partial<Item>>({});
   const [newHotel, setNewHotel] = useState(false);
   const [hotelDraft, setHotelDraft] = useState({ name: "", city: "", address_line1: "" });
+  const [quoteOpen, setQuoteOpen] = useState(false);
+  const [quoteTitle, setQuoteTitle] = useState("");
+  const [quoteIntro, setQuoteIntro] = useState("");
+  const [quoteExpiry, setQuoteExpiry] = useState("");
   const [travOpen, setTravOpen] = useState(false);
   const [travDraft, setTravDraft] = useState<Partial<Traveller>>({});
 
@@ -253,6 +258,64 @@ export default function BackofficeBookingDetail() {
     load();
   };
 
+  const openQuote = () => {
+    if (items.length === 0) return toast.error("Lägg till minst en rad först");
+    const name = customer?.contact_name || customer?.company_name || "";
+    setQuoteTitle(booking!.title);
+    setQuoteIntro(
+      `Hej ${name.split(" ")[0] || ""},\n\nNedan följer vårt förslag. Hör av dig om något ska justeras.`.trim(),
+    );
+    setQuoteExpiry(new Date(Date.now() + 14 * 86400000).toISOString().slice(0, 10));
+    setQuoteOpen(true);
+  };
+
+  const sendQuote = async () => {
+    if (!customer?.email) return toast.error("Kunden saknar e-postadress");
+    if (!quoteTitle.trim()) return toast.error("Titel krävs");
+    setBusy(true);
+    try {
+      const { data: quote, error: qErr } = await supabase
+        .from("quotes")
+        .insert({
+          customer_email: customer.email,
+          customer_name: customer.contact_name || customer.company_name || null,
+          title: quoteTitle.trim(),
+          intro_message: quoteIntro.trim() || null,
+          total_sek: saleTotal,
+          currency: "SEK",
+          status: "draft",
+          expires_at: new Date(quoteExpiry + "T23:59:59").toISOString(),
+        })
+        .select("id")
+        .single();
+      if (qErr || !quote) throw new Error(qErr?.message ?? "Kunde inte spara offerten");
+
+      const { error: iErr } = await supabase.from("quote_items").insert(
+        items.map((i, idx) => ({
+          quote_id: quote.id,
+          description: `${ITEM_LABEL[i.item_type]}: ${i.description}`,
+          qty: i.qty,
+          unit_price_sek: i.sale_sek,
+          sort_order: idx,
+        })),
+      );
+      if (iErr) throw new Error(iErr.message);
+
+      const { error: sErr, data: sData } = await supabase.functions.invoke("send-quote-email", {
+        body: { quote_id: quote.id },
+      });
+      if (sErr || (sData as any)?.error) {
+        throw new Error(sErr?.message ?? (sData as any)?.error ?? "Kunde inte skicka mejl");
+      }
+      toast.success(`Offerten är skickad till ${customer.email}`);
+      setQuoteOpen(false);
+    } catch (e: any) {
+      toast.error(e.message ?? "Något gick fel");
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const createInvoice = async () => {
     if (items.length === 0) return toast.error("Lägg till minst en rad först");
     setBusy(true);
@@ -340,12 +403,88 @@ export default function BackofficeBookingDetail() {
             <Mail className="mr-2 h-4 w-4" />
             Skicka bekräftelse
           </Button>
+          <Button variant="outline" onClick={openQuote} disabled={busy}>
+            <Send className="mr-2 h-4 w-4" />
+            Skicka offert
+          </Button>
           <Button onClick={createInvoice} disabled={busy}>
             <FileText className="mr-2 h-4 w-4" />
             Skapa faktura
           </Button>
         </div>
       </div>
+
+      <Dialog open={quoteOpen} onOpenChange={setQuoteOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Skicka offert</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Skickas till {customer?.email}. Kunden får en länk där offerten kan granskas och
+              betalas.
+            </p>
+            <div>
+              <label className="text-xs uppercase tracking-wider text-muted-foreground">
+                Titel
+              </label>
+              <Input
+                value={quoteTitle}
+                onChange={(e) => setQuoteTitle(e.target.value)}
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <label className="text-xs uppercase tracking-wider text-muted-foreground">
+                Meddelande
+              </label>
+              <Textarea
+                rows={4}
+                value={quoteIntro}
+                onChange={(e) => setQuoteIntro(e.target.value)}
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <label className="text-xs uppercase tracking-wider text-muted-foreground">
+                Gäller till och med
+              </label>
+              <Input
+                type="date"
+                value={quoteExpiry}
+                onChange={(e) => setQuoteExpiry(e.target.value)}
+                className="mt-1 max-w-[200px]"
+              />
+            </div>
+            <div className="rounded-md border p-3 text-sm">
+              <div className="mb-2 text-xs uppercase tracking-wider text-muted-foreground">
+                Rader från bokningen
+              </div>
+              {items.map((i) => (
+                <div key={i.id} className="flex justify-between py-1">
+                  <span>
+                    {ITEM_LABEL[i.item_type]}: {i.description} × {i.qty}
+                  </span>
+                  <span>{formatSek(i.sale_sek * i.qty)}</span>
+                </div>
+              ))}
+              <div className="mt-2 flex justify-between border-t pt-2 font-medium">
+                <span>Totalt</span>
+                <span>{formatSek(saleTotal)}</span>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setQuoteOpen(false)}>
+              Avbryt
+            </Button>
+            <Button onClick={sendQuote} disabled={busy}>
+              {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Skicka offert
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <div className="mb-6 grid gap-4 sm:grid-cols-3">
         <div className="rounded-lg border border-border bg-card p-4">
