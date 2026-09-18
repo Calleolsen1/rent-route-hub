@@ -245,6 +245,19 @@ export default function BackofficeBookings() {
                     <Badge variant="secondary">{STATUS_LABEL[r.status]}</Badge>
                   </td>
                   <td className="px-4 py-3 text-right">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      title="Skicka bokningsbekräftelse"
+                      onClick={() => sendConfirmation(r.booking_id)}
+                      disabled={sending === r.booking_id}
+                    >
+                      {sending === r.booking_id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Mail className="h-4 w-4" />
+                      )}
+                    </Button>
                     <Button asChild variant="ghost" size="sm">
                       <Link to={`/admin/backoffice/bokningar/${r.booking_id}`}>
                         <ArrowRight className="h-4 w-4" />
