@@ -117,46 +117,25 @@ export default function AdminLayout() {
           </Link>
         </div>
         <nav className="flex-1 overflow-auto p-3 space-y-1">
-          <p className="px-3 pb-1 pt-2 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            Hemsidan
-          </p>
-          {navItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                cn(
-                  "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
-                  isActive
-                    ? "bg-primary text-primary-foreground"
-                    : "text-foreground hover:bg-accent"
-                )
-              }
-            >
-              <item.icon className="h-4 w-4" />
-              {item.label}
-            </NavLink>
-          ))}
+          <NavLink to={overviewItem.to} className={navLinkClass}>
+            <overviewItem.icon className="h-4 w-4" />
+            {overviewItem.label}
+          </NavLink>
 
-          <p className="px-3 pb-1 pt-5 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            Back office
-          </p>
-          {backofficeItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                cn(
-                  "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
-                  isActive
-                    ? "bg-primary text-primary-foreground"
-                    : "text-foreground hover:bg-accent"
-                )
-              }
-            >
-              <item.icon className="h-4 w-4" />
-              {item.label}
-            </NavLink>
+          {navGroups.map((group) => (
+            <div key={group.label}>
+              <p className="px-3 pb-1 pt-5 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                {group.label}
+              </p>
+              <div className="space-y-1">
+                {group.items.map((item) => (
+                  <NavLink key={item.to} to={item.to} className={navLinkClass}>
+                    <item.icon className="h-4 w-4" />
+                    {item.label}
+                  </NavLink>
+                ))}
+              </div>
+            </div>
           ))}
         </nav>
         <button
