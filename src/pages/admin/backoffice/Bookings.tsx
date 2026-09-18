@@ -597,6 +597,28 @@ export default function BackofficeBookings() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={!!confirmDelete} onOpenChange={(v) => !v && setConfirmDelete(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Radera resa?</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            "{confirmDelete?.title}" raderas permanent tillsammans med alla rader
+            (hotell, flyg, biljetter, transfer) och resenärslistan. Skickade fakturor
+            och dokument finns kvar på kundkortet. Detta går inte att ångra.
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmDelete(null)}>
+              Avbryt
+            </Button>
+            <Button variant="destructive" onClick={doDelete} disabled={deleting}>
+              {deleting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Radera
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
