@@ -55,6 +55,9 @@ export default function BackofficeBookings() {
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [viewFilter, setViewFilter] = useState<string>("all");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [sending, setSending] = useState<string | null>(null);
@@ -125,9 +128,19 @@ export default function BackofficeBookings() {
         [r.title, r.destination, r.company_name, r.contact_name, r.booking_number]
           .filter(Boolean)
           .some((v) => String(v).toLowerCase().includes(q));
-      return matchStatus && matchQuery;
+      // Periodfilter: resan visas om den överlappar valt datumintervall
+      let matchDates = true;
+      if (fromDate || toDate) {
+        const start = r.depart_date;
+        const end = r.return_date || r.depart_date;
+        if (fromDate && end && end < fromDate) matchDates = false;
+        if (toDate && start && start > toDate) matchDates = false;
+      }
+      return matchStatus && matchQuery && matchDates;
     });
-  }, [rows, query, statusFilter]);
+  }, [rows, query, statusFilter, fromDate, toDate]);
+
+  const hasDateFilter = !!fromDate || !!toDate;
 
   const today = new Date().toISOString().slice(0, 10);
 
@@ -251,6 +264,45 @@ export default function BackofficeBookings() {
               ))}
             </SelectContent>
           </Select>
+          <Select value={viewFilter} onValueChange={setViewFilter}>
+            <SelectTrigger className="w-40">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Alla resor</SelectItem>
+              <SelectItem value="upcoming">Kommande</SelectItem>
+              <SelectItem value="past">Genomförda</SelectItem>
+            </SelectContent>
+          </Select>
+          <Input
+            type="date"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+            className="w-40"
+            title="Visa resor från och med detta datum"
+          />
+          <Input
+            type="date"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+            className="w-40"
+            title="Visa resor fram till detta datum"
+          />
+          {(fromDate || toDate || viewFilter !== "all" || statusFilter !== "all" || query) && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setFromDate("");
+                setToDate("");
+                setViewFilter("all");
+                setStatusFilter("all");
+                setQuery("");
+              }}
+            >
+              Rensa filter
+            </Button>
+          )}
           <Button size="sm" onClick={() => setOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
             Ny bokning
@@ -264,14 +316,22 @@ export default function BackofficeBookings() {
         </div>
       ) : filtered.length === 0 ? (
         <p className="rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-          Inga bokningar ännu.
+          {hasDateFilter || viewFilter !== "all" || statusFilter !== "all" || query
+            ? "Inga bokningar matchar filtret."
+            : "Inga bokningar ännu."}
         </p>
       ) : (
         <div className="space-y-8">
-          {[
-            { label: "Kommande resor", items: upcoming },
-            { label: "Genomförda resor", items: past },
-          ].map(
+          {(
+            viewFilter === "past"
+              ? [{ label: "Genomförda resor", items: past }]
+              : viewFilter === "upcoming"
+                ? [{ label: "Kommande resor", items: upcoming }]
+                : [
+                    { label: "Kommande resor", items: upcoming },
+                    { label: "Genomförda resor", items: past },
+                  ]
+          ).map(
             (group) =>
               group.items.length > 0 && (
                 <section key={group.label}>
@@ -344,7 +404,7 @@ export default function BackofficeBookings() {
                 </section>
               ),
           )}
-          {filteredWebOrders.length > 0 && (
+          {viewFilter === "all" && !hasDateFilter && filteredWebOrders.length > 0 && (
             <section>
               <div className="mb-2 flex items-baseline gap-2">
                 <h2 className="font-display text-lg text-foreground">Biljettkö via webben</h2>
