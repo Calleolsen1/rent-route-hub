@@ -84,6 +84,25 @@ export default function BackofficeBookings() {
     ]);
     if (error) toast.error(error.message);
     setRows((data ?? []) as Row[]);
+    const { data: orderData } = await supabase
+      .from("orders")
+      .select("id, status, total_sek, customer_email, customer_name, created_at, order_items(qty, events(tournament_name))")
+      .order("created_at", { ascending: false })
+      .limit(50);
+    setWebOrders(
+      (orderData ?? []).map((o: any) => ({
+        id: o.id,
+        status: o.status,
+        total_sek: o.total_sek,
+        customer_email: o.customer_email,
+        customer_name: o.customer_name,
+        created_at: o.created_at,
+        items: (o.order_items ?? []).map((it: any) => ({
+          event_name: it.events?.tournament_name ?? "Biljettkö",
+          qty: it.qty,
+        })),
+      })),
+    );
     setCustomers(
       (cust ?? []).map((c: any) => ({
         id: c.id,
