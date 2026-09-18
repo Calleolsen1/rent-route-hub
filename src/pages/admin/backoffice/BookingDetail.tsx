@@ -965,6 +965,49 @@ export default function BackofficeBookingDetail() {
                     }
                   />
                 </div>
+                <label className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 accent-primary"
+                    checked={!!itemDraft.is_round_trip}
+                    onChange={(e) =>
+                      setItemDraft({
+                        ...itemDraft,
+                        is_round_trip: e.target.checked,
+                        ...(e.target.checked
+                          ? {}
+                          : { return_flight_number: null, return_depart_at: null }),
+                      })
+                    }
+                  />
+                  Tur och retur
+                </label>
+                {itemDraft.is_round_trip && (
+                  <>
+                    <Input
+                      placeholder="Flightnummer hem"
+                      value={itemDraft.return_flight_number ?? ""}
+                      onChange={(e) =>
+                        setItemDraft({ ...itemDraft, return_flight_number: e.target.value })
+                      }
+                    />
+                    <div>
+                      <label className="text-xs text-muted-foreground">Hemresa avgång</label>
+                      <Input
+                        type="datetime-local"
+                        value={itemDraft.return_depart_at?.slice(0, 16) ?? ""}
+                        onChange={(e) =>
+                          setItemDraft({
+                            ...itemDraft,
+                            return_depart_at: e.target.value
+                              ? new Date(e.target.value).toISOString()
+                              : null,
+                          })
+                        }
+                      />
+                    </div>
+                  </>
+                )}
                 <Input
                   placeholder="Bokningsreferens"
                   value={itemDraft.booking_reference ?? ""}
