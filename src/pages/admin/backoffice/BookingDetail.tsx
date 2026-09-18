@@ -90,6 +90,7 @@ type Item = {
   transfer_at: string | null;
   vehicle: string | null;
   notes: string | null;
+  vat_rate: number | null;
 };
 
 type Traveller = {
@@ -201,7 +202,12 @@ export default function BackofficeBookingDetail() {
   const saleTotal = items.reduce((s, i) => s + Number(i.sale_sek) * i.qty, 0);
   const costTotal = items.reduce((s, i) => s + Number(i.cost_sek) * i.qty, 0);
   const vatRate = booking?.vat_enabled ? Number(booking.vat_rate ?? 0) : 0;
-  const vatAmount = Math.round(saleTotal * (vatRate / 100));
+  const itemVatRate = (i: Item) => (i.vat_rate == null ? vatRate : Number(i.vat_rate));
+  const vatAmount = items.reduce(
+    (s, i) => s + Math.round(Number(i.sale_sek) * i.qty * (itemVatRate(i) / 100)),
+    0,
+  );
+  const effectiveVatRate = saleTotal > 0 ? Math.round((vatAmount / saleTotal) * 10000) / 100 : 0;
   const grandTotal = saleTotal + vatAmount;
 
   const saveBooking = async (patch: Partial<Booking>) => {
@@ -422,7 +428,7 @@ export default function BackofficeBookingDetail() {
     if (vatAmount > 0) {
       quoteRows.push({
         quote_id: id!,
-        description: `Moms (${vatRate} %)`,
+        description: `Moms (${effectiveVatRate} %)`,
         qty: 1,
         unit_price_sek: vatAmount,
         sort_order: items.length,
@@ -483,7 +489,7 @@ export default function BackofficeBookingDetail() {
         booking_id: booking!.id,
         customer_id: booking!.customer_id,
         due_date: new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10),
-        vat_rate: vatRate,
+        vat_rate: effectiveVatRate,
         subtotal_sek: subtotal,
         vat_sek: vat,
         total_sek: subtotal + vat,
@@ -630,7 +636,7 @@ export default function BackofficeBookingDetail() {
                     <span>{formatSek(saleTotal)}</span>
                   </div>
                   <div className="flex justify-between text-muted-foreground">
-                    <span>Moms ({vatRate} %)</span>
+                    <span>Moms ({effectiveVatRate} %)</span>
                     <span>{formatSek(vatAmount)}</span>
                   </div>
                 </>
@@ -891,7 +897,14 @@ export default function BackofficeBookingDetail() {
                           )}
                         </td>
                         <td className="px-4 py-3">{ITEM_LABEL[i.item_type]}</td>
-                        <td className="px-4 py-3">{i.description}</td>
+                        <td className="px-4 py-3">
+                          {i.description}
+                          {itemVatRate(i) > 0 && (
+                            <span className="ml-2 rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foreground">
+                              moms {itemVatRate(i)} %
+                            </span>
+                          )}
+                        </td>
                         <td className="px-4 py-3 text-muted-foreground">{i.supplier ?? "—"}</td>
                         <td className="px-4 py-3 text-right">{i.qty}</td>
                         <td className="px-4 py-3 text-right text-muted-foreground">
@@ -1468,6 +1481,55 @@ export default function BackofficeBookingDetail() {
                   onChange={(e) => setItemDraft({ ...itemDraft, sale_sek: Number(e.target.value) })}
                 />
               </div>
+            </div>
+            <div className="rounded-md border border-border bg-muted/30 p-3 sm:col-span-2">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-xs uppercase tracking-wider text-muted-foreground">
+                    Moms på denna rad
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {itemDraft.vat_rate == null
+                      ? booking.vat_enabled
+                        ? `Följer bokningen (${Number(booking.vat_rate) || 0} %)`
+                        : "Ingen moms"
+                      : "Egen momssats för raden"}
+                  </p>
+                </div>
+                <Switch
+                  checked={itemDraft.vat_rate != null}
+                  onCheckedChange={(v) =>
+                    setItemDraft({
+                      ...itemDraft,
+                      vat_rate: v ? Number(booking.vat_rate) || 2.67 : null,
+                    })
+                  }
+                />
+              </div>
+              {itemDraft.vat_rate != null && (
+                <div className="mt-2 flex items-center gap-2">
+                  <Input
+                    type="number"
+                    step="0.01"
+                    className="h-9 w-24"
+                    value={itemDraft.vat_rate}
+                    onFocus={(e) => e.currentTarget.select()}
+                    onChange={(e) =>
+                      setItemDraft({ ...itemDraft, vat_rate: Number(e.target.value) })
+                    }
+                  />
+                  <span className="text-sm text-muted-foreground">
+                    % ={" "}
+                    {formatSek(
+                      Math.round(
+                        Number(itemDraft.sale_sek ?? 0) *
+                          Number(itemDraft.qty ?? 1) *
+                          (Number(itemDraft.vat_rate) / 100),
+                      ),
+                    )}
+                  </span>
+                </div>
+              )}
             </div>
             <Textarea
               className="sm:col-span-2"

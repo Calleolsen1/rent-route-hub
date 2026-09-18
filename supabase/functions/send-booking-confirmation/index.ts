@@ -68,8 +68,13 @@ Deno.serve(async (req) => {
       (s: number, i: any) => s + Number(i.sale_sek) * Number(i.qty),
       0,
     );
-    const vatRate = booking.vat_enabled ? Number(booking.vat_rate ?? 0) : 0;
-    const vatAmount = Math.round(subtotal * (vatRate / 100));
+    const baseVatRate = booking.vat_enabled ? Number(booking.vat_rate ?? 0) : 0;
+    const vatAmount = (items ?? []).reduce((s: number, i: any) => {
+      const r = i.vat_rate == null ? baseVatRate : Number(i.vat_rate);
+      return s + Math.round(Number(i.sale_sek) * Number(i.qty) * (r / 100));
+    }, 0);
+    const vatRate =
+      subtotal > 0 ? Math.round((vatAmount / subtotal) * 10000) / 100 : 0;
     const total = subtotal + vatAmount;
 
     const rows = (items ?? [])
