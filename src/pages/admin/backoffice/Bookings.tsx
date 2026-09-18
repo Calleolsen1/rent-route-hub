@@ -97,13 +97,47 @@ export default function BackofficeBookings() {
     });
   }, [rows, query, statusFilter]);
 
+  const sendConfirmation = async (bookingId: string) => {
+    setSending(bookingId);
+    const { error } = await supabase.functions.invoke("send-booking-confirmation", {
+      body: { booking_id: bookingId },
+    });
+    setSending(null);
+    if (error) return toast.error(error.message);
+    toast.success("Bokningsbekräftelsen är skickad");
+  };
+
   const create = async () => {
-    if (!draft.customer_id || !draft.title.trim()) {
-      return toast.error("Välj kund och ange en titel");
+    if (!draft.title.trim()) return toast.error("Ange en titel");
+    let customerId = draft.customer_id;
+
+    if (newCustomer) {
+      if (!custDraft.contact_name.trim() || !custDraft.email.trim()) {
+        return toast.error("Ange kontaktperson och e-post för den nya kunden");
+      }
+      setSaving(true);
+      const { data: cust, error: custError } = await supabase
+        .from("customers")
+        .insert({
+          contact_name: custDraft.contact_name,
+          company_name: custDraft.company_name || null,
+          email: custDraft.email,
+          phone: custDraft.phone || null,
+        })
+        .select("id")
+        .single();
+      if (custError || !cust) {
+        setSaving(false);
+        return toast.error(custError?.message ?? "Kunde inte skapa kunden");
+      }
+      customerId = cust.id;
+    } else if (!customerId) {
+      return toast.error("Välj kund");
     }
+
     setSaving(true);
     const { error } = await supabase.from("bookings").insert({
-      customer_id: draft.customer_id,
+      customer_id: customerId,
       title: draft.title,
       destination: draft.destination || null,
       depart_date: draft.depart_date || null,
