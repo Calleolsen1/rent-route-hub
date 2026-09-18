@@ -156,6 +156,8 @@ export default function BackofficeBookings() {
       return_date: "",
       travellers_count: 0,
     });
+    setNewCustomer(false);
+    setCustDraft({ contact_name: "", company_name: "", email: "", phone: "" });
     load();
   };
 
