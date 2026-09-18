@@ -404,7 +404,7 @@ export default function BackofficeBookings() {
                 </section>
               ),
           )}
-          {filteredWebOrders.length > 0 && (
+          {viewFilter === "all" && !hasDateFilter && filteredWebOrders.length > 0 && (
             <section>
               <div className="mb-2 flex items-baseline gap-2">
                 <h2 className="font-display text-lg text-foreground">Biljettkö via webben</h2>
