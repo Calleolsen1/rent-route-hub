@@ -145,6 +145,16 @@ export default function BackofficeBookings() {
     return { upcoming: up, past: pa };
   }, [filtered, today]);
 
+  const filteredWebOrders = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return webOrders;
+    return webOrders.filter((o) =>
+      [o.customer_name, o.customer_email, ...o.items.map((i) => i.event_name)]
+        .filter(Boolean)
+        .some((v) => String(v).toLowerCase().includes(q)),
+    );
+  }, [webOrders, query]);
+
   const sendConfirmation = async (bookingId: string) => {
     setSending(bookingId);
     const { error } = await supabase.functions.invoke("send-booking-confirmation", {
