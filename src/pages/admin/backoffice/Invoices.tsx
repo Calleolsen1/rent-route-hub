@@ -61,6 +61,7 @@ export default function BackofficeInvoices() {
 
   const load = async () => {
     setLoading(true);
+    await supabase.rpc("complete_past_bookings");
     const [{ data, error }, { data: cust }] = await Promise.all([
       supabase.from("invoices").select("*").order("issue_date", { ascending: false }),
       supabase.from("customers").select("id, company_name, contact_name"),
