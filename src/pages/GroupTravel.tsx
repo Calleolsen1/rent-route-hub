@@ -1,84 +1,25 @@
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Users, Trophy, Briefcase, Heart, Mountain, Utensils, Check, PartyPopper, Waves, Wine, Bus, MessageSquare } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import Footer from "@/components/Footer";
 import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
 import FloatingInquiryButton from "@/components/FloatingInquiryButton";
 import { useInquiryDialog } from "@/components/InquiryDialog";
 import groupImage from "@/assets/kaisen-group.jpg";
-import groupSports from "@/assets/group-sports.jpg";
 import groupCorporate from "@/assets/group-corporate.jpg";
 import groupAdventure from "@/assets/group-adventure.jpg";
-
-const experiences = [
-  {
-    icon: Trophy,
-    title: "Sport på riktigt",
-    tagline: "Fotboll i London · F1 i Monaco · Golf i Skottland",
-    desc: "Biljetter, boende och transfer - för hela gänget. Inte en enda pappa ska behöva \u201cfixa allt\u201d.",
-  },
-  {
-    icon: PartyPopper,
-    title: "Möhippa & Svensexa",
-    tagline: "Prag · Barcelona · Amsterdam · Tallinn",
-    desc: "Hela paketet med aktiviteter, middagar och logistik. Den blivande bruden/brudgummen får minnen för livet.",
-  },
-  {
-    icon: Briefcase,
-    title: "Företags-Getaway",
-    tagline: "Kickoffer · Incentive · Team Building",
-    desc: "Resor som faktikt stärker laget. Vi skräddarsyr efter era mål och budget.",
-  },
-  {
-    icon: Mountain,
-    title: "Äventyr & Natur",
-    tagline: "Skidåkning · Vandring · Kayak · Roadtrip",
-    desc: "För grupper som vill ha mer än poolkanten. Aktiva resor som ger historier att berätta.",
-  },
-  {
-    icon: Wine,
-    title: "Gastronomi & Vin",
-    tagline: "Vintours i Frankrike · Matlagning i Italien",
-    desc: "Upplevelser för gäng som uppskattar smak. Vinprovningar, stjärnkrogar och lokala marknader.",
-  },
-  {
-    icon: Users,
-    title: "Familjeresor",
-    tagline: "Flera generationer · Res tillsammans",
-    desc: "Från barnbarn till morföräldrar. Vi hittar det som fungerar för alla åldrar.",
-  },
-];
-
-const activities = [
-  { icon: Bus, text: "Privat transport & flygplatstransfer" },
-  { icon: Waves, text: "Guidade aktiviteter & utflykter" },
-  { icon: Utensils, text: "Bokade middagar & gemensamma måltider" },
-  { icon: Trophy, text: "Biljetter till event & matcher" },
-  { icon: Heart, text: "Team building-upplägg" },
-  { icon: Check, text: "Support dygnet runt under resan" },
-];
 
 import { usePageMeta } from "@/lib/usePageMeta";
 import { useSiteContent } from "@/hooks/useSiteContent";
 
 const GROUP_KEYS = ["group_hero_eyebrow", "group_hero_title", "group_hero_tagline", "group_activities"];
 
-const FALLBACK_GROUP_ACTIVITIES = [
-  "Privat transport & flygplatstransfer",
-  "Guidade aktiviteter & utflykter",
-  "Bokade middagar & gemensamma måltider",
-  "Biljetter till event & matcher",
-  "Team building-upplägg",
-  "Support dygnet runt under resan",
-];
-
 export default function GroupTravel() {
   usePageMeta({
-    title: "Gruppresor - 8 till 200+ personer | Kaisen Travel Group",
-    description: "Skräddarsydda gruppresor, företagsevent och incentiveresor. Vi sköter logistiken - från flyg och hotell till middag och aktiviteter.",
+    title: "Grupp- & konferensresor | Kaisen Travel Group",
+    description: "Vi producerar och genomför grupp- och konferensresor i Europa - med över 50 års samlad erfarenhet från resebranschen. Vi tar ansvar för helheten så att ni kan fokusera på upplevelsen.",
   });
-  const { get, getArray } = useSiteContent(GROUP_KEYS);
+  const { get } = useSiteContent(GROUP_KEYS);
   const { open: openInquiry } = useInquiryDialog();
   const openGroupInquiry = () =>
     openInquiry({
@@ -87,7 +28,7 @@ export default function GroupTravel() {
       heading: "Berätta om er gruppresa",
       intro: "Antal personer, ungefärliga datum, destination och budget - vi återkommer med ett skräddarsytt förslag inom 24 timmar på vardagar.",
     });
-  const editableActivities = getArray("group_activities", FALLBACK_GROUP_ACTIVITIES);
+
   return (
     <div className="min-h-screen">
       <Navbar />
@@ -95,84 +36,40 @@ export default function GroupTravel() {
       {/* Hero */}
       <section className="relative h-[42vh] min-h-[320px] flex items-end">
         <div className="absolute inset-0">
-          <img src={groupImage} alt="Gruppresor" className="w-full h-full object-cover" />
+          <img src={groupImage} alt="Grupp- & konferensresor" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-navy/65" />
         </div>
         <div className="relative container mx-auto px-4 pb-14">
-          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">{get("group_hero_eyebrow", "Gruppresor")}</p>
+          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">{get("group_hero_eyebrow", "Grupp- & konferensresor")}</p>
           <h1 className="font-display text-4xl md:text-6xl text-white leading-tight">
-            {get("group_hero_title", "Bättre tillsammans - Alltid")}
+            {get("group_hero_title", "Erfarenhet som gör skillnad")}
           </h1>
           <p className="text-white/70 mt-4 text-lg font-light max-w-lg">
-            {get("group_hero_tagline", "Sport, äventyr eller fest - vi planerar, ni upplever.")}
+            {get("group_hero_tagline", "När många människor ska resa tillsammans blir detaljerna avgörande.")}
           </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Button onClick={openGroupInquiry} className="rounded-full bg-primary hover:bg-primary/90 px-7 py-6 text-sm tracking-wider">
-                <MessageSquare className="mr-2 h-4 w-4" />
-                Skicka förfrågan
-              </Button>
-          </div>
         </div>
       </section>
 
-      {/* Experience Grid - SALES FIRST */}
+      {/* Erfarenhet som gör skillnad */}
       <section className="py-14 md:py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Vad Vill Ni Uppleva?</p>
-            <h2 className="font-display text-3xl md:text-4xl text-foreground">
-              Upplevelser för <em className="italic font-light">alla gäng</em>
-            </h2>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {experiences.map((exp) => {
-              const Icon = exp.icon;
-              return (
-                <div key={exp.title} className="group bg-cream border border-border p-8 hover:border-primary transition-all duration-300">
-                  <Icon className="h-6 w-6 text-primary mb-4" />
-                  <h3 className="font-display text-xl text-foreground mb-1">{exp.title}</h3>
-                  <p className="text-xs tracking-wider text-primary uppercase font-sans mb-3">{exp.tagline}</p>
-                  <div className="w-6 h-px bg-primary mb-4" />
-                  <p className="text-muted-foreground text-sm leading-relaxed">{exp.desc}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Sport - image + short pitch */}
-      <section className="py-12 md:py-16 bg-cream">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div>
-              <span className="text-[10px] tracking-[0.25em] uppercase bg-accent text-accent-foreground px-3 py-1 font-sans">
-                Sport & Vänner
-              </span>
-              <h2 className="font-display text-3xl md:text-4xl text-foreground mt-4 mb-2">
-                Matcher ni aldrig glömmer
+              <h2 className="font-display text-3xl md:text-4xl text-foreground mb-2">
+                Erfarenhet som <em className="italic font-light">gör skillnad</em>
               </h2>
               <div className="w-10 h-px bg-primary mb-6" />
-              <p className="text-muted-foreground leading-relaxed mb-6">
-                Premier League, Monaco Grand Prix, Champions League - vi fixar biljetter, boende och transfer för hela gänget. En kontaktpunkt. Noll huvudbry.
+              <p className="text-muted-foreground leading-relaxed mb-5">
+                När många människor ska resa tillsammans blir detaljerna avgörande. Med över 50 års samlad erfarenhet från resebranschen har vi en gedigen erfarenhet av att producera och genomföra grupp- och konferensresor i Europa.
               </p>
-              <div className="grid grid-cols-2 gap-3 mb-8">
-                {["Biljetter till matcher & event", "Gruppbokade hotell", "Privat transfer", "Cityguide & tips"].map((item) => (
-                  <div key={item} className="flex items-center gap-2 text-sm text-foreground/80">
-                    <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                    {item}
-                  </div>
-                ))}
-              </div>
-              <Button onClick={openGroupInquiry} className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
-                  Planera er sportresa
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+              <p className="text-muted-foreground leading-relaxed">
+                Vi har byggt upp ett omfattande nätverk av hotell, destinationer, restauranger, aktiviteter och samarbetspartners som gör det möjligt att skapa resor med både kvalitet och personlighet. Oavsett om det handlar om en mindre ledningsgrupp, en företagskonferens eller en större gruppresa har vi erfarenheten och kapaciteten att ta hand om hela arrangemanget.
+              </p>
             </div>
             <div className="aspect-[4/3] overflow-hidden">
               <img
-                src={groupSports}
-                alt="Sportevent med grupp"
+                src={groupCorporate}
+                alt="Konferensresa i grupp"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
               />
             </div>
@@ -180,74 +77,85 @@ export default function GroupTravel() {
         </div>
       </section>
 
-      {/* Corporate - reversed */}
-      <section className="py-12 md:py-16 bg-background">
+      {/* Vi kan resan - och logistiken */}
+      <section className="py-12 md:py-16 bg-cream">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div className="aspect-[4/3] overflow-hidden md:order-1">
               <img
-                src={groupCorporate}
-                alt="Företagets getaway"
+                src={groupAdventure}
+                alt="Gruppresor och logistik"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
               />
             </div>
             <div>
-              <span className="text-[10px] tracking-[0.25em] uppercase bg-accent text-accent-foreground px-3 py-1 font-sans">
-                Företag & Team
-              </span>
               <h2 className="font-display text-3xl md:text-4xl text-foreground mt-4 mb-2">
-                Resor som bygger lag
+                Vi kan resan - <em className="italic font-light">och logistiken</em>
               </h2>
               <div className="w-10 h-px bg-primary mb-6" />
-              <p className="text-muted-foreground leading-relaxed mb-6">
-                Kickoff i Barcelona. Incentive till Kroatien. Retreat i Toscana. Vi skapar upplevelser som teamet pratar om länge - och faktiskt stärker sammanhållningen.
+              <p className="text-muted-foreground leading-relaxed mb-5">
+                En lyckad gruppresa handlar om så mycket mer än att boka rätt hotell och flyg. Det är logistiken mellan alla delar som gör skillnaden.
               </p>
-              <div className="grid grid-cols-2 gap-3 mb-8">
-                {["Boende & logistik", "Aktiviteter & teambuilding", "Middagar & event", "Pris efter budget"].map((item) => (
-                  <div key={item} className="flex items-center gap-2 text-sm text-foreground/80">
-                    <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                    {item}
-                  </div>
-                ))}
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                Vi är vana att planera och koordinera allt från transporter och hotell till middagar, aktiviteter, konferenser och upplevelser. Med vår erfarenhet ser vi detaljerna innan de blir problem och skapar ett genomtänkt flöde genom hela resan.
+              </p>
+              <div className="flex items-start gap-3 bg-navy/5 border-l-2 border-primary p-4">
+                <Check className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                <p className="text-foreground font-medium">
+                  Vi tar ansvar för helheten - så att ni kan fokusera på upplevelsen.
+                </p>
               </div>
-              <Button onClick={openGroupInquiry} className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
-                  Offert för företagsresa
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* What's included - compact */}
-      <section className="py-14 md:py-20 bg-cream">
+      {/* Professionell reseledarservice på plats */}
+      <section className="py-12 md:py-16 bg-background">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div>
-              <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Vad Ingår</p>
-              <h2 className="font-display text-3xl md:text-4xl text-foreground mb-2">
-                Allt ordnat - <em className="italic font-light">ingenting glömt</em>
-              </h2>
-              <div className="w-10 h-px bg-primary mb-8" />
-              <div className="grid sm:grid-cols-2 gap-4 mb-10">
-                {editableActivities.map((text, i) => (
-                  <div key={i} className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-primary flex-shrink-0" />
-                    <span className="text-foreground/80 text-sm">{text}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="bg-navy p-6 inline-block">
-                <div className="font-display text-2xl text-white mb-1">6 - 200+ personer</div>
-                <p className="text-white/60 text-sm">Ingen grupp är för liten eller för stor.</p>
-              </div>
-            </div>
-            <div className="aspect-[4/3] overflow-hidden">
-              <img
-                src={groupAdventure}
-                alt="Äventyrsresa i grupp"
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
-              />
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="font-display text-3xl md:text-4xl text-foreground mb-2">
+              Professionell <em className="italic font-light">reseledarservice</em> på plats
+            </h2>
+            <div className="w-10 h-px bg-primary mx-auto mb-8" />
+            <p className="text-muted-foreground leading-relaxed mb-5">
+              För den som vill få ut ännu mer av resan erbjuder vi professionell reseledarservice på plats - en service som kan ta gruppresan till en helt annan nivå.
+            </p>
+            <p className="text-muted-foreground leading-relaxed mb-5">
+              Behoven kan se olika ut. Vår reseledare kan fungera som koordinator för gruppens logistik, finnas till hands under hela resan och säkerställa att allt fungerar smidigt. För den som vill komma närmare destinationen erbjuder vi även professionell guideservice, där våra reseledare delar med sig av sin kunskap och erfarenhet för att ge gruppen en djupare förståelse för resmålet.
+            </p>
+            <p className="text-muted-foreground leading-relaxed">
+              På så sätt kan reseledarservicen anpassas efter just er resa - från trygg och professionell koordinering till en mer innehållsrik och personlig upplevelse av destinationen.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Erfarna på att skapa resor tillsammans */}
+      <section className="py-12 md:py-16 bg-cream">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="font-display text-3xl md:text-4xl text-foreground mb-2 text-center">
+              Erfarna på att skapa <em className="italic font-light">resor tillsammans</em>
+            </h2>
+            <div className="w-10 h-px bg-primary mx-auto mb-8" />
+            <p className="text-muted-foreground leading-relaxed mb-5">
+              Vi tror på att börja med att lyssna. Vad är syftet med resan? Vad vill ni uppleva? Vilken känsla vill ni att deltagarna ska ta med sig hem?
+            </p>
+            <p className="text-muted-foreground leading-relaxed mb-6">
+              Utifrån era önskemål skapar vi en resa där destination, boende, aktiviteter och upplevelser hänger ihop.
+            </p>
+            <p className="font-display text-2xl md:text-3xl text-foreground text-center mb-12">
+              Ni berättar vad ni vill uppnå. <em className="italic font-light">Vi tar hand om resten.</em>
+            </p>
+            <div className="bg-navy p-8 md:p-10 text-center">
+              <p className="text-white text-lg md:text-xl font-light leading-relaxed max-w-2xl mx-auto">
+                Har ni en idé om nästa konferens- eller gruppresa? Kontakta oss så börjar vi planera tillsammans.
+              </p>
+              <Button onClick={openGroupInquiry} className="mt-6 rounded-full bg-primary hover:bg-primary/90 px-8 py-6 text-sm tracking-wider">
+                Skicka förfrågan
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
             </div>
           </div>
         </div>
