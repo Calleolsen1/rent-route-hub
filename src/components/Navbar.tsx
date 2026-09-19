@@ -73,10 +73,13 @@ const Navbar = () => {
                     onMouseEnter={() => setOpenMenu(sport.slug)}
                     onMouseLeave={() => setOpenMenu(null)}
                   >
-                    <button className="flex items-center gap-1 text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors py-2">
+                    <Link
+                      to={`/services/sportresor/${sport.slug}`}
+                      className="flex items-center gap-1 text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors py-2"
+                    >
                       {sport.label}
                       <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
-                    </button>
+                    </Link>
                     {isOpen && sport.menu_style === "grouped" && (
                       <div
                         className="absolute top-full left-0 bg-card border border-border shadow-xl z-50 p-6 gap-6 grid"
@@ -230,13 +233,21 @@ const Navbar = () => {
               const isOpen = mobileSubmenu === sport.slug;
               return (
                 <div key={sport.id}>
-                  <button
-                    className="w-full flex items-center justify-between py-3 px-2 text-sm font-medium tracking-wide text-foreground"
-                    onClick={() => setMobileSubmenu(isOpen ? null : sport.slug)}
-                  >
-                    {sport.label}
-                    <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""}`} />
-                  </button>
+                  <div className="w-full flex items-center justify-between py-3 px-2 text-sm font-medium tracking-wide text-foreground">
+                    <Link
+                      to={`/services/sportresor/${sport.slug}`}
+                      onClick={() => setMobileOpen(false)}
+                      className="flex-1 text-left"
+                    >
+                      {sport.label}
+                    </Link>
+                    <button
+                      aria-label={`Visa ${sport.label}`}
+                      onClick={() => setMobileSubmenu(isOpen ? null : sport.slug)}
+                    >
+                      <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+                    </button>
+                  </div>
                   {isOpen && sport.menu_style === "grouped" && (
                     <div className="pl-4 pb-2 space-y-3">
                       {groupedFor(sport.id).map(([groupLabel, items]) => (

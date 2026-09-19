@@ -170,7 +170,7 @@ const services = [
     description:
       "Från Premier League-derbyn till Champions League - vi paketerar resan med platser på läktaren, hotell och transfer.",
     image: fotbollImage,
-    href: "/services/sportresor#fotboll",
+    href: "/services/sportresor/fotboll",
     tag: "Matchupplevelser",
   },
   {
@@ -179,7 +179,7 @@ const services = [
     description:
       "Känn adrenalinet när racerna dundrar förbi. Komplett F1-resa med bra platser, boende nära banan och all logistik ordnad.",
     image: f1Image,
-    href: "/services/sportresor#f1",
+    href: "/services/sportresor/f1",
     tag: "Premiumupplevelser",
   },
   {
