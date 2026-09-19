@@ -8,6 +8,7 @@ import fotbollImage from "@/assets/sport-fotboll.jpg";
 import f1Image from "@/assets/sport-f1.jpg";
 import { useSport, useEntry } from "@/hooks/useNavigation";
 import UpcomingEventsList from "@/components/UpcomingEventsList";
+import { useInquiryDialog } from "@/components/InquiryDialog";
 
 /**
  * Unified landing page for any sport entry - replaces the old TeamPage +
@@ -64,6 +65,7 @@ export default function SportEntryPage() {
   const { sport: sportSlug, entry: entrySlug } = useParams<{ sport: string; entry: string }>();
   const sport = useSport(sportSlug);
   const info = useEntry(sportSlug, entrySlug);
+  const { open: openInquiry } = useInquiryDialog();
 
   if (!sport || !info) {
     return (
