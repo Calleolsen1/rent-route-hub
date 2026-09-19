@@ -33,7 +33,7 @@ function invoiceTemplate(data: {
     if (!iso) return "–";
     try {
       const d = new Date(iso);
-      return d.toLocaleDateString("sv-SE", { day: "numeric", month: "long", year: "numeric" });
+      return d.toLocaleDateString("sv-SE", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Stockholm" });
     } catch { return iso; }
   };
 
