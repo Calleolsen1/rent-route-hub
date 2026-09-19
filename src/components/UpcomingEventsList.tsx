@@ -30,6 +30,37 @@ type EventRow = {
   ticket_categories: Array<{ unit_price_sek: number | null }> | null;
 };
 
+/**
+ * Samma lopp/match kan komma från flera källor (biljettleverantör + kalender-sync)
+ * med olika stavning på bana och datum för olika sessioner. Slå ihop dem så att
+ * kunden bara ser ett kort per lopp/match och månad - biljettkortet vinner.
+ */
+function dedupeEvents(rows: EventRow[]): EventRow[] {
+  const norm = (s: string | null) =>
+    (s ?? "").toLowerCase().replace(/[^a-z0-9åäö]+/g, "");
+  const hasTickets = (e: EventRow) =>
+    (e.ticket_categories?.length ?? 0) > 0 || e.min_price_sek != null;
+  const byKey = new Map<string, EventRow>();
+  for (const e of rows) {
+    const month = (e.starts_at ?? "").slice(0, 7);
+    const key = e.race_name
+      ? `race|${norm(e.race_name)}|${month}`
+      : `match|${norm(e.home_team)}|${norm(e.away_team)}|${month}`;
+    const prev = byKey.get(key);
+    if (!prev) {
+      byKey.set(key, e);
+      continue;
+    }
+    if (hasTickets(e) && !hasTickets(prev)) byKey.set(key, e);
+  }
+  return rows.filter((e) => byKey.get(
+    e.race_name
+      ? `race|${norm(e.race_name)}|${(e.starts_at ?? "").slice(0, 7)}`
+      : `match|${norm(e.home_team)}|${norm(e.away_team)}|${(e.starts_at ?? "").slice(0, 7)}`,
+  ) === e);
+}
+
+
 type Props = {
   sport?: "soccer" | "formula1";
   team?: string;
@@ -126,7 +157,7 @@ export default function UpcomingEventsList({
         );
       }
       const { data } = await q;
-      setEvents((data as EventRow[]) ?? []);
+      setEvents(dedupeEvents((data as EventRow[]) ?? []));
       setLoading(false);
     })();
   }, [sport, team, race, tournament, query, dateFrom, dateTo, sort, effectiveLimit]);
