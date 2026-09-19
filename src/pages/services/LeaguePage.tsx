@@ -125,7 +125,8 @@ export default function LeaguePage() {
                   </span>
                 </div>
               </Link>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
