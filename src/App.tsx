@@ -124,6 +124,7 @@ const App = () => (
                 <Route path="tickets" element={<AdminTickets />} />
                 <Route path="banners" element={<AdminBanners />} />
                 <Route path="hemsidan/resor" element={<AdminHomeTrips />} />
+                <Route path="hemsidan/upplevelser" element={<AdminHomeExperiences />} />
                 <Route path="markup-defaults" element={<AdminMarkupDefaults />} />
                 <Route path="diagnostics" element={<AdminDiagnostics />} />
                 <Route path="media" element={<AdminMediaLibrary />} />
