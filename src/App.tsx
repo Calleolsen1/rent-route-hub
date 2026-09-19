@@ -35,6 +35,7 @@ import AdminMarkupDefaults from "./pages/admin/MarkupDefaults";
 import AdminNavigation from "./pages/admin/Navigation";
 import AdminDiagnostics from "./pages/admin/Diagnostics";
 import AdminMediaLibrary from "./pages/admin/MediaLibrary";
+import AdminStadiumPhotos from "./pages/admin/StadiumPhotos";
 import AdminTeam from "./pages/admin/Team";
 import BackofficeCustomers from "./pages/admin/backoffice/Customers";
 import BackofficeHotels from "./pages/admin/backoffice/Hotels";
@@ -124,6 +125,7 @@ const App = () => (
                 <Route path="markup-defaults" element={<AdminMarkupDefaults />} />
                 <Route path="diagnostics" element={<AdminDiagnostics />} />
                 <Route path="media" element={<AdminMediaLibrary />} />
+                <Route path="stadium-photos" element={<AdminStadiumPhotos />} />
                 <Route path="team" element={<AdminTeam />} />
                 <Route path="users" element={<UsersManagement />} />
                 <Route path="support" element={<AdminSupport />} />

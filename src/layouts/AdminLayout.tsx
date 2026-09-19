@@ -33,6 +33,7 @@ const navGroups = [
       { to: "/admin/navigation", label: "Navigation", icon: Menu },
       { to: "/admin/team", label: "Team", icon: UserSquare2 },
       { to: "/admin/media", label: "Bildbibliotek", icon: Images },
+      { to: "/admin/stadium-photos", label: "Arenabilder", icon: Image },
       { to: "/admin/tickets", label: "Biljetter & Stripe", icon: Ticket },
       { to: "/admin/markup-defaults", label: "Påslag", icon: Percent },
     ],
@@ -65,6 +66,7 @@ const PREVIEW_FOR_ROUTE: Record<string, string> = {
   "/admin/team": "/about",
   "/admin/tickets": "/services/sportresor",
   "/admin/media": "/",
+  "/admin/stadium-photos": "/services/sportresor",
 };
 
 /** Admin pages where a live preview actually adds value - preview auto-opens there. */

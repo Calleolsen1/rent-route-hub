@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { usePublicPricesEnabled } from "@/hooks/usePublicPrices";
+import { useTeamPhotos } from "@/hooks/useTeamPhotos";
+import EventImage from "@/components/EventImage";
 import { ArrowRight, Calendar, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatEventDate } from "@/lib/formatSek";
@@ -64,6 +66,7 @@ export default function UpcomingEventsList({
   const [loading, setLoading] = useState(true);
   const [defaultPct, setDefaultPct] = useState<number>(0);
   const { enabled: showPrices } = usePublicPricesEnabled();
+  const teamPhotos = useTeamPhotos();
 
   useEffect(() => {
     (async () => {
@@ -151,12 +154,20 @@ export default function UpcomingEventsList({
               to={`/sport/event/${e.id}`}
               className="group bg-card border border-border rounded-xl overflow-hidden hover:shadow-xl hover:-translate-y-0.5 transition-all flex flex-col"
             >
-              {e.cover_image_url && (
-                <div className={`${compact ? "aspect-[16/8]" : "aspect-[16/10]"} overflow-hidden relative`}>
-                  <img
-                    src={e.cover_image_url}
-                    alt={headline ?? ""}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              {/* Always render an image block. Without a stadium photo the
+                  card falls back to a generated plate, so listings look
+                  consistent whether or not the team has been photographed. */}
+              <div className={`${compact ? "aspect-[16/8]" : "aspect-[16/10]"} overflow-hidden relative`}>
+                  <EventImage
+                    sport={e.sport}
+                    homeTeam={e.home_team}
+                    awayTeam={e.away_team}
+                    raceName={e.race_name}
+                    tournamentName={e.tournament_name}
+                    venueName={e.venue_name}
+                    coverUrl={e.cover_image_url}
+                    photos={teamPhotos}
+                    className="group-hover:scale-105 transition-transform duration-700"
                   />
                   {showPrices && displayPrice != null && displayPrice > 0 && (
                     <div className="absolute top-3 right-3 bg-background/95 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-lg border border-border">
@@ -173,8 +184,7 @@ export default function UpcomingEventsList({
                       />
                     </div>
                   )}
-                </div>
-              )}
+              </div>
               <div className={`${compact ? "p-4" : "p-5"} flex flex-col flex-1`}>
                 <p className="text-[10px] tracking-[0.25em] uppercase text-primary font-sans mb-2">
                   {e.tournament_name}

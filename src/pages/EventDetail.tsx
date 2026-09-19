@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { usePublicPricesEnabled } from "@/hooks/usePublicPrices";
+import { useTeamPhotos } from "@/hooks/useTeamPhotos";
+import EventImage from "@/components/EventImage";
 import InquiryForm from "@/components/InquiryForm";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
@@ -94,6 +96,7 @@ export default function EventDetail() {
   const [busy, setBusy] = useState(false);
   const [compareAtDefaultPct, setCompareAtDefaultPct] = useState<number>(0);
   const { enabled: showPrices } = usePublicPricesEnabled();
+  const teamPhotos = useTeamPhotos();
   const [inquiryOpen, setInquiryOpen] = useState(false);
 
   useEffect(() => {
@@ -330,13 +333,16 @@ export default function EventDetail() {
       {/* Hero */}
       <section className="relative h-[28vh] min-h-[200px] flex items-end">
         <div className="absolute inset-0">
-          {event.cover_image_url && (
-            <img
-              src={event.cover_image_url}
-              alt={headline ?? ""}
-              className="w-full h-full object-cover"
-            />
-          )}
+          <EventImage
+            sport={event.sport}
+            homeTeam={event.home_team}
+            awayTeam={event.away_team}
+            raceName={event.race_name}
+            tournamentName={event.tournament_name}
+            venueName={event.venue_name}
+            coverUrl={event.cover_image_url}
+            photos={teamPhotos}
+          />
           <div className="absolute inset-0 bg-navy/75" />
         </div>
         <div className="relative container mx-auto px-4 pb-6">
