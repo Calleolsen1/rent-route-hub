@@ -325,12 +325,15 @@ export default function InquiryForm({
                   type="button"
                   aria-pressed={active}
                   onClick={() => toggleTripPart(part.id)}
-                  className={`rounded-lg border px-3 py-3 text-sm transition-colors ${
+                  className={`relative flex items-center justify-center gap-2 rounded-lg border px-3 py-3 text-sm transition-all ${
                     active
-                      ? "border-primary bg-primary/10 text-foreground font-medium"
-                      : "border-border bg-background text-muted-foreground hover:border-primary/40"
+                      ? "border-primary bg-primary text-primary-foreground font-semibold shadow-md"
+                      : "border-border bg-background text-muted-foreground hover:border-primary/60 hover:bg-primary/5"
                   }`}
                 >
+                  {active && (
+                    <Check className="h-4 w-4 shrink-0" strokeWidth={3} aria-hidden="true" />
+                  )}
                   {part.label}
                 </button>
               );
