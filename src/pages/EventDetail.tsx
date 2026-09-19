@@ -412,7 +412,7 @@ export default function EventDetail() {
 
                           <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
                             <Users className="h-3 w-3" />
-                            Sittning ihop: upp till {o.party_size_together} pers
+                            Sitt tillsammans - vi ordnar placering för hela sällskapet
                           </p>
                         </div>
                         <div className="text-right">
