@@ -355,7 +355,7 @@ export default function InquiryForm({
           id="message"
           name="message"
           required
-          rows={5}
+          rows={compact ? 3 : 5}
           maxLength={4000}
           className={`${inputCls} resize-none`}
           placeholder="Berätta gärna mer om er resa, era önskemål och vad ni vill uppleva."
@@ -371,23 +371,25 @@ export default function InquiryForm({
         </div>
       )}
 
-      <Button
-        type="submit"
-        disabled={submitting}
-        className="rounded-none px-8 tracking-wider text-xs bg-primary hover:bg-primary/90 h-11"
-      >
-        {submitting ? (
-          <>
-            <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Skickar...
-          </>
-        ) : (
-          "Skicka förfrågan"
-        )}
-      </Button>
+      <div className={compact ? "flex flex-wrap items-center justify-between gap-3" : "space-y-3"}>
+        <Button
+          type="submit"
+          disabled={submitting}
+          className="rounded-none px-8 tracking-wider text-xs bg-primary hover:bg-primary/90 h-11"
+        >
+          {submitting ? (
+            <>
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Skickar...
+            </>
+          ) : (
+            "Skicka förfrågan"
+          )}
+        </Button>
 
-      <p className="text-xs text-muted-foreground">
-        Genom att skicka formuläret godkänner du att vi kontaktar dig angående din förfrågan.
-      </p>
+        <p className={`text-muted-foreground ${compact ? "text-[11px] max-w-sm leading-snug" : "text-xs"}`}>
+          Genom att skicka formuläret godkänner du att vi kontaktar dig angående din förfrågan.
+        </p>
+      </div>
     </form>
   );
 }
