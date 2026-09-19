@@ -76,7 +76,8 @@ const App = () => (
             <ScrollToTop />
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/services" element={<Services />} />
+              <Route path="/tjanster" element={<Services />} />
+              <Route path="/services" element={<Navigate to="/tjanster" replace />} />
               <Route path="/services/sportresor" element={<Sportresor />} />
               {/* Generic sport entry page - drives /:sport/:entry for any sport in nav_sports */}
               <Route path="/services/sportresor/:sport/:entry" element={<SportEntryPage />} />
