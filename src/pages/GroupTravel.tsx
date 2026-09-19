@@ -51,7 +51,7 @@ export default function GroupTravel() {
       </section>
 
       {/* Erfarenhet som gör skillnad */}
-      <section className="py-14 md:py-20 bg-background">
+      <section className="py-10 sm:py-14 md:py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div>

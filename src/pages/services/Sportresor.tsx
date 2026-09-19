@@ -54,7 +54,7 @@ export default function Sportresor() {
  <img src={sportsImage} alt="Sportresor" className="w-full h-full object-cover" />
  <div className="absolute inset-0 bg-navy/70" />
  </div>
- <div className="relative container mx-auto px-4 pt-24 md:pt-28 pb-8 flex flex-col">
+ <div className="relative container mx-auto px-4 pt-16 sm:pt-24 md:pt-28 pb-8 flex flex-col">
  <div className="max-w-3xl">
  <p className="text-[11px] sm:text-xs eyebrow text-white/75 uppercase mb-2 font-sans">
  Tjänster - Sportresor
@@ -127,7 +127,7 @@ export default function Sportresor() {
       <img src={luxuryImage} alt="" aria-hidden="true" className="w-full h-full object-cover" />
       <div className="absolute inset-0 bg-navy/85" />
     </div>
-    <div className="relative container mx-auto px-4 py-16 md:py-20 text-center">
+    <div className="relative container mx-auto px-4 py-10 sm:py-16 md:py-20 text-center">
       <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Boka din sportresa</p>
       <h2 className="font-display text-3xl md:text-5xl text-white mb-5">
         Vilken sport vill du uppleva live?

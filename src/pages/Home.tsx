@@ -785,7 +785,7 @@ const Home = () => {
       </section>
 
       {/* Kontakta oss CTA */}
-      <section className="py-16 md:py-24 bg-background">
+      <section className="py-12 sm:py-16 md:py-24 bg-background">
         <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
           <div className="relative overflow-hidden rounded-3xl bg-navy p-10 md:p-16 grid md:grid-cols-[1fr_auto] gap-10 items-center">
             {/* Decorative blurred orbs */}

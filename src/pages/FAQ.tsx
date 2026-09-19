@@ -119,7 +119,7 @@ export default function FAQ() {
  <Navbar />
 
  {/* Hero */}
- <section className="bg-navy py-20 border-b border-white/10">
+ <section className="bg-navy py-12 sm:py-20 border-b border-white/10">
  <div className="container mx-auto px-4 text-center">
  <p className="text-[11px] sm:text-xs eyebrow text-white/75 uppercase mb-4 font-sans">Vanliga frågor</p>
  <h1 className="font-display text-4xl md:text-6xl text-white mb-4">

@@ -131,7 +131,7 @@ export default function Services() {
   ))}
 
   {/* CTA */}
-  <section className="bg-navy py-20">
+  <section className="bg-navy py-12 sm:py-20">
   <div className="container mx-auto px-4 text-center">
    <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Skräddarsytt av naturen</p>
    <h2 className="font-display text-3xl md:text-5xl text-white mb-6">

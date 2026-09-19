@@ -72,7 +72,7 @@ const Resor = () => {
         </div>
       </section>
 
-      <section className="py-14 md:py-20">
+      <section className="py-10 sm:py-14 md:py-20">
         <div className="container mx-auto px-4">
           <div className="grid gap-6 sm:grid-cols-2">
             {choices.map((c) => (

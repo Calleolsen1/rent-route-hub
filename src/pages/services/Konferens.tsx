@@ -93,7 +93,7 @@ export default function Konferens() {
       </section>
 
       {/* Packages Grid - SALES FIRST */}
-      <section className="py-14 md:py-20 bg-background">
+      <section className="py-10 sm:py-14 md:py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">Vad Vi Fixar</p>

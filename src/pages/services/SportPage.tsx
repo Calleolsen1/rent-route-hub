@@ -111,7 +111,7 @@ export default function SportPage() {
 
       {isRace ? (
         /* Races */
-        <section className="py-14 md:py-20 bg-cream">
+        <section className="py-10 sm:py-14 md:py-20 bg-cream">
           <div className="container mx-auto px-4">
             <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans text-center">
               Kalendern
@@ -172,7 +172,7 @@ export default function SportPage() {
         </section>
       ) : (
         /* Leagues + teams */
-        <section className="py-14 md:py-20 bg-cream">
+        <section className="py-10 sm:py-14 md:py-20 bg-cream">
           <div className="container mx-auto px-4">
             <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans text-center">
               Ligor & klubbar

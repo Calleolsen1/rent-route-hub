@@ -213,7 +213,7 @@ export default function About() {
   <TeamSection />
 
   {/* CTA */}
-  <section className="bg-cream py-20 border-t border-border">
+  <section className="bg-cream py-12 sm:py-20 border-t border-border">
   <div className="container mx-auto px-4 text-center">
   <h2 className="font-display text-3xl md:text-4xl text-foreground mb-6">
   Redo att Planera Er Resa?

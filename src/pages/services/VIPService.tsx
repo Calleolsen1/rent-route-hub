@@ -220,7 +220,7 @@ export default function VIPService() {
  </section>
 
  {/* Inquiry form */}
- <section id="forfragan" className="bg-cream py-16 md:py-24">
+ <section id="forfragan" className="bg-cream py-12 sm:py-16 md:py-24">
  <div className="container mx-auto px-4 max-w-3xl">
  <InquiryForm
  type="vip"
