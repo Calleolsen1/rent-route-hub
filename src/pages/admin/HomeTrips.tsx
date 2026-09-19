@@ -231,13 +231,11 @@ export default function AdminHomeTrips() {
                     onBlur={(e) => patch(trip.id, { valid_until: e.target.value || null })}
                   />
                 </div>
-                <div>
+                <div className="md:col-span-2">
                   <Label className="text-xs uppercase tracking-wider">Länk</Label>
-                  <Input
+                  <LinkPicker
                     value={trip.href}
-                    placeholder="/services/traningslager"
-                    onChange={(e) => setLocal(trip.id, { href: e.target.value })}
-                    onBlur={(e) => patch(trip.id, { href: e.target.value || "/contact" })}
+                    onChange={(v) => patch(trip.id, { href: v || "/contact" })}
                   />
                 </div>
                 <div>
