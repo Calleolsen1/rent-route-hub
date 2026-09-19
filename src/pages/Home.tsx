@@ -474,7 +474,7 @@ const Home = () => {
 
       {/* Search bar - full width, above hero (Intrepid-style) */}
       <section className="bg-background">
-        <div className="w-full max-w-4xl mx-auto px-6 md:px-10 pt-6 md:pt-8 pb-4">
+        <div className="w-full max-w-4xl mx-auto px-4 sm:px-4 sm:px-6 md:px-10 pt-4 sm:pt-6 md:pt-8 pb-3 sm:pb-4">
           <SearchTypeahead />
         </div>
       </section>
@@ -482,7 +482,7 @@ const Home = () => {
 
       {/* Hero carousel - contained rounded card, Intrepid-style */}
       <section className="relative bg-background pb-4 md:pb-6">
-        <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-4 sm:px-6 md:px-10">
           <div className="relative rounded-2xl md:rounded-3xl overflow-hidden">
             <Carousel
               opts={{ loop: true }}
@@ -495,20 +495,20 @@ const Home = () => {
               <CarouselContent>
                 {heroSlides.map((slide, idx) => (
                   <CarouselItem key={idx}>
-                    <div className="relative h-[58vh] min-h-[420px] max-h-[640px] overflow-hidden">
+                    <div className="relative h-[54vh] min-h-[340px] max-h-[640px] md:h-[58vh] md:min-h-[420px] overflow-hidden">
                       <img
                         src={slide.image}
                         alt={slide.title}
                         className="absolute inset-0 w-full h-full object-cover"
                         loading={idx === 0 ? "eager" : "lazy"}
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-navy/85 via-navy/30 to-transparent" />
-                      <div className="relative h-full flex items-end p-8 md:p-14">
+                      <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/40 to-transparent" />
+                      <div className="relative h-full flex items-end p-5 pb-12 sm:p-8 md:p-14">
                         <div className="max-w-xl">
-                          <p className="text-[11px] tracking-[0.3em] text-white uppercase mb-4 font-sans">
+                          <p className="text-[11px] eyebrow text-white uppercase mb-2 sm:mb-4 font-sans">
                             {slide.eyebrow}
                           </p>
-                          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-light text-white leading-tight mb-6">
+                          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-white leading-tight mb-4 sm:mb-6">
                             {slide.title}
                             <br />
                             <em className="font-light italic text-white">{slide.italic}</em>
@@ -516,7 +516,7 @@ const Home = () => {
                           <Link to={slide.primary.to}>
                             <Button
                               size="lg"
-                              className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-7 h-12 text-sm font-medium"
+                              className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-6 sm:px-7 h-11 sm:h-12 text-sm font-medium"
                             >
                               {slide.primary.label}
                             </Button>
@@ -527,8 +527,8 @@ const Home = () => {
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="left-4 md:left-6 bg-white hover:bg-white/90 text-foreground border-0 h-11 w-11 shadow-md" />
-              <CarouselNext className="right-4 md:right-6 bg-white hover:bg-white/90 text-foreground border-0 h-11 w-11 shadow-md" />
+              <CarouselPrevious className="hidden sm:flex left-4 md:left-6 bg-white hover:bg-white/90 text-foreground border-0 h-11 w-11 shadow-md" />
+              <CarouselNext className="hidden sm:flex right-4 md:right-6 bg-white hover:bg-white/90 text-foreground border-0 h-11 w-11 shadow-md" />
             </Carousel>
 
             {/* Dots */}
@@ -549,7 +549,7 @@ const Home = () => {
       {/* TODO: Stats-sektion borttagen tills riktiga siffror finns att redovisa.
           Avkommentera och fyll i i Home.tsx när data är på plats.
       <section className="bg-background pt-2 md:pt-3 pb-8 md:pb-10">
-        <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
           <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border/60">
             <div className="px-6 py-4 md:py-2 text-center">
               <p className="font-sans font-semibold text-lg md:text-xl text-foreground leading-snug">
@@ -565,7 +565,7 @@ const Home = () => {
 
       {/* Konkreta reseerbjudanden - Intrepid-style cards */}
       <section className="pt-4 pb-8 md:pb-10 bg-background">
-        <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
             <div className="flex flex-wrap items-end gap-x-8 gap-y-3">
               {offerTabs.map((tab) => {
@@ -663,7 +663,7 @@ const Home = () => {
 
       {/* Längre erbjudanden - service cards carousel */}
       <section className="pt-4 pb-12 md:pb-16 bg-background">
-        <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
           <div className="flex items-center justify-between mb-8 gap-6">
             <h2 className="font-sans font-semibold text-xl md:text-2xl text-foreground relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-16 after:h-[2px] after:bg-primary">
               Upplevelser som formar minnen
@@ -711,7 +711,7 @@ const Home = () => {
 
       {/* Om oss */}
       <section className="py-10 md:py-14 bg-background">
-        <div className="w-full max-w-[1400px] mx-auto px-6 md:px-10">
+        <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10">
           <h2 className="font-sans font-semibold text-3xl md:text-5xl text-foreground text-center mb-16 md:mb-20">
             Vad gör oss annorlunda
           </h2>
@@ -748,9 +748,9 @@ const Home = () => {
 
       {/* Referenser - testimonials carousel */}
       <section className="py-10 md:py-14 bg-cream">
-        <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
           <div className="text-center mb-14">
-            <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Referenser</p>
+            <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Referenser</p>
             <h2 className="font-display text-4xl md:text-5xl text-foreground">
               Berättelser från<br />
               <em className="italic font-light">resan</em>
@@ -785,15 +785,15 @@ const Home = () => {
       </section>
 
       {/* Kontakta oss CTA */}
-      <section className="py-16 md:py-24 bg-background">
-        <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
+      <section className="py-12 sm:py-16 md:py-24 bg-background">
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
           <div className="relative overflow-hidden rounded-3xl bg-navy p-10 md:p-16 grid md:grid-cols-[1fr_auto] gap-10 items-center">
             {/* Decorative blurred orbs */}
             <div className="pointer-events-none absolute -top-24 -right-16 w-80 h-80 rounded-full bg-primary/30 blur-3xl" />
             <div className="pointer-events-none absolute -bottom-32 -left-20 w-96 h-96 rounded-full bg-primary/40 blur-3xl" />
 
             <div className="relative max-w-2xl">
-              <p className="text-[11px] tracking-[0.3em] text-primary uppercase mb-4 font-sans font-semibold">Kontakta oss</p>
+              <p className="text-[11px] eyebrow text-primary uppercase mb-4 font-sans font-semibold">Kontakta oss</p>
               <h2 className="font-sans text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">
                 Ditt nästa äventyr börjar med ett <em className="italic font-light text-white">samtal</em>
               </h2>

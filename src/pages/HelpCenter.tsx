@@ -209,9 +209,9 @@ export default function HelpCenter() {
  <Navbar />
 
  {/* Hero */}
- <section className="bg-navy py-20 border-b border-white/10">
+ <section className="bg-navy py-12 sm:py-20 border-b border-white/10">
  <div className="container mx-auto px-4 text-center">
- <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Hjälpcenter</p>
+ <p className="text-[11px] sm:text-xs eyebrow text-white/75 uppercase mb-4 font-sans">Hjälpcenter</p>
  <h1 className="font-display text-4xl md:text-6xl text-white mb-4">
  Hur kan vi <em className="italic font-light text-white">hjälpa dig?</em>
  </h1>
@@ -335,7 +335,7 @@ export default function HelpCenter() {
  <section className="py-10 md:py-14 bg-cream">
  <div className="container mx-auto px-4">
  <div className="text-center mb-12">
- <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Transparens</p>
+ <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Transparens</p>
  <h2 className="font-display text-3xl text-foreground mb-2">
  Alltid uppdaterad - <em className="italic font-light">utan ansträngning</em>
  </h2>

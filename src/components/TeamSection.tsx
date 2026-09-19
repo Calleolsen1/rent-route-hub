@@ -42,7 +42,7 @@ export default function TeamSection() {
   if (members.length === 0) return null;
 
   return (
-    <section className="py-16 md:py-20 bg-background border-t border-border">
+    <section className="py-10 sm:py-16 md:py-20 bg-background border-t border-border">
       <div className="container mx-auto px-4">
         <div className="mb-12 text-center">
           <p className="mb-4 font-sans text-xs uppercase tracking-[0.3em] text-primary">

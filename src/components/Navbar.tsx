@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { User, LogOut, Menu, X, ChevronDown, Globe } from "lucide-react";
@@ -27,6 +27,16 @@ const Navbar = () => {
   const entries = useEntries();
   const topMenu = useTopMenu();
 
+  // Lock background scrolling while the mobile menu is open
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [mobileOpen]);
+
   const entriesFor = (sportId: string) =>
     // show_in_menu defaults to true if absent (backward compat with static fallback)
     entries.filter((e) => e.sport_id === sportId && (e.show_in_menu ?? true));
@@ -44,7 +54,7 @@ const Navbar = () => {
   return (
     <>
       <nav className="border-b border-border/40 bg-card/95 backdrop-blur-sm sticky top-0 z-50">
-        <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
           {/* 3-col grid keeps the menu group dead-centered regardless of how wide
               the logo or right-side controls become */}
           <div className="grid grid-cols-[1fr_auto_1fr] items-center h-16 md:h-20 gap-4">
@@ -214,11 +224,12 @@ const Navbar = () => {
 
               {/* Mobile menu toggle */}
               <button
-                className="lg:hidden p-2"
+                className="lg:hidden -mr-2 p-3 rounded-md active:bg-accent"
                 onClick={() => setMobileOpen(!mobileOpen)}
                 aria-label="Växla meny"
+                aria-expanded={mobileOpen}
               >
-                {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </button>
             </div>
           </div>
@@ -226,59 +237,69 @@ const Navbar = () => {
 
         {/* Mobile menu */}
         {mobileOpen && (
-          <div className="lg:hidden border-t bg-card px-4 py-6 space-y-1 max-h-[calc(100vh-4rem)] overflow-y-auto">
+          <div className="lg:hidden border-t bg-card px-4 py-4 space-y-1 max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain">
             {sports.map((sport) => {
               const sportEntries = entriesFor(sport.id);
               if (!sportEntries.length) return null;
               const isOpen = mobileSubmenu === sport.slug;
               return (
                 <div key={sport.id}>
-                  <div className="w-full flex items-center justify-between py-3 px-2 text-sm font-medium tracking-wide text-foreground">
+                  <div className="w-full flex items-center justify-between border-b border-border/40 text-base font-medium tracking-wide text-foreground">
                     <Link
                       to={`/services/sportresor/${sport.slug}`}
                       onClick={() => setMobileOpen(false)}
-                      className="flex-1 text-left"
+                      className="flex-1 text-left py-4 px-2"
                     >
                       {sport.label}
                     </Link>
                     <button
                       aria-label={`Visa ${sport.label}`}
+                      aria-expanded={isOpen}
+                      className="p-3 -mr-1 rounded-md active:bg-accent"
                       onClick={() => setMobileSubmenu(isOpen ? null : sport.slug)}
                     >
-                      <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+                      <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? "rotate-180" : ""}`} />
                     </button>
                   </div>
                   {isOpen && sport.menu_style === "grouped" && (
-                    <div className="pl-4 pb-2 space-y-3">
+                    <div className="pl-3 py-2 space-y-4 bg-accent/30 rounded-lg mb-2">
                       {groupedFor(sport.id).map(([groupLabel, items]) => (
                         <div key={groupLabel}>
-                          <p className="text-[10px] tracking-[0.2em] uppercase text-primary font-semibold py-1">{groupLabel}</p>
-                          {items.map((entry) => (
-                            <Link
-                              key={entry.id}
-                              to={`/services/sportresor/${sport.slug}/${entry.slug}`}
-                              className="block py-1.5 px-2 text-sm text-foreground/80"
-                              onClick={() => setMobileOpen(false)}
-                            >
-                              {entry.name}
-                            </Link>
-                          ))}
+                          <Link
+                            to={`/services/sportresor/${sport.slug}/liga/${slug(groupLabel)}`}
+                            onClick={() => setMobileOpen(false)}
+                            className="block text-[11px] tracking-[0.16em] uppercase text-primary font-semibold px-2 py-2"
+                          >
+                            {groupLabel}
+                          </Link>
+                          <div className="grid grid-cols-2 gap-x-2">
+                            {items.map((entry) => (
+                              <Link
+                                key={entry.id}
+                                to={`/services/sportresor/${sport.slug}/${entry.slug}`}
+                                className="block py-2.5 px-2 text-sm text-foreground/80"
+                                onClick={() => setMobileOpen(false)}
+                              >
+                                {entry.name}
+                              </Link>
+                            ))}
+                          </div>
                         </div>
                       ))}
                     </div>
                   )}
                   {isOpen && sport.menu_style === "list" && (
-                    <div className="pl-4 pb-2">
+                    <div className="pl-3 py-1 bg-accent/30 rounded-lg mb-2">
                       {sportEntries.map((entry) => (
                         <Link
                           key={entry.id}
                           to={`/services/sportresor/${sport.slug}/${entry.slug}`}
-                          className="flex items-center justify-between py-2 px-2 text-sm"
+                          className="flex items-center justify-between gap-3 py-3 px-2 text-sm"
                           onClick={() => setMobileOpen(false)}
                         >
                           <span className="text-foreground/80">{entry.name}</span>
                           {entry.short_date && (
-                            <span className="text-xs text-muted-foreground">{entry.short_date}</span>
+                            <span className="text-xs text-muted-foreground flex-shrink-0">{entry.short_date}</span>
                           )}
                         </Link>
                       ))}
@@ -292,31 +313,36 @@ const Navbar = () => {
               <Link
                 key={item.id}
                 to={item.href}
-                className="block text-sm font-medium tracking-wide py-3 px-2 text-foreground/80 hover:text-primary transition-colors border-t border-border/40"
+                className="block text-base font-medium tracking-wide py-4 px-2 text-foreground/80 border-b border-border/40"
                 onClick={() => setMobileOpen(false)}
               >
                 {item.label}
               </Link>
             ))}
 
-            <div className="pt-4 space-y-3 border-t border-border/40">
+            <div className="pt-4 pb-2 space-y-3">
+              <Link to="/contact" onClick={() => setMobileOpen(false)} className="block">
+                <Button className="w-full h-12 rounded-full bg-primary text-base">Planera din resa</Button>
+              </Link>
               {user ? (
                 <>
-                  <Link to="/mitt-kaisen/dashboard" onClick={() => setMobileOpen(false)}>
-                    <Button variant="outline" className="w-full rounded-none">Mitt Kaisen</Button>
+                  <Link to="/mitt-kaisen/dashboard" onClick={() => setMobileOpen(false)} className="block">
+                    <Button variant="outline" className="w-full h-12 rounded-full">Mitt Kaisen</Button>
                   </Link>
-                  <Button variant="ghost" className="w-full rounded-none" onClick={signOut}>
+                  {isAdmin && (
+                    <Link to="/admin/dashboard" onClick={() => setMobileOpen(false)} className="block">
+                      <Button variant="outline" className="w-full h-12 rounded-full">Admin-panel</Button>
+                    </Link>
+                  )}
+                  <Button variant="ghost" className="w-full h-12 rounded-full" onClick={signOut}>
                     <LogOut className="h-4 w-4 mr-2" /> Logga ut
                   </Button>
                 </>
               ) : (
-                <Button variant="outline" className="w-full rounded-none border-primary text-primary" onClick={() => { setAuthDialogOpen(true); setMobileOpen(false); }}>
+                <Button variant="outline" className="w-full h-12 rounded-full border-primary text-primary text-base" onClick={() => { setAuthDialogOpen(true); setMobileOpen(false); }}>
                   Logga in
                 </Button>
               )}
-              <Link to="/contact" onClick={() => setMobileOpen(false)}>
-                <Button className="w-full rounded-none bg-primary">Planera din resa</Button>
-              </Link>
             </div>
           </div>
         )}

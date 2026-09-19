@@ -81,7 +81,7 @@ export default function VIPService() {
  <div className="absolute inset-0 bg-navy/65" />
  </div>
  <div className="relative container mx-auto px-4 pb-16">
- <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
+ <p className="text-[11px] sm:text-xs eyebrow text-white/75 uppercase mb-3 font-sans">
  Tjänster - VIP Service
  </p>
  <h1 className="font-display text-4xl md:text-6xl text-white">
@@ -143,7 +143,7 @@ export default function VIPService() {
  <section className="py-12 md:py-16 bg-cream">
  <div className="container mx-auto px-4">
  <div className="text-center mb-14">
- <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Vad Ingår</p>
+ <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">Vad Ingår</p>
  <h2 className="font-display text-3xl md:text-4xl text-foreground">
  Komplett White Glove Service
  </h2>
@@ -211,7 +211,7 @@ export default function VIPService() {
  <img src={vipTransfer} alt="VIP transfer service" className="w-full h-full object-cover object-center" />
  <div className="absolute inset-0 bg-navy/60 flex items-center justify-center">
  <div className="text-center">
- <p className="text-primary text-xs tracking-[0.3em] uppercase font-sans mb-3">Varje detalj räknas</p>
+ <p className="text-primary text-[11px] sm:text-xs eyebrow uppercase font-sans mb-3">Varje detalj räknas</p>
  <p className="font-display text-2xl md:text-3xl text-white italic font-light">
  Från avresa till ankomst - sömlöst.
  </p>
@@ -220,7 +220,7 @@ export default function VIPService() {
  </section>
 
  {/* Inquiry form */}
- <section id="forfragan" className="bg-cream py-16 md:py-24">
+ <section id="forfragan" className="bg-cream py-12 sm:py-16 md:py-24">
  <div className="container mx-auto px-4 max-w-3xl">
  <InquiryForm
  type="vip"

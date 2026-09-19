@@ -111,9 +111,9 @@ export default function SportPage() {
 
       {isRace ? (
         /* Races */
-        <section className="py-14 md:py-20 bg-cream">
+        <section className="py-10 sm:py-14 md:py-20 bg-cream">
           <div className="container mx-auto px-4">
-            <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans text-center">
+            <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans text-center">
               Kalendern
             </p>
             <h2 className="font-display text-3xl md:text-4xl text-center mb-12">Vilket race vill du uppleva?</h2>
@@ -172,9 +172,9 @@ export default function SportPage() {
         </section>
       ) : (
         /* Leagues + teams */
-        <section className="py-14 md:py-20 bg-cream">
+        <section className="py-10 sm:py-14 md:py-20 bg-cream">
           <div className="container mx-auto px-4">
-            <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans text-center">
+            <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans text-center">
               Ligor & klubbar
             </p>
             <h2 className="font-display text-3xl md:text-4xl text-center mb-12">Välj liga och lag</h2>
@@ -215,7 +215,7 @@ export default function SportPage() {
       {/* CTA */}
       <section className="bg-navy py-16">
         <div className="container mx-auto px-4 text-center">
-          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">
+          <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">
             Boka din {sport.label.toLowerCase()}resa
           </p>
           <h2 className="font-display text-3xl md:text-4xl text-white mb-6">

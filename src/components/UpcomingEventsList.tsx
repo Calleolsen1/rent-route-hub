@@ -178,7 +178,7 @@ export default function UpcomingEventsList({
   return (
     <div>
       {eyebrow && (
-        <p className={`text-xs tracking-[0.3em] text-primary uppercase font-sans text-center ${compact ? "mb-2" : "mb-3"}`}>
+        <p className={`text-[11px] sm:text-xs eyebrow text-primary uppercase font-sans text-center ${compact ? "mb-2" : "mb-3"}`}>
           {eyebrow}
         </p>
       )}

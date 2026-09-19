@@ -59,7 +59,7 @@ export default function Affarsresor() {
  <div className="absolute inset-0 bg-navy/75" />
  </div>
  <div className="relative container mx-auto px-4 pb-14">
- <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
+ <p className="text-[11px] sm:text-xs eyebrow text-white/75 uppercase mb-3 font-sans">
  Tjänster - Affärsresor
  </p>
  <h1 className="font-display text-4xl md:text-6xl text-white">
@@ -138,7 +138,7 @@ export default function Affarsresor() {
  <section className="py-12 md:py-16 bg-background">
  <div className="container mx-auto px-4">
  <div className="text-center mb-14">
- <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Populära destinationer</p>
+ <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">Populära destinationer</p>
  <h2 className="font-display text-3xl md:text-4xl text-foreground">
  Världens ledande affärsstäder
  </h2>
@@ -155,9 +155,9 @@ export default function Affarsresor() {
  </section>
 
  {/* CTA */}
- <section className="bg-navy py-20">
+ <section className="bg-navy py-12 sm:py-20">
  <div className="container mx-auto px-4 text-center">
- <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Kom igång</p>
+ <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Kom igång</p>
  <h2 className="font-display text-3xl md:text-5xl text-white mb-6">
  Låt oss ta hand om dina affärsresor
  </h2>

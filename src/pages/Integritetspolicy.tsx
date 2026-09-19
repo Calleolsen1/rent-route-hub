@@ -8,7 +8,7 @@ export default function Integritetspolicy() {
 
       <section className="bg-cream py-16">
         <div className="container mx-auto px-4 max-w-3xl">
-          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
+          <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">
             Juridiskt
           </p>
           <h1 className="font-display text-4xl md:text-5xl mb-2">Integritetspolicy</h1>

@@ -59,7 +59,7 @@ const Resor = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
 
-      <section className="bg-primary text-primary-foreground pt-32 pb-16 md:pt-40 md:pb-20">
+      <section className="bg-primary text-primary-foreground pt-14 pb-12 sm:pt-24 sm:pb-16 md:pt-40 md:pb-20">
         <div className="container mx-auto px-4 text-center">
           <p className="text-xs uppercase tracking-[0.25em] text-primary-foreground/70 mb-4">
             Utforska alla resor
@@ -72,7 +72,7 @@ const Resor = () => {
         </div>
       </section>
 
-      <section className="py-14 md:py-20">
+      <section className="py-10 sm:py-14 md:py-20">
         <div className="container mx-auto px-4">
           <div className="grid gap-6 sm:grid-cols-2">
             {choices.map((c) => (
