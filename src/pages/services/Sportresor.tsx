@@ -30,7 +30,7 @@ const sports = [
  title: "Fotboll",
  image: fotbollImage,
  description:
- "Från Premier League-derbyn till Champions League - vi fixar biljetter och resor till de matcher du drömt om att se live. Enkelt, smidigt och med bra service.",
+ "Från Premier League-derbyn till Champions League - vi paketerar resor till de matcher du drömt om att se live. Enkelt, smidigt och med bra service.",
  features: [
  "Premier League, La Liga & Bundesliga",
  "Champions League & Europa League",
@@ -56,7 +56,7 @@ const sports = [
  title: "Tennis",
  image: tennisImage,
  description:
- "Upplev Wimbledon på centerbanan, Roland Garros i solskenet eller US Open under New Yorks stjärnhimmel. Vi ordnar biljetter och en komplett resa.",
+ "Upplev Wimbledon på centerbanan, Roland Garros i solskenet eller US Open under New Yorks stjärnhimmel. Vi ordnar en komplett resa med platser på läktaren.",
  features: [
  "Wimbledon, Roland Garros & US Open",
  "Australian Open-paket",
