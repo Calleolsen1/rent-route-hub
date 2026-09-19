@@ -101,18 +101,18 @@ export default function SportEntryPage() {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative h-[22vh] min-h-[170px] flex items-end">
+      <section className="relative h-[18vh] min-h-[140px] md:h-[22vh] md:min-h-[170px] flex items-end">
         <div className="absolute inset-0">
           <img src={heroSrc} alt={info.name} className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-navy/75" />
         </div>
-        <div className="relative container mx-auto px-4 pb-5">
-          <p className="text-[10px] tracking-[0.28em] text-primary uppercase mb-1.5 font-sans">
+        <div className="relative container mx-auto px-4 pb-3 md:pb-5">
+          <p className="text-[10px] tracking-[0.28em] text-primary uppercase mb-1 md:mb-1.5 font-sans">
             {labels.eyebrow(sport.label, info.group_label)}
           </p>
-          <h1 className="font-display text-3xl md:text-4xl text-white mb-1">{info.name}</h1>
+          <h1 className="font-display text-2xl md:text-4xl text-white mb-1">{info.name}</h1>
           {info.tagline && (
-            <p className="font-display italic font-light text-white text-base md:text-lg">{info.tagline}</p>
+            <p className="font-display italic font-light text-white text-sm sm:text-base md:text-lg">{info.tagline}</p>
           )}
         </div>
       </section>

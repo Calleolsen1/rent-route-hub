@@ -50,16 +50,16 @@ export default function LeaguePage() {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative h-[26vh] min-h-[200px] flex items-end">
+      <section className="relative h-[20vh] min-h-[160px] md:h-[26vh] md:min-h-[200px] flex items-end">
         <div className="absolute inset-0">
           <img src={fotbollImage} alt={leagueName} className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-navy/75" />
         </div>
-        <div className="relative container mx-auto px-4 pb-6">
-          <p className="text-[10px] tracking-[0.28em] text-primary uppercase mb-1.5 font-sans">
+        <div className="relative container mx-auto px-4 pb-4 md:pb-6">
+          <p className="text-[10px] tracking-[0.28em] text-primary uppercase mb-1 md:mb-1.5 font-sans">
             {sport.label}sresor - Liga
           </p>
-          <h1 className="font-display text-3xl md:text-5xl text-white mb-1">{leagueName}</h1>
+          <h1 className="font-display text-2xl md:text-5xl text-white mb-1">{leagueName}</h1>
           <p className="text-white/80 text-sm max-w-xl">
             Välj ett lag så tar vi fram en komplett resa med biljetter, hotell, flyg och transfer.
           </p>
