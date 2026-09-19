@@ -6,6 +6,7 @@ import { useTeamPhotos } from "@/hooks/useTeamPhotos";
 import EventImage from "@/components/EventImage";
 import { ArrowRight, Calendar, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useInquiryDialog } from "@/components/InquiryDialog";
 import { formatEventDate } from "@/lib/formatSek";
 import { PriceTag } from "@/components/PriceTag";
 
