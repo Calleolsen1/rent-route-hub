@@ -402,6 +402,30 @@ const Home = () => {
     })();
   }, []);
 
+  // Admin-curated experience cards ("Upplevelser som formar minnen").
+  useEffect(() => {
+    (async () => {
+      const { data } = await (supabase as any)
+        .from("home_experiences")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+      const rows = (data ?? []) as Array<any>;
+      if (!rows.length) return;
+      setExperienceRows(
+        rows.map((r, i) => ({
+          title: r.title,
+          subtitle: r.subtitle ?? "",
+          description: r.description ?? "",
+          image: resolveImageUrl(r.image_url ?? "", ASSET_LOOKUP, services[i % services.length].image),
+          href: r.href ?? "/contact",
+          tag: r.tag ?? "",
+          ctaLabel: r.cta_label ?? "Läs mer",
+        })),
+      );
+    })();
+  }, []);
+
   const offerTabs = [
     { id: "alla" as const, label: "Aktuella resor" },
     { id: "nya" as const, label: "Nya resor" },
