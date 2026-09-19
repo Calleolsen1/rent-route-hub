@@ -2,7 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Loader2, Upload, Trash2, Check } from "lucide-react";
+import { Loader2, Upload, Trash2, Check, Pencil } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 
 /**
@@ -24,7 +32,12 @@ type CoverageRow = {
   sample_venue: string | null;
   image_url: string | null;
   seatmap_url: string | null;
+  seatmap_note: string | null;
 };
+
+/** Shown under the seating chart when no custom note is saved. */
+const DEFAULT_NOTE =
+  "Berätta i förfrågan vilken del av arenan ni helst vill sitta i, så ordnar vi platser därefter.";
 
 /** Which image slot an upload targets. */
 type Slot = "image_url" | "seatmap_url";
@@ -35,12 +48,15 @@ export default function AdminStadiumPhotos() {
   const [busy, setBusy] = useState<string | null>(null);
   const [filter, setFilter] = useState("");
   const inputs = useRef<Record<string, HTMLInputElement | null>>({});
+  const [noteRow, setNoteRow] = useState<CoverageRow | null>(null);
+  const [noteText, setNoteText] = useState("");
+  const [savingNote, setSavingNote] = useState(false);
 
   const load = async () => {
     setLoading(true);
     const { data } = await (supabase as any)
       .from("home_team_photo_coverage")
-      .select("sport, match_key, event_count, sample_venue, image_url, seatmap_url")
+      .select("sport, match_key, event_count, sample_venue, image_url, seatmap_url, seatmap_note")
       .order("event_count", { ascending: false });
     setRows((data as CoverageRow[]) ?? []);
     setLoading(false);
@@ -87,6 +103,34 @@ export default function AdminStadiumPhotos() {
       toast.error((e as Error).message ?? "Uppladdningen misslyckades");
     } finally {
       setBusy(null);
+    }
+  };
+
+  const saveNote = async () => {
+    if (!noteRow) return;
+    setSavingNote(true);
+    try {
+      const { error } = await (supabase as any)
+        .from("team_venue_photos")
+        .upsert(
+          {
+            sport: noteRow.sport,
+            match_key: noteRow.match_key,
+            image_url: noteRow.image_url,
+            seatmap_url: noteRow.seatmap_url,
+            seatmap_note: noteText.trim() || null,
+            venue_label: noteRow.sample_venue,
+          },
+          { onConflict: "sport,match_key" },
+        );
+      if (error) throw error;
+      toast.success(`${noteRow.match_key}: texten sparad`);
+      setNoteRow(null);
+      await load();
+    } catch (e) {
+      toast.error((e as Error).message ?? "Kunde inte spara texten");
+    } finally {
+      setSavingNote(false);
     }
   };
 
@@ -213,6 +257,18 @@ export default function AdminStadiumPhotos() {
                   </div>
                 );
               })}
+              <Button
+                size="sm"
+                variant="outline"
+                className="flex-shrink-0"
+                onClick={() => {
+                  setNoteRow(r);
+                  setNoteText(r.seatmap_note ?? "");
+                }}
+              >
+                <Pencil className="h-3 w-3 mr-1.5" />
+                Ändra text
+              </Button>
               {r.image_url && (
                 <Button size="icon" variant="ghost" disabled={busy === key} onClick={() => remove(r)}>
                   <Trash2 className="h-3.5 w-3.5" />
@@ -225,6 +281,32 @@ export default function AdminStadiumPhotos() {
           <p className="text-sm text-muted-foreground py-8 text-center">Inga lag matchade sökningen.</p>
         )}
       </div>
+
+      <Dialog open={!!noteRow} onOpenChange={(o) => !o && setNoteRow(null)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Text under läktarkartan - {noteRow?.match_key}</DialogTitle>
+          </DialogHeader>
+          <Textarea
+            rows={4}
+            value={noteText}
+            placeholder={DEFAULT_NOTE}
+            onChange={(e) => setNoteText(e.target.value)}
+          />
+          <p className="text-xs text-muted-foreground">
+            Lämnas fältet tomt visas standardtexten: "{DEFAULT_NOTE}"
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setNoteRow(null)}>
+              Avbryt
+            </Button>
+            <Button onClick={saveNote} disabled={savingNote}>
+              {savingNote && <Loader2 className="h-3.5 w-3.5 mr-2 animate-spin" />}
+              Spara
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
