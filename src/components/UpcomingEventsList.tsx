@@ -307,7 +307,7 @@ export default function UpcomingEventsList({
                     <span className="text-sm text-muted-foreground">Pris på förfrågan</span>
                   )}
                   <Button size="sm" className="rounded-full text-xs bg-primary hover:bg-primary/90 shrink-0">
-                    {showPrices ? "Köp" : "Se biljetter"} <ArrowRight className="ml-1 h-3 w-3" />
+                    {showPrices ? "Köp" : "Se erbjudanden"} <ArrowRight className="ml-1 h-3 w-3" />
                   </Button>
                 </div>
               </div>
