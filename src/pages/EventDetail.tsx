@@ -238,83 +238,103 @@ export default function EventDetail() {
 
           {/* Right - sticky summary */}
           <aside className="lg:sticky lg:top-24 self-start">
-            <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-              <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
-                Din förfrågan
-              </p>
-              <p className="font-display text-2xl mb-1">{headline}</p>
-              <p className="text-xs text-muted-foreground mb-5">
-                {formatEventDateTime(event.starts_at)}
-              </p>
-
-              <div className="flex items-start gap-2 text-sm text-muted-foreground mb-5">
-                <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
-                <span>
-                  {event.venue_name}
-                  {event.city ? `, ${event.city}` : ""}
-                </span>
+            <div className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+              {/* Header */}
+              <div className="p-6 pb-4">
+                <div className="flex items-center justify-between gap-2 mb-4">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-foreground/70 font-sans">
+                    Din förfrågan
+                  </p>
+                  <span className="shrink-0 bg-muted text-muted-foreground text-[10px] font-semibold uppercase tracking-wide px-2 py-1 rounded">
+                    Offertbaserad
+                  </span>
+                </div>
+                <p className="font-display text-2xl leading-tight mb-1">{headline}</p>
+                <p className="text-sm text-muted-foreground font-medium mb-3">
+                  {formatEventDateTime(event.starts_at)}
+                </p>
+                <div className="flex items-start gap-2 text-sm text-muted-foreground">
+                  <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
+                  <span>
+                    {event.venue_name}
+                    {event.city ? `, ${event.city}` : ""}
+                  </span>
+                </div>
               </div>
 
               {/* Package tiers - shown without prices since every trip is
                   quoted individually. The selected tier drives the enquiry. */}
-              <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
-                Välj ditt paket
-              </p>
-              <div className="space-y-2 mb-5">
-                {[
-                  { id: "biljetter", icons: [Ticket], label: "Endast biljetter", parts: ["biljett"] },
-                  { id: "hotell", icons: [Ticket, Hotel], label: "Biljetter + hotell", parts: ["biljett", "hotell"] },
-                  {
-                    id: "komplett",
-                    icons: [Ticket, Plane, Hotel],
-                    label: "Biljetter + flyg + hotell",
-                    parts: ["biljett", "hotell", "flyg"],
-                  },
-                ].map(({ id, icons, label, parts }) => {
-                  const selected = selectedPackage === id;
-                  return (
-                    <button
-                      key={id}
-                      type="button"
-                      onClick={() => {
-                        setSelectedPackage(id);
-                        setInquiryParts(parts);
-                      }}
-                      className={`w-full flex items-center justify-between gap-3 rounded-lg border px-4 py-3 text-left transition-colors ${
-                        selected
-                          ? "border-primary bg-primary text-primary-foreground"
-                          : "border-border bg-background hover:border-primary/40 hover:bg-primary/5"
-                      }`}
-                    >
-                      <span className="text-sm font-medium">{label}</span>
-                      <span
-                        className={`flex items-center gap-1.5 ${
-                          selected ? "text-primary-foreground" : "text-muted-foreground"
+              <div className="px-6 pb-6">
+                <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground mb-3 font-sans">
+                  Välj ditt paket
+                </p>
+                <div className="space-y-3">
+                  {[
+                    { id: "biljetter", icons: [Ticket], label: "Endast biljetter", parts: ["biljett"] },
+                    { id: "hotell", icons: [Ticket, Hotel], label: "Biljetter + hotell", parts: ["biljett", "hotell"] },
+                    {
+                      id: "komplett",
+                      icons: [Ticket, Plane, Hotel],
+                      label: "Biljetter + flyg + hotell",
+                      parts: ["biljett", "hotell", "flyg"],
+                    },
+                  ].map(({ id, icons, label, parts }) => {
+                    const selected = selectedPackage === id;
+                    return (
+                      <button
+                        key={id}
+                        type="button"
+                        onClick={() => {
+                          setSelectedPackage(id);
+                          setInquiryParts(parts);
+                        }}
+                        className={`w-full flex items-center justify-between gap-3 rounded-xl px-4 py-3.5 text-left transition-all ${
+                          selected
+                            ? "border-2 border-primary bg-primary/5"
+                            : "border border-border bg-background hover:border-primary/30 hover:bg-muted/50"
                         }`}
                       >
-                        {icons.map((Icon, i) => (
-                          <span key={i} className="flex items-center gap-1.5">
-                            {i > 0 && <Plus className="h-3 w-3 opacity-60" />}
-                            <Icon className="h-4 w-4" />
-                          </span>
-                        ))}
-                      </span>
-                    </button>
-                  );
-                })}
+                        <span className={`text-sm font-semibold ${selected ? "text-foreground" : "text-foreground/80"}`}>
+                          {label}
+                        </span>
+                        <span
+                          className={`flex items-center gap-1.5 ${
+                            selected ? "text-primary" : "text-muted-foreground"
+                          }`}
+                        >
+                          {icons.map((Icon, i) => (
+                            <span key={i} className="flex items-center gap-1.5">
+                              {i > 0 && <Plus className="h-3 w-3 opacity-60" />}
+                              <Icon className="h-4 w-4" />
+                            </span>
+                          ))}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
-              <Button
-                onClick={() => setInquiryOpen(true)}
-                className="w-full rounded-full bg-primary hover:bg-primary/90 tracking-wider text-sm"
-              >
-                Efterfråga paket
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-              <p className="text-[11px] text-muted-foreground text-center mt-3">
-                Pris på förfrågan - vi återkommer med biljetter, hotell och flyg
-                efter era önskemål. Vi återkommer inom 24h.
-              </p>
+              {/* Inquiry action */}
+              <div className="px-6 pb-6 pt-4 border-t border-border">
+                <p className="text-center text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-4 font-sans">
+                  Pris ges vid förfrågan
+                </p>
+                <Button
+                  onClick={() => setInquiryOpen(true)}
+                  className="w-full rounded-xl bg-primary hover:bg-primary/90 tracking-wider text-sm h-12"
+                >
+                  Efterfråga paket
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+                <p className="mt-5 text-xs text-muted-foreground leading-relaxed text-center italic">
+                  Pris på förfrågan - vi återkommer med biljetter, hotell och flyg
+                  efter era önskemål.{" "}
+                  <span className="not-italic font-semibold text-foreground">
+                    Vi återkommer inom 24h.
+                  </span>
+                </p>
+              </div>
             </div>
 
 
