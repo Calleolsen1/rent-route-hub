@@ -20,7 +20,7 @@
 // order. Until then this endpoint is a validator, and that is deliberate.
 // ─────────────────────────────────────────────────────────────────────────
 
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { createClient, type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import {
   OneClicketClient,
   OneClicketError,
@@ -87,7 +87,7 @@ interface Validation {
  */
 async function validateLines(
   oc: OneClicketClient,
-  admin: ReturnType<typeof createClient>,
+  admin: SupabaseClient<any, "public", any>,
   lines: RequestLine[],
 ): Promise<{ validations: Validation[]; allOk: boolean }> {
   const validations: Validation[] = [];

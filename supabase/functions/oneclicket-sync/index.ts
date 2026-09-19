@@ -88,7 +88,7 @@ function chunked<T>(rows: readonly T[], size = CHUNK): T[][] {
 /** Today in ISO — products before this are filtered out upstream anyway. */
 const today = (): string => new Date().toISOString().slice(0, 10);
 
-type Admin = ReturnType<typeof createClient>;
+type Admin = SupabaseClient<any, "public", any>;
 
 interface SyncCounts {
   fetched: number;

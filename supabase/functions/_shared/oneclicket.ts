@@ -554,7 +554,7 @@ export class OneClicketClient {
     if (!products.length) throw new OneClicketError("no order lines", 300);
     return await this.call<unknown>("insOrders", {
       insert: { order: { products } },
-    });
+    } as unknown as Record<string, QueryValue>);
   }
 
   /** Decrease a version's stock — must be a multiple of `buy_multipler`. */
