@@ -443,126 +443,37 @@ export default function EventDetail() {
                 {formatEventDateTime(event.starts_at)}
               </p>
 
-              {selected ? (
-                <>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-sm">{selected.name}</span>
-                    <span className="text-sm">
-                      {!showPrices ? (
-                        <span className="text-muted-foreground">Pris på förfrågan</span>
-                      ) : pricesLoading ? (
-                        "…"
-                      ) : (
-                        (() => {
-                          const compare = resolveCompareAt(selected.price, {
-                            categorySek: selected.cat?.compare_at_price_sek,
-                            categoryPct: selected.cat?.compare_at_pct,
-                            eventSek: event.compare_at_price_sek,
-                            eventPct: event.compare_at_pct,
-                            defaultPct: compareAtDefaultPct,
-                          });
-                          return compare ? (
-                            <>
-                              <span className="text-foreground/40 line-through mr-1.5">{formatSek(compare)}</span>
-                              <span className="font-medium">{formatSek(selected.price)}</span>
-                            </>
-                          ) : (
-                            <>{formatSek(selected.price)}</>
-                          );
-                        })()
-                      )}
-                    </span>
-                  </div>
+              <div className="flex items-start gap-2 text-sm text-muted-foreground mb-5">
+                <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
+                <span>
+                  {event.venue_name}
+                  {event.city ? `, ${event.city}` : ""}
+                </span>
+              </div>
 
-                  <div className="flex items-center justify-between mb-6">
-                    <span className="text-sm">Antal</span>
-                    <div className="flex items-center gap-3">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        className="h-8 w-8 rounded-full"
-                        disabled={qtyAtMin}
-                        onClick={() => stepQty(-1)}
-                      >
-                        <Minus className="h-3 w-3" />
-                      </Button>
-                      <span className="w-6 text-center">{qty}</span>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        className="h-8 w-8 rounded-full"
-                        disabled={qtyAtMax}
-                        onClick={() => stepQty(1)}
-                      >
-                        <Plus className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  </div>
-
-                  {showPrices && (
-                  <div className="flex items-center justify-between border-t border-border pt-4 mb-6">
-                    <span className="font-medium">Totalt</span>
-                    {(() => {
-                      const compare = resolveCompareAt(total, {
-                        categorySek: selected.cat?.compare_at_price_sek != null
-                          ? Number(selected.cat.compare_at_price_sek) * qty
-                          : null,
-                        categoryPct: selected.cat?.compare_at_pct,
-                        eventSek: event.compare_at_price_sek != null
-                          ? Number(event.compare_at_price_sek) * qty
-                          : null,
-                        eventPct: event.compare_at_pct,
-                        defaultPct: compareAtDefaultPct,
-                      });
-                      return compare ? (
-                        <div className="flex items-baseline gap-2">
-                          <span className="text-base text-foreground/40 line-through">{formatSek(compare)}</span>
-                          <span className="font-display text-2xl">{formatSek(total)}</span>
-                        </div>
-                      ) : (
-                        <span className="font-display text-2xl">{formatSek(total)}</span>
-                      );
-                    })()}
-                  </div>
-                  )}
-
-                  {showPrices ? (
-                    <>
-                      <Button
-                        onClick={handleCheckout}
-                        disabled={busy}
-                        className="w-full rounded-full bg-primary hover:bg-primary/90 tracking-wider text-sm"
-                      >
-                        {busy ? "Skapar..." : "Till kassan"}
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
-                      <p className="text-[11px] text-muted-foreground text-center mt-3">
-                        Säker betalning via Stripe. Kaisen är säljare och fakturautställare.
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <Button
-                        onClick={() => {
-                          setInquiryParts(["biljett"]);
-                          setInquiryOpen(true);
-                        }}
-                        className="w-full rounded-full bg-primary hover:bg-primary/90 tracking-wider text-sm"
-                      >
-                        Begär pris
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
-                      <p className="text-[11px] text-muted-foreground text-center mt-3">
-                        Vi återkommer med pris och tillgänglighet. Vill du även ha hotell och flyg paketerar vi hela resan.
-                      </p>
-                    </>
-                  )}
-                </>
-              ) : (
-                <p className="text-sm text-muted-foreground">Inga biljetter tillgängliga.</p>
-              )}
+              <Button
+                onClick={() => {
+                  setInquiryParts(["biljett"]);
+                  setInquiryOpen(true);
+                }}
+                className="w-full rounded-full bg-primary hover:bg-primary/90 tracking-wider text-sm"
+              >
+                Efterfråga biljetter
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setInquiryParts(["biljett", "hotell", "flyg"]);
+                  setInquiryOpen(true);
+                }}
+                className="w-full rounded-full mt-3 tracking-wider text-sm"
+              >
+                Efterfråga komplett paket
+              </Button>
+              <p className="text-[11px] text-muted-foreground text-center mt-3">
+                Pris på förfrågan - vi återkommer med biljetter, hotell och flyg efter era önskemål.
+              </p>
             </div>
 
             {/* Package tiers - inspired by classic travel-package cards,
