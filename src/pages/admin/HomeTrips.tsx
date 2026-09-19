@@ -66,8 +66,17 @@ export default function AdminHomeTrips() {
       return;
     }
     setTrips((prev) => [...prev, data as Trip]);
+    setHighlightId((data as Trip).id);
     toast.success("Resa skapad - aktivera när den är klar");
   };
+
+  useEffect(() => {
+    if (!highlightId) return;
+    const el = document.getElementById(`home-trip-${highlightId}`);
+    el?.scrollIntoView({ behavior: "smooth", block: "center" });
+    const t = setTimeout(() => setHighlightId(null), 2500);
+    return () => clearTimeout(t);
+  }, [highlightId]);
 
   const removeTrip = async (id: string) => {
     if (!confirm("Ta bort resan från startsidan?")) return;
