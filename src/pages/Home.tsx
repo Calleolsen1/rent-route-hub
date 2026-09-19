@@ -599,13 +599,13 @@ const Home = () => {
               {filteredOffers.map((offer) => (
                 <CarouselItem
                   key={offer.title}
-                  className="pl-5 basis-[80%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
+                  className="pl-4 basis-[62%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
                 >
                   <Link
                     to={offer.href}
                     className="group block h-full bg-card rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.10)] transition-shadow"
                   >
-                    <div className="relative aspect-[4/3] overflow-hidden">
+                    <div className="relative aspect-[16/10] sm:aspect-[4/3] overflow-hidden">
                       <img
                         src={offer.image}
                         alt={offer.title}
@@ -614,22 +614,22 @@ const Home = () => {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
                       {offer.isNew && (
-                        <span className="absolute top-3 right-3 bg-white text-foreground text-[11px] font-semibold px-2.5 py-1 rounded">
+                        <span className="absolute top-2 right-2 sm:top-3 sm:right-3 bg-white text-foreground text-[10px] sm:text-[11px] font-semibold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded">
                           Ny
                         </span>
                       )}
-                      <h3 className="absolute inset-x-0 bottom-0 p-4 font-sans font-bold text-white text-lg md:text-xl leading-tight">
+                      <h3 className="absolute inset-x-0 bottom-0 p-3 sm:p-4 font-sans font-bold text-white text-base sm:text-lg md:text-xl leading-tight">
                         {offer.title}
                       </h3>
                     </div>
-                    <div className="p-5">
+                    <div className="p-3 sm:p-5">
                       {offer.days && (
                         <p className="text-xs text-foreground/60 mb-1">{offer.days}</p>
                       )}
-                      <p className="font-sans font-semibold text-foreground text-base mb-5 leading-snug">
+                      <p className="font-sans font-semibold text-foreground text-sm sm:text-base mb-3 sm:mb-5 leading-snug">
                         {offer.tag} · {offer.date}
                       </p>
-                      <div className="border-t border-border/60 pt-4">
+                      <div className="border-t border-border/60 pt-3 sm:pt-4">
                         {showPrices ? (
                           <PriceTag
                             currentSek={offer.currentPriceSek}
@@ -642,7 +642,7 @@ const Home = () => {
                         ) : (
                           <span className="text-sm text-muted-foreground">Pris på förfrågan</span>
                         )}
-                        <Button asChild className="mt-5 h-12 w-full rounded-full text-base font-semibold">
+                        <Button asChild className="mt-3 sm:mt-5 h-10 sm:h-12 w-full rounded-full text-sm sm:text-base font-semibold">
                           <span>
                             Se erbjudanden
                             <ArrowRight className="ml-auto" />
