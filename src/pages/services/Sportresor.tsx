@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Check } from "lucide-react";
@@ -10,8 +9,6 @@ import fotbollImage from "@/assets/sport-fotboll.jpg";
 import ishockeyImage from "@/assets/sport-ishockey.jpg";
 import tennisImage from "@/assets/sport-tennis.jpg";
 import golfImage from "@/assets/sport-golf.jpg";
-import UpcomingEventsList from "@/components/UpcomingEventsList";
-import { SportFilters, emptyFilters, type SportFilterValues } from "@/components/SportFilters";
 import { usePageMeta } from "@/lib/usePageMeta";
 
 const sports = [
@@ -33,7 +30,7 @@ const sports = [
  title: "Fotboll",
  image: fotbollImage,
  description:
- "Från Premier League-derbyn till Champions League - vi fixar biljetter och resor till de matcher du drömt om att se live. Enkelt, smidigt och med bra service.",
+ "Från Premier League-derbyn till Champions League - vi paketerar resor till de matcher du drömt om att se live. Enkelt, smidigt och med bra service.",
  features: [
  "Premier League, La Liga & Bundesliga",
  "Champions League & Europa League",
@@ -59,7 +56,7 @@ const sports = [
  title: "Tennis",
  image: tennisImage,
  description:
- "Upplev Wimbledon på centerbanan, Roland Garros i solskenet eller US Open under New Yorks stjärnhimmel. Vi ordnar biljetter och en komplett resa.",
+ "Upplev Wimbledon på centerbanan, Roland Garros i solskenet eller US Open under New Yorks stjärnhimmel. Vi ordnar en komplett resa med platser på läktaren.",
  features: [
  "Wimbledon, Roland Garros & US Open",
  "Australian Open-paket",
@@ -85,9 +82,8 @@ const sports = [
 export default function Sportresor() {
  usePageMeta({
    title: "Sportresor - F1, Fotboll & Golf | Kaisen Travel Group",
-   description: "Köp biljetter och resepaket till F1-race, Premier League, Champions League, golfturneringar och fler sportevent. Personlig service från Kaisen Travel Group.",
+   description: "Skräddarsydda sportresor med hotell, transfer och upplevelser till F1-race, Premier League, Champions League, golfturneringar och fler sportevent. Personlig service från Kaisen Travel Group.",
  });
- const [filters, setFilters] = useState<SportFilterValues>(emptyFilters);
  return (
  <div className="min-h-screen">
  <Navbar />
@@ -107,32 +103,11 @@ export default function Sportresor() {
  Resor för <em className="italic font-light text-white">Sportälskare</em>
  </h1>
  <p className="text-white/80 text-sm max-w-xl">
- Köp biljetter till F1, Premier League, Champions League och fler.
+ Vi skräddarsyr din resa till F1, fotboll, ishockey, tennis och golf - med hotell, transfer och allt det praktiska ordnat.
  </p>
- </div>
-
- <div className="mt-6 max-w-5xl w-full mx-auto">
- <SportFilters value={filters} onChange={setFilters} />
  </div>
  </div>
  </section>
-
-  {/* Live tickets results - visible immediately on entry */}
-  <section className="py-8 md:py-10 bg-background">
-  <div className="container mx-auto px-4 max-w-6xl">
-  <UpcomingEventsList
-    sport={filters.sport}
-    tournament={filters.tournament}
-    query={filters.query}
-    dateFrom={filters.dateFrom}
-    dateTo={filters.dateTo}
-    sort={filters.sort}
-    limit={24}
-    eyebrow="Köp biljett direkt"
-    title="Aktuella biljetter"
-  />
-  </div>
-  </section>
 
   {/* Sport Sections */}
   <section className="py-12 md:py-16 bg-cream">
