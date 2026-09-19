@@ -130,11 +130,13 @@ export default function SportEntryPage() {
             eyebrow="Köp biljett direkt"
             title={labels.upcomingTitle(info.name)}
             compact
+            onEmptyChange={setEventsEmpty}
           />
-          <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3 text-center">
-            <p className="text-sm text-muted-foreground">
-              Hittar du inte matchen du letar efter? Vi kan säkert fixa det ändå.
-            </p>
+          {!eventsEmpty && (
+            <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3 text-center">
+              <p className="text-sm text-muted-foreground">
+                Hittar du inte matchen du letar efter? Vi kan säkert fixa det ändå.
+              </p>
             <Button
               className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
               onClick={() =>
