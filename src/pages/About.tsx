@@ -37,6 +37,7 @@ const expertise = [
 import { usePageMeta } from "@/lib/usePageMeta";
 
 export default function About() {
+  const { open: openInquiry } = useInquiryDialog();
   usePageMeta({
     title: "Om oss - Kaisen Travel Group",
     description: "Kaisen Travel Group arrangerar skräddarsydda lyx- och sportresor. Personlig service från en dedikerad rådgivare - inga mallar, inga callcenter.",
