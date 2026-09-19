@@ -1,0 +1,136 @@
+import { Link, useParams } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, MapPin, Trophy } from "lucide-react";
+import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar";
+import fotbollImage from "@/assets/sport-fotboll.jpg";
+import { useSport, useEntriesForSport } from "@/hooks/useNavigation";
+import { slugify } from "@/data/sports";
+import { usePageMeta } from "@/lib/usePageMeta";
+
+export default function LeaguePage() {
+  const { sport: sportSlug, league: leagueSlug } = useParams<{ sport: string; league: string }>();
+  const sport = useSport(sportSlug);
+  const entries = useEntriesForSport(sportSlug);
+
+  const teams = entries.filter((e) => e.group_label && slugify(e.group_label) === leagueSlug);
+  const leagueName = teams[0]?.group_label ?? "";
+
+  usePageMeta({
+    title: leagueName
+      ? `${leagueName}-resor - biljetter, hotell och transfer | Kaisen Travel Group`
+      : "Ligaresor | Kaisen Travel Group",
+    description: leagueName
+      ? `Res till ${leagueName} med Kaisen Travel Group. Välj lag och få ett komplett resupplägg med hotell, flyg och transfer.`
+      : "Res till Europas största ligor med Kaisen Travel Group.",
+  });
+
+  if (!sport || !teams.length) {
+    return (
+      <div className="min-h-screen">
+        <Navbar />
+        <div className="container mx-auto px-4 py-32 text-center">
+          <h1 className="font-display text-4xl mb-4">Sidan hittades inte</h1>
+          <Link to="/services/sportresor">
+            <Button className="rounded-full">Tillbaka till Sportresor</Button>
+          </Link>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen">
+      <Navbar />
+
+      {/* Hero */}
+      <section className="relative h-[26vh] min-h-[200px] flex items-end">
+        <div className="absolute inset-0">
+          <img src={fotbollImage} alt={leagueName} className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-navy/75" />
+        </div>
+        <div className="relative container mx-auto px-4 pb-6">
+          <p className="text-[10px] tracking-[0.28em] text-primary uppercase mb-1.5 font-sans">
+            {sport.label}sresor - Liga
+          </p>
+          <h1 className="font-display text-3xl md:text-5xl text-white mb-1">{leagueName}</h1>
+          <p className="text-white/80 text-sm max-w-xl">
+            Välj ett lag så tar vi fram en komplett resa med biljetter, hotell, flyg och transfer.
+          </p>
+        </div>
+      </section>
+
+      {/* Teams */}
+      <section className="py-14 md:py-20 bg-cream">
+        <div className="container mx-auto px-4">
+          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans text-center">
+            Klubbar i {leagueName}
+          </p>
+          <h2 className="font-display text-3xl md:text-4xl text-center mb-12">Vilket lag vill du se live?</h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {teams.map((team) => (
+              <Link
+                key={team.id}
+                to={`/services/sportresor/${sport.slug}/${team.slug}`}
+                className="group bg-card border border-border overflow-hidden hover:shadow-xl transition-shadow"
+              >
+                <div className="aspect-[4/3] overflow-hidden">
+                  <img
+                    src={team.hero_image_url ?? fotbollImage}
+                    alt={team.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                </div>
+                <div className="p-5">
+                  <h3 className="font-display text-xl text-foreground mb-1">{team.name}</h3>
+                  {team.tagline && (
+                    <p className="text-sm text-muted-foreground italic mb-3">{team.tagline}</p>
+                  )}
+                  <div className="space-y-1.5 text-xs text-muted-foreground">
+                    {team.city && (
+                      <p className="flex items-center gap-2">
+                        <MapPin className="h-3.5 w-3.5 text-primary" />
+                        {team.city}
+                      </p>
+                    )}
+                    {team.venue && (
+                      <p className="flex items-center gap-2">
+                        <Trophy className="h-3.5 w-3.5 text-primary" />
+                        {team.venue}
+                      </p>
+                    )}
+                  </div>
+                  <span className="mt-4 inline-flex items-center text-sm text-primary font-medium">
+                    Se resor
+                    <ArrowRight className="ml-1.5 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="bg-navy py-16">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Boka din {leagueName}-resa</p>
+          <h2 className="font-display text-3xl md:text-4xl text-white mb-6">
+            Hittar du inte ditt lag?
+          </h2>
+          <p className="text-white/70 max-w-lg mx-auto mb-8 leading-relaxed">
+            Berätta vilken match du vill se - vi ordnar resan oavsett arena.
+          </p>
+          <Link to="/contact">
+            <Button size="lg" className="rounded-full bg-primary hover:bg-primary/90 px-10 tracking-wider text-sm">
+              Kontakta oss <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
+      </section>
+
+      <Footer />
+    </div>
+  );
+}

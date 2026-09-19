@@ -90,7 +90,7 @@ const Navbar = () => {
                         {groupedFor(sport.id).map(([groupLabel, items]) => (
                           <div key={groupLabel}>
                             <Link
-                              to={`/services/sportresor#${slug(groupLabel)}`}
+                              to={`/services/sportresor/${sport.slug}/liga/${slug(groupLabel)}`}
                               onClick={() => setOpenMenu(null)}
                               className="block text-[11px] tracking-[0.2em] uppercase text-primary font-semibold mb-3 hover:underline"
                             >
