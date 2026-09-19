@@ -126,7 +126,7 @@ export default function UpcomingEventsList({
         );
       }
       const { data } = await q;
-      setEvents((data as EventRow[]) ?? []);
+      setEvents(dedupeEvents((data as EventRow[]) ?? []));
       setLoading(false);
     })();
   }, [sport, team, race, tournament, query, dateFrom, dateTo, sort, effectiveLimit]);
