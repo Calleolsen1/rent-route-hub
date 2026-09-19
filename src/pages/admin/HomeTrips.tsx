@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { ArrowDown, ArrowUp, Plus, Trash2 } from "lucide-react";
 import { ImageUploader } from "@/components/admin/ImageUploader";
+import { LinkPicker } from "@/components/admin/LinkPicker";
 
 type Trip = {
   id: string;
