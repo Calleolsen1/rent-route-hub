@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Check } from "lucide-react";
@@ -10,8 +9,6 @@ import fotbollImage from "@/assets/sport-fotboll.jpg";
 import ishockeyImage from "@/assets/sport-ishockey.jpg";
 import tennisImage from "@/assets/sport-tennis.jpg";
 import golfImage from "@/assets/sport-golf.jpg";
-import UpcomingEventsList from "@/components/UpcomingEventsList";
-import { SportFilters, emptyFilters, type SportFilterValues } from "@/components/SportFilters";
 import { usePageMeta } from "@/lib/usePageMeta";
 
 const sports = [
