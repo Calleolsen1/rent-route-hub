@@ -203,7 +203,7 @@ export default function InquiryForm({
   // env var isn't set (component returns null).
   if (submitted) {
     return (
-      <div className="bg-white border border-border p-10 text-center">
+      <div className="bg-background border border-border/60 rounded-xl p-10 text-center">
         <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
           <Check className="h-6 w-6 text-primary" />
         </div>
@@ -320,7 +320,7 @@ export default function InquiryForm({
           <p className="text-[11px] text-muted-foreground mt-1 mb-2">
             Välj en, två eller alla tre - vi sätter ihop paketet och återkommer med pris.
           </p>
-          <div className={`grid grid-cols-3 gap-2`}>
+          <div className="grid grid-cols-3 gap-3">
             {TRIP_PARTS.map((part) => {
               const active = tripParts.includes(part.id);
               return (
@@ -329,10 +329,10 @@ export default function InquiryForm({
                   type="button"
                   aria-pressed={active}
                   onClick={() => toggleTripPart(part.id)}
-                  className={`relative flex items-center justify-center gap-2 rounded-lg border px-3 text-sm transition-all ${compact ? "py-2" : "py-3"} ${
+                  className={`relative flex items-center justify-center gap-2 rounded-full border px-3 text-sm transition-all ${compact ? "py-2.5" : "py-3"} ${
                     active
-                      ? "border-primary bg-primary text-primary-foreground font-semibold shadow-md"
-                      : "border-border bg-background text-muted-foreground hover:border-primary/60 hover:bg-primary/5"
+                      ? "border-primary bg-primary text-primary-foreground font-semibold shadow-lg shadow-primary/25"
+                      : "border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground"
                   }`}
                 >
                   {active && (
@@ -355,9 +355,9 @@ export default function InquiryForm({
           id="message"
           name="message"
           required
-          rows={compact ? 2 : 5}
+          rows={compact ? 3 : 5}
           maxLength={4000}
-          className={`${inputCls} resize-none ${compact ? "min-h-0" : ""}`}
+          className={`${inputCls} resize-none`}
           placeholder="Berätta gärna mer om er resa, era önskemål och vad ni vill uppleva."
         />
         {errors.message && <p className="text-xs text-destructive mt-1">{errors.message}</p>}
@@ -371,11 +371,11 @@ export default function InquiryForm({
         </div>
       )}
 
-      <div className={compact ? "flex flex-wrap items-center justify-between gap-3" : "space-y-3"}>
+      <div className={compact ? "flex flex-col md:flex-row md:items-center gap-4 border-t border-border/60 pt-5" : "space-y-3"}>
         <Button
           type="submit"
           disabled={submitting}
-          className="rounded-none px-8 tracking-wider text-xs bg-primary hover:bg-primary/90 h-11"
+          className="rounded-lg px-8 tracking-wide text-sm font-semibold bg-primary hover:bg-primary/90 h-12 shadow-md shadow-primary/20 active:scale-[0.98] transition-all w-full md:w-auto"
         >
           {submitting ? (
             <>
@@ -386,7 +386,7 @@ export default function InquiryForm({
           )}
         </Button>
 
-        <p className={`text-muted-foreground ${compact ? "text-[11px] max-w-sm leading-snug" : "text-xs"}`}>
+        <p className={`text-muted-foreground italic ${compact ? "text-[11px] leading-relaxed" : "text-xs"}`}>
           Genom att skicka formuläret godkänner du att vi kontaktar dig angående din förfrågan.
         </p>
       </div>
