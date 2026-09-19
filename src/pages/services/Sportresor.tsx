@@ -109,23 +109,6 @@ export default function Sportresor() {
  </div>
  </section>
 
-  {/* Live tickets results - visible immediately on entry */}
-  <section className="py-8 md:py-10 bg-background">
-  <div className="container mx-auto px-4 max-w-6xl">
-  <UpcomingEventsList
-    sport={filters.sport}
-    tournament={filters.tournament}
-    query={filters.query}
-    dateFrom={filters.dateFrom}
-    dateTo={filters.dateTo}
-    sort={filters.sort}
-    limit={24}
-    eyebrow="Köp biljett direkt"
-    title="Aktuella biljetter"
-  />
-  </div>
-  </section>
-
   {/* Sport Sections */}
   <section className="py-12 md:py-16 bg-cream">
   <div className="container mx-auto px-4 space-y-24">
