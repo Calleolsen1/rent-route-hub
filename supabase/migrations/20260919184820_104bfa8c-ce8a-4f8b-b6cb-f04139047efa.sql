@@ -1,0 +1,1 @@
+ALTER VIEW public.home_team_photo_coverage SET (security_invoker = true);
