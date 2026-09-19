@@ -2311,6 +2311,10 @@ export type Database = {
         Args: { p_order_id: string; p_session_id: string }
         Returns: Json
       }
+      get_platform_bool: {
+        Args: { p_default: boolean; p_key: string }
+        Returns: boolean
+      }
       get_platform_decimal: {
         Args: { p_default: number; p_key: string }
         Returns: number
