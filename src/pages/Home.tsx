@@ -21,9 +21,9 @@ import heroImage from "@/assets/kaisen-hero.jpg";
 import groupImage from "@/assets/kaisen-group.jpg";
 import sportsImage from "@/assets/kaisen-sports.jpg";
 import incomingImage from "@/assets/kaisen-incoming.jpg";
-import weekendImage from "@/assets/kaisen-weekend.jpg";
+import f1Image from "@/assets/sport-f1.jpg";
+import fotbollImage from "@/assets/sport-fotboll.jpg";
 import valenciaImage from "@/assets/camp-valencia-pitch.jpg.asset.json";
-import vipImage from "@/assets/kaisen-vip.jpg";
 import luxuryImage from "@/assets/kaisen-luxury.jpg";
 import offerF1Monza from "@/assets/offer-f1-monza.jpg";
 import offerLisbon from "@/assets/offer-lisbon.jpg";
@@ -164,22 +164,22 @@ function mapEventToOffer(ev: {
 
 const services = [
   {
-    title: "Sportresor",
-    subtitle: "F1 · Fotboll · Golf",
+    title: "Fotboll",
+    subtitle: "Premier League · Champions League",
     description:
-      "Upplev F1-race på Circuit de Monaco, Champions League-finaler eller exklusiva golfrundor på världens bästa banor.",
-    image: sportsImage,
-    href: "/services/sportresor",
-    tag: "Premiumupplevelser",
+      "Från Premier League-derbyn till Champions League - vi paketerar resan med platser på läktaren, hotell och transfer.",
+    image: fotbollImage,
+    href: "/services/sportresor#fotboll",
+    tag: "Matchupplevelser",
   },
   {
-    title: "Grupp & Konferens",
-    subtitle: "Resor som samlar människor",
+    title: "Formel 1",
+    subtitle: "Monaco · Silverstone · Spa",
     description:
-      "Från företagsevent och konferenser till kompisgäng och familjeresor. Vi sköter hela logistiken för grupper från 8 upp till 200+ personer.",
-    image: groupImage,
-    href: "/group-travel",
-    tag: "8-200+ personer",
+      "Känn adrenalinet när racerna dundrar förbi. Komplett F1-resa med bra platser, boende nära banan och all logistik ordnad.",
+    image: f1Image,
+    href: "/services/sportresor#f1",
+    tag: "Premiumupplevelser",
   },
   {
     title: "Träningsläger",
@@ -191,22 +191,13 @@ const services = [
     tag: "Lag & klubbar",
   },
   {
-    title: "Weekendresor",
-    subtitle: "Europa på nolltid",
+    title: "Grupp & Konferens",
+    subtitle: "Resor som samlar människor",
     description:
-      "En lång helg i Paris, Lissabon eller Prag? Vi paketerar weekendresor med hotell, aktiviteter och smidig logistik.",
-    image: weekendImage,
-    href: "/services/weekend-getaway",
-    tag: "Europa · Helgresor",
-  },
-  {
-    title: "VIP-service",
-    subtitle: "Din personliga reseassistent",
-    description:
-      "En dedikerad rådgivare som hanterar all din reseservice - privata resor, affärsresor och sista minuten-ändringar.",
-    image: vipImage,
-    href: "/services/vip-service",
-    tag: "Exklusivt · Personligt",
+      "Från företagsevent och konferenser till kompisgäng och familjeresor. Vi sköter hela logistiken för grupper från 8 upp till 200+ personer.",
+    image: groupImage,
+    href: "/group-travel",
+    tag: "8-200+ personer",
   },
 ];
 
