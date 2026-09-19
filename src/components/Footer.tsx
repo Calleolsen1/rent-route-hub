@@ -45,12 +45,12 @@ const Footer = () => {
 
   return (
     <footer className="bg-navy-deep text-white border-t border-white/15">
-      <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10 pt-10 md:pt-14 pb-8 md:pb-10">
+      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10 pt-10 md:pt-14 pb-8 md:pb-10">
         {/* Newsletter */}
-        <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-end pb-12 md:pb-16">
+        <div className="grid md:grid-cols-2 gap-6 md:gap-16 items-end pb-10 md:pb-16">
           <div>
             <p className="text-[11px] eyebrow text-white/60 uppercase mb-4 font-sans">Nyhetsbrev</p>
-            <h2 className="font-display text-3xl md:text-5xl text-white leading-[1.05]">
+            <h2 className="font-display text-2xl sm:text-3xl md:text-5xl text-white leading-[1.05]">
               Anmäl dig och håll dig <em className="italic font-light">uppdaterad</em>
             </h2>
           </div>
@@ -88,8 +88,8 @@ const Footer = () => {
         <div className="border-t border-white/15" />
 
         {/* Logo + link columns */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12 py-12 md:py-16">
-          <div className="md:col-span-4">
+        <div className="grid grid-cols-2 md:grid-cols-12 gap-8 md:gap-12 py-10 md:py-16">
+          <div className="col-span-2 md:col-span-4">
             <Link to="/" className="inline-block">
               <div className="font-display text-3xl text-white tracking-[0.25em]">KAISEN</div>
               <div className="text-[10px] tracking-[0.3em] text-white/60 font-sans uppercase mt-1.5">Travel Group</div>
