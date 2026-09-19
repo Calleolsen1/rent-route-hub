@@ -36,6 +36,9 @@ type Props = {
  */
 const NAVY: [string, string] = ["#1E3A5F", "#0F1F33"];
 
+/** F1 has no crest pair — a race is one event, not two sides. */
+const isRaceSport = (sport: string | null) => sport === "formula1";
+
 function coloursFor(_name: string | null): [string, string] {
   return NAVY;
 }
@@ -53,10 +56,22 @@ export default function EventImage({
   const photo = (key && photos[`${sport}|${key}`]) || coverUrl || null;
   // photos[] can legitimately miss a team that only has a seating chart.
 
+  // Crests come first, ahead of any uploaded stadium photo.
+  //
+  // A stadium photo is per home team, so every one of Atlético's 21 home
+  // fixtures rendered the identical image and the listing read as one photo
+  // repeated down the page. The crest pair changes with the opponent, so each
+  // card is distinguishable at a glance — which is the job of a listing.
+  // The stadium photo still carries F1 races and any club whose crest is
+  // missing.
+  const homeCrest = !isRaceSport(sport) && homeTeam ? crests?.[homeTeam] : undefined;
+  const awayCrest = !isRaceSport(sport) && awayTeam ? crests?.[awayTeam] : undefined;
+  const useCrests = Boolean(homeCrest && awayCrest);
+
   const [c1, c2] = useMemo(() => coloursFor(key), [key]);
   const ink = useMemo(() => inkFor(c1), [c1]);
 
-  if (photo) {
+  if (photo && !useCrests) {
     return (
       <img
         src={photo}
@@ -71,11 +86,9 @@ export default function EventImage({
   const title = isRace ? raceName : homeTeam;
   const subtitle = isRace ? venueName : awayTeam;
 
-  // Crest vs crest, when both badges are known. Needs both: one crest beside
-  // a blank would read as a loading failure rather than a design.
-  const homeCrest = homeTeam ? crests?.[homeTeam] : undefined;
-  const awayCrest = awayTeam ? crests?.[awayTeam] : undefined;
-  if (!isRace && homeCrest && awayCrest) {
+  // Needs both badges: one crest beside a blank would read as a loading
+  // failure rather than a design.
+  if (useCrests) {
     return (
       <div
         className={`w-full h-full relative overflow-hidden ${className}`}
