@@ -29,6 +29,7 @@ type Trip = {
 export default function AdminHomeTrips() {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState(true);
+  const [highlightId, setHighlightId] = useState<string | null>(null);
 
   const load = async () => {
     setLoading(true);
