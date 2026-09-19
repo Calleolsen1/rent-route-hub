@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, Calendar, MapPin, Trophy, Flag } from "lucide-react";
@@ -68,6 +69,9 @@ export default function SportEntryPage() {
   const info = useEntry(sportSlug, entrySlug);
   const { open: openInquiry } = useInquiryDialog();
   const venuePhotos = useVenuePhotos();
+  // Dölj sidans egen "Hittar du inte matchen"-rad när listan redan visar
+  // sitt "Inga evenemang matchade"-box, annars blir det dubbla boxar.
+  const [eventsEmpty, setEventsEmpty] = useState(false);
 
   if (!sport || !info) {
     return (
@@ -126,11 +130,13 @@ export default function SportEntryPage() {
             eyebrow="Köp biljett direkt"
             title={labels.upcomingTitle(info.name)}
             compact
+            onEmptyChange={setEventsEmpty}
           />
-          <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3 text-center">
-            <p className="text-sm text-muted-foreground">
-              Hittar du inte matchen du letar efter? Vi kan säkert fixa det ändå.
-            </p>
+          {!eventsEmpty && (
+            <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3 text-center">
+              <p className="text-sm text-muted-foreground">
+                Hittar du inte matchen du letar efter? Vi kan säkert fixa det ändå.
+              </p>
             <Button
               className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
               onClick={() =>
@@ -146,7 +152,8 @@ export default function SportEntryPage() {
             >
               Skicka förfrågan <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
-          </div>
+            </div>
+          )}
         </div>
       </section>
 

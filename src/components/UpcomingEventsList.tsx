@@ -85,6 +85,8 @@ type Props = {
    * hides most of what is on sale.
    */
   showFilters?: boolean;
+  /** Meddelar föräldern när listan visar sitt "inga evenemang"-läge (eller inte). */
+  onEmptyChange?: (isEmpty: boolean) => void;
 };
 
 /** Svenska månadsnamn för filterknapparna. */
@@ -109,6 +111,7 @@ export default function UpcomingEventsList({
   eyebrow = "Köp biljett",
   compact = false,
   showFilters = false,
+  onEmptyChange,
 }: Props) {
   // A filtered list needs the whole season in hand to build its month chips;
   // an unfiltered teaser keeps the old six-card default.
@@ -170,6 +173,11 @@ export default function UpcomingEventsList({
   const visible = month
     ? events.filter((e) => monthKey(e.starts_at) === month)
     : events;
+
+  const isEmptyState = !loading && !events.length;
+  useEffect(() => {
+    onEmptyChange?.(isEmptyState);
+  }, [isEmptyState, onEmptyChange]);
 
   if (loading) {
     return (
