@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Users, Trophy, Briefcase, Heart, Mountain, Utensils, Check, PartyPopper, Waves, Wine, Bus, MessageSquare } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import InquiryForm from "@/components/InquiryForm";
 import FloatingInquiryButton from "@/components/FloatingInquiryButton";
+import { useInquiryDialog } from "@/components/InquiryDialog";
 import groupImage from "@/assets/kaisen-group.jpg";
 import groupSports from "@/assets/group-sports.jpg";
 import groupCorporate from "@/assets/group-corporate.jpg";
@@ -78,6 +78,14 @@ export default function GroupTravel() {
     description: "Skräddarsydda gruppresor, företagsevent och incentiveresor. Vi sköter logistiken - från flyg och hotell till middag och aktiviteter.",
   });
   const { get, getArray } = useSiteContent(GROUP_KEYS);
+  const { open: openInquiry } = useInquiryDialog();
+  const openGroupInquiry = () =>
+    openInquiry({
+      type: "group",
+      eyebrow: "Skicka förfrågan",
+      heading: "Berätta om er gruppresa",
+      intro: "Antal personer, ungefärliga datum, destination och budget - vi återkommer med ett skräddarsytt förslag inom 24 timmar på vardagar.",
+    });
   const editableActivities = getArray("group_activities", FALLBACK_GROUP_ACTIVITIES);
   return (
     <div className="min-h-screen">
@@ -98,12 +106,10 @@ export default function GroupTravel() {
             {get("group_hero_tagline", "Sport, äventyr eller fest - vi planerar, ni upplever.")}
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <a href="#forfragan">
-              <Button className="rounded-full bg-primary hover:bg-primary/90 px-7 py-6 text-sm tracking-wider">
+            <Button onClick={openGroupInquiry} className="rounded-full bg-primary hover:bg-primary/90 px-7 py-6 text-sm tracking-wider">
                 <MessageSquare className="mr-2 h-4 w-4" />
                 Skicka förfrågan
               </Button>
-            </a>
           </div>
         </div>
       </section>
@@ -157,12 +163,10 @@ export default function GroupTravel() {
                   </div>
                 ))}
               </div>
-              <a href="#forfragan">
-                <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
+              <Button onClick={openGroupInquiry} className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
                   Planera er sportresa
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
-              </a>
             </div>
             <div className="aspect-[4/3] overflow-hidden">
               <img
@@ -205,12 +209,10 @@ export default function GroupTravel() {
                   </div>
                 ))}
               </div>
-              <a href="#forfragan">
-                <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
+              <Button onClick={openGroupInquiry} className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
                   Offert för företagsresa
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
-              </a>
             </div>
           </div>
         </div>
@@ -250,19 +252,14 @@ export default function GroupTravel() {
         </div>
       </section>
 
-      {/* Inquiry form */}
-      <section id="forfragan" className="py-16 md:py-24 bg-background">
-        <div className="container mx-auto px-4 max-w-3xl">
-          <InquiryForm
-            type="group"
-            eyebrow="Skicka förfrågan"
-            heading="Berätta om er gruppresa"
-            intro="Antal personer, ungefärliga datum, destination och budget - vi återkommer med ett skräddarsytt förslag inom 24 timmar på vardagar."
-          />
-        </div>
-      </section>
-
-      <FloatingInquiryButton />
+      <FloatingInquiryButton
+        inquiry={{
+          type: "group",
+          eyebrow: "Skicka förfrågan",
+          heading: "Berätta om er gruppresa",
+          intro: "Antal personer, ungefärliga datum, destination och budget - vi återkommer med ett skräddarsytt förslag inom 24 timmar på vardagar.",
+        }}
+      />
       <Footer />
     </div>
   );
