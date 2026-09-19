@@ -49,7 +49,7 @@ export default function About() {
   <div className="absolute inset-0 bg-navy/70" />
   </div>
   <div className="relative container mx-auto px-4 pb-14">
-  <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Om oss</p>
+  <p className="text-[11px] sm:text-xs eyebrow text-white/75 uppercase mb-3 font-sans">Om oss</p>
   <h1 className="font-display text-4xl md:text-6xl text-white">
   Resespecialister på <em className="italic font-light text-white">en annan nivå</em>
   </h1>
@@ -61,7 +61,7 @@ export default function About() {
   <div className="container mx-auto px-4">
   <div className="grid md:grid-cols-2 gap-16 items-center">
   <div>
-  <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Vilka vi är</p>
+  <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Vilka vi är</p>
   <h2 className="font-display text-3xl md:text-4xl text-foreground mb-2 leading-tight">
    Vi tillhör eliten inom resor
   </h2>
@@ -93,7 +93,7 @@ export default function About() {
   {/* Vi bryr oss */}
   <section className="py-12 md:py-16 bg-background">
   <div className="container mx-auto px-4 max-w-3xl">
-  <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Vår filosofi</p>
+  <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Vår filosofi</p>
   <h2 className="font-display text-3xl md:text-4xl text-foreground mb-2 leading-tight">
   Vi bryr oss. <em className="italic font-light">Hela vägen.</em>
   </h2>
@@ -112,7 +112,7 @@ export default function About() {
   {/* Senior kompetens */}
   <section className="py-12 md:py-16 bg-cream">
   <div className="container mx-auto px-4 max-w-3xl">
-  <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Vårt Team</p>
+  <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Vårt Team</p>
   <h2 className="font-display text-3xl md:text-4xl text-foreground mb-2 leading-tight">
   Senior kompetens. <em className="italic font-light">Personlig service.</em>
   </h2>
@@ -131,7 +131,7 @@ export default function About() {
   {/* Mer än det du ser på hemsidan */}
   <section className="py-12 md:py-16 bg-background">
   <div className="container mx-auto px-4 max-w-3xl">
-  <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Upplevelser & Tjänster</p>
+  <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Upplevelser & Tjänster</p>
   <h2 className="font-display text-3xl md:text-4xl text-foreground mb-2 leading-tight">
   Mer än det du ser <em className="italic font-light">på hemsidan</em>
   </h2>
@@ -171,7 +171,7 @@ export default function About() {
   {/* References strip */}
   <section className="bg-navy py-16 border-t border-primary/20">
   <div className="container mx-auto px-4">
-  <p className="text-center text-xs tracking-[0.3em] text-primary uppercase mb-10 font-sans">Tidigare uppdrag & kunder</p>
+  <p className="text-center text-[11px] sm:text-xs eyebrow text-primary uppercase mb-10 font-sans">Tidigare uppdrag & kunder</p>
   <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
   {/* TODO: ersätt med riktiga kundreferenser när tillstånd finns */}
   {[
@@ -193,7 +193,7 @@ export default function About() {
   <section className="py-12 md:py-16 bg-background">
   <div className="container mx-auto px-4">
   <div className="text-center mb-14">
-  <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Vad vi står för</p>
+  <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Vad vi står för</p>
   <h2 className="font-display text-3xl md:text-4xl text-foreground">
   Våra Värderingar
   </h2>

@@ -40,7 +40,7 @@ export default function GroupTravel() {
           <div className="absolute inset-0 bg-navy/65" />
         </div>
         <div className="relative container mx-auto px-4 pb-14">
-          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">{get("group_hero_eyebrow", "Grupp- & konferensresor")}</p>
+          <p className="text-[11px] sm:text-xs eyebrow text-white/75 uppercase mb-3 font-sans">{get("group_hero_eyebrow", "Grupp- & konferensresor")}</p>
           <h1 className="font-display text-4xl md:text-6xl text-white leading-tight">
             {get("group_hero_title", "Erfarenhet som gör skillnad")}
           </h1>

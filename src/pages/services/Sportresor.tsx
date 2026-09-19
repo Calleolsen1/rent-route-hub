@@ -56,7 +56,7 @@ export default function Sportresor() {
  </div>
  <div className="relative container mx-auto px-4 pt-24 md:pt-28 pb-8 flex flex-col">
  <div className="max-w-3xl">
- <p className="text-xs tracking-[0.3em] text-primary uppercase mb-2 font-sans">
+ <p className="text-[11px] sm:text-xs eyebrow text-white/75 uppercase mb-2 font-sans">
  Tjänster - Sportresor
  </p>
  <h1 className="font-display text-3xl md:text-5xl text-white mb-2">
@@ -128,7 +128,7 @@ export default function Sportresor() {
       <div className="absolute inset-0 bg-navy/85" />
     </div>
     <div className="relative container mx-auto px-4 py-16 md:py-20 text-center">
-      <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Boka din sportresa</p>
+      <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Boka din sportresa</p>
       <h2 className="font-display text-3xl md:text-5xl text-white mb-5">
         Vilken sport vill du uppleva live?
       </h2>

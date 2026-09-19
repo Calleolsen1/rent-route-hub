@@ -74,7 +74,7 @@ export default function Services() {
    <div className="absolute inset-0 bg-navy/70" />
   </div>
   <div className="relative container mx-auto px-4 pb-14">
-   <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Våra specialiteter</p>
+   <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">Våra specialiteter</p>
    <h1 className="font-display text-4xl md:text-6xl text-white">
    Upplevelser & <em className="italic font-light text-white">Tjänster</em>
    </h1>
@@ -133,7 +133,7 @@ export default function Services() {
   {/* CTA */}
   <section className="bg-navy py-20">
   <div className="container mx-auto px-4 text-center">
-   <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Skräddarsytt av naturen</p>
+   <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Skräddarsytt av naturen</p>
    <h2 className="font-display text-3xl md:text-5xl text-white mb-6">
    Hittar du inte det du söker?
    </h2>

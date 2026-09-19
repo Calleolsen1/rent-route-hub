@@ -193,7 +193,7 @@ export default function SportEntryPage() {
       {/* Package */}
       <section className="bg-cream py-12 md:py-16">
         <div className="container mx-auto px-4 max-w-4xl">
-          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans text-center">Vad ingår</p>
+          <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans text-center">Vad ingår</p>
           <h2 className="font-display text-3xl md:text-4xl text-center mb-12">
             Kompletta paket{info.venue ? ` till ${info.venue}` : ""}
           </h2>
@@ -211,7 +211,7 @@ export default function SportEntryPage() {
       {/* CTA */}
       <section className="bg-cream py-16 border-t border-border">
         <div className="container mx-auto px-4 text-center">
-          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">
+          <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">
             Boka din {info.name}-resa
           </p>
           <h2 className="font-display text-3xl md:text-5xl text-foreground mb-6">

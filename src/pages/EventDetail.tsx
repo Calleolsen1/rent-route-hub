@@ -159,7 +159,7 @@ export default function EventDetail() {
           <div className="absolute inset-0 bg-navy/75" />
         </div>
         <div className="relative container mx-auto px-4 pb-6">
-          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-2 font-sans">
+          <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-2 font-sans">
             {event.tournament_name}
           </p>
           <h1 className="font-display text-3xl md:text-4xl text-white mb-2">
@@ -189,7 +189,7 @@ export default function EventDetail() {
                 request. The chart is a reference so a customer can name the
                 section they want in the enquiry. */}
             <div>
-              <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
+              <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">
                 Matchen
               </p>
               <div className="rounded-xl border border-border bg-card p-5 grid sm:grid-cols-3 gap-4">
@@ -216,7 +216,7 @@ export default function EventDetail() {
 
             {seatmapUrl && (
               <div>
-                <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
+                <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">
                   Läktarkarta
                 </p>
                 <div className="rounded-xl border border-border bg-card overflow-hidden">

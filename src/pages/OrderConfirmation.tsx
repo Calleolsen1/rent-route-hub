@@ -210,7 +210,7 @@ export default function OrderConfirmation() {
           ) : (
             <Clock className="h-14 w-14 text-primary mx-auto mb-4" />
           )}
-          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
+          <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">
             {confirmFailed
               ? "Betalningen mottagen"
               : isPaid

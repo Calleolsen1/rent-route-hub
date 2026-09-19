@@ -70,7 +70,7 @@ export default function Support() {
  {/* Hero */}
  <section className="bg-navy py-20 border-b border-white/10">
  <div className="container mx-auto px-4 text-center">
- <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Support</p>
+ <p className="text-[11px] sm:text-xs eyebrow text-white/75 uppercase mb-4 font-sans">Support</p>
  <h1 className="font-display text-4xl md:text-6xl text-white mb-4">
  Vi är här för <em className="italic font-light text-white">dig</em>
  </h1>
@@ -93,7 +93,7 @@ export default function Support() {
  <section className="py-10 md:py-14 bg-background">
  <div className="container mx-auto px-4">
  <div className="text-center mb-12">
- <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Kontakta oss</p>
+ <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Kontakta oss</p>
  <h2 className="font-display text-3xl text-foreground">Välj ditt sätt att nå oss</h2>
  </div>
  <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
@@ -128,7 +128,7 @@ export default function Support() {
  <section className="py-10 md:py-14 bg-cream">
  <div className="container mx-auto px-4">
  <div className="text-center mb-12">
- <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Typer av ärenden</p>
+ <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Typer av ärenden</p>
  <h2 className="font-display text-3xl text-foreground">Hur kan vi hjälpa?</h2>
  </div>
  <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
@@ -148,7 +148,7 @@ export default function Support() {
  {/* Promise section */}
  <section className="py-10 md:py-14 bg-navy">
  <div className="container mx-auto px-4 text-center max-w-2xl">
- <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Vårt löfte</p>
+ <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Vårt löfte</p>
  <h2 className="font-display text-3xl text-white mb-6">
  Vi svarar alltid - <em className="italic font-light text-white">på riktigt</em>
  </h2>

@@ -149,7 +149,7 @@ export default function QuotePage() {
       {/* Hero */}
       <section className="bg-cream py-12">
         <div className="container mx-auto px-4 max-w-2xl">
-          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans text-center">
+          <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans text-center">
             Offert från Kaisen Travel Group
           </p>
           <h1 className="font-display text-4xl md:text-5xl text-center mb-4">{quote.title}</h1>

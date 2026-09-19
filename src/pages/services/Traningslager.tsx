@@ -111,7 +111,7 @@ export default function Traningslager() {
  <div className="absolute inset-0 bg-navy/65" />
  </div>
  <div className="relative container mx-auto px-4 pb-14">
- <p className="text-xs tracking-[0.3em] text-white uppercase mb-3 font-sans">
+ <p className="text-[11px] sm:text-xs eyebrow text-white uppercase mb-3 font-sans">
  {get("training_hero_eyebrow", "Tjänster - Träningsläger")}
  </p>
  <h1 className="font-display text-4xl md:text-6xl text-white leading-tight">
@@ -133,7 +133,7 @@ export default function Traningslager() {
  <section className="py-12 md:py-16 bg-cream">
  <div className="container mx-auto px-4">
  <div className="text-center mb-14">
- <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Utvalda Träningsläger</p>
+ <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">Utvalda Träningsläger</p>
  <h2 className="font-display text-3xl md:text-4xl text-foreground">
  Ett axplock av <em className="italic font-light">våra läger</em>
  </h2>
@@ -206,7 +206,7 @@ export default function Traningslager() {
  <div className="container mx-auto px-4 max-w-5xl">
  <div className="grid md:grid-cols-2 gap-12 lg:gap-20">
  <div>
- <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Noggrant Utvalda Destinationer</p>
+ <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">Noggrant Utvalda Destinationer</p>
  <h2 className="font-display text-2xl md:text-3xl text-foreground mb-4">
  Europas bästa träningsmiljöer
  </h2>
@@ -216,7 +216,7 @@ export default function Traningslager() {
  </p>
  </div>
  <div>
- <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Vi Tar Hand Om Helheten</p>
+ <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">Vi Tar Hand Om Helheten</p>
  <h2 className="font-display text-2xl md:text-3xl text-foreground mb-4">
  Ni fokuserar på träningen
  </h2>
@@ -234,7 +234,7 @@ export default function Traningslager() {
  <div className="container mx-auto px-4 max-w-5xl">
  <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
  <div>
- <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">En Resa Som Stärker Laget</p>
+ <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">En Resa Som Stärker Laget</p>
  <h2 className="font-display text-3xl md:text-4xl text-foreground mb-4">
  Mer än bara träning
  </h2>

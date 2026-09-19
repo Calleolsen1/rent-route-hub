@@ -76,7 +76,7 @@ export default function Konferens() {
           <div className="absolute inset-0 bg-navy/72" />
         </div>
         <div className="relative container mx-auto px-4 pb-14">
-          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Konferens & Event</p>
+          <p className="text-[11px] sm:text-xs eyebrow text-white/75 uppercase mb-3 font-sans">Konferens & Event</p>
           <h1 className="font-display text-4xl md:text-6xl text-white">
             Event som <em className="italic font-light text-white">imponerar</em>
           </h1>
@@ -96,7 +96,7 @@ export default function Konferens() {
       <section className="py-14 md:py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Vad Vi Fixar</p>
+            <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">Vad Vi Fixar</p>
             <h2 className="font-display text-3xl md:text-4xl text-foreground">
               Helheten - <em className="italic font-light">från idé till avslut</em>
             </h2>

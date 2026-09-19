@@ -43,7 +43,7 @@ export default function Contact() {
           <div className="absolute inset-0 bg-navy/70" />
         </div>
         <div className="relative container mx-auto px-4 pb-14">
-          <p className="text-xs tracking-[0.3em] text-white uppercase mb-3 font-sans">{get("contact_hero_eyebrow", "Kom i kontakt")}</p>
+          <p className="text-[11px] sm:text-xs eyebrow text-white uppercase mb-3 font-sans">{get("contact_hero_eyebrow", "Kom i kontakt")}</p>
           <h1 className="font-display text-4xl md:text-6xl text-white">
             {get("contact_hero_title", "Planera Er Resa")}
           </h1>
@@ -55,7 +55,7 @@ export default function Contact() {
           <div className="grid lg:grid-cols-3 gap-12 lg:gap-16">
             {/* Contact Info */}
             <div className="lg:col-span-1">
-              <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">{get("contact_section_eyebrow", "Tala med oss")}</p>
+              <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">{get("contact_section_eyebrow", "Tala med oss")}</p>
               <h2 className="font-display text-3xl text-foreground mb-2">
                 {get("contact_section_title", "Vi startar med ett Samtal")}
               </h2>

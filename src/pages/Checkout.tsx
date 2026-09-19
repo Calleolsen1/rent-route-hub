@@ -168,7 +168,7 @@ export default function Checkout() {
       <Navbar />
       <section className="bg-cream py-12">
         <div className="container mx-auto px-4 max-w-2xl text-center">
-          <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
+          <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">
             Kassan
           </p>
           <h1 className="font-display text-4xl md:text-5xl">Slutför din beställning</h1>
@@ -241,7 +241,7 @@ export default function Checkout() {
 
           {/* Summary */}
           <aside className="rounded-xl border border-border bg-card p-6 h-fit">
-            <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">
+            <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">
               Sammanfattning
             </p>
             <div className="space-y-5">

@@ -49,7 +49,7 @@ const Footer = () => {
         {/* Newsletter */}
         <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-end pb-12 md:pb-16">
           <div>
-            <p className="text-[11px] tracking-[0.3em] text-white/60 uppercase mb-4 font-sans">Nyhetsbrev</p>
+            <p className="text-[11px] eyebrow text-white/60 uppercase mb-4 font-sans">Nyhetsbrev</p>
             <h2 className="font-display text-3xl md:text-5xl text-white leading-[1.05]">
               Anmäl dig och håll dig <em className="italic font-light">uppdaterad</em>
             </h2>
@@ -100,7 +100,7 @@ const Footer = () => {
           </div>
 
           <div className="md:col-span-3">
-            <h3 className="text-[11px] tracking-[0.3em] text-white/60 uppercase font-sans mb-5">Tjänster</h3>
+            <h3 className="text-[11px] eyebrow text-white/60 uppercase font-sans mb-5">Tjänster</h3>
             <ul className="space-y-3 text-sm text-white/85">
               <li><Link to="/services/sportresor" className="hover:text-white transition-colors">Sportresor</Link></li>
               <li><Link to="/group-travel" className="hover:text-white transition-colors">Gruppresor</Link></li>
@@ -112,7 +112,7 @@ const Footer = () => {
           </div>
 
           <div className="md:col-span-2">
-            <h3 className="text-[11px] tracking-[0.3em] text-white/60 uppercase font-sans mb-5">Företaget</h3>
+            <h3 className="text-[11px] eyebrow text-white/60 uppercase font-sans mb-5">Företaget</h3>
             <ul className="space-y-3 text-sm text-white/85">
               <li><Link to="/about" className="hover:text-white transition-colors">Om oss</Link></li>
               <li><Link to="/contact" className="hover:text-white transition-colors">Planera din resa</Link></li>
@@ -123,7 +123,7 @@ const Footer = () => {
           </div>
 
           <div className="md:col-span-3">
-            <h3 className="text-[11px] tracking-[0.3em] text-white/60 uppercase font-sans mb-5">Kontakt</h3>
+            <h3 className="text-[11px] eyebrow text-white/60 uppercase font-sans mb-5">Kontakt</h3>
             <ul className="space-y-3 text-sm text-white/85">
               <li>Kaisen Travel Group AB</li>
               <li><a href="mailto:info@kaisengroup.se" className="hover:text-white transition-colors">info@kaisengroup.se</a></li>
