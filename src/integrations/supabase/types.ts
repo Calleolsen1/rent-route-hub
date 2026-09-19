@@ -1861,6 +1861,36 @@ export type Database = {
         }
         Relationships: []
       }
+      team_venue_photos: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string
+          match_key: string
+          sport: Database["public"]["Enums"]["event_sport"]
+          updated_at: string
+          venue_label: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url: string
+          match_key: string
+          sport: Database["public"]["Enums"]["event_sport"]
+          updated_at?: string
+          venue_label?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string
+          match_key?: string
+          sport?: Database["public"]["Enums"]["event_sport"]
+          updated_at?: string
+          venue_label?: string | null
+        }
+        Relationships: []
+      }
       testimonials: {
         Row: {
           author: string
@@ -2106,6 +2136,16 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      home_team_photo_coverage: {
+        Row: {
+          event_count: number | null
+          image_url: string | null
+          match_key: string | null
+          sample_venue: string | null
+          sport: Database["public"]["Enums"]["event_sport"] | null
+        }
+        Relationships: []
       }
       public_profiles: {
         Row: {
