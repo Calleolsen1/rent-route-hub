@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { usePublicPricesEnabled } from "@/hooks/usePublicPrices";
 import { useTeamPhotos } from "@/hooks/useTeamPhotos";
+import { useTeamCrests } from "@/hooks/useTeamCrests";
 import EventImage from "@/components/EventImage";
 import { ArrowRight, Calendar, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -69,6 +70,7 @@ export default function UpcomingEventsList({
   const [defaultPct, setDefaultPct] = useState<number>(0);
   const { enabled: showPrices } = usePublicPricesEnabled();
   const teamPhotos = useTeamPhotos();
+  const teamCrests = useTeamCrests();
 
   useEffect(() => {
     (async () => {
@@ -192,6 +194,7 @@ export default function UpcomingEventsList({
                     venueName={e.venue_name}
                     coverUrl={e.cover_image_url}
                     photos={teamPhotos}
+                    crests={teamCrests}
                     className="group-hover:scale-105 transition-transform duration-700"
                   />
                   {showPrices && displayPrice != null && displayPrice > 0 && (

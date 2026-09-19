@@ -81,6 +81,7 @@ export default function AdminTickets() {
   const [busy, setBusy] = useState<string | null>(null);
   const [ocSyncing, setOcSyncing] = useState(false);
   const [f1Syncing, setF1Syncing] = useState(false);
+  const [fdSyncing, setFdSyncing] = useState(false);
   const [manualEventOpen, setManualEventOpen] = useState(false);
   const [categoryTarget, setCategoryTarget] = useState<{ eventId: string; label: string } | null>(null);
   const [search, setSearch] = useState("");
@@ -148,6 +149,23 @@ export default function AdminTickets() {
       toast.error((e as Error).message ?? "OneClicket-synk misslyckades");
     } finally {
       setOcSyncing(false);
+    }
+  };
+
+  const runFootballSync = async () => {
+    setFdSyncing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("football-sync", {
+        body: { trigger: "manual" },
+      });
+      if (error) throw error;
+      const t = (data as { totals?: { upserted?: number; crests?: number } } | null)?.totals;
+      toast.success(`Fotboll: ${t?.upserted ?? 0} matcher, ${t?.crests ?? 0} klubbmärken`);
+      await load();
+    } catch (e) {
+      toast.error((e as Error).message ?? "Fotbollssynk misslyckades");
+    } finally {
+      setFdSyncing(false);
     }
   };
 
@@ -412,6 +430,14 @@ export default function AdminTickets() {
             >
               {ocSyncing ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <RefreshCw className="h-3 w-3 mr-1" />}
               Synka allt
+            </Button>
+            <Button
+              size="sm"
+              disabled={fdSyncing}
+              onClick={runFootballSync}
+            >
+              {fdSyncing ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <RefreshCw className="h-3 w-3 mr-1" />}
+              Synka fotboll (alla ligor)
             </Button>
             <Button
               size="sm"

@@ -4,8 +4,9 @@ import { useMemo } from "react";
  * The image for an event card, resolved in order:
  *
  *   1. the stadium photo uploaded for the HOME team (or the F1 race)
- *   2. a cover image the supplier happened to provide
- *   3. a generated card — always works, never 404s
+ *   2. a cover image the data source happened to provide
+ *   3. both clubs' crests on a colour gradient
+ *   4. a generated text card — always works, never 404s
  *
  * Layer 3 is the point: 883 fixtures exist today and the supplier ships a
  * usable photo for roughly 3 in 164, so waiting on photography would leave
@@ -24,6 +25,8 @@ type Props = {
   coverUrl: string | null;
   /** match_key -> image_url, from useTeamPhotos(). */
   photos: Record<string, string>;
+  /** canonical team name -> crest url, from useTeamCrests(). */
+  crests?: Record<string, string>;
   className?: string;
 };
 
@@ -44,7 +47,7 @@ function inkFor(_hex: string): string {
 
 export default function EventImage({
   sport, homeTeam, awayTeam, raceName, tournamentName, venueName,
-  coverUrl, photos, className = "",
+  coverUrl, photos, crests, className = "",
 }: Props) {
   const key = sport === "formula1" ? raceName : homeTeam;
   const photo = (key && photos[`${sport}|${key}`]) || coverUrl || null;
@@ -66,6 +69,50 @@ export default function EventImage({
   const isRace = sport === "formula1";
   const title = isRace ? raceName : homeTeam;
   const subtitle = isRace ? venueName : awayTeam;
+
+  // Crest vs crest, when both badges are known. Needs both: one crest beside
+  // a blank would read as a loading failure rather than a design.
+  const homeCrest = homeTeam ? crests?.[homeTeam] : undefined;
+  const awayCrest = awayTeam ? crests?.[awayTeam] : undefined;
+  if (!isRace && homeCrest && awayCrest) {
+    return (
+      <div
+        className={`w-full h-full relative overflow-hidden ${className}`}
+        style={{ background: `linear-gradient(115deg, ${c1} 0%, ${c2} 100%)` }}
+        role="img"
+        aria-label={`${homeTeam} mot ${awayTeam}`}
+      >
+        <div className="absolute inset-0 flex items-center justify-center gap-[8%] px-[8%]">
+          <img
+            src={homeCrest}
+            alt=""
+            loading="lazy"
+            className="h-[52%] w-auto max-w-[34%] object-contain drop-shadow-lg"
+          />
+          <span
+            className="font-display text-sm opacity-60 select-none"
+            style={{ color: ink }}
+          >
+            vs
+          </span>
+          <img
+            src={awayCrest}
+            alt=""
+            loading="lazy"
+            className="h-[52%] w-auto max-w-[34%] object-contain drop-shadow-lg"
+          />
+        </div>
+        {tournamentName && (
+          <p
+            className="absolute bottom-2 left-0 right-0 text-center text-[9px] tracking-[0.24em] uppercase opacity-75"
+            style={{ color: ink }}
+          >
+            {tournamentName}
+          </p>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div

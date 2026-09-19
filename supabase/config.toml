@@ -64,3 +64,8 @@ verify_jwt = true
 # F1 calendar from Jolpica (free, keyless). Admin-verified inline.
 [functions.f1-sync]
 verify_jwt = true
+
+# Football fixtures from football-data.org. Admin-verified inline.
+# A full run is ~80s: 12 calls paced under a 10/min free-tier limit.
+[functions.football-sync]
+verify_jwt = true

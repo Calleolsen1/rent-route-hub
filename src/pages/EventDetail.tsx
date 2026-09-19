@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { usePublicPricesEnabled } from "@/hooks/usePublicPrices";
 import { useTeamPhotos } from "@/hooks/useTeamPhotos";
+import { useTeamCrests } from "@/hooks/useTeamCrests";
 import EventImage from "@/components/EventImage";
 import InquiryForm from "@/components/InquiryForm";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -98,6 +99,7 @@ export default function EventDetail() {
   const [compareAtDefaultPct, setCompareAtDefaultPct] = useState<number>(0);
   const { enabled: showPrices } = usePublicPricesEnabled();
   const teamPhotos = useTeamPhotos();
+  const teamCrests = useTeamCrests();
   const [inquiryOpen, setInquiryOpen] = useState(false);
   const [inquiryParts, setInquiryParts] = useState<string[]>(["biljett"]);
 
@@ -344,6 +346,7 @@ export default function EventDetail() {
             venueName={event.venue_name}
             coverUrl={event.cover_image_url}
             photos={teamPhotos}
+                    crests={teamCrests}
           />
           <div className="absolute inset-0 bg-navy/75" />
         </div>
