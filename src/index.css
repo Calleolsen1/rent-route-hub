@@ -165,7 +165,12 @@
   }
 
   .kaisen-section {
-    @apply py-20 md:py-28;
+    @apply py-12 sm:py-20 md:py-28;
+  }
+
+  /* Small uppercase labels: tighter tracking on phones so they don't wrap */
+  .eyebrow {
+    @apply tracking-[0.16em] sm:tracking-[0.3em];
   }
 
   .kaisen-navy {
