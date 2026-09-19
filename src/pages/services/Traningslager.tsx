@@ -1,11 +1,9 @@
-import { Link } from "react-router-dom";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, MapPin, MessageSquare } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import InquiryForm from "@/components/InquiryForm";
 import FloatingInquiryButton from "@/components/FloatingInquiryButton";
+import { useInquiryDialog } from "@/components/InquiryDialog";
 import heroImage from "@/assets/camps-hero.jpg";
 import valenciaImg from "@/assets/camp-valencia-pitch.jpg.asset.json";
 import antalyaImg from "@/assets/camp-antalya-pitch.jpg.asset.json";
@@ -90,11 +88,16 @@ const FALLBACK_TRAINING_FEATURES = [
 
 export default function Traningslager() {
   const { get, getArray } = useSiteContent(TRAINING_KEYS);
-  const [selectedDestination, setSelectedDestination] = useState<string | undefined>(undefined);
-  const chooseCamp = (location: string, sport: string) => {
-    setSelectedDestination(`${location} (${sport})`);
-    document.getElementById("forfragan")?.scrollIntoView({ behavior: "smooth" });
-  };
+  const { open: openInquiry } = useInquiryDialog();
+  const openCampInquiry = (destination?: string) =>
+    openInquiry({
+      type: "training_camp",
+      defaultDestination: destination,
+      eyebrow: "Förfrågan träningsläger",
+      heading: "Berätta om ert lag",
+      intro: "Sport, antal spelare och stab, önskad period och destination - vi tar fram ett upplägg som passar just ert lag.",
+    });
+  const chooseCamp = (location: string, sport: string) => openCampInquiry(`${location} (${sport})`);
  const editableFeatures = getArray("training_features", FALLBACK_TRAINING_FEATURES);
  return (
  <div className="min-h-screen">
@@ -117,12 +120,10 @@ export default function Traningslager() {
  {get("training_hero_tagline", "Träningsläger för fotboll, simning och friidrott - för föreningar, lag och grupper som vill ta träningen till nästa nivå.")}
  </p>
  <div className="mt-6 flex flex-wrap gap-3">
- <a href="#forfragan">
- <Button className="rounded-full bg-primary hover:bg-primary/90 px-7 py-6 text-sm tracking-wider">
- <MessageSquare className="mr-2 h-4 w-4" />
- Skicka förfrågan
- </Button>
- </a>
+  <Button onClick={() => openCampInquiry()} className="rounded-full bg-primary hover:bg-primary/90 px-7 py-6 text-sm tracking-wider">
+  <MessageSquare className="mr-2 h-4 w-4" />
+  Skicka förfrågan
+  </Button>
  </div>
  </div>
  </section>
@@ -180,13 +181,11 @@ export default function Traningslager() {
  ))}
  </div>
  <div className="mt-12 text-center">
- <a href="#forfragan">
- <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 py-6 text-sm tracking-wider">
- <MessageSquare className="mr-2 h-4 w-4" />
- Få offert för ert träningsläger
- <ArrowRight className="ml-2 h-4 w-4" />
- </Button>
- </a>
+  <Button onClick={() => openCampInquiry()} className="rounded-full bg-primary hover:bg-primary/90 px-8 py-6 text-sm tracking-wider">
+  <MessageSquare className="mr-2 h-4 w-4" />
+  Få offert för ert träningsläger
+  <ArrowRight className="ml-2 h-4 w-4" />
+  </Button>
  </div>
  </div>
  </section>
@@ -258,20 +257,14 @@ export default function Traningslager() {
  </div>
  </section>
 
- {/* Inquiry form */}
- <section id="forfragan" className="bg-cream py-16 md:py-24">
- <div className="container mx-auto px-4 max-w-3xl">
-  <InquiryForm
-  type="training_camp"
-  defaultDestination={selectedDestination}
-  eyebrow="Förfrågan träningsläger"
- heading="Berätta om ert lag"
- intro="Sport, antal spelare och stab, önskad period och destination - vi tar fram ett upplägg som passar just ert lag."
- />
- </div>
- </section>
-
- <FloatingInquiryButton />
+  <FloatingInquiryButton
+    inquiry={{
+      type: "training_camp",
+      eyebrow: "Förfrågan träningsläger",
+      heading: "Berätta om ert lag",
+      intro: "Sport, antal spelare och stab, önskad period och destination - vi tar fram ett upplägg som passar just ert lag.",
+    }}
+  />
  <Footer />
  </div>
  );

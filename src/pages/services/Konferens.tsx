@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, Users, Projector, Utensils, Wifi, Car, Award, Mic2, Coffee, Palette, MessageSquare } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import InquiryForm from "@/components/InquiryForm";
 import FloatingInquiryButton from "@/components/FloatingInquiryButton";
+import { useInquiryDialog } from "@/components/InquiryDialog";
 import konferensHero from "@/assets/konferens-hero.jpg";
 import konferens1 from "@/assets/konferens-dinner.jpg";
 import konferens2 from "@/assets/konferens-event.jpg";
@@ -56,6 +56,14 @@ const formats = [
 ];
 
 export default function Konferens() {
+  const { open: openInquiry } = useInquiryDialog();
+  const openKonferensInquiry = () =>
+    openInquiry({
+      type: "conference",
+      eyebrow: "Begär offert",
+      heading: "Berätta om er konferens",
+      intro: "Antal deltagare, ungefärliga datum, destination och budget. Vi återkommer med ett komplett förslag.",
+    });
   return (
     <div className="min-h-screen">
       <Navbar />
@@ -75,12 +83,10 @@ export default function Konferens() {
             Vi sköter detaljerna. Du fokuserar på innehållet.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <a href="#forfragan">
-              <Button className="rounded-full bg-primary hover:bg-primary/90 px-7 py-6 text-sm tracking-wider">
+            <Button onClick={openKonferensInquiry} className="rounded-full bg-primary hover:bg-primary/90 px-7 py-6 text-sm tracking-wider">
                 <MessageSquare className="mr-2 h-4 w-4" />
                 Begär offert
               </Button>
-            </a>
           </div>
         </div>
       </section>
@@ -173,30 +179,24 @@ export default function Konferens() {
                   </div>
                 ))}
               </div>
-              <a href="#forfragan">
-                <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
+              <Button onClick={openKonferensInquiry} className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
                   Begär offert
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
-              </a>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Inquiry form */}
-      <section id="forfragan" className="py-16 md:py-24 bg-cream">
-        <div className="container mx-auto px-4 max-w-3xl">
-          <InquiryForm
-            type="conference"
-            eyebrow="Begär offert"
-            heading="Berätta om er konferens"
-            intro="Antal deltagare, ungefärliga datum, destination och budget. Vi återkommer med ett komplett förslag."
-          />
-        </div>
-      </section>
-
-      <FloatingInquiryButton label="Begär offert" />
+      <FloatingInquiryButton
+        label="Begär offert"
+        inquiry={{
+          type: "conference",
+          eyebrow: "Begär offert",
+          heading: "Berätta om er konferens",
+          intro: "Antal deltagare, ungefärliga datum, destination och budget. Vi återkommer med ett komplett förslag.",
+        }}
+      />
       <Footer />
     </div>
   );
