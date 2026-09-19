@@ -82,9 +82,8 @@ const sports = [
 export default function Sportresor() {
  usePageMeta({
    title: "Sportresor - F1, Fotboll & Golf | Kaisen Travel Group",
-   description: "Köp biljetter och resepaket till F1-race, Premier League, Champions League, golfturneringar och fler sportevent. Personlig service från Kaisen Travel Group.",
+   description: "Skräddarsydda sportresor med hotell, transfer och upplevelser till F1-race, Premier League, Champions League, golfturneringar och fler sportevent. Personlig service från Kaisen Travel Group.",
  });
- const [filters, setFilters] = useState<SportFilterValues>(emptyFilters);
  return (
  <div className="min-h-screen">
  <Navbar />
