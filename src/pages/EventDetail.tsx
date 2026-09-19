@@ -382,46 +382,6 @@ export default function EventDetail() {
               </div>
             )}
 
-            {/* Make it obvious we sell complete packages, not just tickets */}
-            <div className="rounded-xl border border-primary/30 bg-primary/5 p-6">
-              <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
-                Komplett resepaket
-              </p>
-              <h2 className="font-display text-2xl mb-2">
-                Vi ordnar hela resan - inte bara biljetten
-              </h2>
-              <p className="text-sm text-foreground/80 leading-relaxed mb-5">
-                Utöver matchbiljetter paketerar vi gärna hotell och flyg till {event.city ?? "destinationen"}.
-                En förfrågan, ett pris, en kontakt - vi sköter allt det praktiska.
-              </p>
-              <div className="grid sm:grid-cols-3 gap-3 mb-5">
-                {[
-                  { icon: Ticket, label: "Biljetter", text: "Officiella platser på läktaren" },
-                  { icon: Hotel, label: "Hotell", text: "Handplockat boende nära arenan" },
-                  { icon: Plane, label: "Flyg", text: "Smidiga tider, tur och retur" },
-                ].map(({ icon: Icon, label, text }) => (
-                  <div key={label} className="flex items-start gap-3 rounded-lg bg-background/60 p-3">
-                    <Icon className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-sm font-medium">{label}</p>
-                      <p className="text-xs text-muted-foreground">{text}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <Button
-                variant="outline"
-                className="rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground"
-                onClick={() => {
-                  setInquiryParts(["biljett", "hotell", "flyg"]);
-                  setInquiryOpen(true);
-                }}
-              >
-                Begär offert på resepaket
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
-
             <div>
               <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
                 Välj biljettkategori
