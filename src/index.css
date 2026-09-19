@@ -51,6 +51,8 @@
     /* Deep navy for hero/dark sections */
     --navy: 201 100% 21%;
     --navy-foreground: 0 0% 100%;
+    /* Darker navy for the footer so it separates from navy CTA sections */
+    --navy-deep: 201 100% 13%;
 
     /* Legacy "gold" tokens remapped to navy/neutrals - DO NOT use gold hues here */
     --gold: 210 39% 45%; /* muted navy-blue accent */
