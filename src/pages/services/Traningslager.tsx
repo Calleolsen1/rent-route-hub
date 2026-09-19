@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, MapPin, MessageSquare } from "lucide-react";
 import Footer from "@/components/Footer";
