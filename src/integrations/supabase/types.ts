@@ -1883,8 +1883,9 @@ export type Database = {
         Row: {
           created_at: string
           id: string
-          image_url: string
+          image_url: string | null
           match_key: string
+          seatmap_url: string | null
           sport: Database["public"]["Enums"]["event_sport"]
           updated_at: string
           venue_label: string | null
@@ -1892,8 +1893,9 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
-          image_url: string
+          image_url?: string | null
           match_key: string
+          seatmap_url?: string | null
           sport: Database["public"]["Enums"]["event_sport"]
           updated_at?: string
           venue_label?: string | null
@@ -1901,8 +1903,9 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
-          image_url?: string
+          image_url?: string | null
           match_key?: string
+          seatmap_url?: string | null
           sport?: Database["public"]["Enums"]["event_sport"]
           updated_at?: string
           venue_label?: string | null
@@ -2161,6 +2164,7 @@ export type Database = {
           image_url: string | null
           match_key: string | null
           sample_venue: string | null
+          seatmap_url: string | null
           sport: Database["public"]["Enums"]["event_sport"] | null
         }
         Relationships: []
