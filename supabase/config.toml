@@ -47,20 +47,6 @@ verify_jwt = true
 [functions.send-invoice-cancellation]
 verify_jwt = true
 
-# --- OneClicket (ESATOUR) — second ticket supplier ---
-# Public browsing endpoint - no auth required to browse tickets.
-[functions.oneclicket-get-event-tickets]
-verify_jwt = false
-
-# Sync verifies the admin role inline (authenticated admin only).
-[functions.oneclicket-sync]
-verify_jwt = true
-
-# Places real orders against the supplier's live-only system.
-# Admin-verified inline AND gated by ONECLICKET_ORDERS_ENABLED.
-[functions.oneclicket-place-order]
-verify_jwt = true
-
 # F1 calendar from Jolpica (free, keyless). Admin-verified inline.
 [functions.f1-sync]
 verify_jwt = true

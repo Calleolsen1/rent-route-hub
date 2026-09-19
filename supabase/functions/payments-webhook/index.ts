@@ -305,11 +305,10 @@ async function handleCheckoutCompleted(session: any, env: StripeEnv) {
 
   // Decrement local stock and open a delivery row per line.
   //
-  // OneClicket has no confirm-at-payment step: supplier stock is
-  // only committed when the supplier order is placed, and that is currently
-  // an admin action (see oneclicket-place-order — live sending is gated off
-  // until the supplier signs off). So every paid order lands here and is
-  // fulfilled from the ticket_deliveries queue in the admin Tickets page.
+  // There is no confirm-at-payment step: fixtures come from a schedule API
+  // with no inventory, and trips are arranged by hand after a request. So
+  // every paid order lands here and is fulfilled from the ticket_deliveries
+  // queue in the admin Tickets page.
   for (const it of items ?? []) {
     await getSupabase().rpc("decrement_ticket_qty", {
       p_category_id: (it as any).category_id,

@@ -80,10 +80,9 @@ Deno.serve(async (req) => {
 
     // Two paths, chosen by whether the category is backed by a Stripe price.
     //
-    // Supplier inventory (OneClicket) has none — we don't pre-create Stripe
-    // products for stock we don't own, and its price is only known live — so
-    // those orders bill through inline price_data. Manual inventory keeps the
-    // existing lookup_key flow.
+    // Synced fixtures have none — they come from a schedule API with no
+    // inventory — so such orders would bill through inline price_data.
+    // Manual inventory keeps the existing lookup_key flow.
     type LineItem = {
       quantity: number;
       price_data: {

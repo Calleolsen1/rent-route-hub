@@ -41,62 +41,16 @@ type EventRow = {
   compare_at_pct: number | null;
 };
 
-type CategoryRow = {
-  id: string;
-  event_id: string;
-  name: string;
-  description: string | null;
-  party_size_together: number;
-  unit_price_sek: number;
-  currency: string;
-  qty_available: number;
-  compare_at_price_sek: number | null;
-  compare_at_pct: number | null;
-};
 
-type ReserveLine = {
-  ticket_id: string;
-  net_rate: number;
-  currency_code: string;
-  stock: number;
-};
 
-type SupplierGroup = {
-  category_id: string;
-  external_category_id: string;
-  external_sub_category: string;
-  name: string;
-  description: string | null;
-  party_size_together: number;
-  total_stock: number;
-  base_sek: number;
-  final_sek: number;
-  currency: string;
-  reserve_lines: ReserveLine[];
-  /** Present on OneClicket groups; manual inventory leaves these undefined. */
-  supplier?: "oneclicket";
-  /**
-   * The exact quantities the supplier will accept. OneClicket versions carry
-   * split rules (sell-in-multiples, avoid-leaving-one) that a plain
-   * min/max stepper can't express, so the picker walks this list instead.
-   */
-  allowed_quantities?: number[];
-  supplier_version_id?: string;
-};
 
 export default function EventDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
   const [event, setEvent] = useState<EventRow | null>(null);
-  const [categories, setCategories] = useState<CategoryRow[]>([]);
-  const [supplierGroups, setSupplierGroups] = useState<SupplierGroup[]>([]);
-  const [livePrices, setLivePrices] = useState<Record<string, number>>({});
   const [pricesLoading, setPricesLoading] = useState(true);
   const [loading, setLoading] = useState(true);
-  const [selectedCatId, setSelectedCatId] = useState<string | null>(null);
-  const [qty, setQty] = useState(2);
-  const [busy, setBusy] = useState(false);
   const [compareAtDefaultPct, setCompareAtDefaultPct] = useState<number>(0);
   const { enabled: showPrices } = usePublicPricesEnabled();
   const teamPhotos = useTeamPhotos();
@@ -118,7 +72,6 @@ export default function EventDetail() {
     })();
   }, []);
 
-  const isOneClicket = event?.source === "oneclicket";
 
   useEffect(() => {
     if (!id) return;
@@ -130,53 +83,11 @@ export default function EventDetail() {
         .maybeSingle();
       setEvent(ev as EventRow | null);
 
-      const evSource = (ev as EventRow | null)?.source;
-      if (evSource === "oneclicket") {
-        // Live supplier lookup (with markup applied). Supplier stock moves
-        // between syncs, so price/availability is never read from the cached
-        // rows.
-        try {
-          const { data: r } = await supabase.functions.invoke("oneclicket-get-event-tickets", {
-            body: { event_id: id },
-          });
-          const groups = (r?.groups as SupplierGroup[]) ?? [];
-          setSupplierGroups(groups);
-          if (groups.length) setSelectedCatId(groups[0].category_id);
-        } catch (e) {
-          console.error(`${evSource} tickets fetch failed`, e);
-        } finally {
-          setPricesLoading(false);
-          setLoading(false);
-        }
-        return;
-      }
-
-      // Manual / Stripe-product inventory
-      const { data: cats } = await supabase
-        .from("ticket_categories")
-        .select("*")
-        .eq("event_id", id)
-        .order("unit_price_sek", { ascending: true });
-      setCategories((cats as CategoryRow[]) ?? []);
-      if (cats && cats.length) setSelectedCatId((cats[0] as CategoryRow).id);
+      // Fixtures come from a schedule API with no inventory, so there is
+      // nothing further to fetch — the page shows the game and routes the
+      // visitor into a request.
       setLoading(false);
-
-      if (cats && cats.length) {
-        try {
-          const { data: pr } = await supabase.functions.invoke("get-ticket-prices", {
-            body: { event_id: id, environment: getStripeEnvironment() },
-          });
-          const map: Record<string, number> = {};
-          for (const p of (pr?.prices ?? [])) map[p.category_id] = p.final_sek;
-          setLivePrices(map);
-        } catch (e) {
-          console.error("price fetch failed", e);
-        } finally {
-          setPricesLoading(false);
-        }
-      } else {
-        setPricesLoading(false);
-      }
+      setPricesLoading(false);
     })();
   }, [id]);
 
@@ -194,115 +105,6 @@ export default function EventDetail() {
     type: "article",
   });
 
-  const priceFor = (c: CategoryRow) => livePrices[c.id] ?? Number(c.unit_price_sek);
-
-  // Unified view for the picker - both paths produce { id, name, description,
-  // party_size_together, price, available }
-  const pickerOptions = useMemo(() => {
-    if (isOneClicket) {
-      return supplierGroups.map((g) => ({
-        id: g.category_id,
-        name: g.name,
-        description: g.description,
-        party_size_together: g.party_size_together,
-        price: g.final_sek,
-        available: g.total_stock,
-        group: g,
-        cat: null as CategoryRow | null,
-      }));
-    }
-    return categories.map((c) => ({
-      id: c.id,
-      name: c.name,
-      description: c.description,
-      party_size_together: c.party_size_together,
-      price: priceFor(c),
-      available: c.qty_available,
-      group: null as SupplierGroup | null,
-      cat: c,
-    }));
-  }, [isOneClicket, supplierGroups, categories, livePrices]);
-
-  const selected = useMemo(
-    () => pickerOptions.find((o) => o.id === selectedCatId) ?? null,
-    [pickerOptions, selectedCatId],
-  );
-
-  /**
-   * Quantities the current selection permits.
-   *
-   * OneClicket versions carry split rules the supplier enforces on order —
-   * "sell in multiples of 2", or "avoid leaving one" (stock 5 allows
-   * 1,2,3,5 but not 4). A plain +/- stepper would happily land on a number
-   * insOrders rejects, so when the supplier tells us the legal set we step
-   * through it instead of through the integers.
-   */
-  const allowedQty = useMemo<number[] | null>(() => {
-    const list = selected?.group?.allowed_quantities;
-    return list && list.length ? list : null;
-  }, [selected]);
-
-  // Keep qty legal when the selection changes — otherwise a stepper left on
-  // 3 would carry an illegal value into a multiples-of-2 category.
-  useEffect(() => {
-    if (!selected) return;
-    setQty((q) => {
-      if (allowedQty) {
-        return allowedQty.includes(q)
-          ? q
-          : (allowedQty.find((n) => n >= q) ?? allowedQty[allowedQty.length - 1]);
-      }
-      return Math.min(Math.max(1, q), Math.max(1, selected.available));
-    });
-  }, [selected, allowedQty]);
-
-  const stepQty = (dir: 1 | -1) => {
-    setQty((q) => {
-      if (allowedQty) {
-        const i = allowedQty.indexOf(q);
-        if (i === -1) return allowedQty[0];
-        return allowedQty[Math.min(Math.max(i + dir, 0), allowedQty.length - 1)];
-      }
-      return dir === 1
-        ? Math.min(selected?.available ?? 1, q + 1)
-        : Math.max(1, q - 1);
-    });
-  };
-
-  const qtyAtMin = allowedQty ? qty <= allowedQty[0] : qty <= 1;
-  const qtyAtMax = allowedQty
-    ? qty >= allowedQty[allowedQty.length - 1]
-    : qty >= (selected?.available ?? 1);
-  const total = selected ? selected.price * qty : 0;
-
-  const handleCheckout = async () => {
-    if (!event || !selected) return;
-    setBusy(true);
-    try {
-      if (selected.price <= 0) throw new Error("Pris ej tillgängligt");
-
-      // OneClicket has no reservation step — stock is only committed when the
-      // supplier order is placed after payment — so both it and manual
-      // inventory create the internal order directly.
-      if (isOneClicket && !selected.id) {
-        throw new Error("Biljettkategorin kunde inte matchas - ladda om sidan");
-      }
-      const { data: orderId, error } = await supabase.rpc("create_order_with_items", {
-        p_event_id: event.id,
-        p_category_id: selected.id,
-        p_qty: qty,
-        p_unit_price_sek: selected.price,
-        p_customer_email: user?.email ?? "",
-      });
-      if (error || !orderId) throw error ?? new Error("Kunde inte skapa order");
-      navigate(`/checkout/${orderId}`);
-    } catch (e: any) {
-      console.error(e);
-      toast.error(e.message ?? "Något gick fel");
-    } finally {
-      setBusy(false);
-    }
-  };
 
   if (loading) {
     return (

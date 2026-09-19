@@ -54,7 +54,7 @@ export default function Integritetspolicy() {
             <p>Vi delar uppgifter med följande underleverantörer som är personuppgiftsbiträden:</p>
             <ul>
               <li><strong>Stripe</strong> (USA / EU) - kortbetalningar och fakturering.</li>
-              <li><strong>OneClicket / ESATOUR S.r.l.</strong> (Italien, EU) - biljettleverantör; bokningsmottagare och e-postadress lämnas vid bokning.</li>
+              <li><strong>football-data.org</strong> (EU) - matchdata; vi hämtar speltider och lag, inga personuppgifter lämnas.</li>
               <li><strong>Resend</strong> (USA) - utskick av e-post (orderbekräftelse, lösenordsåterställning).</li>
               <li><strong>Supabase</strong> (EU) - databas, autentisering och fillagring.</li>
               <li><strong>Cloudflare</strong> (USA / EU) - botskydd via Turnstile på formulär (IP-adress och webbläsarsignaler behandlas tillfälligt).</li>

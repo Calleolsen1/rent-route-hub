@@ -47,12 +47,8 @@ Deno.serve(async (req) => {
 
     return new Response(
       JSON.stringify({
-        // oneclicket
-        oneclicket_api_key: has("ONECLICKET_API_KEY"),
-        oneclicket_user_id: has("ONECLICKET_USER_ID"),
-        oneclicket_base_url_custom: has("ONECLICKET_BASE_URL"),
-        // Live ordering is opt-in — the supplier has no test environment.
-        oneclicket_orders_enabled: Deno.env.get("ONECLICKET_ORDERS_ENABLED") === "true",
+        // football-data.org — the fixtures source
+        football_data_api_key: has("FOOTBALL_DATA_API_KEY"),
 
         // stripe
         stripe_sandbox: has("STRIPE_SANDBOX_API_KEY"),
@@ -68,7 +64,7 @@ Deno.serve(async (req) => {
         site_url: Deno.env.get("SITE_URL") ?? null,
 
         // derived
-        oneclicket_configured: has("ONECLICKET_API_KEY"),
+        football_data_configured: has("FOOTBALL_DATA_API_KEY"),
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
