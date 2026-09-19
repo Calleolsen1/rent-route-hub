@@ -8,11 +8,13 @@ import fotbollImage from "@/assets/sport-fotboll.jpg";
 import { useSport, useEntriesForSport } from "@/hooks/useNavigation";
 import { slugify } from "@/data/sports";
 import { usePageMeta } from "@/lib/usePageMeta";
+import { useTeamCrests } from "@/hooks/useTeamCrests";
 
 export default function LeaguePage() {
   const { sport: sportSlug, league: leagueSlug } = useParams<{ sport: string; league: string }>();
   const sport = useSport(sportSlug);
   const entries = useEntriesForSport(sportSlug);
+  const crests = useTeamCrests();
 
   const teams = entries.filter((e) => e.group_label && slugify(e.group_label) === leagueSlug);
   const leagueName = teams[0]?.group_label ?? "";
@@ -76,12 +78,18 @@ export default function LeaguePage() {
                 to={`/services/sportresor/${sport.slug}/${team.slug}`}
                 className="group bg-card border border-border overflow-hidden hover:shadow-xl transition-shadow"
               >
-                <div className="aspect-[4/3] overflow-hidden">
-                  <img
-                    src={team.hero_image_url ?? fotbollImage}
-                    alt={team.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
+                <div className="aspect-[4/3] overflow-hidden bg-navy flex items-center justify-center p-10">
+                  {crests[team.name] ? (
+                    <img
+                      src={crests[team.name]}
+                      alt={`${team.name} klubbmärke`}
+                      className="w-full h-full object-contain drop-shadow-lg group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <span className="font-display text-2xl text-primary-foreground text-center">
+                      {team.name}
+                    </span>
+                  )}
                 </div>
                 <div className="p-5">
                   <h3 className="font-display text-xl text-foreground mb-1">{team.name}</h3>
