@@ -155,7 +155,7 @@ export default function Support() {
  <p className="text-white/60 leading-relaxed mb-8">
  Hos Kaisen Travel Group pratar du alltid med en riktig människa. Inga automatiserade svar, ingen kö. En dedikerad rådgivare tar hand om ditt ärende från start till mål.
  </p>
- <div className="grid grid-cols-3 gap-6 border-t border-white/10 pt-8">
+ <div className="grid grid-cols-3 gap-3 sm:gap-6 border-t border-white/10 pt-8">
  {[
  { value: "1 tim", label: "Svarstid på mejl" },
  { value: "24/7", label: "Akutlinje under resa" },
