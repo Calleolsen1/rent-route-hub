@@ -16,6 +16,7 @@ export default function LeaguePage() {
   const sport = useSport(sportSlug);
   const entries = useEntriesForSport(sportSlug);
   const crests = useTeamCrests();
+  const venuePhotos = useVenuePhotos();
 
   const teams = entries.filter((e) => e.group_label && slugify(e.group_label) === leagueSlug);
   const leagueName = teams[0]?.group_label ?? "";
