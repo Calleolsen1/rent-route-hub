@@ -67,6 +67,7 @@ export default function SportEntryPage() {
   const sport = useSport(sportSlug);
   const info = useEntry(sportSlug, entrySlug);
   const { open: openInquiry } = useInquiryDialog();
+  const venuePhotos = useVenuePhotos();
 
   if (!sport || !info) {
     return (
@@ -85,7 +86,11 @@ export default function SportEntryPage() {
 
   const labels = KIND_LABELS[sport.entry_kind] ?? KIND_LABELS.team;
   const VenueIcon = labels.venueIcon;
-  const heroSrc = info.hero_image_url ?? FALLBACKS_BY_KIND[sport.entry_kind] ?? fotbollImage;
+  const heroSrc =
+    venuePhotoFor(venuePhotos, info.venue, info.name) ??
+    info.hero_image_url ??
+    FALLBACKS_BY_KIND[sport.entry_kind] ??
+    fotbollImage;
   const features = (info.features_json && info.features_json.length
     ? info.features_json
     : DEFAULT_FEATURES_BY_KIND[sport.entry_kind] ?? DEFAULT_FEATURES_BY_KIND.team) ?? [];
