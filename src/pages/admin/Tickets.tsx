@@ -80,6 +80,7 @@ export default function AdminTickets() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
   const [ocSyncing, setOcSyncing] = useState(false);
+  const [f1Syncing, setF1Syncing] = useState(false);
   const [manualEventOpen, setManualEventOpen] = useState(false);
   const [categoryTarget, setCategoryTarget] = useState<{ eventId: string; label: string } | null>(null);
   const [search, setSearch] = useState("");
@@ -147,6 +148,23 @@ export default function AdminTickets() {
       toast.error((e as Error).message ?? "OneClicket-synk misslyckades");
     } finally {
       setOcSyncing(false);
+    }
+  };
+
+  const runF1Sync = async () => {
+    setF1Syncing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("f1-sync", {
+        body: { trigger: "manual" },
+      });
+      if (error) throw error;
+      const d = data as { upserted?: number; retired?: number } | null;
+      toast.success(`F1: ${d?.upserted ?? 0} race synkade`);
+      await load();
+    } catch (e) {
+      toast.error((e as Error).message ?? "F1-synk misslyckades");
+    } finally {
+      setF1Syncing(false);
     }
   };
 
@@ -394,6 +412,15 @@ export default function AdminTickets() {
             >
               {ocSyncing ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <RefreshCw className="h-3 w-3 mr-1" />}
               Synka allt
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={f1Syncing}
+              onClick={runF1Sync}
+            >
+              {f1Syncing ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <RefreshCw className="h-3 w-3 mr-1" />}
+              Synka F1
             </Button>
           </div>
         </div>

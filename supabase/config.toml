@@ -60,3 +60,7 @@ verify_jwt = true
 # Admin-verified inline AND gated by ONECLICKET_ORDERS_ENABLED.
 [functions.oneclicket-place-order]
 verify_jwt = true
+
+# F1 calendar from Jolpica (free, keyless). Admin-verified inline.
+[functions.f1-sync]
+verify_jwt = true
