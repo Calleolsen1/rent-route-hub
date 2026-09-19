@@ -51,6 +51,7 @@ export default function EventImage({
 }: Props) {
   const key = sport === "formula1" ? raceName : homeTeam;
   const photo = (key && photos[`${sport}|${key}`]) || coverUrl || null;
+  // photos[] can legitimately miss a team that only has a seating chart.
 
   const [c1, c2] = useMemo(() => coloursFor(key), [key]);
   const ink = useMemo(() => inkFor(c1), [c1]);

@@ -19,7 +19,8 @@ export function useTeamPhotos(): Record<string, string> {
           .select("sport, match_key, image_url");
         if (cancelled || !data) return;
         const map: Record<string, string> = {};
-        for (const r of data as { sport: string; match_key: string; image_url: string }[]) {
+        // image_url is nullable — a team may have only a seating chart.
+        for (const r of data as { sport: string; match_key: string; image_url: string | null }[]) {
           if (r.image_url) map[`${r.sport}|${r.match_key}`] = r.image_url;
         }
         setPhotos(map);

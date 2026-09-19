@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { usePublicPricesEnabled } from "@/hooks/usePublicPrices";
 import { useTeamPhotos } from "@/hooks/useTeamPhotos";
 import { useTeamCrests } from "@/hooks/useTeamCrests";
+import { useSeatmap } from "@/hooks/useSeatmap";
 import EventImage from "@/components/EventImage";
 import InquiryForm from "@/components/InquiryForm";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -100,6 +101,10 @@ export default function EventDetail() {
   const { enabled: showPrices } = usePublicPricesEnabled();
   const teamPhotos = useTeamPhotos();
   const teamCrests = useTeamCrests();
+  const seatmapUrl = useSeatmap(
+    event?.sport ?? null,
+    (event?.sport === "formula1" ? event?.race_name : event?.home_team) ?? null,
+  );
   const [inquiryOpen, setInquiryOpen] = useState(false);
   const [inquiryParts, setInquiryParts] = useState<string[]>(["biljett"]);
 
@@ -375,70 +380,56 @@ export default function EventDetail() {
         <div className="container mx-auto px-4 grid lg:grid-cols-3 gap-10 max-w-6xl">
           {/* Left */}
           <div className="lg:col-span-2 space-y-10">
+            {/* Match facts + seating chart.
+                There is no ticket picker any more: fixtures come from a
+                schedule API with no inventory, and the site quotes on
+                request. The chart is a reference so a customer can name the
+                section they want in the enquiry. */}
             <div>
               <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
-                Välj biljettkategori
+                Matchen
               </p>
-              <div className="space-y-3">
-                {pickerOptions.map((o) => {
-                  const isSel = o.id === selectedCatId;
-                  return (
-                    <button
-                      key={o.id}
-                      type="button"
-                      onClick={() => setSelectedCatId(o.id)}
-                      className={`w-full text-left rounded-lg border p-4 transition-colors ${
-                        isSel
-                          ? "border-primary bg-primary/5"
-                          : "border-border bg-card hover:bg-accent"
-                      }`}
-                    >
-                      <div className="flex items-start justify-between gap-4">
-                        <div>
-                          <p className="font-medium">{o.name}</p>
-                          {o.description && (
-                            <p className="text-xs text-muted-foreground mt-1">
-                              {o.description.replace(/<[^>]+>/g, "")}
-                            </p>
-                          )}
-
-                          <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
-                            <Users className="h-3 w-3" />
-                            Sitt tillsammans - vi ordnar placering för hela sällskapet
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          {!showPrices ? (
-                            <p className="text-xs text-muted-foreground whitespace-nowrap">
-                              Pris på förfrågan
-                            </p>
-                          ) : pricesLoading ? (
-                            <p className="font-display text-xl">…</p>
-                          ) : (
-                            <PriceTag
-                              currentSek={o.price}
-                              compareAt={{
-                                categorySek: o.cat?.compare_at_price_sek,
-                                categoryPct: o.cat?.compare_at_pct,
-                                eventSek: event.compare_at_price_sek,
-                                eventPct: event.compare_at_pct,
-                                defaultPct: compareAtDefaultPct,
-                              }}
-                              showFrom={false}
-                            />
-                          )}
-                          {showPrices && (
-                            <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">
-                              per biljett
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </button>
-                  );
-                })}
+              <div className="rounded-xl border border-border bg-card p-5 grid sm:grid-cols-3 gap-4">
+                <div>
+                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Datum</p>
+                  <p className="text-sm font-medium">{formatEventDateTime(event.starts_at)}</p>
+                </div>
+                {event.venue_name && (
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Arena</p>
+                    <p className="text-sm font-medium">{event.venue_name}</p>
+                  </div>
+                )}
+                {(event.city || event.country) && (
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Plats</p>
+                    <p className="text-sm font-medium">
+                      {[event.city, event.country].filter(Boolean).join(", ")}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
+
+            {seatmapUrl && (
+              <div>
+                <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
+                  Läktarkarta
+                </p>
+                <div className="rounded-xl border border-border bg-card overflow-hidden">
+                  <img
+                    src={seatmapUrl}
+                    alt={`Läktarkarta ${event.venue_name ?? ""}`}
+                    loading="lazy"
+                    className="w-full h-auto"
+                  />
+                  <p className="text-xs text-muted-foreground p-4 border-t border-border">
+                    Berätta i förfrågan vilken del av arenan ni helst vill sitta i, så
+                    ordnar vi platser därefter.
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Right - sticky summary */}

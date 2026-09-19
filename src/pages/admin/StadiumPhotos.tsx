@@ -23,7 +23,11 @@ type CoverageRow = {
   event_count: number;
   sample_venue: string | null;
   image_url: string | null;
+  seatmap_url: string | null;
 };
+
+/** Which image slot an upload targets. */
+type Slot = "image_url" | "seatmap_url";
 
 export default function AdminStadiumPhotos() {
   const [rows, setRows] = useState<CoverageRow[]>([]);
@@ -36,7 +40,7 @@ export default function AdminStadiumPhotos() {
     setLoading(true);
     const { data } = await (supabase as any)
       .from("home_team_photo_coverage")
-      .select("sport, match_key, event_count, sample_venue, image_url")
+      .select("sport, match_key, event_count, sample_venue, image_url, seatmap_url")
       .order("event_count", { ascending: false });
     setRows((data as CoverageRow[]) ?? []);
     setLoading(false);
@@ -44,12 +48,13 @@ export default function AdminStadiumPhotos() {
 
   useEffect(() => { load(); }, []);
 
-  const upload = async (row: CoverageRow, file: File) => {
-    const key = `${row.sport}|${row.match_key}`;
+  const upload = async (row: CoverageRow, file: File, slot: Slot) => {
+    const key = `${row.sport}|${row.match_key}|${slot}`;
     setBusy(key);
     try {
       const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
-      const path = `stadiums/${crypto.randomUUID()}.${ext}`;
+      const folder = slot === "seatmap_url" ? "seatmaps" : "stadiums";
+      const path = `${folder}/${crypto.randomUUID()}.${ext}`;
       const { error: upErr } = await supabase.storage
         .from(BUCKET)
         .upload(path, file, { upsert: false, cacheControl: "31536000" });
@@ -62,14 +67,21 @@ export default function AdminStadiumPhotos() {
           {
             sport: row.sport,
             match_key: row.match_key,
-            image_url: urlData.publicUrl,
+            // Preserve the other slot: the unique key is (sport, match_key),
+            // so an upsert that omitted it would blank the sibling image.
+            image_url: slot === "image_url" ? urlData.publicUrl : row.image_url,
+            seatmap_url: slot === "seatmap_url" ? urlData.publicUrl : row.seatmap_url,
             venue_label: row.sample_venue,
           },
           { onConflict: "sport,match_key" },
         );
       if (error) throw error;
 
-      toast.success(`${row.match_key}: bilden gäller nu ${row.event_count} matcher`);
+      toast.success(
+        slot === "seatmap_url"
+          ? `${row.match_key}: läktarkarta uppladdad`
+          : `${row.match_key}: bilden gäller nu ${row.event_count} matcher`,
+      );
       await load();
     } catch (e) {
       toast.error((e as Error).message ?? "Uppladdningen misslyckades");
@@ -110,8 +122,10 @@ export default function AdminStadiumPhotos() {
       <div>
         <h1 className="text-3xl font-display mb-2">Arenabilder</h1>
         <p className="text-muted-foreground text-sm">
-          En bild per hemmalag - den visas automatiskt på alla matcher laget spelar hemma.
-          Lag utan bild visar ett genererat kort, så inget saknar bild.
+          En arenabild per hemmalag - den visas automatiskt på alla matcher laget spelar
+          hemma. Lag utan bild visar klubbmärkena i stället, så inget saknar bild.
+          Läktarkartan visas på matchsidan som referens när kunden ska beskriva var de
+          vill sitta.
         </p>
       </div>
 
@@ -160,34 +174,45 @@ export default function AdminStadiumPhotos() {
                   {r.image_url && <Check className="inline h-3.5 w-3.5 ml-1.5 text-green-600" />}
                 </p>
                 <p className="text-xs text-muted-foreground truncate">
+                  {r.seatmap_url ? "Karta ✓ · " : ""}
                   {r.event_count} {r.event_count === 1 ? "match" : "matcher"}
                   {r.sample_venue ? ` · ${r.sample_venue}` : ""}
                   {r.sport === "formula1" ? " · F1" : ""}
                 </p>
               </div>
 
-              <input
-                ref={(el) => { inputs.current[key] = el; }}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) upload(r, f);
-                  e.target.value = "";
-                }}
-              />
-              <Button
-                size="sm"
-                variant="outline"
-                disabled={busy === key}
-                onClick={() => inputs.current[key]?.click()}
-              >
-                {busy === key
-                  ? <Loader2 className="h-3 w-3 animate-spin mr-1.5" />
-                  : <Upload className="h-3 w-3 mr-1.5" />}
-                {r.image_url ? "Byt bild" : "Ladda upp"}
-              </Button>
+              {(["image_url", "seatmap_url"] as Slot[]).map((slot) => {
+                const slotKey = `${key}|${slot}`;
+                const has = slot === "image_url" ? r.image_url : r.seatmap_url;
+                return (
+                  <div key={slot} className="flex-shrink-0">
+                    <input
+                      ref={(el) => { inputs.current[slotKey] = el; }}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        if (f) upload(r, f, slot);
+                        e.target.value = "";
+                      }}
+                    />
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled={busy === slotKey}
+                      onClick={() => inputs.current[slotKey]?.click()}
+                    >
+                      {busy === slotKey
+                        ? <Loader2 className="h-3 w-3 animate-spin mr-1.5" />
+                        : <Upload className="h-3 w-3 mr-1.5" />}
+                      {slot === "seatmap_url"
+                        ? (has ? "Byt karta" : "Läktarkarta")
+                        : (has ? "Byt bild" : "Arenabild")}
+                    </Button>
+                  </div>
+                );
+              })}
               {r.image_url && (
                 <Button size="icon" variant="ghost" disabled={busy === key} onClick={() => remove(r)}>
                   <Trash2 className="h-3.5 w-3.5" />

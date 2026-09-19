@@ -18,8 +18,33 @@ export const formatEventDate = (iso: string) =>
     timeZone: TZ,
   });
 
-export const formatEventDateTime = (iso: string) =>
-  new Date(iso).toLocaleString("sv-SE", {
+/**
+ * True when the source hasn't confirmed a kick-off time yet.
+ *
+ * football-data.org publishes such fixtures at exactly midnight UTC. Rendering
+ * that verbatim produced "25 oktober kl. 02:00" for a La Liga match — a time
+ * that does not exist. No European kick-off is at 00:00 UTC, so treating it as
+ * a placeholder is safe.
+ */
+export const isTimeUnconfirmed = (iso: string): boolean => {
+  const d = new Date(iso);
+  return d.getUTCHours() === 0 && d.getUTCMinutes() === 0;
+};
+
+/** Datum utan tid, t.ex. "25 oktober 2026". */
+export const formatEventDateOnly = (iso: string) =>
+  new Date(iso).toLocaleDateString("sv-SE", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: TZ,
+  });
+
+export const formatEventDateTime = (iso: string) => {
+  if (isTimeUnconfirmed(iso)) {
+    return `${formatEventDateOnly(iso)} - tid ej fastställd`;
+  }
+  return new Date(iso).toLocaleString("sv-SE", {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -27,6 +52,7 @@ export const formatEventDateTime = (iso: string) =>
     minute: "2-digit",
     timeZone: TZ,
   });
+};
 
 /** Kort datum t.ex. "19 sep" (alltid svensk tid). */
 export const svDateShort = (iso: string) =>
