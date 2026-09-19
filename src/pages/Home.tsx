@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, Users, Trophy, Star, Shield, Globe, Calendar, MapPin, Flag, Search } from "lucide-react";
 import Footer from "@/components/Footer";
+import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
 import {
   Carousel,
@@ -770,6 +771,7 @@ const Home = () => {
       </section>
 
 
+      <RequestCta />
       <Footer />
     </div>
   );

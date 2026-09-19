@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ChevronDown, ChevronUp, ArrowRight, Phone, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
+import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
 
 type FAQItem = {
@@ -200,7 +201,8 @@ export default function FAQ() {
  </div>
  </section>
 
- <Footer />
+ <RequestCta />
+      <Footer />
  </div>
  );
 }

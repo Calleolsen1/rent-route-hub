@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Footer from "@/components/Footer";
+import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
 import TeamSection from "@/components/TeamSection";
 import heroImage from "@/assets/about-hero.jpg";
@@ -208,7 +209,8 @@ export default function About() {
  </div>
  </section>
 
- <Footer />
+ <RequestCta />
+      <Footer />
  </div>);
 
 }

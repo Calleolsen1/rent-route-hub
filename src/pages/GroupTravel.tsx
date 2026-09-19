@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Users, Trophy, Briefcase, Heart, Mountain, Utensils, Check, PartyPopper, Waves, Wine, Bus, MessageSquare } from "lucide-react";
 import Footer from "@/components/Footer";
+import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
 import FloatingInquiryButton from "@/components/FloatingInquiryButton";
 import { useInquiryDialog } from "@/components/InquiryDialog";
@@ -260,6 +261,7 @@ export default function GroupTravel() {
           intro: "Antal personer, ungefärliga datum, destination och budget - vi återkommer med ett skräddarsytt förslag inom 24 timmar på vardagar.",
         }}
       />
+      <RequestCta />
       <Footer />
     </div>
   );

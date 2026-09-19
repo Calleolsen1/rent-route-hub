@@ -2,6 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, MapPin, Trophy } from "lucide-react";
 import Footer from "@/components/Footer";
+import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
 import fotbollImage from "@/assets/sport-fotboll.jpg";
 import { useSport, useEntriesForSport } from "@/hooks/useNavigation";
@@ -35,7 +36,8 @@ export default function LeaguePage() {
             <Button className="rounded-full">Tillbaka till Sportresor</Button>
           </Link>
         </div>
-        <Footer />
+        <RequestCta />
+      <Footer />
       </div>
     );
   }
