@@ -10,6 +10,8 @@ import { useSport, useEntriesForSport } from "@/hooks/useNavigation";
 import { useVenuePhotos, venuePhotoFor } from "@/hooks/useVenuePhotos";
 import { slugify } from "@/data/sports";
 import { usePageMeta } from "@/lib/usePageMeta";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function SportPage() {
   const { sport: sportSlug } = useParams<{ sport: string }>();
@@ -19,6 +21,24 @@ export default function SportPage() {
 
   const isRace = sport?.entry_kind === "race";
   const heroImage = isRace ? f1Image : fotbollImage;
+
+  // Map race name -> event id so cards can link straight to the event page.
+  const [raceEventIds, setRaceEventIds] = useState<Record<string, string>>({});
+  useEffect(() => {
+    if (!isRace) return;
+    supabase
+      .from("events")
+      .select("id, race_name")
+      .eq("sport", "formula1")
+      .not("race_name", "is", null)
+      .then(({ data }) => {
+        const map: Record<string, string> = {};
+        for (const e of data ?? []) {
+          if (e.race_name && !map[e.race_name]) map[e.race_name] = e.id;
+        }
+        setRaceEventIds(map);
+      });
+  }, [isRace]);
 
   usePageMeta({
     title: sport
