@@ -161,9 +161,27 @@ export default function About() {
   Har du en idé, ett evenemang eller en resa som du inte hittar här? Hör av dig. Vi välkomnar en dialog och hjälper gärna till att hitta rätt lösning, även när den inte finns färdigpaketerad på hemsidan.
   </p>
   </div>
-  <p className="font-display text-xl md:text-2xl text-foreground mt-10">
-  Berätta vart du vill - så hjälper vi dig hela vägen.
-  </p>
+   <p className="font-display text-xl md:text-2xl text-foreground mt-10">
+   Berätta vart du vill - så hjälper vi dig hela vägen.
+   </p>
+   <div className="mt-6">
+   <Button
+   size="lg"
+   className="rounded-full bg-navy text-white hover:bg-navy/90 px-10 tracking-wider text-sm font-semibold border-0"
+   onClick={() =>
+   openInquiry({
+   type: "contact",
+   presetTopic: "Begär offert",
+   heading: "Begär offert",
+   intro: "Berätta vart du vill resa så återkommer vi med en skräddarsydd offert.",
+   showTripParts: true,
+   })
+   }
+   >
+   Begär offert
+   <ArrowRight className="ml-2 h-4 w-4" />
+   </Button>
+   </div>
   </div>
   </section>
 
