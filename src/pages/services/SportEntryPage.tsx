@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, Calendar, MapPin, Trophy, Flag } from "lucide-react";
@@ -68,6 +69,9 @@ export default function SportEntryPage() {
   const info = useEntry(sportSlug, entrySlug);
   const { open: openInquiry } = useInquiryDialog();
   const venuePhotos = useVenuePhotos();
+  // Dölj sidans egen "Hittar du inte matchen"-rad när listan redan visar
+  // sitt "Inga evenemang matchade"-box, annars blir det dubbla boxar.
+  const [eventsEmpty, setEventsEmpty] = useState(false);
 
   if (!sport || !info) {
     return (
