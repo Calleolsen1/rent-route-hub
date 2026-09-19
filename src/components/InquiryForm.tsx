@@ -93,6 +93,8 @@ export default function InquiryForm({
   defaultTripParts,
 }: Props) {
   const [submitting, setSubmitting] = useState(false);
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [serverError, setServerError] = useState<string | null>(null);
@@ -266,11 +268,37 @@ export default function InquiryForm({
           <>
             <div>
               <Label htmlFor="preferred_dates_start" className="text-xs uppercase tracking-wider">Önskat datum (från)</Label>
-              <Input id="preferred_dates_start" name="preferred_dates_start" type="date" className={inputCls} />
+              <Input
+                id="preferred_dates_start"
+                name="preferred_dates_start"
+                type="date"
+                className={inputCls}
+                value={dateFrom}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setDateFrom(v);
+                  // Keep "till" in the same month as "från" unless the user
+                  // has already picked a later date themselves.
+                  if (v && (!dateTo || dateTo < v)) {
+                    const end = new Date(`${v}T00:00:00`);
+                    end.setMonth(end.getMonth() + 1);
+                    end.setDate(0); // last day of the from-month
+                    setDateTo(end.toISOString().slice(0, 10));
+                  }
+                }}
+              />
             </div>
             <div>
               <Label htmlFor="preferred_dates_end" className="text-xs uppercase tracking-wider">Önskat datum (till)</Label>
-              <Input id="preferred_dates_end" name="preferred_dates_end" type="date" className={inputCls} />
+              <Input
+                id="preferred_dates_end"
+                name="preferred_dates_end"
+                type="date"
+                className={inputCls}
+                value={dateTo}
+                min={dateFrom || undefined}
+                onChange={(e) => setDateTo(e.target.value)}
+              />
             </div>
           </>
         )}
