@@ -203,7 +203,7 @@ export default function UpcomingEventsList({
           {months.map((m) => {
             const count = events.filter((e) => monthKey(e.starts_at) === m).length;
             const [y, mm] = m.split("-");
-            const label = `${MONTHS_SV[Number(mm) - 1]} ${y.slice(2)}`;
+            const label = `${MONTHS_SV[Number(mm) - 1]} ${y}`;
             return (
               <button
                 key={m}
