@@ -1819,6 +1819,24 @@ export type Database = {
           },
         ]
       }
+      team_crests: {
+        Row: {
+          crest_url: string
+          team_name: string
+          updated_at: string
+        }
+        Insert: {
+          crest_url: string
+          team_name: string
+          updated_at?: string
+        }
+        Update: {
+          crest_url?: string
+          team_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       team_members: {
         Row: {
           bio: string | null
