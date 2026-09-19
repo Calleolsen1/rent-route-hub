@@ -29,6 +29,7 @@ const navGroups = [
     items: [
       { to: "/admin/banners", label: "Hero-banners", icon: Image },
       { to: "/admin/hemsidan/resor", label: "Resor på startsidan", icon: Plane },
+      { to: "/admin/hemsidan/upplevelser", label: "Upplevelser på startsidan", icon: Image },
       { to: "/admin/content", label: "Innehåll", icon: FileText },
       { to: "/admin/navigation", label: "Navigation", icon: Menu },
       { to: "/admin/team", label: "Team", icon: UserSquare2 },
