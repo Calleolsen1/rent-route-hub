@@ -1016,7 +1016,7 @@ export default function BackofficeBookingDetail() {
                 {docs.map((d) => (
                   <tr key={d.id} className="border-t border-border">
                     <td className="px-4 py-3 whitespace-nowrap">
-                      {new Date(d.sent_at).toLocaleString("sv-SE", {
+                      {new Date(d.sent_at).toLocaleString("sv-SE", { timeZone: "Europe/Stockholm",
                         dateStyle: "short",
                         timeStyle: "short",
                       })}

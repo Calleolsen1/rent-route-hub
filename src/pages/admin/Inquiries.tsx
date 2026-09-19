@@ -246,7 +246,7 @@ export default function AdminInquiries() {
                   onClick={() => setSelected(r)}
                 >
                   <td className="px-4 py-3 text-muted-foreground">
-                    {new Date(r.created_at).toLocaleString("sv-SE", {
+                    {new Date(r.created_at).toLocaleString("sv-SE", { timeZone: "Europe/Stockholm",
                       dateStyle: "short",
                       timeStyle: "short",
                     })}
@@ -293,7 +293,7 @@ export default function AdminInquiries() {
                   </Badge>
                   <Badge variant="outline">{TYPE_LABEL[selected.type]}</Badge>
                   <span className="text-xs text-muted-foreground ml-auto">
-                    {new Date(selected.created_at).toLocaleString("sv-SE")}
+                    {new Date(selected.created_at).toLocaleString("sv-SE", { timeZone: "Europe/Stockholm" })}
                   </span>
                 </div>
 
@@ -416,7 +416,7 @@ export default function AdminInquiries() {
                           <div className="flex items-center justify-between text-xs text-muted-foreground">
                             <span>
                               {new Intl.NumberFormat("sv-SE").format(Number(q.total_sek))} SEK
-                              {" · "}gäller t.o.m. {new Date(q.expires_at).toLocaleDateString("sv-SE")}
+                              {" · "}gäller t.o.m. {new Date(q.expires_at).toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" })}
                             </span>
                             <a
                               href={`/quote/${q.public_token}`}

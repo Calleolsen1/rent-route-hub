@@ -235,7 +235,7 @@ export default function AdminOverview() {
                 <div className="text-right flex-shrink-0 ml-4">
                   <p className="text-sm">{formatSek(Number(o.total_sek))}</p>
                   <p className="text-xs text-muted-foreground">
-                    {new Date(o.created_at).toLocaleDateString("sv-SE")}
+                    {new Date(o.created_at).toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" })}
                   </p>
                 </div>
               </Link>

@@ -261,7 +261,7 @@ export default function AdminDiagnostics() {
               </Badge>
               <span className="font-mono uppercase tracking-wider text-xs">{lastSync.resource_type}</span>
               <span className="text-xs text-muted-foreground ml-auto">
-                {new Date(lastSync.started_at).toLocaleString("sv-SE")}
+                {new Date(lastSync.started_at).toLocaleString("sv-SE", { timeZone: "Europe/Stockholm" })}
               </span>
             </div>
             <div className="text-xs text-muted-foreground">

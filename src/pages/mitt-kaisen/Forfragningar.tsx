@@ -109,7 +109,7 @@ export default function MittKaisenForfragningar() {
                       {TYPE_LABEL[r.type]}
                     </p>
                     <p className="text-xs mt-1" style={{ color: C.textDim }}>
-                      {new Date(r.created_at).toLocaleDateString("sv-SE")}
+                      {new Date(r.created_at).toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" })}
                     </p>
                   </div>
                   <span

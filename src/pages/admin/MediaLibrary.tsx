@@ -178,7 +178,7 @@ export default function AdminMediaLibrary() {
                 {f.size != null && (
                   <p className="text-[10px] text-muted-foreground">
                     {(f.size / 1024).toFixed(0)} KB
-                    {f.updated_at && ` · ${new Date(f.updated_at).toLocaleDateString("sv-SE")}`}
+                    {f.updated_at && ` · ${new Date(f.updated_at).toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" })}`}
                   </p>
                 )}
                 <div className="flex items-center gap-1">

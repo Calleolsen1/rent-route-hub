@@ -228,7 +228,7 @@ export default function QuotePage() {
               </div>
               <p className="text-[11px] text-muted-foreground">
                 Offerten gäller till och med{" "}
-                {new Date(quote.expires_at).toLocaleDateString("sv-SE", {
+                {new Date(quote.expires_at).toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm",
                   day: "numeric",
                   month: "long",
                   year: "numeric",
