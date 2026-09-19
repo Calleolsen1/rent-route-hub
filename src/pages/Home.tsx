@@ -264,6 +264,17 @@ const Home = () => {
   const navigate = useNavigate();
   const [featured, setFeatured] = useState<FeaturedOffer[]>([]);
   const [curatedTrips, setCuratedTrips] = useState<FeaturedOffer[]>([]);
+  const [experienceRows, setExperienceRows] = useState<
+    Array<{
+      title: string;
+      subtitle: string;
+      description: string;
+      image: string;
+      href: string;
+      tag: string;
+      ctaLabel?: string;
+    }> | null
+  >(null);
   const [heroSlides, setHeroSlides] = useState<HeroSlide[]>(fallbackHeroSlides);
   const [compareAtDefaultPct, setCompareAtDefaultPct] = useState<number>(0);
   const { enabled: showPrices } = usePublicPricesEnabled();
@@ -398,6 +409,30 @@ const Home = () => {
           isPopular: !!r.is_popular,
         })) as FeaturedOffer[];
       setCuratedTrips(rows);
+    })();
+  }, []);
+
+  // Admin-curated experience cards ("Upplevelser som formar minnen").
+  useEffect(() => {
+    (async () => {
+      const { data } = await (supabase as any)
+        .from("home_experiences")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+      const rows = (data ?? []) as Array<any>;
+      if (!rows.length) return;
+      setExperienceRows(
+        rows.map((r, i) => ({
+          title: r.title,
+          subtitle: r.subtitle ?? "",
+          description: r.description ?? "",
+          image: resolveImageUrl(r.image_url ?? "", ASSET_LOOKUP, services[i % services.length].image),
+          href: r.href ?? "/contact",
+          tag: r.tag ?? "",
+          ctaLabel: r.cta_label ?? "Läs mer",
+        })),
+      );
     })();
   }, []);
 
@@ -640,7 +675,7 @@ const Home = () => {
 
           <Carousel opts={{ align: "start" }}>
             <CarouselContent className="-ml-4">
-              {services.map((service) => (
+              {(experienceRows ?? services).map((service: any) => (
                 <CarouselItem key={service.title} className="pl-4 basis-[70%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
                   <Link to={service.href} className="group block h-full">
                     <div className="relative overflow-hidden rounded-lg aspect-[4/3] mb-3">
@@ -650,11 +685,13 @@ const Home = () => {
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/20 to-transparent" />
-                      <div className="absolute top-3 left-3">
-                        <span className="text-[9px] tracking-[0.2em] uppercase bg-primary text-primary-foreground px-2.5 py-1 font-sans">
-                          {service.tag}
-                        </span>
-                      </div>
+                      {service.tag ? (
+                        <div className="absolute top-3 left-3">
+                          <span className="text-[9px] tracking-[0.2em] uppercase bg-primary text-primary-foreground px-2.5 py-1 font-sans">
+                            {service.tag}
+                          </span>
+                        </div>
+                      ) : null}
                       <div className="absolute bottom-0 left-0 right-0 p-4">
                         <h3 className="font-display text-lg text-white mb-0.5">{service.title}</h3>
                         <p className="text-[10px] tracking-wider text-white uppercase font-sans">{service.subtitle}</p>
@@ -662,7 +699,7 @@ const Home = () => {
                     </div>
                     <p className="text-muted-foreground text-xs leading-relaxed mb-2">{service.description}</p>
                     <span className="text-primary text-xs font-medium tracking-wide flex items-center gap-2 transition-all group-hover:gap-3">
-                      Läs mer <ArrowRight className="h-3 w-3" />
+                      {service.ctaLabel ?? "Läs mer"} <ArrowRight className="h-3 w-3" />
                     </span>
                   </Link>
                 </CarouselItem>
