@@ -630,6 +630,63 @@ export type Database = {
         }
         Relationships: []
       }
+      home_trips: {
+        Row: {
+          created_at: string
+          cta_label: string
+          date_label: string | null
+          days_label: string | null
+          href: string
+          id: string
+          image_url: string | null
+          is_active: boolean
+          is_new: boolean
+          is_popular: boolean
+          price_from_sek: number | null
+          sort_order: number
+          tag: string | null
+          title: string
+          updated_at: string
+          valid_until: string | null
+        }
+        Insert: {
+          created_at?: string
+          cta_label?: string
+          date_label?: string | null
+          days_label?: string | null
+          href?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          is_new?: boolean
+          is_popular?: boolean
+          price_from_sek?: number | null
+          sort_order?: number
+          tag?: string | null
+          title: string
+          updated_at?: string
+          valid_until?: string | null
+        }
+        Update: {
+          created_at?: string
+          cta_label?: string
+          date_label?: string | null
+          days_label?: string | null
+          href?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          is_new?: boolean
+          is_popular?: boolean
+          price_from_sek?: number | null
+          sort_order?: number
+          tag?: string | null
+          title?: string
+          updated_at?: string
+          valid_until?: string | null
+        }
+        Relationships: []
+      }
       hotels: {
         Row: {
           address_line1: string | null
