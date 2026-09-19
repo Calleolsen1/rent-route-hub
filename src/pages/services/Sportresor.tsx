@@ -103,12 +103,8 @@ export default function Sportresor() {
  Resor för <em className="italic font-light text-white">Sportälskare</em>
  </h1>
  <p className="text-white/80 text-sm max-w-xl">
- Köp biljetter till F1, Premier League, Champions League och fler.
+ Vi skräddarsyr din resa till F1, fotboll, ishockey, tennis och golf - med hotell, transfer och allt det praktiska ordnat.
  </p>
- </div>
-
- <div className="mt-6 max-w-5xl w-full mx-auto">
- <SportFilters value={filters} onChange={setFilters} />
  </div>
  </div>
  </section>
