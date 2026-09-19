@@ -9,7 +9,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, Calendar, MapPin, Minus, Plus, Ticket, Users } from "lucide-react";
+import { ArrowLeft, ArrowRight, Calendar, Hotel, MapPin, Minus, Plane, Plus, Ticket, Users } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { formatEventDateTime, formatSek } from "@/lib/formatSek";
@@ -98,6 +98,7 @@ export default function EventDetail() {
   const { enabled: showPrices } = usePublicPricesEnabled();
   const teamPhotos = useTeamPhotos();
   const [inquiryOpen, setInquiryOpen] = useState(false);
+  const [inquiryParts, setInquiryParts] = useState<string[]>(["biljett"]);
 
   useEffect(() => {
     (async () => {
@@ -381,7 +382,45 @@ export default function EventDetail() {
               </div>
             )}
 
-
+            {/* Make it obvious we sell complete packages, not just tickets */}
+            <div className="rounded-xl border border-primary/30 bg-primary/5 p-6">
+              <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
+                Komplett resepaket
+              </p>
+              <h2 className="font-display text-2xl mb-2">
+                Vi ordnar hela resan - inte bara biljetten
+              </h2>
+              <p className="text-sm text-foreground/80 leading-relaxed mb-5">
+                Utöver matchbiljetter paketerar vi gärna hotell och flyg till {event.city ?? "destinationen"}.
+                En förfrågan, ett pris, en kontakt - vi sköter allt det praktiska.
+              </p>
+              <div className="grid sm:grid-cols-3 gap-3 mb-5">
+                {[
+                  { icon: Ticket, label: "Biljetter", text: "Officiella platser på läktaren" },
+                  { icon: Hotel, label: "Hotell", text: "Handplockat boende nära arenan" },
+                  { icon: Plane, label: "Flyg", text: "Smidiga tider, tur och retur" },
+                ].map(({ icon: Icon, label, text }) => (
+                  <div key={label} className="flex items-start gap-3 rounded-lg bg-background/60 p-3">
+                    <Icon className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium">{label}</p>
+                      <p className="text-xs text-muted-foreground">{text}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <Button
+                variant="outline"
+                className="rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                onClick={() => {
+                  setInquiryParts(["biljett", "hotell", "flyg"]);
+                  setInquiryOpen(true);
+                }}
+              >
+                Begär offert på resepaket
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
 
             <div>
               <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
@@ -562,14 +601,17 @@ export default function EventDetail() {
                   ) : (
                     <>
                       <Button
-                        onClick={() => setInquiryOpen(true)}
+                        onClick={() => {
+                          setInquiryParts(["biljett"]);
+                          setInquiryOpen(true);
+                        }}
                         className="w-full rounded-full bg-primary hover:bg-primary/90 tracking-wider text-sm"
                       >
                         Begär pris
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
                       <p className="text-[11px] text-muted-foreground text-center mt-3">
-                        Vi återkommer med pris och tillgänglighet för {qty} biljett{qty === 1 ? "" : "er"}.
+                        Vi återkommer med pris och tillgänglighet. Vill du även ha hotell och flyg paketerar vi hela resan.
                       </p>
                     </>
                   )}
@@ -594,6 +636,7 @@ export default function EventDetail() {
       <Dialog open={inquiryOpen} onOpenChange={setInquiryOpen}>
         <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
           <InquiryForm
+            key={inquiryParts.join(",")}
             type="contact"
             eyebrow="Prisförfrågan"
             heading={`Begär pris - ${headline ?? event.tournament_name}`}
@@ -606,7 +649,7 @@ export default function EventDetail() {
             ].filter(Boolean).join(" · ")}
             showDates={false}
             showTripParts
-            defaultTripParts={["biljett"]}
+            defaultTripParts={inquiryParts}
           />
         </DialogContent>
       </Dialog>
