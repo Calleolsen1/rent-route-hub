@@ -116,7 +116,7 @@ export default function SportEntryPage() {
         <div className="container mx-auto px-4 max-w-6xl">
           <UpcomingEventsList
             {...{ [labels.queryField]: info.name }}
-            limit={6}
+            showFilters
             eyebrow="Köp biljett direkt"
             title={labels.upcomingTitle(info.name)}
             compact

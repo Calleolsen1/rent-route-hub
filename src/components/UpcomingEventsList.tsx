@@ -48,7 +48,21 @@ type Props = {
   title?: string;
   eyebrow?: string;
   compact?: boolean;
+  /**
+   * Show a month filter and every matching fixture rather than a teaser.
+   * A club plays ~20 home games a season, so a team page that stops at six
+   * hides most of what is on sale.
+   */
+  showFilters?: boolean;
 };
+
+/** Svenska månadsnamn för filterknapparna. */
+const MONTHS_SV = [
+  "jan", "feb", "mars", "april", "maj", "juni",
+  "juli", "aug", "sep", "okt", "nov", "dec",
+];
+
+const monthKey = (iso: string) => iso.slice(0, 7); // YYYY-MM
 
 export default function UpcomingEventsList({
   sport,
@@ -59,11 +73,16 @@ export default function UpcomingEventsList({
   dateFrom,
   dateTo,
   sort = "soonest",
-  limit = 6,
+  limit,
   title = "Aktuella biljetter",
   eyebrow = "Köp biljett",
   compact = false,
+  showFilters = false,
 }: Props) {
+  // A filtered list needs the whole season in hand to build its month chips;
+  // an unfiltered teaser keeps the old six-card default.
+  const effectiveLimit = limit ?? (showFilters ? 300 : 6);
+  const [month, setMonth] = useState<string | null>(null);
   const [events, setEvents] = useState<EventRow[]>([]);
   const { open: openInquiry } = useInquiryDialog();
   const [loading, setLoading] = useState(true);
@@ -88,7 +107,7 @@ export default function UpcomingEventsList({
         .eq("status", "upcoming")
         .gte("starts_at", dateFrom ?? new Date().toISOString())
         .order("starts_at", { ascending: sort === "soonest" })
-        .limit(limit);
+        .limit(effectiveLimit);
       if (sport) q = q.eq("sport", sport);
       // Home fixtures only. A team page sells the trip to that club's city —
       // an away game means a different stadium, a different city, and the
@@ -110,7 +129,16 @@ export default function UpcomingEventsList({
       setEvents((data as EventRow[]) ?? []);
       setLoading(false);
     })();
-  }, [sport, team, race, tournament, query, dateFrom, dateTo, sort, limit]);
+  }, [sport, team, race, tournament, query, dateFrom, dateTo, sort, effectiveLimit]);
+
+  // Months present in the result, in fixture order — only months that
+  // actually have games become buttons, so a chip can never yield nothing.
+  const months = showFilters
+    ? [...new Set(events.map((e) => monthKey(e.starts_at)))]
+    : [];
+  const visible = month
+    ? events.filter((e) => monthKey(e.starts_at) === month)
+    : events;
 
   if (loading) {
     return (
@@ -159,8 +187,43 @@ export default function UpcomingEventsList({
           {title}
         </h2>
       )}
+      {showFilters && months.length > 1 && (
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
+          <button
+            type="button"
+            onClick={() => setMonth(null)}
+            className={`rounded-full border px-3.5 py-1.5 text-xs transition-colors ${
+              month === null
+                ? "border-primary bg-primary text-primary-foreground"
+                : "border-border bg-background text-muted-foreground hover:border-primary/40"
+            }`}
+          >
+            Alla ({events.length})
+          </button>
+          {months.map((m) => {
+            const count = events.filter((e) => monthKey(e.starts_at) === m).length;
+            const [y, mm] = m.split("-");
+            const label = `${MONTHS_SV[Number(mm) - 1]} ${y.slice(2)}`;
+            return (
+              <button
+                key={m}
+                type="button"
+                onClick={() => setMonth(m === month ? null : m)}
+                className={`rounded-full border px-3.5 py-1.5 text-xs transition-colors ${
+                  month === m
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-background text-muted-foreground hover:border-primary/40"
+                }`}
+              >
+                {label} ({count})
+              </button>
+            );
+          })}
+        </div>
+      )}
+
       <div className={`grid md:grid-cols-2 lg:grid-cols-3 ${compact ? "gap-4" : "gap-6"}`}>
-        {events.map((e) => {
+        {visible.map((e) => {
           const headline =
             e.sport === "soccer"
               ? `${e.home_team} vs ${e.away_team}`
