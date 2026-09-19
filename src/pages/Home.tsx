@@ -662,8 +662,6 @@ const Home = () => {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="hidden md:flex -left-5 h-10 w-10" />
-            <CarouselNext className="hidden md:flex -right-5 h-10 w-10" />
           </Carousel>
         </div>
       </section>
