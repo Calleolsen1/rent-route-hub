@@ -23,8 +23,6 @@ type OrderRow = {
   customer_email: string;
   customer_name: string | null;
   customer_phone: string | null;
-  xs2_reservation_id: string | null;
-  reservation_expires_at: string | null;
 };
 
 type ItemRow = {
@@ -57,8 +55,6 @@ export default function Checkout() {
   const [phone, setPhone] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
-  const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
-  const [renewing, setRenewing] = useState(false);
 
   useEffect(() => {
     if (authLoading) return;
@@ -84,74 +80,9 @@ export default function Checkout() {
     })();
   }, [orderId, user, authLoading, navigate]);
 
-  // Reservation hold countdown - xs2 holds tickets for 10 minutes. Refuse to
-  // start payment once expired; nudge the user back to the event page.
-  useEffect(() => {
-    if (!order?.reservation_expires_at) return;
-    const tick = () => {
-      const ms = new Date(order.reservation_expires_at!).getTime() - Date.now();
-      setSecondsLeft(Math.max(0, Math.floor(ms / 1000)));
-    };
-    tick();
-    const handle = setInterval(tick, 1000);
-    return () => clearInterval(handle);
-  }, [order?.reservation_expires_at]);
-
-  const reservationExpired = secondsLeft !== null && secondsLeft <= 0;
-  const formattedHold =
-    secondsLeft == null
-      ? null
-      : `${Math.floor(secondsLeft / 60)}:${String(secondsLeft % 60).padStart(2, "0")}`;
-
-  const handleRenew = async () => {
-    if (!order) return;
-    setRenewing(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("xs2-renew-reservation", {
-        body: { order_id: order.id },
-      });
-      if (error || (data as any)?.error) {
-        const eventId = items[0]?.events?.id;
-        toast.error(
-          (data as any)?.error ?? error?.message ?? "Kunde inte förnya reservationen",
-        );
-        if (eventId) navigate(`/sport/event/${eventId}`);
-        return;
-      }
-      // Refresh the order so the countdown picks up the new expires_at.
-      const { data: o } = await supabase
-        .from("orders")
-        .select("*")
-        .eq("id", order.id)
-        .maybeSingle();
-      if (o) setOrder(o as unknown as OrderRow);
-      if ((data as any)?.price_changed) {
-        toast.warning("Priset har ändrats - granska summan innan du betalar.");
-        // Reload items so the right-column summary shows the new prices
-        const { data: its } = await supabase
-          .from("order_items")
-          .select(
-            "id, qty, unit_price_sek, events(id, sport, tournament_name, home_team, away_team, race_name, venue_name, city, starts_at), ticket_categories(id, name)",
-          )
-          .eq("order_id", order.id);
-        setItems((its as unknown as ItemRow[]) ?? []);
-      } else {
-        toast.success("Reservationen är förnyad - 10 nya minuter.");
-      }
-    } catch (e: any) {
-      toast.error(e.message ?? "Kunde inte förnya reservationen");
-    } finally {
-      setRenewing(false);
-    }
-  };
-
   const handleStartPayment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!order) return;
-    if (reservationExpired) {
-      toast.error("Reservationen har gått ut - gå tillbaka och välj biljetter igen.");
-      return;
-    }
     setSubmitting(true);
     try {
       const { error } = await supabase
@@ -219,36 +150,6 @@ export default function Checkout() {
           <h1 className="font-display text-4xl md:text-5xl">Slutför din beställning</h1>
         </div>
       </section>
-
-      {order?.reservation_expires_at && (
-        <div
-          className={`border-b ${
-            reservationExpired
-              ? "bg-destructive/10 border-destructive/30 text-destructive"
-              : "bg-amber-50 border-amber-200 text-amber-900"
-          }`}
-        >
-          <div className="container mx-auto px-4 py-3 text-sm text-center font-medium flex items-center justify-center gap-3 flex-wrap">
-            {reservationExpired ? (
-              <>
-                <span>Reservationen har gått ut.</span>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  disabled={renewing}
-                  onClick={handleRenew}
-                >
-                  {renewing ? "Förnyar..." : "Reservera om"}
-                </Button>
-              </>
-            ) : (
-              <span>
-                Biljetterna är reserverade i {formattedHold} - slutför betalningen innan dess.
-              </span>
-            )}
-          </div>
-        </div>
-      )}
 
       <section className="py-12 bg-background">
         <div className="container mx-auto px-4 max-w-5xl grid lg:grid-cols-3 gap-8">

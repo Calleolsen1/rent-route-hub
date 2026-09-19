@@ -45,16 +45,14 @@ Deno.serve(async (req) => {
   try {
     await requireAdmin(req);
 
-    const xs2Configured = has("XS2_API_KEY") && has("XS2_BASE_URL");
-
     return new Response(
       JSON.stringify({
-        // xs2event
-        xs2_api_key: has("XS2_API_KEY"),
-        xs2_base_url: has("XS2_BASE_URL"),
-        xs2_payment_method: has("XS2_PAYMENT_METHOD"),
-        xs2_auth_header_custom: has("XS2_AUTH_HEADER"),
-        xs2_auth_scheme_custom: has("XS2_AUTH_SCHEME"),
+        // oneclicket
+        oneclicket_api_key: has("ONECLICKET_API_KEY"),
+        oneclicket_user_id: has("ONECLICKET_USER_ID"),
+        oneclicket_base_url_custom: has("ONECLICKET_BASE_URL"),
+        // Live ordering is opt-in — the supplier has no test environment.
+        oneclicket_orders_enabled: Deno.env.get("ONECLICKET_ORDERS_ENABLED") === "true",
 
         // stripe
         stripe_sandbox: has("STRIPE_SANDBOX_API_KEY"),
@@ -70,7 +68,7 @@ Deno.serve(async (req) => {
         site_url: Deno.env.get("SITE_URL") ?? null,
 
         // derived
-        mock_mode_active: !xs2Configured,
+        oneclicket_configured: has("ONECLICKET_API_KEY"),
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );

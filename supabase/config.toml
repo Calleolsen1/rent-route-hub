@@ -18,15 +18,6 @@ verify_jwt = false
 [functions.get-ticket-prices]
 verify_jwt = false
 
-[functions.xs2-get-event-tickets]
-verify_jwt = false
-
-[functions.xs2-reserve]
-verify_jwt = false
-
-[functions.xs2-renew-reservation]
-verify_jwt = false
-
 # Quote flow: public checkout endpoint (token-gated), JWT-protected email send
 [functions.create-quote-checkout]
 verify_jwt = false
@@ -43,10 +34,6 @@ verify_jwt = true
 [functions.admin-check-config]
 verify_jwt = true
 
-# xs2-sync verifies the JWT inline (must be authenticated admin)
-[functions.xs2-sync]
-verify_jwt = true
-
 # Back office — alla tre verifierar admin-rollen i koden
 [functions.send-booking-confirmation]
 verify_jwt = true
@@ -58,4 +45,18 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.send-invoice-cancellation]
+verify_jwt = true
+
+# --- OneClicket (ESATOUR) — second ticket supplier ---
+# Public browsing endpoint - no auth required to browse tickets.
+[functions.oneclicket-get-event-tickets]
+verify_jwt = false
+
+# Sync verifies the admin role inline (authenticated admin only).
+[functions.oneclicket-sync]
+verify_jwt = true
+
+# Places real orders against the supplier's live-only system.
+# Admin-verified inline AND gated by ONECLICKET_ORDERS_ENABLED.
+[functions.oneclicket-place-order]
 verify_jwt = true

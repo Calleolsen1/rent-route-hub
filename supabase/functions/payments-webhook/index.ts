@@ -1,6 +1,5 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { type StripeEnv, verifyWebhook, createStripeClient } from "../_shared/stripe.ts";
-import { Xs2Client, Xs2Error } from "../_shared/xs2event.ts";
 
 let _supabase: ReturnType<typeof createClient> | null = null;
 function getSupabase() {
@@ -56,9 +55,9 @@ async function sendOrderConfirmationEmail(orderId: string) {
     .maybeSingle();
   if (!order || !order.customer_email) return;
 
-  // If xs2 already returned a ticket bundle URL (delivered at confirm time),
-  // include a download button in the confirmation email. Otherwise the copy
-  // promises a follow-up — fired by xs2-retry-pending once tickets issue.
+  // If a ticket file has already been attached to the order, include a
+  // download button in the confirmation email. Otherwise the copy promises a
+  // follow-up, which admin fulfilment satisfies when the tickets are uploaded.
   let ticketFileUrl: string | null = null;
   if (!order.quote_id) {
     const { data: deliveries } = await supabase
@@ -269,9 +268,8 @@ async function handleCheckoutCompleted(session: any, env: StripeEnv) {
   }
 
   // Idempotency: Stripe retries webhooks on any non-2xx. Without this guard
-  // a retry would double-decrement stock, duplicate ticket_deliveries rows,
-  // and re-call xs2 confirmBooking (which would fail on an already-confirmed
-  // reservation and stamp a misleading error on a successful order).
+  // a retry would double-decrement stock and duplicate ticket_deliveries
+  // rows, leaving a misleading trail on an otherwise successful order.
   const { data: existing } = await getSupabase()
     .from("orders")
     .select("status")
@@ -298,220 +296,33 @@ async function handleCheckoutCompleted(session: any, env: StripeEnv) {
 
   await getSupabase().from("orders").update(updates).eq("id", orderId);
 
-  // Pull the order back to branch on xs2 vs manual inventory
-  const { data: order } = await getSupabase()
-    .from("orders")
-    .select("id, customer_email, xs2_reservation_id")
-    .eq("id", orderId)
-    .maybeSingle();
-
   const { data: items } = await getSupabase()
     .from("order_items")
     .select("id, category_id, qty, external_ticket_ids")
     .eq("order_id", orderId);
 
-  if (order?.xs2_reservation_id) {
-    // xs2-sourced order — confirm with xs2event so suppliers ship tickets,
-    // then fetch the e-ticket bundle URL and record it for delivery.
-    await confirmXs2Booking(orderId, order, items ?? []);
-  } else {
-    // Manual/Stripe-product inventory — decrement local stock per category
-    for (const it of items ?? []) {
-      await getSupabase().rpc("decrement_ticket_qty", {
-        p_category_id: (it as any).category_id,
-        p_qty: Number((it as any).qty),
-      });
-      await getSupabase().from("ticket_deliveries").insert({
-        order_item_id: (it as any).id,
-        delivery_method: "email",
-      });
-    }
+  // Decrement local stock and open a delivery row per line.
+  //
+  // OneClicket has no confirm-at-payment step: supplier stock is
+  // only committed when the supplier order is placed, and that is currently
+  // an admin action (see oneclicket-place-order — live sending is gated off
+  // until the supplier signs off). So every paid order lands here and is
+  // fulfilled from the ticket_deliveries queue in the admin Tickets page.
+  for (const it of items ?? []) {
+    await getSupabase().rpc("decrement_ticket_qty", {
+      p_category_id: (it as any).category_id,
+      p_qty: Number((it as any).qty),
+    });
+    await getSupabase().from("ticket_deliveries").insert({
+      order_item_id: (it as any).id,
+      delivery_method: "email",
+    });
   }
 
   // Auto-create Mitt Kaisen account for guest checkouts and link to order
   await ensureUserForGuestOrder(orderId);
 
   await sendOrderConfirmationEmail(orderId);
-}
-
-// Auto-refund for orders where xs2 confirm is terminally impossible (hold
-// expired or reservation unknown). Stripe charged the customer; we can't
-// deliver tickets; the only honest response is to give the money back
-// immediately + tell the customer what happened.
-//
-// Uses sandbox/live based on env var STRIPE_ENV (set per project). Records
-// the refund in `refunds` table so it shows up in admin reporting alongside
-// manual refunds.
-async function autoRefundForFailedBooking(orderId: string, reasonDetail: string) {
-  const supabase = getSupabase();
-  const { data: order } = await supabase
-    .from("orders")
-    .select("id, status, total_paid_sek, total_sek, refunded_sek, stripe_payment_intent_id, customer_email, customer_name, invoice_number")
-    .eq("id", orderId)
-    .maybeSingle();
-  if (!order || !order.stripe_payment_intent_id) {
-    console.error("auto-refund: order or PI missing", { orderId });
-    return;
-  }
-  if (!["paid", "fulfilled"].includes(order.status as string)) {
-    console.log("auto-refund: order not in refundable state", { orderId, status: order.status });
-    return;
-  }
-  const paid = Number(order.total_paid_sek ?? order.total_sek);
-  const alreadyRefunded = Number(order.refunded_sek ?? 0);
-  const refundable = Math.max(0, paid - alreadyRefunded);
-  if (refundable <= 0) {
-    console.log("auto-refund: nothing left to refund", { orderId });
-    return;
-  }
-
-  const env: StripeEnv = (Deno.env.get("STRIPE_ENV") === "live" ? "live" : "sandbox") as StripeEnv;
-  const stripe = createStripeClient(env);
-  const refund = await stripe.refunds.create({
-    payment_intent: order.stripe_payment_intent_id as string,
-    amount: Math.round(refundable * 100),
-    reason: "requested_by_customer",
-    metadata: { orderId, auto_refund_reason: `xs2_confirm_terminal: ${reasonDetail.slice(0, 200)}` },
-  });
-  await supabase.from("refunds").insert({
-    order_id: orderId,
-    amount_sek: refundable,
-    reason: `Automatisk: xs2 kunde inte fullfölja bokningen (${reasonDetail.slice(0, 240)})`,
-    stripe_refund_id: refund.id,
-    processed_by: null,
-  });
-  await supabase
-    .from("orders")
-    .update({
-      refunded_sek: alreadyRefunded + refundable,
-      last_refund_reason: "xs2 reservation expired before booking could be confirmed",
-      status: "refunded",
-    })
-    .eq("id", orderId);
-
-  // Customer email
-  if (LOVABLE_API_KEY && RESEND_API_KEY && order.customer_email) {
-    const orderRef = order.invoice_number ?? (order.id as string).slice(0, 8).toUpperCase();
-    const html = `
-      <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:560px;margin:0 auto;background:#fff;color:#0f172a;">
-        <div style="background:#0f172a;color:#fff;padding:32px;text-align:center;">
-          <div style="font-size:22px;font-weight:700;letter-spacing:0.04em;">KAISEN TRAVEL GROUP</div>
-        </div>
-        <div style="padding:32px;">
-          <h1 style="font-size:22px;margin:0 0 12px;">Vi kunde tyvärr inte slutföra din bokning</h1>
-          <p style="color:#475569;line-height:1.6;">
-            Hej ${order.customer_name ?? ""},<br/><br/>
-            Vi har tyvärr inte kunnat säkra biljetterna för din beställning <strong>${orderRef}</strong>.
-            Det här händer ibland när biljetterna säljs slut i samma ögonblick som betalningen behandlas.
-          </p>
-          <p style="color:#475569;line-height:1.6;">
-            Vi har redan återbetalat hela beloppet på <strong>${new Intl.NumberFormat("sv-SE").format(refundable)} SEK</strong> till samma kort du betalade med. Det tar normalt 3–10 bankdagar innan beloppet syns på ditt konto.
-          </p>
-          <p style="color:#475569;line-height:1.6;">
-            Vill du försöka boka igen finns evenemanget kvar på vår sida — biljetter kan ha släppts på nytt.
-            Behöver du hjälp att hitta motsvarande biljett? Svara på det här mejlet så löser vi det åt dig.
-          </p>
-          <p style="color:#94a3b8;font-size:12px;margin-top:32px;">
-            Order-ID: ${order.id}<br/>
-            Återbetalnings-ID: ${refund.id}
-          </p>
-        </div>
-        <div style="background:#f8fafc;padding:20px;text-align:center;color:#64748b;font-size:12px;">
-          Kaisen Travel Group · info@kaisengroup.se
-        </div>
-      </div>`;
-    await fetch(`${GATEWAY_URL}/emails`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "X-Connection-Api-Key": RESEND_API_KEY,
-      },
-      body: JSON.stringify({
-        from: "Kaisen Travel Group <info@kaisengroup.se>",
-        to: [order.customer_email],
-        subject: `Återbetalning genomförd · ${orderRef}`,
-        html,
-        reply_to: "info@kaisengroup.se",
-      }),
-    }).catch((e) => logSystemError("auto_refund_email_failed", e instanceof Error ? e.message : String(e), { orderId, details: e }));
-  }
-}
-
-async function confirmXs2Booking(
-  orderId: string,
-  order: { customer_email: string | null; xs2_reservation_id: string | null },
-  items: Array<{ id: string; external_ticket_ids: unknown }>,
-) {
-  if (!order.xs2_reservation_id || !order.customer_email) {
-    console.error("xs2 confirm skipped — missing reservation_id or email", { orderId });
-    return;
-  }
-
-  const paymentMethod = Deno.env.get("XS2_PAYMENT_METHOD") ?? "invoice";
-  let booking;
-  try {
-    const xs2 = new Xs2Client();
-    booking = await xs2.confirmBooking({
-      reservation_id: order.xs2_reservation_id,
-      invoice_reference: orderId,
-      booking_email: order.customer_email,
-      payment_method: paymentMethod,
-    });
-  } catch (e) {
-    const status = e instanceof Xs2Error ? e.status : "unknown";
-    const msg = e instanceof Error ? e.message : "unknown";
-    await logSystemError("xs2_confirm_failed", `${status}: ${msg}`, { orderId, details: { status, error: msg } });
-    await getSupabase()
-      .from("orders")
-      .update({ notes: `xs2 confirm failed (${status}): ${msg}` })
-      .eq("id", orderId);
-
-    // Terminal "reservation gone" responses — xs2 can't fulfill no matter how
-    // many times we retry. Auto-refund instead of leaving the customer
-    // charged and waiting on ops.
-    //
-    // 422 with "no items" / "quantities are 0" → hold expired between Stripe
-    // payment and our confirm. 410 Gone → reservation_id literally
-    // unrecognized. Either way, the booking will never succeed.
-    const isTerminalHoldGone =
-      status === 422 ||
-      status === 410 ||
-      /reservation has no items|quantities are 0|reservation .* (expired|not found)/i.test(msg);
-    if (isTerminalHoldGone) {
-      await autoRefundForFailedBooking(orderId, msg).catch((err) =>
-        logSystemError("auto_refund_failed", err instanceof Error ? err.message : String(err), { orderId, details: err }),
-      );
-    }
-    return;
-  }
-
-  // Store the booking id in a dedicated column for support / refund traceability
-  await getSupabase()
-    .from("orders")
-    .update({ status: "fulfilled", xs2_booking_id: booking.booking_id })
-    .eq("id", orderId);
-
-  // Fetch the e-ticket bundle and stamp each order_item with the same URL.
-  // (xs2's zip endpoint returns ALL tickets in a booking — one URL covers
-  // every supplier in the order.)
-  let zipUrl: string | null = null;
-  try {
-    const xs2 = new Xs2Client();
-    const r = await xs2.getETicketZipUrl({ booking_id: booking.booking_id });
-    zipUrl = r.url;
-  } catch (e) {
-    await logSystemError("xs2_ticket_url_failed", e instanceof Error ? e.message : String(e), { orderId, details: e });
-  }
-
-  for (const it of items) {
-    await getSupabase().from("ticket_deliveries").insert({
-      order_item_id: it.id,
-      delivery_method: "email",
-      file_url: zipUrl,
-      delivered_at: zipUrl ? new Date().toISOString() : null,
-    });
-  }
 }
 
 async function handleQuotePaid(quoteId: string, session: any) {

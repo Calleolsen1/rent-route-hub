@@ -24,7 +24,7 @@ import { Loader2 } from "lucide-react";
 
 /**
  * Admin dialog to create a manually-managed event (source='manual') - for
- * inventory not in xs2event: training camps, VIP packages, weekend trips.
+ * inventory not sourced from a supplier: training camps, VIP packages, weekend trips.
  *
  * After creation the new event appears in /admin/tickets with the standard
  * cover-image + categories + markup workflow. Categories must still be added
@@ -123,7 +123,7 @@ export function ManualEventDialog({ open, onOpenChange, onCreated }: Props) {
         <DialogHeader>
           <DialogTitle>Skapa manuellt event</DialogTitle>
           <DialogDescription>
-            För inventory utanför xs2event - träningsläger, VIP-paket, weekendresor.
+            För inventory utanför leverantörsflödet - träningsläger, VIP-paket, weekendresor.
             Kategorier och biljettpriser lägger du till efter att eventet är skapat.
           </DialogDescription>
         </DialogHeader>

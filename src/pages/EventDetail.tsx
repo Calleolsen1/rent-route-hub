@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { usePublicPricesEnabled } from "@/hooks/usePublicPrices";
+import InquiryForm from "@/components/InquiryForm";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -53,7 +56,7 @@ type ReserveLine = {
   stock: number;
 };
 
-type Xs2Group = {
+type SupplierGroup = {
   category_id: string;
   external_category_id: string;
   external_sub_category: string;
@@ -65,6 +68,15 @@ type Xs2Group = {
   final_sek: number;
   currency: string;
   reserve_lines: ReserveLine[];
+  /** Present on OneClicket groups; manual inventory leaves these undefined. */
+  supplier?: "oneclicket";
+  /**
+   * The exact quantities the supplier will accept. OneClicket versions carry
+   * split rules (sell-in-multiples, avoid-leaving-one) that a plain
+   * min/max stepper can't express, so the picker walks this list instead.
+   */
+  allowed_quantities?: number[];
+  supplier_version_id?: string;
 };
 
 export default function EventDetail() {
@@ -73,7 +85,7 @@ export default function EventDetail() {
   const { user } = useAuth();
   const [event, setEvent] = useState<EventRow | null>(null);
   const [categories, setCategories] = useState<CategoryRow[]>([]);
-  const [xs2Groups, setXs2Groups] = useState<Xs2Group[]>([]);
+  const [supplierGroups, setSupplierGroups] = useState<SupplierGroup[]>([]);
   const [livePrices, setLivePrices] = useState<Record<string, number>>({});
   const [pricesLoading, setPricesLoading] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -81,6 +93,8 @@ export default function EventDetail() {
   const [qty, setQty] = useState(2);
   const [busy, setBusy] = useState(false);
   const [compareAtDefaultPct, setCompareAtDefaultPct] = useState<number>(0);
+  const { enabled: showPrices } = usePublicPricesEnabled();
+  const [inquiryOpen, setInquiryOpen] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -92,7 +106,7 @@ export default function EventDetail() {
     })();
   }, []);
 
-  const isXs2 = event?.source === "xs2event";
+  const isOneClicket = event?.source === "oneclicket";
 
   useEffect(() => {
     if (!id) return;
@@ -104,17 +118,20 @@ export default function EventDetail() {
         .maybeSingle();
       setEvent(ev as EventRow | null);
 
-      if ((ev as EventRow | null)?.source === "xs2event") {
-        // Live lookup against xs2event (with markup applied)
+      const evSource = (ev as EventRow | null)?.source;
+      if (evSource === "oneclicket") {
+        // Live supplier lookup (with markup applied). Supplier stock moves
+        // between syncs, so price/availability is never read from the cached
+        // rows.
         try {
-          const { data: r } = await supabase.functions.invoke("xs2-get-event-tickets", {
+          const { data: r } = await supabase.functions.invoke("oneclicket-get-event-tickets", {
             body: { event_id: id },
           });
-          const groups = (r?.groups as Xs2Group[]) ?? [];
-          setXs2Groups(groups);
+          const groups = (r?.groups as SupplierGroup[]) ?? [];
+          setSupplierGroups(groups);
           if (groups.length) setSelectedCatId(groups[0].category_id);
         } catch (e) {
-          console.error("xs2 tickets fetch failed", e);
+          console.error(`${evSource} tickets fetch failed`, e);
         } finally {
           setPricesLoading(false);
           setLoading(false);
@@ -122,7 +139,7 @@ export default function EventDetail() {
         return;
       }
 
-      // Non-xs2 path (manual/Stripe-product inventory) - unchanged
+      // Manual / Stripe-product inventory
       const { data: cats } = await supabase
         .from("ticket_categories")
         .select("*")
@@ -170,8 +187,8 @@ export default function EventDetail() {
   // Unified view for the picker - both paths produce { id, name, description,
   // party_size_together, price, available }
   const pickerOptions = useMemo(() => {
-    if (isXs2) {
-      return xs2Groups.map((g) => ({
+    if (isOneClicket) {
+      return supplierGroups.map((g) => ({
         id: g.category_id,
         name: g.name,
         description: g.description,
@@ -189,15 +206,61 @@ export default function EventDetail() {
       party_size_together: c.party_size_together,
       price: priceFor(c),
       available: c.qty_available,
-      group: null as Xs2Group | null,
+      group: null as SupplierGroup | null,
       cat: c,
     }));
-  }, [isXs2, xs2Groups, categories, livePrices]);
+  }, [isOneClicket, supplierGroups, categories, livePrices]);
 
   const selected = useMemo(
     () => pickerOptions.find((o) => o.id === selectedCatId) ?? null,
     [pickerOptions, selectedCatId],
   );
+
+  /**
+   * Quantities the current selection permits.
+   *
+   * OneClicket versions carry split rules the supplier enforces on order —
+   * "sell in multiples of 2", or "avoid leaving one" (stock 5 allows
+   * 1,2,3,5 but not 4). A plain +/- stepper would happily land on a number
+   * insOrders rejects, so when the supplier tells us the legal set we step
+   * through it instead of through the integers.
+   */
+  const allowedQty = useMemo<number[] | null>(() => {
+    const list = selected?.group?.allowed_quantities;
+    return list && list.length ? list : null;
+  }, [selected]);
+
+  // Keep qty legal when the selection changes — otherwise a stepper left on
+  // 3 would carry an illegal value into a multiples-of-2 category.
+  useEffect(() => {
+    if (!selected) return;
+    setQty((q) => {
+      if (allowedQty) {
+        return allowedQty.includes(q)
+          ? q
+          : (allowedQty.find((n) => n >= q) ?? allowedQty[allowedQty.length - 1]);
+      }
+      return Math.min(Math.max(1, q), Math.max(1, selected.available));
+    });
+  }, [selected, allowedQty]);
+
+  const stepQty = (dir: 1 | -1) => {
+    setQty((q) => {
+      if (allowedQty) {
+        const i = allowedQty.indexOf(q);
+        if (i === -1) return allowedQty[0];
+        return allowedQty[Math.min(Math.max(i + dir, 0), allowedQty.length - 1)];
+      }
+      return dir === 1
+        ? Math.min(selected?.available ?? 1, q + 1)
+        : Math.max(1, q - 1);
+    });
+  };
+
+  const qtyAtMin = allowedQty ? qty <= allowedQty[0] : qty <= 1;
+  const qtyAtMax = allowedQty
+    ? qty >= allowedQty[allowedQty.length - 1]
+    : qty >= (selected?.available ?? 1);
   const total = selected ? selected.price * qty : 0;
 
   const handleCheckout = async () => {
@@ -206,26 +269,12 @@ export default function EventDetail() {
     try {
       if (selected.price <= 0) throw new Error("Pris ej tillgängligt");
 
-      if (isXs2 && selected.group) {
-        const g = selected.group;
-        const { data, error } = await supabase.functions.invoke("xs2-reserve", {
-          body: {
-            event_id: event.id,
-            qty,
-            reserve_lines: g.reserve_lines,
-            external_category_id: g.external_category_id,
-            external_sub_category: g.external_sub_category,
-            customer_email: user?.email ?? "",
-          },
-        });
-        if (error || !data?.order_id) {
-          throw new Error(error?.message ?? "Kunde inte reservera biljetter");
-        }
-        navigate(`/checkout/${data.order_id}`);
-        return;
+      // OneClicket has no reservation step — stock is only committed when the
+      // supplier order is placed after payment — so both it and manual
+      // inventory create the internal order directly.
+      if (isOneClicket && !selected.id) {
+        throw new Error("Biljettkategorin kunde inte matchas - ladda om sidan");
       }
-
-      // Non-xs2 fallback path
       const { data: orderId, error } = await supabase.rpc("create_order_with_items", {
         p_event_id: event.id,
         p_category_id: selected.id,
@@ -361,7 +410,11 @@ export default function EventDetail() {
                           </p>
                         </div>
                         <div className="text-right">
-                          {pricesLoading ? (
+                          {!showPrices ? (
+                            <p className="text-xs text-muted-foreground whitespace-nowrap">
+                              Pris på förfrågan
+                            </p>
+                          ) : pricesLoading ? (
                             <p className="font-display text-xl">…</p>
                           ) : (
                             <PriceTag
@@ -376,9 +429,11 @@ export default function EventDetail() {
                               showFrom={false}
                             />
                           )}
-                          <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">
-                            per biljett
-                          </p>
+                          {showPrices && (
+                            <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">
+                              per biljett
+                            </p>
+                          )}
                         </div>
                       </div>
                     </button>
@@ -404,7 +459,9 @@ export default function EventDetail() {
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-sm">{selected.name}</span>
                     <span className="text-sm">
-                      {pricesLoading ? (
+                      {!showPrices ? (
+                        <span className="text-muted-foreground">Pris på förfrågan</span>
+                      ) : pricesLoading ? (
                         "…"
                       ) : (
                         (() => {
@@ -436,7 +493,8 @@ export default function EventDetail() {
                         variant="outline"
                         size="icon"
                         className="h-8 w-8 rounded-full"
-                        onClick={() => setQty((q) => Math.max(1, q - 1))}
+                        disabled={qtyAtMin}
+                        onClick={() => stepQty(-1)}
                       >
                         <Minus className="h-3 w-3" />
                       </Button>
@@ -446,15 +504,15 @@ export default function EventDetail() {
                         variant="outline"
                         size="icon"
                         className="h-8 w-8 rounded-full"
-                        onClick={() =>
-                          setQty((q) => Math.min(selected.available, q + 1))
-                        }
+                        disabled={qtyAtMax}
+                        onClick={() => stepQty(1)}
                       >
                         <Plus className="h-3 w-3" />
                       </Button>
                     </div>
                   </div>
 
+                  {showPrices && (
                   <div className="flex items-center justify-between border-t border-border pt-4 mb-6">
                     <span className="font-medium">Totalt</span>
                     {(() => {
@@ -479,20 +537,36 @@ export default function EventDetail() {
                       );
                     })()}
                   </div>
+                  )}
 
-                  <Button
-                    onClick={handleCheckout}
-                    disabled={busy}
-                    className="w-full rounded-full bg-primary hover:bg-primary/90 tracking-wider text-sm"
-                  >
-                    {busy ? (isXs2 ? "Reserverar..." : "Skapar...") : "Till kassan"}
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                  <p className="text-[11px] text-muted-foreground text-center mt-3">
-                    {isXs2
-                      ? "Biljetterna reserveras i 10 minuter när du går till kassan."
-                      : "Säker betalning via Stripe. Kaisen är säljare och fakturautställare."}
-                  </p>
+                  {showPrices ? (
+                    <>
+                      <Button
+                        onClick={handleCheckout}
+                        disabled={busy}
+                        className="w-full rounded-full bg-primary hover:bg-primary/90 tracking-wider text-sm"
+                      >
+                        {busy ? "Skapar..." : "Till kassan"}
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                      <p className="text-[11px] text-muted-foreground text-center mt-3">
+                        Säker betalning via Stripe. Kaisen är säljare och fakturautställare.
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        onClick={() => setInquiryOpen(true)}
+                        className="w-full rounded-full bg-primary hover:bg-primary/90 tracking-wider text-sm"
+                      >
+                        Begär pris
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                      <p className="text-[11px] text-muted-foreground text-center mt-3">
+                        Vi återkommer med pris och tillgänglighet för {qty} biljett{qty === 1 ? "" : "er"}.
+                      </p>
+                    </>
+                  )}
                 </>
               ) : (
                 <p className="text-sm text-muted-foreground">Inga biljetter tillgängliga.</p>
@@ -508,6 +582,26 @@ export default function EventDetail() {
           </aside>
         </div>
       </section>
+
+      {/* Price-on-request enquiry. Carries the exact event + ticket category
+          in presetTopic so ops can quote without asking the customer again. */}
+      <Dialog open={inquiryOpen} onOpenChange={setInquiryOpen}>
+        <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
+          <InquiryForm
+            type="contact"
+            eyebrow="Prisförfrågan"
+            heading={`Begär pris - ${headline ?? event.tournament_name}`}
+            intro={`${formatEventDateTime(event.starts_at)}${event.venue_name ? ` · ${event.venue_name}` : ""}. Skriv gärna om ni vill sitta ihop eller har andra önskemål - vi återkommer med pris och tillgänglighet.`}
+            presetTopic={[
+              headline ?? event.tournament_name,
+              selected?.name,
+              `${qty} biljett${qty === 1 ? "" : "er"}`,
+              `event:${event.id}`,
+            ].filter(Boolean).join(" · ")}
+            showDates={false}
+          />
+        </DialogContent>
+      </Dialog>
 
       <Footer />
     </div>

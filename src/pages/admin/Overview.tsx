@@ -97,7 +97,7 @@ export default function AdminOverview() {
         (supabase as any)
           .from("orders")
           .select("*", { count: "exact", head: true })
-          .ilike("notes", "xs2 confirm failed%"),
+          .ilike("notes", "supplier confirm failed%"),
         (supabase as any)
           .from("ticket_deliveries")
           .select("*", { count: "exact", head: true })
@@ -163,7 +163,7 @@ export default function AdminOverview() {
                 manuell uppföljning
               </p>
               <p className="text-xs">
-                Stripe-betalningen gick igenom men xs2-bekräftelsen misslyckades. Kontakta xs2-support.
+                Stripe-betalningen gick igenom men leverantörsbekräftelsen misslyckades. Kontakta leverantören.
               </p>
             </div>
             <ArrowRight className="h-4 w-4 text-amber-700 ml-auto self-center" />

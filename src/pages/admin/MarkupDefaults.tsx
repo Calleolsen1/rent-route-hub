@@ -17,6 +17,8 @@ export default function AdminMarkupDefaults() {
   const [fixed, setFixed] = useState("0");
   const [eurRate, setEurRate] = useState("11.5");
   const [compareAtPct, setCompareAtPct] = useState("0");
+  const [pricesPublic, setPricesPublic] = useState(false);
+  const [togglingPrices, setTogglingPrices] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [applying, setApplying] = useState(false);
@@ -26,7 +28,7 @@ export default function AdminMarkupDefaults() {
     const { data } = await (supabase as any)
       .from("platform_settings")
       .select("setting_key, setting_value, description")
-      .in("setting_key", ["default_markup_pct", "default_markup_fixed_sek", "eur_to_sek_rate", "compare_at_default_pct"]);
+      .in("setting_key", ["default_markup_pct", "default_markup_fixed_sek", "eur_to_sek_rate", "compare_at_default_pct", "public_prices_enabled"]);
     const rows = (data as SettingRow[]) ?? [];
     const pctRow = rows.find((r) => r.setting_key === "default_markup_pct");
     const fixedRow = rows.find((r) => r.setting_key === "default_markup_fixed_sek");
@@ -36,12 +38,35 @@ export default function AdminMarkupDefaults() {
     if (fixedRow) setFixed(fixedRow.setting_value);
     if (rateRow) setEurRate(rateRow.setting_value);
     if (compareRow) setCompareAtPct(compareRow.setting_value);
+    const publicRow = rows.find((r) => r.setting_key === "public_prices_enabled");
+    setPricesPublic(publicRow?.setting_value === "true");
     setLoading(false);
   };
 
   useEffect(() => {
     load();
   }, []);
+
+  const togglePublicPrices = async (next: boolean) => {
+    setTogglingPrices(true);
+    try {
+      const { error } = await (supabase as any)
+        .from("platform_settings")
+        .update({ setting_value: next ? "true" : "false" })
+        .eq("setting_key", "public_prices_enabled");
+      if (error) throw error;
+      setPricesPublic(next);
+      toast.success(
+        next
+          ? "Priser visas nu publikt - kunder kan boka direkt."
+          : "Priser dolda - sidan visar 'Pris på förfrågan'.",
+      );
+    } catch (e) {
+      toast.error((e as Error).message ?? "Kunde inte spara");
+    } finally {
+      setTogglingPrices(false);
+    }
+  };
 
   const save = async () => {
     const pctNum = Number(pct);
@@ -88,7 +113,7 @@ export default function AdminMarkupDefaults() {
               setting_value: String(rateNum),
               setting_type: "decimal",
               description:
-                "Växelkurs EUR → SEK för xs2event-biljetter. Påverkar nya prisberäkningar omedelbart.",
+                "Växelkurs EUR → SEK för leverantörsbiljetter. Påverkar nya prisberäkningar omedelbart.",
             },
             {
               setting_key: "compare_at_default_pct",
@@ -145,15 +170,36 @@ export default function AdminMarkupDefaults() {
       <div>
         <h1 className="text-3xl font-display mb-2">Prisinställningar</h1>
         <p className="text-muted-foreground text-sm">
-          Påslag som tillämpas på nya biljettkategorier, plus EUR→SEK-kursen som används när xs2-priser konverteras. Per-kategori-värden i Biljetter har företräde över standardpåslag.
+          Påslag som tillämpas på nya biljettkategorier, plus EUR→SEK-kursen som används när leverantörspriser konverteras. Per-kategori-värden i Biljetter har företräde över standardpåslag.
         </p>
+      </div>
+
+      <div className="rounded-xl border border-border bg-card p-6 space-y-4">
+        <div className="flex items-start justify-between gap-6">
+          <div>
+            <h2 className="font-display text-lg">Visa priser publikt</h2>
+            <p className="text-xs text-muted-foreground mt-1">
+              Av = webbplatsen visar "Pris på förfrågan" och ett förfrågningsformulär
+              i stället för kassan. Priser räknas ut och sparas som vanligt - de syns
+              bara inte för kunder. Slå på när ni är redo att sälja till dessa priser.
+            </p>
+          </div>
+          <Button
+            variant={pricesPublic ? "default" : "outline"}
+            disabled={togglingPrices}
+            onClick={() => togglePublicPrices(!pricesPublic)}
+            className="shrink-0"
+          >
+            {pricesPublic ? "Priser visas" : "Priser dolda"}
+          </Button>
+        </div>
       </div>
 
       <div className="rounded-xl border border-border bg-card p-6 space-y-4">
         <div>
           <h2 className="font-display text-lg">Växelkurs EUR → SEK</h2>
           <p className="text-xs text-muted-foreground mt-1">
-            xs2event prissätter alla biljetter i euro. Den här kursen styr vad svenska kunder betalar i SEK. Uppdatera manuellt - påverkar nya prisberäkningar omedelbart, inte redan reserverade ordrar.
+            Leverantören prissätter alla biljetter i euro. Den här kursen styr vad svenska kunder betalar i SEK. Uppdatera manuellt - påverkar nya prisberäkningar omedelbart, inte redan reserverade ordrar.
           </p>
         </div>
         <div className="max-w-[200px]">
@@ -219,7 +265,7 @@ export default function AdminMarkupDefaults() {
         </div>
 
         <p className="text-xs text-muted-foreground bg-muted/40 rounded p-3">
-          Formel: <code>slutpris = (xs2-pris × (1 + procentpåslag/100)) + fast påslag</code>. Avrundas till hela SEK.
+          Formel: <code>slutpris = (inköpspris × (1 + procentpåslag/100)) + fast påslag</code>. Avrundas till hela SEK.
         </p>
 
         <div className="flex gap-2">
@@ -234,11 +280,11 @@ export default function AdminMarkupDefaults() {
         <div>
           <h2 className="font-display text-lg">Jämförelsepris (rabatt-streck)</h2>
           <p className="text-xs text-muted-foreground mt-1">
-            Visar ett överstruket högre pris bredvid det riktiga priset, t.ex. <span className="line-through">3&nbsp;600&nbsp;kr</span>&nbsp;<strong>3&nbsp;000&nbsp;kr&nbsp;-17%</strong>. Används bara när eventet saknar ett eget compare_at-värde (sätts då automatiskt från xs2event-biljettens face value, eller manuellt per event i Biljetter).
+            Visar ett överstruket högre pris bredvid det riktiga priset, t.ex. <span className="line-through">3&nbsp;600&nbsp;kr</span>&nbsp;<strong>3&nbsp;000&nbsp;kr&nbsp;-17%</strong>. Används bara när eventet saknar ett eget compare_at-värde (sätts då automatiskt från leverantörsbiljettens face value, eller manuellt per event i Biljetter).
           </p>
         </div>
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">
-          ⚠️ <strong>Prisinformationslagen + Marknadsföringslagen</strong> kräver att överstrukna priser ska vara verkliga tidigare priser inom 30 dagar. Att visa ett uppskruvat jämförelsepris utan att priset faktiskt varit högre kan leda till sanktionsavgift från Konsumentverket. Använd endast om du har historik på högre prissättning, eller låt xs2-face-värdet (box office-pris) styra automatiskt.
+          ⚠️ <strong>Prisinformationslagen + Marknadsföringslagen</strong> kräver att överstrukna priser ska vara verkliga tidigare priser inom 30 dagar. Att visa ett uppskruvat jämförelsepris utan att priset faktiskt varit högre kan leda till sanktionsavgift från Konsumentverket. Använd endast om du har historik på högre prissättning, eller låt leverantörens face-värde (box office-pris) styra automatiskt.
         </div>
         <div className="max-w-[200px]">
           <Label htmlFor="compare-pct" className="text-xs uppercase tracking-wider">

@@ -70,15 +70,15 @@ const slugify = (s: string) =>
  *             "no-match" when nothing found (with `suggestions` of similar names)
  *   - count:  number of upcoming events matching the name exactly
  */
-type Xs2MatchStatus = "idle" | "loading" | "match" | "no-match";
-type Xs2Match = {
-  status: Xs2MatchStatus;
+type EventMatchStatus = "idle" | "loading" | "match" | "no-match";
+type EventMatch = {
+  status: EventMatchStatus;
   count: number;
   suggestions: string[];
 };
 
-function useXs2NameMatch(name: string, kind: "team" | "race"): Xs2Match {
-  const [result, setResult] = useState<Xs2Match>({ status: "idle", count: 0, suggestions: [] });
+function useEventNameMatch(name: string, kind: "team" | "race"): EventMatch {
+  const [result, setResult] = useState<EventMatch>({ status: "idle", count: 0, suggestions: [] });
   useEffect(() => {
     const trimmed = name.trim();
     if (trimmed.length < 2) {
@@ -140,7 +140,7 @@ function useXs2NameMatch(name: string, kind: "team" | "race"): Xs2Match {
           setResult({ status: "no-match", count: 0, suggestions });
         }
       } catch (e) {
-        console.warn("[useXs2NameMatch]", e);
+        console.warn("[useEventNameMatch]", e);
         setResult({ status: "no-match", count: 0, suggestions: [] });
       }
     }, 300);
@@ -161,7 +161,7 @@ export default function AdminNavigation() {
       <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900 flex items-start gap-2">
         <AlertTriangle className="h-4 w-4 flex-shrink-0 mt-0.5" />
         <span>
-          <strong>Tips:</strong> Namnet på lag/race måste exakt matcha det xs2event skickar (t.ex. "Arsenal", inte "Arsenal FC") - annars hittas inga biljetter på landningssidan.
+          <strong>Tips:</strong> Namnet på lag/race måste exakt matcha det leverantören skickar (t.ex. "Arsenal", inte "Arsenal FC") - annars hittas inga biljetter på landningssidan.
         </span>
       </div>
 
@@ -452,7 +452,7 @@ function SportsEditor() {
                 </div>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   {sport.menu_style === "grouped" ? "Grupperad meny (sub-rubriker)" : "Enkel lista"} ·
-                  xs2-filter: <code className="bg-muted px-1 rounded">{sport.sport_filter ?? "-"}</code>
+                  Sport-filter: <code className="bg-muted px-1 rounded">{sport.sport_filter ?? "-"}</code>
                 </p>
               </div>
               <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
@@ -876,9 +876,9 @@ function SportDialog({ open, onOpenChange, initial, nextOrder, onSaved }: { open
             <p className="text-[11px] text-muted-foreground mt-1">Slug är delen efter <code>/services/sportresor/</code> i URL:en. Ändra bara om du vet vad du gör.</p>
           </div>
           <div>
-            <Label>xs2event sport-filter</Label>
+            <Label>Sport-filter</Label>
             <Input value={sportFilter} onChange={(e) => setSportFilter(e.target.value)} placeholder="soccer / formula1 / tennis" />
-            <p className="text-[11px] text-muted-foreground mt-1">Det här värdet används för att filtrera biljetter på landningssidan. Måste matcha det xs2event lägger i <code>events.sport</code>.</p>
+            <p className="text-[11px] text-muted-foreground mt-1">Det här värdet används för att filtrera biljetter på landningssidan. Måste matcha värdet i <code>events.sport</code>.</p>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -927,7 +927,7 @@ function EntryDialog({ open, onOpenChange, sport, initial, nextOrder, existingGr
   const [showInMenu, setShowInMenu] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [forceSave, setForceSave] = useState(false);
-  const xs2 = useXs2NameMatch(name, sport.entry_kind);
+  const evMatch = useEventNameMatch(name, sport.entry_kind);
 
   useEffect(() => {
     if (!open) return;
@@ -1011,18 +1011,18 @@ function EntryDialog({ open, onOpenChange, sport, initial, nextOrder, existingGr
                   placeholder={isRace ? "t.ex. Monacos Grand Prix" : "t.ex. Arsenal"}
                   autoFocus
                   className={
-                    xs2.status === "match" ? "border-green-500 pr-9" :
-                    xs2.status === "no-match" ? "border-amber-500 pr-9" :
+                    evMatch.status === "match" ? "border-green-500 pr-9" :
+                    evMatch.status === "no-match" ? "border-amber-500 pr-9" :
                     "pr-9"
                   }
                 />
                 <span className="absolute right-2 top-1/2 -translate-y-1/2">
-                  {xs2.status === "loading" && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
-                  {xs2.status === "match" && <Check className="h-4 w-4 text-green-600" />}
-                  {xs2.status === "no-match" && <AlertCircle className="h-4 w-4 text-amber-600" />}
+                  {evMatch.status === "loading" && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+                  {evMatch.status === "match" && <Check className="h-4 w-4 text-green-600" />}
+                  {evMatch.status === "no-match" && <AlertCircle className="h-4 w-4 text-amber-600" />}
                 </span>
               </div>
-              <Xs2MatchHint xs2={xs2} isRace={isRace} onPickSuggestion={(s) => { setName(s); setForceSave(false); }} />
+              <EventMatchHint match={evMatch} isRace={isRace} onPickSuggestion={(s) => { setName(s); setForceSave(false); }} />
             </div>
             <div>
               <Label>URL-slug</Label>
@@ -1120,10 +1120,10 @@ function EntryDialog({ open, onOpenChange, sport, initial, nextOrder, existingGr
         </div>
 
         <DialogFooter className="gap-2 flex-col sm:flex-row sm:items-center">
-          {xs2.status === "no-match" && name.trim().length >= 2 && !forceSave && (
+          {evMatch.status === "no-match" && name.trim().length >= 2 && !forceSave && (
             <label className="text-xs text-amber-700 flex items-center gap-2 mr-auto">
               <input type="checkbox" checked={forceSave} onChange={(e) => setForceSave(e.target.checked)} />
-              Spara ändå - sidan visar inga biljetter förrän xs2 har en match
+              Spara ändå - sidan visar inga biljetter förrän det finns ett matchande event
             </label>
           )}
           <Button variant="ghost" onClick={() => onOpenChange(false)}>Avbryt</Button>
@@ -1131,8 +1131,8 @@ function EntryDialog({ open, onOpenChange, sport, initial, nextOrder, existingGr
             onClick={submit}
             disabled={
               submitting ||
-              xs2.status === "loading" ||
-              (xs2.status === "no-match" && !forceSave)
+              evMatch.status === "loading" ||
+              (evMatch.status === "no-match" && !forceSave)
             }
           >
             {submitting && <Loader2 className="h-3 w-3 animate-spin mr-2" />}
@@ -1144,17 +1144,17 @@ function EntryDialog({ open, onOpenChange, sport, initial, nextOrder, existingGr
   );
 }
 
-function Xs2MatchHint({ xs2, isRace, onPickSuggestion }: { xs2: Xs2Match; isRace: boolean; onPickSuggestion: (s: string) => void }) {
-  if (xs2.status === "idle") {
-    return <p className="text-[11px] text-muted-foreground mt-1">Måste matcha xs2events {isRace ? "race_name" : "home_team"} exakt - vi söker direkt när du skriver.</p>;
+function EventMatchHint({ match: evMatch, isRace, onPickSuggestion }: { match: EventMatch; isRace: boolean; onPickSuggestion: (s: string) => void }) {
+  if (evMatch.status === "idle") {
+    return <p className="text-[11px] text-muted-foreground mt-1">Måste matcha eventets {isRace ? "race_name" : "home_team"} exakt - vi söker direkt när du skriver.</p>;
   }
-  if (xs2.status === "loading") {
-    return <p className="text-[11px] text-muted-foreground mt-1">Söker i xs2-data…</p>;
+  if (evMatch.status === "loading") {
+    return <p className="text-[11px] text-muted-foreground mt-1">Söker bland event…</p>;
   }
-  if (xs2.status === "match") {
+  if (evMatch.status === "match") {
     return (
       <p className="text-[11px] text-green-700 mt-1 flex items-center gap-1">
-        <Check className="h-3 w-3" /> Hittade {xs2.count} kommande {xs2.count === 1 ? "event" : "event"} i xs2.
+        <Check className="h-3 w-3" /> Hittade {evMatch.count} kommande {evMatch.count === 1 ? "event" : "event"}.
       </p>
     );
   }
@@ -1163,13 +1163,13 @@ function Xs2MatchHint({ xs2, isRace, onPickSuggestion }: { xs2: Xs2Match; isRace
     <div className="text-[11px] mt-1">
       <p className="text-amber-700 flex items-start gap-1">
         <AlertCircle className="h-3 w-3 mt-0.5 flex-shrink-0" />
-        <span>Ingen exakt matchning i xs2-data. Sidan kommer att visa noll biljetter.</span>
+        <span>Ingen exakt matchning bland event. Sidan kommer att visa noll biljetter.</span>
       </p>
-      {xs2.suggestions.length > 0 && (
+      {evMatch.suggestions.length > 0 && (
         <div className="mt-1.5">
-          <p className="text-muted-foreground mb-1">Liknande namn i xs2 (klicka för att använda):</p>
+          <p className="text-muted-foreground mb-1">Liknande namn (klicka för att använda):</p>
           <div className="flex flex-wrap gap-1.5">
-            {xs2.suggestions.map((s) => (
+            {evMatch.suggestions.map((s) => (
               <button
                 key={s}
                 type="button"
@@ -1182,7 +1182,7 @@ function Xs2MatchHint({ xs2, isRace, onPickSuggestion }: { xs2: Xs2Match; isRace
           </div>
         </div>
       )}
-      {xs2.suggestions.length === 0 && (
+      {evMatch.suggestions.length === 0 && (
         <p className="text-muted-foreground mt-1">
           Tips: kör "Synka allt" i Admin → Biljetter om du tror namnet borde finnas.
         </p>

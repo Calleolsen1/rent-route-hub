@@ -1,3 +1,10 @@
+> **Retired (Sept 2026).** xs2event is no longer a supplier — its edge
+> functions, shared client and mock fixtures were removed in favour of
+> OneClicket (`_shared/oneclicket.ts`). The notes below are kept for history;
+> the seeded demo events still load, but the xs2 mock-mode behaviour they
+> describe no longer exists. Use the OneClicket sync on `/admin/tickets` for
+> real inventory.
+
 # Dev seeds
 
 SQL files in this directory are **dev/staging only** — never apply in production.

@@ -7,11 +7,11 @@ import { toast } from "sonner";
 import { getStripeEnvironment } from "@/lib/stripe";
 
 type ConfigStatus = {
-  xs2_api_key: boolean;
-  xs2_base_url: boolean;
-  xs2_payment_method: boolean;
-  xs2_auth_header_custom: boolean;
-  xs2_auth_scheme_custom: boolean;
+  oneclicket_api_key: boolean;
+  oneclicket_user_id: boolean;
+  oneclicket_base_url_custom: boolean;
+  oneclicket_orders_enabled: boolean;
+  oneclicket_configured: boolean;
   stripe_sandbox: boolean;
   stripe_live: boolean;
   payments_sandbox_webhook: boolean;
@@ -19,11 +19,10 @@ type ConfigStatus = {
   lovable_api_key: boolean;
   resend_api_key: boolean;
   site_url: string | null;
-  mock_mode_active: boolean;
 };
 
 type Counts = {
-  events_xs2: number;
+  events_oneclicket: number;
   events_manual: number;
   events_featured: number;
   events_seeded: number;
@@ -59,7 +58,7 @@ export default function AdminDiagnostics() {
   const [loading, setLoading] = useState(true);
   const [running, setRunning] = useState<string | null>(null);
   const [tests, setTests] = useState<Record<string, EndpointTest>>({
-    "xs2-get-tickets": { key: "xs2-get-tickets", label: "xs2-get-event-tickets (seed event)", result: null, message: null },
+    "oneclicket-tickets": { key: "oneclicket-tickets", label: "oneclicket-get-event-tickets (live event)", result: null, message: null },
     "admin-check-config": { key: "admin-check-config", label: "admin-check-config", result: null, message: null },
   });
 
@@ -76,7 +75,7 @@ export default function AdminDiagnostics() {
     setConfig(cfg);
 
     const [
-      { count: xs2Count },
+      { count: ocCount },
       { count: manualCount },
       { count: featuredCount },
       { count: seededCount },
@@ -87,8 +86,8 @@ export default function AdminDiagnostics() {
       { count: refundsCount },
       { count: slidesCount },
     ] = await Promise.all([
-      (supabase as any).from("events").select("*", { count: "exact", head: true }).eq("source", "xs2event"),
-      (supabase as any).from("events").select("*", { count: "exact", head: true }).neq("source", "xs2event"),
+      (supabase as any).from("events").select("*", { count: "exact", head: true }).eq("source", "oneclicket"),
+      (supabase as any).from("events").select("*", { count: "exact", head: true }).neq("source", "oneclicket"),
       (supabase as any).from("events").select("*", { count: "exact", head: true }).eq("is_featured", true),
       (supabase as any).from("events").select("*", { count: "exact", head: true }).like("external_event_id", "evt_demo_%"),
       (supabase as any).from("ticket_categories").select("*", { count: "exact", head: true }),
@@ -99,7 +98,7 @@ export default function AdminDiagnostics() {
       (supabase as any).from("home_slides").select("*", { count: "exact", head: true }).eq("is_active", true),
     ]);
     setCounts({
-      events_xs2: xs2Count ?? 0,
+      events_oneclicket: ocCount ?? 0,
       events_manual: manualCount ?? 0,
       events_featured: featuredCount ?? 0,
       events_seeded: seededCount ?? 0,
@@ -112,7 +111,7 @@ export default function AdminDiagnostics() {
     });
 
     const { data: log } = await (supabase as any)
-      .from("xs2_sync_log")
+      .from("supplier_sync_log")
       .select("resource_type, started_at, finished_at, status, records_fetched, records_upserted, error_message")
       .order("started_at", { ascending: false })
       .limit(1)
@@ -135,24 +134,24 @@ export default function AdminDiagnostics() {
         if (error) throw error;
         setTests((p) => ({
           ...p,
-          [key]: { ...p[key], result: "ok", message: `mock_mode_active=${(data as any).mock_mode_active}` },
+          [key]: { ...p[key], result: "ok", message: `oneclicket_configured=${(data as any).oneclicket_configured}` },
         }));
-      } else if (key === "xs2-get-tickets") {
-        // Find any xs2 event to test against
+      } else if (key === "oneclicket-tickets") {
+        // Find any OneClicket event to test against
         const { data: ev } = await (supabase as any)
           .from("events")
           .select("id, external_event_id")
-          .eq("source", "xs2event")
+          .eq("source", "oneclicket")
           .limit(1)
           .maybeSingle();
         if (!ev) {
           setTests((p) => ({
             ...p,
-            [key]: { ...p[key], result: "fail", message: "Inga xs2-events i databasen - kör seed först" },
+            [key]: { ...p[key], result: "fail", message: "Inga OneClicket-events i databasen - kör synk först" },
           }));
           return;
         }
-        const { data, error } = await supabase.functions.invoke("xs2-get-event-tickets", {
+        const { data, error } = await supabase.functions.invoke("oneclicket-get-event-tickets", {
           body: { event_id: ev.id },
         });
         if (error) throw error;
@@ -199,14 +198,15 @@ export default function AdminDiagnostics() {
         </Button>
       </div>
 
-      {/* Mock-mode banner */}
-      {config?.mock_mode_active && (
+      {/* Supplier not configured */}
+      {config && !config.oneclicket_configured && (
         <div className="rounded-xl border border-amber-300 bg-amber-50 p-4 flex items-start gap-3">
           <AlertTriangle className="h-5 w-5 text-amber-700 flex-shrink-0 mt-0.5" />
           <div className="text-sm text-amber-900">
-            <p className="font-semibold mb-1">🟡 Mock-läge aktivt</p>
+            <p className="font-semibold mb-1">🟡 OneClicket är inte konfigurerat</p>
             <p className="text-xs leading-relaxed">
-              <code className="bg-amber-100 px-1 rounded">XS2_API_KEY</code> är inte satt - xs2event-funktionerna returnerar fixturer från <code className="bg-amber-100 px-1 rounded">_shared/xs2event.ts</code>. Sätt nyckeln när xs2 har levererat den och funktionerna går automatiskt live.
+              <code className="bg-amber-100 px-1 rounded">ONECLICKET_API_KEY</code> är inte satt - synk och
+              biljettuppslag kommer att misslyckas. Sätt nyckeln i Supabase function secrets.
             </p>
           </div>
         </div>
@@ -215,11 +215,10 @@ export default function AdminDiagnostics() {
       {/* Secrets checklist */}
       <Section title="Hemligheter (secrets)">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-          <SecretCheck label="XS2_API_KEY" ok={config?.xs2_api_key} required hint="Mock-läge utan denna" />
-          <SecretCheck label="XS2_BASE_URL" ok={config?.xs2_base_url} required hint="t.ex. https://api.xs2event.com" />
-          <SecretCheck label="XS2_PAYMENT_METHOD" ok={config?.xs2_payment_method} hint="Default 'invoice'" />
-          <SecretCheck label="XS2_AUTH_HEADER" ok={config?.xs2_auth_header_custom} hint="Default 'X-Api-Key'" />
-          <SecretCheck label="XS2_AUTH_SCHEME" ok={config?.xs2_auth_scheme_custom} hint="Default '' (empty, raw key)" />
+          <SecretCheck label="ONECLICKET_API_KEY" ok={config?.oneclicket_api_key} required hint="Synk + biljetter slutar fungera utan denna" />
+          <SecretCheck label="ONECLICKET_USER_ID" ok={config?.oneclicket_user_id} required hint="Kontots id hos OneClicket" />
+          <SecretCheck label="ONECLICKET_BASE_URL" ok={config?.oneclicket_base_url_custom} hint="Default https://www.oneclicket.com/api" />
+          <SecretCheck label="ONECLICKET_ORDERS_ENABLED" ok={config?.oneclicket_orders_enabled} hint="Av = beställningar körs bara som dry-run" />
           <SecretCheck label="STRIPE_SANDBOX_API_KEY" ok={config?.stripe_sandbox} required />
           <SecretCheck label="STRIPE_LIVE_API_KEY" ok={config?.stripe_live} hint="Krävs för live-betalningar" />
           <SecretCheck label="PAYMENTS_SANDBOX_WEBHOOK_SECRET" ok={config?.payments_sandbox_webhook} required />
@@ -233,7 +232,7 @@ export default function AdminDiagnostics() {
       {/* DB counts */}
       <Section title="Databas">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          <Count label="Events (xs2event)" value={counts?.events_xs2} />
+          <Count label="Events (OneClicket)" value={counts?.events_oneclicket} />
           <Count label="Events (manuella)" value={counts?.events_manual} />
           <Count label="Featured" value={counts?.events_featured} />
           <Count label="Seed-events" value={counts?.events_seeded} hint="evt_demo_*" />
@@ -244,16 +243,16 @@ export default function AdminDiagnostics() {
           <Count label="Offerter skickade" value={counts?.quotes_sent} />
           <Count label="Återbetalningar" value={counts?.refunds_total} />
         </div>
-        {(counts?.events_seeded ?? 0) === 0 && (counts?.events_xs2 ?? 0) === 0 && (
+        {(counts?.events_oneclicket ?? 0) === 0 && (
           <p className="text-xs text-amber-700 mt-3">
-            ⚠️ Inga xs2-events i databasen. Kör <strong>Synka allt</strong> på{" "}
-            <code className="bg-muted px-1 rounded">/admin/tickets</code> för att hämta evenemang från xs2event.
+            ⚠️ Inga OneClicket-events i databasen. Kör <strong>Synka allt</strong> på{" "}
+            <code className="bg-muted px-1 rounded">/admin/tickets</code> för att hämta evenemang.
           </p>
         )}
       </Section>
 
       {/* Last sync */}
-      <Section title="Senaste xs2-synk">
+      <Section title="Senaste synk">
         {lastSync ? (
           <div className="rounded-lg border border-border p-4 text-sm space-y-1">
             <div className="flex items-center gap-2">

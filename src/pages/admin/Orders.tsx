@@ -51,8 +51,6 @@ type OrderRow = {
   customer_phone: string | null;
   created_at: string;
   invoice_number: string | null;
-  xs2_reservation_id: string | null;
-  xs2_booking_id: string | null;
   quote_id: string | null;
   notes: string | null;
   last_refund_reason: string | null;
@@ -118,7 +116,7 @@ export default function AdminOrders() {
     const { data } = await (supabase as any)
       .from("orders")
       .select(
-        "id, status, total_sek, total_paid_sek, refunded_sek, currency, customer_email, customer_name, customer_phone, created_at, invoice_number, xs2_reservation_id, xs2_booking_id, quote_id, notes, last_refund_reason, stripe_checkout_session_id, order_items(id, qty, unit_price_sek, sub_category, events(sport, tournament_name, home_team, away_team, race_name, venue_name, city, starts_at), ticket_categories(name))",
+        "id, status, total_sek, total_paid_sek, refunded_sek, currency, customer_email, customer_name, customer_phone, created_at, invoice_number, quote_id, notes, last_refund_reason, stripe_checkout_session_id, order_items(id, qty, unit_price_sek, sub_category, events(sport, tournament_name, home_team, away_team, race_name, venue_name, city, starts_at), ticket_categories(name))",
       )
       .order("created_at", { ascending: false });
     setOrders((data as unknown as OrderRow[]) ?? []);
@@ -147,8 +145,7 @@ export default function AdminOrders() {
         o.customer_email?.toLowerCase().includes(q) ||
         o.customer_name?.toLowerCase().includes(q) ||
         o.id.toLowerCase().includes(q) ||
-        o.invoice_number?.toLowerCase().includes(q) ||
-        o.xs2_booking_id?.toLowerCase().includes(q)
+        o.invoice_number?.toLowerCase().includes(q)
       );
     }
     return true;
@@ -162,13 +159,12 @@ export default function AdminOrders() {
       const { data: q } = await (supabase as any).rpc("expire_old_quotes");
       const expiredQuotes = (q as number) ?? 0;
 
-      // Cancel orders with expired xs2 reservations still in pending/awaiting state
+      // Cancel orders whose hold window lapsed while still unpaid
       const { data: cancelled } = await (supabase as any)
         .from("orders")
         .update({ status: "cancelled" })
         .lt("reservation_expires_at", new Date().toISOString())
         .in("status", ["pending", "awaiting_payment"])
-        .not("xs2_reservation_id", "is", null)
         .select("id");
       const cancelledCount = (cancelled as { id: string }[] | null)?.length ?? 0;
 
@@ -225,7 +221,7 @@ export default function AdminOrders() {
 
       <div className="flex flex-wrap gap-3 mb-6">
         <Input
-          placeholder="Sök på namn, e-post, order-ID, faktura, xs2-ref..."
+          placeholder="Sök på namn, e-post, order-ID, faktura..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="max-w-sm"
@@ -365,9 +361,8 @@ function OrderDetail({
   const canRefund = ["paid", "fulfilled"].includes(order.status) && remaining > 0;
   const isPending = ["pending", "awaiting_payment"].includes(order.status);
   const isQuote = !!order.quote_id;
-  const isXs2 = !!order.xs2_reservation_id;
   const orderRef = order.invoice_number ?? order.id.slice(0, 8).toUpperCase();
-  const needsManualFulfillment = !!(order.notes && order.notes.startsWith("xs2 confirm failed"));
+  const needsManualFulfillment = !!(order.notes && order.notes.startsWith("supplier confirm failed"));
 
   return (
     <>
@@ -381,7 +376,6 @@ function OrderDetail({
             {STATUS_LABELS[order.status] ?? order.status}
           </Badge>
           {isQuote && <Badge variant="outline">Offert</Badge>}
-          {isXs2 && <Badge variant="outline">xs2event</Badge>}
           <span className="text-xs text-muted-foreground ml-auto">
             {new Date(order.created_at).toLocaleString("sv-SE")}
           </span>
@@ -391,9 +385,6 @@ function OrderDetail({
           <Info label="Namn" value={order.customer_name} />
           <Info label="E-post" value={order.customer_email} />
           <Info label="Telefon" value={order.customer_phone} />
-          {order.xs2_booking_id && (
-            <Info label="xs2 bokning" value={order.xs2_booking_id} mono />
-          )}
         </div>
 
         {/* Items */}
@@ -493,7 +484,7 @@ function OrderDetail({
           </div>
         )}
 
-        {/* Manual-fulfillment banner - Stripe paid but xs2 confirm failed */}
+        {/* Manual-fulfillment banner - Stripe paid but supplier booking failed */}
         {needsManualFulfillment && (
           <div className="rounded-lg border border-amber-300 bg-amber-50 p-3 space-y-2">
             <div className="flex items-start gap-2 text-xs text-amber-900">
@@ -501,8 +492,8 @@ function OrderDetail({
               <div>
                 <p className="font-semibold mb-1">Manuell bokning krävs</p>
                 <p>
-                  Kunden har betalat men xs2-bokningen kunde inte slutföras automatiskt.
-                  Kontakta xs2event-support och bekräfta bokningen där. Klicka sedan
+                  Kunden har betalat men leverantörsbokningen kunde inte slutföras automatiskt.
+                  Bekräfta bokningen hos leverantören och klicka sedan
                   "Markera som löst" - kunden får ingen ny aviseringsmail automatiskt.
                 </p>
               </div>
@@ -540,10 +531,10 @@ function OrderDetail({
               Markera som avbruten
             </Button>
           )}
-          {canRefund && isXs2 && (
+          {canRefund && (
             <p className="text-[11px] text-muted-foreground flex items-start gap-2 pt-1">
               <AlertTriangle className="h-3 w-3 mt-0.5 flex-shrink-0" />
-              Återbetalningen gäller bara Stripe-betalningen. xs2event-bokningar måste avbokas separat via deras support.
+              Återbetalningen gäller bara Stripe-betalningen. Leverantörsbokningar måste avbokas separat hos leverantören.
             </p>
           )}
         </div>

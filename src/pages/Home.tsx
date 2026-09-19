@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { formatEventDateTime } from "@/lib/formatSek";
 import { resolveImageUrl } from "@/components/admin/ImageUploader";
 import { PriceTag } from "@/components/PriceTag";
+import { usePublicPricesEnabled } from "@/hooks/usePublicPrices";
 import { SearchTypeahead } from "@/components/SearchTypeahead";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -98,7 +99,7 @@ const fallbackHeroSlides: HeroSlide[] = [
 //   { value: "...", label: "År av expertis" },
 // ];
 
-// Inquiry-funnel tiles (group / training / conference) - these aren't xs2
+// Inquiry-funnel tiles (group / training / conference) - these aren't supplier
 // ticket events, they're CTAs into the inquiry form, so they stay static.
 const inquiryOffers: FeaturedOffer[] = [
   { image: offerLisbon, title: "Gruppresa Lissabon", date: "Q1 2027", tag: "Grupp", days: "5 dagar", fromPrice: null, compareAtPrice: null, compareAtPct: null, currentPriceSek: null, href: "/group-travel", isNew: false },
@@ -264,6 +265,7 @@ const Home = () => {
   const [curatedTrips, setCuratedTrips] = useState<FeaturedOffer[]>([]);
   const [heroSlides, setHeroSlides] = useState<HeroSlide[]>(fallbackHeroSlides);
   const [compareAtDefaultPct, setCompareAtDefaultPct] = useState<number>(0);
+  const { enabled: showPrices } = usePublicPricesEnabled();
 
   useEffect(() => {
     (async () => {
@@ -350,7 +352,7 @@ const Home = () => {
   useEffect(() => {
     (async () => {
       // Cast to any: nested select + is_featured filter aren't yet in the
-      // generated Supabase types (the column ships with the xs2event_foundation
+      // generated Supabase types (the column ships with the events foundation
       // migration). Regen `src/integrations/supabase/types.ts` after applying
       // the migration to drop this cast.
       const { data } = await (supabase as any)
@@ -592,14 +594,18 @@ const Home = () => {
                         {offer.tag} · {offer.date}
                       </p>
                       <div className="border-t border-border/60 pt-4">
-                        <PriceTag
-                          currentSek={offer.currentPriceSek}
-                          compareAt={{
-                            eventSek: offer.compareAtPrice,
-                            eventPct: offer.compareAtPct,
-                            defaultPct: compareAtDefaultPct,
-                          }}
-                        />
+                        {showPrices ? (
+                          <PriceTag
+                            currentSek={offer.currentPriceSek}
+                            compareAt={{
+                              eventSek: offer.compareAtPrice,
+                              eventPct: offer.compareAtPct,
+                              defaultPct: compareAtDefaultPct,
+                            }}
+                          />
+                        ) : (
+                          <span className="text-sm text-muted-foreground">Pris på förfrågan</span>
+                        )}
                       </div>
                     </div>
                   </Link>

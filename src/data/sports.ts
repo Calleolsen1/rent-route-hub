@@ -1,5 +1,5 @@
 // Central source of truth for sports data (teams, leagues, F1 races).
-// Phase 5 will replace these constants with live XS2Event data; UI stays unchanged.
+// These constants drive the landing pages; names must match synced event data.
 
 export type TeamFixture = {
   opponent: string;

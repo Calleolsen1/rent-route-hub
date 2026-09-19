@@ -79,11 +79,11 @@ export default function AdminTickets() {
   const [syncLog, setSyncLog] = useState<SyncLogRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
-  const [syncing, setSyncing] = useState(false);
+  const [ocSyncing, setOcSyncing] = useState(false);
   const [manualEventOpen, setManualEventOpen] = useState(false);
   const [categoryTarget, setCategoryTarget] = useState<{ eventId: string; label: string } | null>(null);
   const [search, setSearch] = useState("");
-  const [sourceFilter, setSourceFilter] = useState<"all" | "xs2event" | "manual">("all");
+  const [sourceFilter, setSourceFilter] = useState<"all" | "oneclicket" | "manual">("all");
   const [featuredFilter, setFeaturedFilter] = useState<"all" | "featured" | "not_featured">("all");
   const [sportFilter, setSportFilter] = useState<string>("all");
   const [tournamentFilter, setTournamentFilter] = useState<string>("all");
@@ -106,8 +106,8 @@ export default function AdminTickets() {
         .order("created_at", { ascending: false })
         .limit(50),
       (supabase as any)
-        .from("xs2_sync_log")
-        .select("id, resource_type, started_at, finished_at, status, records_fetched, records_upserted, error_message, trigger")
+        .from("supplier_sync_log")
+        .select("id, source, resource_type, started_at, finished_at, status, records_fetched, records_upserted, error_message, trigger")
         .order("started_at", { ascending: false })
         .limit(5),
     ]);
@@ -124,23 +124,29 @@ export default function AdminTickets() {
     load();
   }, []);
 
-  const runSync = async (resource: "events" | "categories" | "all") => {
-    setSyncing(true);
+  const runOneClicketSync = async (sports?: ("soccer" | "formula1")[]) => {
+    setOcSyncing(true);
     try {
-      const { data, error } = await supabase.functions.invoke("xs2-sync", {
-        body: { resource, trigger: "manual" },
+      const { data, error } = await supabase.functions.invoke("oneclicket-sync", {
+        body: { sports, trigger: "manual" },
       });
       if (error) throw error;
-      const summary = (data as any)?.summary ?? {};
-      const msg = Object.entries(summary)
-        .map(([r, s]: any) => `${r}: ${s.upserted}/${s.fetched}`)
-        .join(", ");
-      toast.success(msg ? `Synk klar - ${msg}` : "Synk klar");
+      const t = (data as { totals?: {
+        events_upserted?: number;
+        categories_upserted?: number;
+        skipped_unresolved?: number;
+      } } | null)?.totals ?? {};
+      const skipped = t.skipped_unresolved
+        ? `, ${t.skipped_unresolved} hoppades över`
+        : "";
+      toast.success(
+        `OneClicket: ${t.events_upserted ?? 0} evenemang, ${t.categories_upserted ?? 0} kategorier${skipped}`,
+      );
       await load();
-    } catch (e: any) {
-      toast.error(e.message ?? "Synk misslyckades");
+    } catch (e) {
+      toast.error((e as Error).message ?? "OneClicket-synk misslyckades");
     } finally {
-      setSyncing(false);
+      setOcSyncing(false);
     }
   };
 
@@ -356,35 +362,37 @@ export default function AdminTickets() {
       <div>
         <h1 className="text-3xl font-display mb-2">Biljetter</h1>
         <p className="text-muted-foreground text-sm">
-          Synka evenemang och kategorier från xs2event, ställ in påslag per kategori, och hantera leveranser av manuella biljetter.
+          Synka evenemang och kategorier från OneClicket, ställ in påslag per kategori, och hantera leveranser av manuella biljetter.
         </p>
       </div>
 
-      {/* xs2event sync */}
+      {/* OneClicket sync */}
       <section className="rounded-xl border border-border bg-card p-5 space-y-4">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h2 className="font-display text-xl mb-1">xs2event-synk</h2>
+            <h2 className="font-display text-xl mb-1">OneClicket-synk</h2>
             <p className="text-xs text-muted-foreground">
-              Hämtar evenemang och kategorier från xs2event och uppdaterar lokal databas. Biljetter och priser hämtas live vid varje sidvisning.
+              Hämtar fotbolls- och Formel 1-produkter med lagersaldo från OneClicket.
+              Endast produkter med köpbara versioner importeras - priser och antal
+              hämtas live vid varje sidvisning.
             </p>
           </div>
           <div className="flex gap-2 flex-shrink-0">
             <Button
               size="sm"
               variant="outline"
-              disabled={syncing}
-              onClick={() => runSync("events")}
+              disabled={ocSyncing}
+              onClick={() => runOneClicketSync(["soccer"])}
             >
-              {syncing ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <RefreshCw className="h-3 w-3 mr-1" />}
-              Synka evenemang
+              {ocSyncing ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <RefreshCw className="h-3 w-3 mr-1" />}
+              Synka fotboll
             </Button>
             <Button
               size="sm"
-              disabled={syncing}
-              onClick={() => runSync("all")}
+              disabled={ocSyncing}
+              onClick={() => runOneClicketSync()}
             >
-              {syncing ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <RefreshCw className="h-3 w-3 mr-1" />}
+              {ocSyncing ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <RefreshCw className="h-3 w-3 mr-1" />}
               Synka allt
             </Button>
           </div>
@@ -424,6 +432,7 @@ export default function AdminTickets() {
           </div>
         )}
       </section>
+
 
       {/* Events + categories */}
       <section className="space-y-6">
@@ -485,7 +494,7 @@ export default function AdminTickets() {
                   className="h-9 rounded-md border border-input bg-background px-3 text-sm"
                 >
                   <option value="all">Alla källor</option>
-                  <option value="xs2event">Bara xs2event</option>
+                  <option value="oneclicket">Bara OneClicket</option>
                   <option value="manual">Bara manuella</option>
                 </select>
                 <select
@@ -509,8 +518,8 @@ export default function AdminTickets() {
           const filtered = events.filter((ev) => {
             if (sportFilter !== "all" && ev.sport !== sportFilter) return false;
             if (tournamentFilter !== "all" && ev.tournament_name !== tournamentFilter) return false;
-            if (sourceFilter === "xs2event" && ev.source !== "xs2event") return false;
-            if (sourceFilter === "manual" && ev.source === "xs2event") return false;
+            if (sourceFilter === "oneclicket" && ev.source !== "oneclicket") return false;
+            if (sourceFilter === "manual" && ev.source === "oneclicket") return false;
             if (featuredFilter === "featured" && !ev.is_featured) return false;
             if (featuredFilter === "not_featured" && ev.is_featured) return false;
             if (search.trim()) {
@@ -634,15 +643,15 @@ export default function AdminTickets() {
                         <div className="space-y-3 p-4">
                           {evs.map((ev) => {
           const headline = ev.sport === "soccer" ? `${ev.home_team} vs ${ev.away_team}` : ev.race_name;
-          const isXs2 = ev.source === "xs2event";
+          const isSupplier = ev.source === "oneclicket";
           return (
             <div key={ev.id} className="rounded-xl border border-border bg-card p-5">
               <div className="flex items-start justify-between mb-4 gap-4">
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <p className="text-[10px] tracking-[0.25em] uppercase text-primary">{ev.tournament_name}</p>
-                    <Badge variant={isXs2 ? "default" : "outline"} className="text-[9px] uppercase tracking-wider">
-                      {isXs2 ? "xs2event" : "manuell"}
+                    <Badge variant={isSupplier ? "default" : "outline"} className="text-[9px] uppercase tracking-wider">
+                      {isSupplier ? "OneClicket" : "manuell"}
                     </Badge>
                   </div>
                   <h3 className="font-display text-lg">{headline}</h3>
@@ -709,7 +718,7 @@ export default function AdminTickets() {
                   <CategoryRow
                     key={c.id}
                     c={c}
-                    isXs2={isXs2}
+                    isSupplier={isSupplier}
                     busy={busy}
                     onSync={syncStripe}
                     onSaveMarkup={saveMarkup}
@@ -718,12 +727,12 @@ export default function AdminTickets() {
                 ))}
                 {!ev.ticket_categories?.length && (
                   <p className="text-xs text-muted-foreground">
-                    {isXs2
+                    {isSupplier
                       ? "Kategorier hämtas på första sidvisning av evenemanget eller via \"Synka allt\"."
                       : "Inga biljettkategorier för detta evenemang."}
                   </p>
                 )}
-                {!isXs2 && (
+                {!isSupplier && (
                   <div className="pt-2">
                     <Button
                       size="sm"
@@ -975,7 +984,7 @@ function EventDefaultsPanel({
               </div>
             </div>
             <p className="text-[11px] text-muted-foreground pb-2 flex-1 min-w-[140px]">
-              slutpris = xs2-pris × (1 + %/100) + SEK
+              slutpris = inköpspris × (1 + %/100) + SEK
             </p>
           </div>
         </div>
@@ -1133,14 +1142,14 @@ function CompareAtEditor({
 
 function CategoryRow({
   c,
-  isXs2,
+  isSupplier,
   busy,
   onSync,
   onSaveMarkup,
   onSaveCompareAt,
 }: {
   c: Category;
-  isXs2: boolean;
+  isSupplier: boolean;
   busy: string | null;
   onSync: (id: string) => void;
   onSaveMarkup: (id: string, pct: number, fixed: number) => void;
@@ -1169,13 +1178,13 @@ function CategoryRow({
           <p className="text-xs text-muted-foreground">
             Senast visat pris: {formatSek(c.unit_price_sek)} · {c.qty_available} biljetter kvar
           </p>
-          {!isXs2 && (
+          {!isSupplier && (
             <p className="text-[11px] text-muted-foreground font-mono mt-1">
               lookup_key: {c.stripe_price_id ?? "-"}
             </p>
           )}
         </div>
-        {!isXs2 && (
+        {!isSupplier && (
           <div className="flex items-center gap-2">
             {c.stripe_price_id ? (
               <CheckCircle2 className="h-4 w-4 text-green-600" />

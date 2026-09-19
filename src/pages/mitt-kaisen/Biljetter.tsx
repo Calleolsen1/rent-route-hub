@@ -33,14 +33,13 @@ type OrderWithItems = {
   refunded_sek: number | null;
   created_at: string;
   invoice_number: string | null;
-  xs2_booking_id: string | null;
   notes: string | null;
   fulfillment_attempt_count: number | null;
   order_items: OrderItem[];
 };
 
-// xs2-retry-pending gives up after 48 attempts (~2 days). At that point
-// the order genuinely needs ops intervention - UI flips to the warning.
+// After 48 fulfilment attempts (~2 days) the order genuinely needs ops
+// intervention - the UI flips to the warning.
 const FULFILLMENT_RETRY_MAX = 48;
 
 const STATUS_LABELS: Record<string, string> = {
@@ -75,7 +74,7 @@ export default function MittKaisenBiljetter() {
       const { data } = await (supabase as any)
         .from("orders")
         .select(
-          "id, status, total_sek, refunded_sek, created_at, invoice_number, xs2_booking_id, notes, fulfillment_attempt_count, order_items(id, qty, unit_price_sek, events(sport, tournament_name, home_team, away_team, race_name, venue_name, city, starts_at), ticket_categories(name), ticket_deliveries(file_url, delivered_at))",
+          "id, status, total_sek, refunded_sek, created_at, invoice_number, notes, fulfillment_attempt_count, order_items(id, qty, unit_price_sek, events(sport, tournament_name, home_team, away_team, race_name, venue_name, city, starts_at), ticket_categories(name), ticket_deliveries(file_url, delivered_at))",
         )
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
@@ -173,11 +172,6 @@ function OrderCard({ order }: { order: OrderWithItems }) {
           <p className="text-xs mt-1" style={{ color: C.textDim }}>
             {new Date(order.created_at).toLocaleDateString("sv-SE")}
           </p>
-          {order.xs2_booking_id && (
-            <p className="text-[10px] font-mono mt-1" style={{ color: C.textDim }}>
-              Ref: {order.xs2_booking_id}
-            </p>
-          )}
         </div>
         <span
           className="text-[10px] uppercase tracking-wider px-2 py-1 rounded-full flex-shrink-0"

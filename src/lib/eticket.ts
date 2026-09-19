@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 /**
  * Opens an e-ticket for the user. The `file_url` column in `ticket_deliveries`
  * can hold either:
- *   - A full https:// URL (xs2event download endpoint, set by payments-webhook)
+ *   - A full https:// URL (supplier download endpoint, set by payments-webhook)
  *   - A Supabase Storage path (manual ticket upload via admin)
  *
  * Returns the resolved URL the caller can hand to window.open / <a href>.

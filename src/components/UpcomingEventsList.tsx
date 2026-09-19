@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { usePublicPricesEnabled } from "@/hooks/usePublicPrices";
 import { ArrowRight, Calendar, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatEventDate } from "@/lib/formatSek";
@@ -62,6 +63,7 @@ export default function UpcomingEventsList({
   const [events, setEvents] = useState<EventRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [defaultPct, setDefaultPct] = useState<number>(0);
+  const { enabled: showPrices } = usePublicPricesEnabled();
 
   useEffect(() => {
     (async () => {
@@ -134,7 +136,7 @@ export default function UpcomingEventsList({
               ? `${e.home_team} vs ${e.away_team}`
               : e.race_name;
           // Fall back to cheapest ticket_categories.unit_price_sek when the
-          // events.min_price_sek column is null (e.g. xs2-sync hasn't run yet
+          // events.min_price_sek column is null (e.g. the supplier sync hasn't run yet
           // since the price columns were added).
           const categoryMin = (e.ticket_categories ?? [])
             .map((c) => Number(c.unit_price_sek))
@@ -156,7 +158,7 @@ export default function UpcomingEventsList({
                     alt={headline ?? ""}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                  {displayPrice != null && displayPrice > 0 && (
+                  {showPrices && displayPrice != null && displayPrice > 0 && (
                     <div className="absolute top-3 right-3 bg-background/95 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-lg border border-border">
                       <PriceTag
                         currentSek={displayPrice}
@@ -190,17 +192,21 @@ export default function UpcomingEventsList({
                   </span>
                 </div>
                 <div className={`mt-auto border-t border-border flex items-end justify-between gap-3 ${compact ? "pt-3" : "pt-4"}`}>
-                  <PriceTag
-                    currentSek={displayPrice}
-                    compareAt={{
-                      eventSek: e.compare_at_price_sek,
-                      eventPct: e.compare_at_pct,
-                      defaultPct,
-                    }}
-                    variant="large"
-                  />
+                  {showPrices ? (
+                    <PriceTag
+                      currentSek={displayPrice}
+                      compareAt={{
+                        eventSek: e.compare_at_price_sek,
+                        eventPct: e.compare_at_pct,
+                        defaultPct,
+                      }}
+                      variant="large"
+                    />
+                  ) : (
+                    <span className="text-sm text-muted-foreground">Pris på förfrågan</span>
+                  )}
                   <Button size="sm" className="rounded-full text-xs bg-primary hover:bg-primary/90 shrink-0">
-                    Köp <ArrowRight className="ml-1 h-3 w-3" />
+                    {showPrices ? "Köp" : "Se biljetter"} <ArrowRight className="ml-1 h-3 w-3" />
                   </Button>
                 </div>
               </div>

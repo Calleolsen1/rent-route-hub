@@ -16,7 +16,7 @@ import {
 import { Loader2 } from "lucide-react";
 
 /**
- * Add a ticket category to a manual (non-xs2) event. After save, the existing
+ * Add a ticket category to a manual (non-supplier) event. After save, the existing
  * AdminTickets UI displays it with markup-edit + Stripe-price-sync buttons.
  *
  * The Stripe lookup_key field is optional at creation; admin can click

@@ -27,8 +27,6 @@ type OrderRow = {
   customer_name: string | null;
   user_id: string | null;
   invoice_number: string | null;
-  xs2_reservation_id: string | null;
-  xs2_booking_id: string | null;
   quote_id: string | null;
   notes: string | null;
   created_at: string;
@@ -107,7 +105,7 @@ export default function OrderConfirmation() {
         (supabase as any)
           .from("orders")
           .select(
-            "id, status, total_sek, refunded_sek, customer_email, customer_name, user_id, invoice_number, xs2_reservation_id, xs2_booking_id, quote_id, notes, created_at",
+            "id, status, total_sek, refunded_sek, customer_email, customer_name, user_id, invoice_number, quote_id, notes, created_at",
           )
           .eq("id", orderId)
           .maybeSingle(),
@@ -193,7 +191,7 @@ export default function OrderConfirmation() {
 
   const isPaid = order.status === "paid" || order.status === "fulfilled";
   const isPending = order.status === "pending" || order.status === "awaiting_payment";
-  const confirmFailed = !!(order.notes && order.notes.startsWith("xs2 confirm failed"));
+  const confirmFailed = !!(order.notes && order.notes.startsWith("supplier confirm failed"));
   const isGuest = !order.user_id || !user;
   const orderRef = order.invoice_number ?? order.id.slice(0, 8).toUpperCase();
   const isQuote = !!order.quote_id;
@@ -282,7 +280,6 @@ export default function OrderConfirmation() {
             </p>
             <ReferenceRow label="Order-ID" value={order.id} mono />
             {order.invoice_number && <ReferenceRow label="Fakturanummer" value={order.invoice_number} />}
-            {order.xs2_booking_id && <ReferenceRow label="Bokningsreferens" value={order.xs2_booking_id} mono />}
             <ReferenceRow label="E-post" value={order.customer_email} />
             <p className="text-xs text-muted-foreground mt-4">
               Frågor? Mejla <a href="mailto:info@kaisengroup.se" className="underline">info@kaisengroup.se</a> och ange order-ID.

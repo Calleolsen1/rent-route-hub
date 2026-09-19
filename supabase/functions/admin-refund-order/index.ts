@@ -17,9 +17,9 @@
 //   6. Update orders.status to 'refunded' if fully refunded (else leave it)
 //   7. (Optional) email customer via Resend
 //
-// Does NOT call xs2event to cancel the booking — xs2 doesn't expose a public
+// Does NOT cancel the supplier booking — OneClicket doesn't expose a public
 // booking-cancellation endpoint. The admin UI surfaces this so ops contacts
-// xs2 support directly when needed.
+// the supplier directly when needed.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { type StripeEnv, createStripeClient } from "../_shared/stripe.ts";
