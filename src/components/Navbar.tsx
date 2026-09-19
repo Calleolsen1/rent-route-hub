@@ -214,11 +214,12 @@ const Navbar = () => {
 
               {/* Mobile menu toggle */}
               <button
-                className="lg:hidden p-2"
+                className="lg:hidden -mr-2 p-3 rounded-md active:bg-accent"
                 onClick={() => setMobileOpen(!mobileOpen)}
                 aria-label="Växla meny"
+                aria-expanded={mobileOpen}
               >
-                {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </button>
             </div>
           </div>
@@ -226,7 +227,7 @@ const Navbar = () => {
 
         {/* Mobile menu */}
         {mobileOpen && (
-          <div className="lg:hidden border-t bg-card px-4 py-6 space-y-1 max-h-[calc(100vh-4rem)] overflow-y-auto">
+          <div className="lg:hidden border-t bg-card px-4 py-4 space-y-1 max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain">
             {sports.map((sport) => {
               const sportEntries = entriesFor(sport.id);
               if (!sportEntries.length) return null;
