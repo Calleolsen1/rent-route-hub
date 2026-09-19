@@ -234,52 +234,62 @@ const Navbar = () => {
               const isOpen = mobileSubmenu === sport.slug;
               return (
                 <div key={sport.id}>
-                  <div className="w-full flex items-center justify-between py-3 px-2 text-sm font-medium tracking-wide text-foreground">
+                  <div className="w-full flex items-center justify-between border-b border-border/40 text-base font-medium tracking-wide text-foreground">
                     <Link
                       to={`/services/sportresor/${sport.slug}`}
                       onClick={() => setMobileOpen(false)}
-                      className="flex-1 text-left"
+                      className="flex-1 text-left py-4 px-2"
                     >
                       {sport.label}
                     </Link>
                     <button
                       aria-label={`Visa ${sport.label}`}
+                      aria-expanded={isOpen}
+                      className="p-3 -mr-1 rounded-md active:bg-accent"
                       onClick={() => setMobileSubmenu(isOpen ? null : sport.slug)}
                     >
-                      <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+                      <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? "rotate-180" : ""}`} />
                     </button>
                   </div>
                   {isOpen && sport.menu_style === "grouped" && (
-                    <div className="pl-4 pb-2 space-y-3">
+                    <div className="pl-3 py-2 space-y-4 bg-accent/30 rounded-lg mb-2">
                       {groupedFor(sport.id).map(([groupLabel, items]) => (
                         <div key={groupLabel}>
-                          <p className="text-[10px] tracking-[0.2em] uppercase text-primary font-semibold py-1">{groupLabel}</p>
-                          {items.map((entry) => (
-                            <Link
-                              key={entry.id}
-                              to={`/services/sportresor/${sport.slug}/${entry.slug}`}
-                              className="block py-1.5 px-2 text-sm text-foreground/80"
-                              onClick={() => setMobileOpen(false)}
-                            >
-                              {entry.name}
-                            </Link>
-                          ))}
+                          <Link
+                            to={`/services/sportresor/${sport.slug}/liga/${slug(groupLabel)}`}
+                            onClick={() => setMobileOpen(false)}
+                            className="block text-[11px] tracking-[0.16em] uppercase text-primary font-semibold px-2 py-2"
+                          >
+                            {groupLabel}
+                          </Link>
+                          <div className="grid grid-cols-2 gap-x-2">
+                            {items.map((entry) => (
+                              <Link
+                                key={entry.id}
+                                to={`/services/sportresor/${sport.slug}/${entry.slug}`}
+                                className="block py-2.5 px-2 text-sm text-foreground/80"
+                                onClick={() => setMobileOpen(false)}
+                              >
+                                {entry.name}
+                              </Link>
+                            ))}
+                          </div>
                         </div>
                       ))}
                     </div>
                   )}
                   {isOpen && sport.menu_style === "list" && (
-                    <div className="pl-4 pb-2">
+                    <div className="pl-3 py-1 bg-accent/30 rounded-lg mb-2">
                       {sportEntries.map((entry) => (
                         <Link
                           key={entry.id}
                           to={`/services/sportresor/${sport.slug}/${entry.slug}`}
-                          className="flex items-center justify-between py-2 px-2 text-sm"
+                          className="flex items-center justify-between gap-3 py-3 px-2 text-sm"
                           onClick={() => setMobileOpen(false)}
                         >
                           <span className="text-foreground/80">{entry.name}</span>
                           {entry.short_date && (
-                            <span className="text-xs text-muted-foreground">{entry.short_date}</span>
+                            <span className="text-xs text-muted-foreground flex-shrink-0">{entry.short_date}</span>
                           )}
                         </Link>
                       ))}
