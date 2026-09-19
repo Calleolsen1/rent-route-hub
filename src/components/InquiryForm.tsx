@@ -35,7 +35,24 @@ type Props = {
   showDates?: boolean;
   /** Show budget field. Default: true for group/conference/vip. */
   showBudget?: boolean;
+  /**
+   * Show the Hotell / Biljett / Flyg picker. The site sells packages on
+   * request rather than single items through a checkout, so the first thing
+   * ops needs to know is which parts of the trip the customer wants.
+   */
+  showTripParts?: boolean;
+  /** Trip parts ticked on open, e.g. ["biljett"] from an event page. */
+  defaultTripParts?: readonly string[];
 };
+
+/** The three things a Kaisen trip is assembled from. */
+const TRIP_PARTS = [
+  { id: "hotell", label: "Hotell" },
+  { id: "biljett", label: "Biljett" },
+  { id: "flyg", label: "Flyg" },
+] as const;
+
+type TripPart = (typeof TRIP_PARTS)[number]["id"];
 
 const FormSchema = z.object({
   name: z.string().trim().min(2, "Ange ditt namn").max(120),
@@ -72,12 +89,22 @@ export default function InquiryForm({
   showDestination,
   showDates,
   showBudget,
+  showTripParts = false,
+  defaultTripParts,
 }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [serverError, setServerError] = useState<string | null>(null);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [tripParts, setTripParts] = useState<TripPart[]>(
+    () => TRIP_PARTS.filter((p) => defaultTripParts?.includes(p.id)).map((p) => p.id),
+  );
+
+  const toggleTripPart = (id: TripPart) =>
+    setTripParts((prev) =>
+      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id],
+    );
 
   const fieldShowGroupSize = showGroupSize ?? defaultFor(type, "showGroupSize");
   const fieldShowDestination = showDestination ?? defaultFor(type, "showDestination");
@@ -102,6 +129,11 @@ export default function InquiryForm({
       budget_sek: String(fd.get("budget_sek") ?? ""),
       message: String(fd.get("message") ?? ""),
     };
+
+    if (showTripParts && tripParts.length === 0) {
+      setErrors({ trip_parts: "Välj minst en del - hotell, biljett eller flyg" });
+      return;
+    }
 
     const parsed = FormSchema.safeParse(raw);
     if (!parsed.success) {
@@ -131,7 +163,17 @@ export default function InquiryForm({
         budget_sek: parsed.data.budget_sek
           ? Number(parsed.data.budget_sek)
           : undefined,
-        sport_or_topic: presetTopic || undefined,
+        // Fold the trip parts into sport_or_topic so they land in the
+        // notification email next to the event, without a schema change on
+        // submit-inquiry.
+        sport_or_topic: [
+          presetTopic,
+          tripParts.length
+            ? `Önskar: ${tripParts
+                .map((id) => TRIP_PARTS.find((p) => p.id === id)?.label ?? id)
+                .join(" + ")}`
+            : null,
+        ].filter(Boolean).join(" · ") || undefined,
         message: parsed.data.message,
         source_page:
           typeof window !== "undefined" ? window.location.pathname : undefined,
@@ -239,6 +281,38 @@ export default function InquiryForm({
           </div>
         )}
       </div>
+
+      {showTripParts && (
+        <div>
+          <Label className="text-xs uppercase tracking-wider">Vad vill ni ha offert på? *</Label>
+          <p className="text-[11px] text-muted-foreground mt-1 mb-2">
+            Välj en, två eller alla tre - vi sätter ihop paketet och återkommer med pris.
+          </p>
+          <div className="grid grid-cols-3 gap-2">
+            {TRIP_PARTS.map((part) => {
+              const active = tripParts.includes(part.id);
+              return (
+                <button
+                  key={part.id}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => toggleTripPart(part.id)}
+                  className={`rounded-lg border px-3 py-3 text-sm transition-colors ${
+                    active
+                      ? "border-primary bg-primary/10 text-foreground font-medium"
+                      : "border-border bg-background text-muted-foreground hover:border-primary/40"
+                  }`}
+                >
+                  {part.label}
+                </button>
+              );
+            })}
+          </div>
+          {errors.trip_parts && (
+            <p className="text-xs text-destructive mt-2">{errors.trip_parts}</p>
+          )}
+        </div>
+      )}
 
       <div>
         <Label htmlFor="message" className="text-xs uppercase tracking-wider">Meddelande *</Label>

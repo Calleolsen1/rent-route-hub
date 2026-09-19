@@ -38,6 +38,28 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
+    // Hard stop while the site sells on request only.
+    //
+    // The UI already hides every price and offers an enquiry instead of a
+    // checkout, but that is a rendering decision a stale tab or a crafted
+    // request can walk straight past. Selling is gated on the same
+    // public_prices_enabled flag here so no Stripe session can be created at
+    // all until the business turns pricing on.
+    const { data: pricesPublic } = await supabase.rpc("get_platform_bool", {
+      p_key: "public_prices_enabled",
+      p_default: false,
+    });
+    if (pricesPublic !== true) {
+      return new Response(
+        JSON.stringify({
+          error:
+            "Onlinebetalning är avstängd - resor bokas via förfrågan. Kontakta oss så återkommer vi med pris.",
+          code: "checkout_disabled",
+        }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
     const { data: order, error: orderErr } = await supabase
       .from("orders")
       .select("id, user_id, customer_email, customer_name, status, currency")

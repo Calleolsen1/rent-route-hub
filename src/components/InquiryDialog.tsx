@@ -9,6 +9,10 @@ export type InquiryDialogOptions = {
   eyebrow?: string;
   heading?: string;
   intro?: string;
+  /** Show the Hotell / Biljett / Flyg picker. */
+  showTripParts?: boolean;
+  /** Parts ticked on open, e.g. ["biljett"]. */
+  defaultTripParts?: readonly string[];
 };
 
 type InquiryDialogContextValue = {
@@ -43,6 +47,8 @@ export function InquiryDialogProvider({ children }: { children: ReactNode }) {
               eyebrow={opts.eyebrow}
               heading={opts.heading}
               intro={opts.intro}
+              showTripParts={opts.showTripParts}
+              defaultTripParts={opts.defaultTripParts}
             />
           )}
         </DialogContent>

@@ -91,6 +91,7 @@ export default function Contact() {
                 eyebrow="Reseförfrågan"
                 heading="Berätta Om Er Resa"
                 intro="Skriv några rader om vad ni planerar - antal personer, ungefärliga datum, destination och önskemål. Vi återkommer med ett förslag."
+                showTripParts
               />
             </div>
           </div>

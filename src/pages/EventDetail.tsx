@@ -605,6 +605,8 @@ export default function EventDetail() {
               `event:${event.id}`,
             ].filter(Boolean).join(" · ")}
             showDates={false}
+            showTripParts
+            defaultTripParts={["biljett"]}
           />
         </DialogContent>
       </Dialog>

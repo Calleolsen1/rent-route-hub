@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe-js";
 import { supabase } from "@/integrations/supabase/client";
+import { usePublicPricesEnabled } from "@/hooks/usePublicPrices";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -55,6 +56,7 @@ export default function Checkout() {
   const [phone, setPhone] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
+  const { enabled: sellingEnabled, loading: flagLoading } = usePublicPricesEnabled();
 
   useEffect(() => {
     if (authLoading) return;
@@ -111,6 +113,28 @@ export default function Checkout() {
     }
     return data.clientSecret as string;
   };
+
+  // Selling is off — the site takes requests instead. No order can be created
+  // in this state, so anyone landing here has a stale link; show the enquiry
+  // route rather than a payment page with prices on it.
+  if (!flagLoading && !sellingEnabled) {
+    return (
+      <div className="min-h-screen">
+        <Navbar />
+        <div className="container mx-auto px-4 py-32 text-center max-w-lg">
+          <h1 className="font-display text-3xl mb-4">Bokning sker via förfrågan</h1>
+          <p className="text-muted-foreground text-sm mb-8">
+            Vi tar inte betalt online just nu. Skicka en förfrågan så återkommer vi
+            med pris och tillgänglighet för hotell, biljett och flyg.
+          </p>
+          <Link to="/contact">
+            <Button className="rounded-full">Skicka förfrågan</Button>
+          </Link>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   if (loading) {
     return (
