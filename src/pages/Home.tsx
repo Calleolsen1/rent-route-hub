@@ -116,6 +116,7 @@ type FeaturedOffer = {
   currentPriceSek: number | null;
   href: string;
   isNew: boolean;
+  isPopular?: boolean;
 };
 
 // Image fallbacks by sport when an event has no cover_image_url.
@@ -268,6 +269,7 @@ const Home = () => {
   const [offerTab, setOfferTab] = useState<"alla" | "nya" | "populara">("alla");
   const navigate = useNavigate();
   const [featured, setFeatured] = useState<FeaturedOffer[]>([]);
+  const [curatedTrips, setCuratedTrips] = useState<FeaturedOffer[]>([]);
   const [heroSlides, setHeroSlides] = useState<HeroSlide[]>(fallbackHeroSlides);
   const [compareAtDefaultPct, setCompareAtDefaultPct] = useState<number>(0);
 
@@ -374,19 +376,62 @@ const Home = () => {
     })();
   }, []);
 
+  // Admin-curated trip cards ("Resor på startsidan"). These work without the
+  // ticket API, so the row is never empty at launch.
+  useEffect(() => {
+    (async () => {
+      const today = new Date().toISOString().slice(0, 10);
+      const { data } = await (supabase as any)
+        .from("home_trips")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+      const rows = ((data ?? []) as Array<any>)
+        .filter((r) => !r.valid_until || r.valid_until >= today)
+        .map((r) => ({
+          image: resolveImageUrl(r.image_url ?? "", ASSET_LOOKUP, heroImage),
+          title: r.title,
+          date: r.date_label ?? "",
+          tag: r.tag ?? "Resa",
+          days: r.days_label ?? null,
+          fromPrice: null,
+          compareAtPrice: null,
+          compareAtPct: null,
+          currentPriceSek: r.price_from_sek != null ? Number(r.price_from_sek) : null,
+          href: r.href ?? "/contact",
+          isNew: !!r.is_new,
+          isPopular: !!r.is_popular,
+        })) as FeaturedOffer[];
+      setCuratedTrips(rows);
+    })();
+  }, []);
+
   const offerTabs = [
     { id: "alla" as const, label: "Aktuella resor" },
     { id: "nya" as const, label: "Nya resor" },
     { id: "populara" as const, label: "Populära resor" },
   ];
 
-  // Featured events first, then inquiry-funnel CTAs to fill the row.
-  const combinedOffers: FeaturedOffer[] = [...featured, ...inquiryOffers];
+  // Admin-curated trips first, then ticket events. The static inquiry tiles
+  // only top up the row when there are fewer than 3 cards, so the section is
+  // never sparse - even with the ticket API switched off.
+  const baseOffers: FeaturedOffer[] = [...curatedTrips, ...featured];
+  const combinedOffers: FeaturedOffer[] =
+    baseOffers.length >= 3 ? baseOffers : [...baseOffers, ...inquiryOffers];
+
+  // Tabs always show something: fall back to the full row when nothing is
+  // flagged as new/popular.
+  const newOffers = combinedOffers.filter((o) => o.isNew);
+  const popularOffers = combinedOffers.filter((o) => o.isPopular);
   const filteredOffers =
     offerTab === "nya"
-      ? combinedOffers.filter((o) => o.isNew)
+      ? newOffers.length
+        ? newOffers
+        : combinedOffers
       : offerTab === "populara"
-      ? combinedOffers.slice(0, 5)
+      ? popularOffers.length
+        ? popularOffers
+        : combinedOffers.slice(0, 5)
       : combinedOffers;
 
 

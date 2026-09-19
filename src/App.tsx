@@ -30,6 +30,7 @@ import AdminSupport from "./pages/admin/Support";
 import ContentManagementPage from "./pages/admin/ContentManagement";
 import AdminTickets from "./pages/admin/Tickets";
 import AdminBanners from "./pages/admin/Banners";
+import AdminHomeTrips from "./pages/admin/HomeTrips";
 import AdminMarkupDefaults from "./pages/admin/MarkupDefaults";
 import AdminNavigation from "./pages/admin/Navigation";
 import AdminDiagnostics from "./pages/admin/Diagnostics";
@@ -111,6 +112,7 @@ const App = () => (
                 <Route path="orders" element={<AdminOrders />} />
                 <Route path="tickets" element={<AdminTickets />} />
                 <Route path="banners" element={<AdminBanners />} />
+                <Route path="hemsidan/resor" element={<AdminHomeTrips />} />
                 <Route path="markup-defaults" element={<AdminMarkupDefaults />} />
                 <Route path="diagnostics" element={<AdminDiagnostics />} />
                 <Route path="media" element={<AdminMediaLibrary />} />
