@@ -174,6 +174,11 @@ export default function UpcomingEventsList({
     ? events.filter((e) => monthKey(e.starts_at) === month)
     : events;
 
+  const isEmptyState = !loading && !events.length;
+  useEffect(() => {
+    onEmptyChange?.(isEmptyState);
+  }, [isEmptyState, onEmptyChange]);
+
   if (loading) {
     return (
       <div className="text-center py-10 text-muted-foreground text-sm">
