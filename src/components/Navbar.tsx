@@ -59,7 +59,10 @@ const Navbar = () => {
               the logo or right-side controls become */}
           <div className="grid grid-cols-[1fr_auto_1fr] items-center h-16 md:h-20 gap-4">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-3 flex-shrink-0">
+            <Link
+              to="/"
+              className="col-start-2 row-start-1 justify-self-center flex items-center gap-3 flex-shrink-0 lg:col-start-1 lg:justify-self-start"
+            >
               <div className="flex flex-col leading-none">
                 <span className="font-display text-xl md:text-2xl font-semibold tracking-wide text-foreground">
                   KAISEN
@@ -161,7 +164,7 @@ const Navbar = () => {
             </div>
 
             {/* Right side */}
-            <div className="flex items-center gap-3 justify-end flex-shrink-0">
+            <div className="col-start-1 row-start-1 justify-self-start flex items-center gap-3 flex-shrink-0 lg:col-start-3 lg:justify-self-end">
               {/* Language */}
               <div className="hidden lg:block relative" onMouseEnter={() => setOpenMenu("sprak")} onMouseLeave={() => setOpenMenu(null)}>
                 <button className="flex items-center gap-1 text-sm text-foreground/70 hover:text-primary transition-colors py-2" aria-label="Språk">
@@ -224,7 +227,7 @@ const Navbar = () => {
 
               {/* Mobile menu toggle */}
               <button
-                className="lg:hidden -mr-2 p-3 rounded-md active:bg-accent"
+                className="lg:hidden -ml-2 p-3 rounded-md active:bg-accent"
                 onClick={() => setMobileOpen(!mobileOpen)}
                 aria-label="Växla meny"
                 aria-expanded={mobileOpen}
