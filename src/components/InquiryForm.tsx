@@ -89,6 +89,7 @@ export default function InquiryForm({
   showBudget,
   showTripParts = false,
   defaultTripParts,
+  compact = false,
 }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const [dateFrom, setDateFrom] = useState("");
