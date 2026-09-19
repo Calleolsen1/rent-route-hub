@@ -254,25 +254,61 @@ export default function EventDetail() {
                 </span>
               </div>
 
+              {/* Package tiers - shown without prices since every trip is
+                  quoted individually. The selected tier drives the enquiry. */}
+              <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
+                Välj ditt paket
+              </p>
+              <div className="space-y-2 mb-5">
+                {[
+                  { id: "biljetter", icons: [Ticket], label: "Endast biljetter", parts: ["biljett"] },
+                  { id: "hotell", icons: [Ticket, Hotel], label: "Biljetter + hotell", parts: ["biljett", "hotell"] },
+                  {
+                    id: "komplett",
+                    icons: [Ticket, Plane, Hotel],
+                    label: "Biljetter + flyg + hotell",
+                    parts: ["biljett", "hotell", "flyg"],
+                  },
+                ].map(({ id, icons, label, parts }) => {
+                  const selected = selectedPackage === id;
+                  return (
+                    <button
+                      key={id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedPackage(id);
+                        setInquiryParts(parts);
+                      }}
+                      className={`w-full flex items-center justify-between gap-3 rounded-lg border px-4 py-3 text-left transition-colors ${
+                        selected
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border bg-background hover:border-primary/40 hover:bg-primary/5"
+                      }`}
+                    >
+                      <span className="text-sm font-medium">{label}</span>
+                      <span
+                        className={`flex items-center gap-1.5 ${
+                          selected ? "text-primary-foreground" : "text-muted-foreground"
+                        }`}
+                      >
+                        {icons.map((Icon, i) => (
+                          <span key={i} className="flex items-center gap-1.5">
+                            {i > 0 && <Plus className="h-3 w-3 opacity-60" />}
+                            <Icon className="h-4 w-4" />
+                          </span>
+                        ))}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
               <Button
-                onClick={() => {
-                  setInquiryParts(["biljett"]);
-                  setInquiryOpen(true);
-                }}
+                onClick={() => setInquiryOpen(true)}
                 className="w-full rounded-full bg-primary hover:bg-primary/90 tracking-wider text-sm"
               >
-                Efterfråga biljetter
+                Efterfråga paket
                 <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setInquiryParts(["biljett", "hotell", "flyg"]);
-                  setInquiryOpen(true);
-                }}
-                className="w-full rounded-full mt-3 tracking-wider text-sm"
-              >
-                Efterfråga komplett paket
               </Button>
               <p className="text-[11px] text-muted-foreground text-center mt-3">
                 Pris på förfrågan - vi återkommer med biljetter, hotell och flyg
@@ -280,48 +316,6 @@ export default function EventDetail() {
               </p>
             </div>
 
-            {/* Package tiers - inspired by classic travel-package cards,
-                shown without prices since every trip is quoted individually. */}
-            <div className="mt-4 rounded-xl border border-border bg-card p-6 shadow-sm">
-              <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">
-                Välj ditt paket
-              </p>
-              <div className="space-y-3 mb-5">
-                {[
-                  { icons: [Ticket], label: "Endast biljetter" },
-                  { icons: [Ticket, Hotel], label: "Biljetter + hotell" },
-                  { icons: [Ticket, Plane, Hotel], label: "Biljetter + flyg + hotell" },
-                ].map(({ icons, label }) => (
-                  <div
-                    key={label}
-                    className="flex items-center justify-between gap-3 border-b border-border/60 pb-3 last:border-0 last:pb-0"
-                  >
-                    <span className="text-sm font-medium">{label}</span>
-                    <span className="flex items-center gap-1.5 text-muted-foreground">
-                      {icons.map((Icon, i) => (
-                        <span key={i} className="flex items-center gap-1.5">
-                          {i > 0 && <Plus className="h-3 w-3 text-muted-foreground/50" />}
-                          <Icon className="h-4 w-4" />
-                        </span>
-                      ))}
-                    </span>
-                  </div>
-                ))}
-              </div>
-              <Button
-                className="w-full rounded-full bg-primary hover:bg-primary/90 tracking-wider text-sm"
-                onClick={() => {
-                  setInquiryParts(["biljett", "hotell", "flyg"]);
-                  setInquiryOpen(true);
-                }}
-              >
-                Visa paket
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-              <p className="text-[11px] text-muted-foreground text-center mt-3">
-                Pris på förfrågan - vi sätter ihop resan efter era önskemål.
-              </p>
-            </div>
 
             <Link
               to="/services/sportresor"
