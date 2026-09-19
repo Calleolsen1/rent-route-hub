@@ -126,8 +126,7 @@ export default function SportEntryPage() {
               Hittar du inte matchen du letar efter? Vi kan säkert fixa det ändå.
             </p>
             <Button
-              variant="outline"
-              className="rounded-full"
+              className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
               onClick={() =>
                 openInquiry({
                   type: "contact",
