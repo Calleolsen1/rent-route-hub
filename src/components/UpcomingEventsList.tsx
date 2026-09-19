@@ -64,6 +64,7 @@ export default function UpcomingEventsList({
   compact = false,
 }: Props) {
   const [events, setEvents] = useState<EventRow[]>([]);
+  const { open: openInquiry } = useInquiryDialog();
   const [loading, setLoading] = useState(true);
   const [defaultPct, setDefaultPct] = useState<number>(0);
   const { enabled: showPrices } = usePublicPricesEnabled();
