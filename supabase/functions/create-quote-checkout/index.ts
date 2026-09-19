@@ -16,7 +16,10 @@
 //   5. Create Embedded Checkout session, return { clientSecret, orderId }
 //   6. Store stripe_checkout_session_id on quote + order for webhook correlation
 
-import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { type StripeEnv, createStripeClient } from "../_shared/stripe.ts";
 import { checkRateLimit } from "../_shared/rate_limit.ts";

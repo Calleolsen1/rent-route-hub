@@ -62,10 +62,17 @@ Deno.serve(async (req) => {
     // products for stock we don't own, and its price is only known live — so
     // those orders bill through inline price_data. Manual inventory keeps the
     // existing lookup_key flow.
-    let line_items: Array<{
-      price_data: Record<string, unknown>;
+    type LineItem = {
       quantity: number;
-    }>;
+      price_data: {
+        currency: string;
+        unit_amount: number;
+        tax_behavior: "inclusive";
+        product?: string;
+        product_data?: { name: string; tax_code: string };
+      };
+    };
+    let line_items: LineItem[];
 
     const allHaveStripePrices = items.every(
       (i: any) => !!i.ticket_categories?.stripe_price_id,
