@@ -126,7 +126,7 @@ const Navbar = () => {
                             className="flex items-center justify-between gap-6 px-5 py-2.5 hover:bg-accent transition-colors group"
                           >
                             <span className="text-sm font-medium text-foreground group-hover:text-primary tracking-wide">
-                              {entry.name.replace(/ Grand Prix$/i, "")}
+                              {entry.name}
                             </span>
                             {entry.short_date && (
                               <span className="text-xs text-muted-foreground">{entry.short_date}</span>
