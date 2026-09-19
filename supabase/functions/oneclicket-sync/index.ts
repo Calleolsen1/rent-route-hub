@@ -71,6 +71,20 @@ async function requireAdmin(req: Request): Promise<string> {
   return user.id;
 }
 
+/**
+ * PostgREST payload guard. A full-season sync is ~900 events and ~2,600
+ * categories; sending those as one request risks a body-size or statement
+ * timeout, and a failure mid-way would leave the catalogue half-written.
+ * Chunking keeps each request small and makes a partial failure obvious.
+ */
+const CHUNK = 250;
+
+function chunked<T>(rows: readonly T[], size = CHUNK): T[][] {
+  const out: T[][] = [];
+  for (let i = 0; i < rows.length; i += size) out.push(rows.slice(i, i + size));
+  return out;
+}
+
 /** Today in ISO — products before this are filtered out upstream anyway. */
 const today = (): string => new Date().toISOString().slice(0, 10);
 
@@ -237,19 +251,19 @@ async function syncSport(
   if (!usable.length) return counts;
 
   const eventRows = usable.map((p) => mapEventRow(p, sport, toSek));
-  const { data: upserted, error } = await admin
-    .from("events")
-    .upsert(eventRows, { onConflict: "external_event_id", ignoreDuplicates: false })
-    .select("id, external_event_id");
-  if (error) throw new Error(`events upsert failed: ${error.message}`);
+  const idByExternal = new Map<string, string>();
 
-  counts.events_upserted = upserted?.length ?? 0;
-
-  const idByExternal = new Map<string, string>(
-    (upserted ?? []).map((r: { id: string; external_event_id: string }) =>
-      [r.external_event_id, r.id]
-    ),
-  );
+  for (const batch of chunked(eventRows)) {
+    const { data: upserted, error } = await admin
+      .from("events")
+      .upsert(batch, { onConflict: "external_event_id", ignoreDuplicates: false })
+      .select("id, external_event_id");
+    if (error) throw new Error(`events upsert failed: ${error.message}`);
+    for (const r of (upserted ?? []) as { id: string; external_event_id: string }[]) {
+      idByExternal.set(r.external_event_id, r.id);
+    }
+    counts.events_upserted += upserted?.length ?? 0;
+  }
 
   const categoryRows = usable.flatMap((p) => {
     const eventId = idByExternal.get(ocExternalEventId(p.id));
@@ -257,19 +271,19 @@ async function syncSport(
     return (p.versions ?? []).map((v) => mapCategoryRow(eventId, p, v, toSek));
   });
 
-  if (categoryRows.length) {
-    // ignoreDuplicates=false updates price/stock on re-sync while leaving
-    // markup_pct / markup_fixed_sek untouched — they aren't in the row, so
-    // admin overrides survive.
+  // ignoreDuplicates=false updates price/stock on re-sync while leaving
+  // markup_pct / markup_fixed_sek untouched — they aren't in the row, so
+  // admin overrides survive.
+  for (const batch of chunked(categoryRows)) {
     const { error: catErr, count } = await admin
       .from("ticket_categories")
-      .upsert(categoryRows, {
+      .upsert(batch, {
         onConflict: "event_id,external_category_id,external_sub_category",
         ignoreDuplicates: false,
         count: "exact",
       });
     if (catErr) throw new Error(`ticket_categories upsert failed: ${catErr.message}`);
-    counts.categories_upserted = count ?? categoryRows.length;
+    counts.categories_upserted += count ?? batch.length;
   }
 
   // Versions that vanished upstream must stop being sellable. Zeroing stock
@@ -278,23 +292,26 @@ async function syncSport(
   const liveExternalIds = new Set(
     usable.flatMap((p) => (p.versions ?? []).map((v) => ocExternalVersionId(v.id))),
   );
-  if (eventIds.length) {
+  const stale: string[] = [];
+  for (const batch of chunked(eventIds)) {
     const { data: existing } = await admin
       .from("ticket_categories")
       .select("id, external_category_id")
-      .in("event_id", eventIds)
+      .in("event_id", batch)
       .gt("qty_available", 0);
-    const stale = (existing ?? [])
-      .filter((r: { external_category_id: string | null }) =>
-        r.external_category_id != null && !liveExternalIds.has(r.external_category_id)
-      )
-      .map((r: { id: string }) => r.id);
-    if (stale.length) {
-      await admin.from("ticket_categories")
-        .update({ qty_available: 0, last_synced_at: new Date().toISOString() })
-        .in("id", stale);
-      console.log(`[oneclicket-sync] zeroed ${stale.length} stale ${sport} versions`);
+    for (const r of (existing ?? []) as { id: string; external_category_id: string | null }[]) {
+      if (r.external_category_id != null && !liveExternalIds.has(r.external_category_id)) {
+        stale.push(r.id);
+      }
     }
+  }
+  for (const batch of chunked(stale)) {
+    await admin.from("ticket_categories")
+      .update({ qty_available: 0, last_synced_at: new Date().toISOString() })
+      .in("id", batch);
+  }
+  if (stale.length) {
+    console.log(`[oneclicket-sync] zeroed ${stale.length} stale ${sport} versions`);
   }
 
   return counts;
@@ -322,9 +339,12 @@ Deno.serve(async (req) => {
     const sports: Sport[] = Array.isArray(body.sports) && body.sports.length
       ? body.sports.filter((s: string): s is Sport => s === "soccer" || s === "formula1")
       : ["soccer", "formula1"];
-    // 20 pages x 100 products is the whole soccer catalogue with headroom;
-    // the crawl stops early when the supplier runs out of pages.
-    const maxPages = Math.min(Math.max(1, ocInt(body.max_pages, 20)), 60);
+    // The soccer catalogue is ~50 pages of 100 (4,913 products) and grows
+    // through the season, so the default must clear it with room to spare —
+    // at 20 it silently truncated to the earliest fixtures and dropped 556
+    // buyable products. The crawl stops as soon as the supplier runs out of
+    // pages, so a generous default costs nothing on smaller categories.
+    const maxPages = Math.min(Math.max(1, ocInt(body.max_pages, 80)), 200);
     const trigger = body.trigger === "cron" ? "cron" : "manual";
 
     const { data: logRow } = await admin

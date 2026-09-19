@@ -481,7 +481,9 @@ export class OneClicketClient {
   /**
    * Walks every page for a category, keeping only products that have at least
    * one published, in-stock version. `maxPages` bounds the crawl so a sync can
-   * never run away against a 62k-row catalogue.
+   * never run away against the 62k-row catalogue — but it must exceed the
+   * real page count of the category being crawled (soccer is ~50 pages), or
+   * later fixtures are silently dropped.
    */
   async getBuyableProducts(params: {
     categoryId: number;
@@ -489,7 +491,7 @@ export class OneClicketClient {
     maxPages?: number;
   }): Promise<{ products: OcProduct[]; pagesRead: number; totalItems: number }> {
     const out: OcProduct[] = [];
-    const maxPages = params.maxPages ?? 20;
+    const maxPages = params.maxPages ?? 80;
     let page = 1;
     let totalPages = 1;
     let totalItems = 0;
