@@ -4,6 +4,7 @@ import { ArrowRight, Check } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import sportsImage from "@/assets/kaisen-sports.jpg";
+import luxuryImage from "@/assets/kaisen-luxury.jpg";
 import f1Image from "@/assets/sport-f1.jpg";
 import fotbollImage from "@/assets/sport-fotboll.jpg";
 import { usePageMeta } from "@/lib/usePageMeta";
@@ -119,27 +120,31 @@ export default function Sportresor() {
  </div>
  </section>
 
- {/* CTA */}
- <section className="bg-navy py-20">
- <div className="container mx-auto px-4 text-center">
- <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Boka din sportresa</p>
- <h2 className="font-display text-3xl md:text-5xl text-white mb-6">
- Vilken sport vill du uppleva live?
- </h2>
- <p className="text-white/60 max-w-lg mx-auto mb-10 leading-relaxed">
- Hör av dig till oss och berätta vilken match eller tävling du vill se - så fixar vi resten.
- </p>
- <Link to="/contact">
- <Button
- size="lg"
- className="rounded-full bg-primary hover:bg-primary/90 px-10 tracking-wider text-sm"
- >
- Kontakta oss
- <ArrowRight className="ml-2 h-4 w-4" />
- </Button>
- </Link>
- </div>
- </section>
+  {/* CTA */}
+  <section className="relative bg-navy border-b border-white/15 overflow-hidden">
+    <div className="absolute inset-0">
+      <img src={luxuryImage} alt="" aria-hidden="true" className="w-full h-full object-cover" />
+      <div className="absolute inset-0 bg-navy/85" />
+    </div>
+    <div className="relative container mx-auto px-4 py-16 md:py-20 text-center">
+      <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Boka din sportresa</p>
+      <h2 className="font-display text-3xl md:text-5xl text-white mb-5">
+        Vilken sport vill du uppleva live?
+      </h2>
+      <p className="text-white/70 max-w-lg mx-auto mb-8 leading-relaxed">
+        Hör av dig till oss och berätta vilken match eller tävling du vill se - så fixar vi resten.
+      </p>
+      <Link to="/contact">
+        <Button
+          size="lg"
+          className="rounded-full bg-primary hover:bg-primary/90 px-10 tracking-wider text-sm"
+        >
+          Kontakta oss
+          <ArrowRight className="ml-2 h-4 w-4" />
+        </Button>
+      </Link>
+    </div>
+  </section>
 
  <Footer />
  </div>
