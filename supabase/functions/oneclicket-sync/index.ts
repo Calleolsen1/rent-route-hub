@@ -373,13 +373,21 @@ Deno.serve(async (req) => {
     );
 
     if (logId) {
+      // A handful of unresolvable fixtures is normal — the supplier always
+      // ships some rows whose teams can't be trusted, and skipping them is
+      // the designed behaviour. Flagging every run 'partial' for that made a
+      // healthy sync look broken in the admin list, so only an unusually
+      // high skip rate (>10% of what we fetched) is worth the warning.
+      const skipRate = totals.fetched > 0
+        ? totals.skipped_unresolved / totals.fetched
+        : 0;
       await admin.from("supplier_sync_log").update({
         finished_at: new Date().toISOString(),
-        status: totals.skipped_unresolved > 0 ? "partial" : "success",
+        status: skipRate > 0.1 ? "partial" : "success",
         records_fetched: totals.fetched,
         records_upserted: totals.events_upserted,
         error_message: totals.skipped_unresolved
-          ? `${totals.skipped_unresolved} product(s) skipped — fixture teams unresolved`
+          ? `${totals.skipped_unresolved} av ${totals.fetched} produkter hoppades över (laguppgifter gick inte att tolka)`
           : null,
       }).eq("id", logId);
     }
