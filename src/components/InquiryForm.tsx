@@ -35,14 +35,12 @@ type Props = {
   showDates?: boolean;
   /** Show budget field. Default: true for group/conference/vip. */
   showBudget?: boolean;
-  /**
-   * Show the Hotell / Biljett / Flyg picker. The site sells packages on
-   * request rather than single items through a checkout, so the first thing
-   * ops needs to know is which parts of the trip the customer wants.
-   */
+  /** Show the Hotell / Biljett / Flyg picker. */
   showTripParts?: boolean;
   /** Trip parts ticked on open, e.g. ["biljett"] from an event page. */
   defaultTripParts?: readonly string[];
+  /** Tighter layout that fits a dialog without scrolling. */
+  compact?: boolean;
 };
 
 /** The three things a Kaisen trip is assembled from. */
