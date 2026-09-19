@@ -93,6 +93,8 @@ export default function InquiryForm({
   defaultTripParts,
 }: Props) {
   const [submitting, setSubmitting] = useState(false);
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [serverError, setServerError] = useState<string | null>(null);
