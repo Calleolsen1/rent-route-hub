@@ -70,11 +70,11 @@ export default function About() {
   </h2>
   <div className="w-10 h-px bg-primary mb-8" />
   <p className="text-foreground leading-relaxed italic mb-6">
-  Vi vill tillhöra eliten inom resor - precis som reseupplevelsen, matchen eller loppet du ska uppleva.
+  Vi tillhör eliten inom resor - precis som reseupplevelsen, matchen eller loppet du ska uppleva.
   </p>
   <div className="space-y-5 text-muted-foreground leading-relaxed">
   <p>
-  KAISEN Travel Group är en resebyrå för dig som uppskattar personlig service, gedigen erfarenhet och någon som verkligen bryr sig om hela resan. Vi är ett mindre team av seniora resespecialister med över 50 års samlad erfarenhet från resebranschen.
+  Kaisen Travel Group är en resebyrå för dig som uppskattar personlig service, gedigen erfarenhet och någon som verkligen bryr sig om hela resan. Vi är ett mindre team av seniora resespecialister med över 50 års samlad erfarenhet från resebranschen.
   </p>
   <p>
   I en tid där allt fler resor bokas snabbt och digitalt har vi valt att gå åt andra hållet. Hos oss får du personlig kontakt med en erfaren resespecialist som lyssnar, förstår dina önskemål och tar ansvar för helheten - från första idé till att du är hemma igen.
