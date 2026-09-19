@@ -375,6 +375,36 @@ const Home = () => {
     })();
   }, []);
 
+  // Admin-curated trip cards ("Resor på startsidan"). These work without the
+  // ticket API, so the row is never empty at launch.
+  useEffect(() => {
+    (async () => {
+      const today = new Date().toISOString().slice(0, 10);
+      const { data } = await (supabase as any)
+        .from("home_trips")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+      const rows = ((data ?? []) as Array<any>)
+        .filter((r) => !r.valid_until || r.valid_until >= today)
+        .map((r) => ({
+          image: resolveImageUrl(r.image_url ?? "", ASSET_LOOKUP, heroImage),
+          title: r.title,
+          date: r.date_label ?? "",
+          tag: r.tag ?? "Resa",
+          days: r.days_label ?? null,
+          fromPrice: null,
+          compareAtPrice: null,
+          compareAtPct: null,
+          currentPriceSek: r.price_from_sek != null ? Number(r.price_from_sek) : null,
+          href: r.href ?? "/contact",
+          isNew: !!r.is_new,
+          isPopular: !!r.is_popular,
+        })) as FeaturedOffer[];
+      setCuratedTrips(rows);
+    })();
+  }, []);
+
   const offerTabs = [
     { id: "alla" as const, label: "Aktuella resor" },
     { id: "nya" as const, label: "Nya resor" },
