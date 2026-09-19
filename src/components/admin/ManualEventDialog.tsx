@@ -38,10 +38,8 @@ type Props = {
 };
 
 const todayPlusDays = stockholmTodayPlusDays;
-  d.setDate(d.getDate() + days);
-  // Format for datetime-local input: YYYY-MM-DDTHH:mm
-  return d.toISOString().slice(0, 16);
-};
+
+
 
 export function ManualEventDialog({ open, onOpenChange, onCreated }: Props) {
   const [sport, setSport] = useState<"soccer" | "formula1">("soccer");
