@@ -31,6 +31,7 @@ import ContentManagementPage from "./pages/admin/ContentManagement";
 import AdminTickets from "./pages/admin/Tickets";
 import AdminBanners from "./pages/admin/Banners";
 import AdminHomeTrips from "./pages/admin/HomeTrips";
+import AdminHomeExperiences from "./pages/admin/HomeExperiences";
 import AdminMarkupDefaults from "./pages/admin/MarkupDefaults";
 import AdminNavigation from "./pages/admin/Navigation";
 import AdminDiagnostics from "./pages/admin/Diagnostics";
