@@ -372,17 +372,6 @@ export default function EventDetail() {
         <div className="container mx-auto px-4 grid lg:grid-cols-3 gap-10 max-w-6xl">
           {/* Left */}
           <div className="lg:col-span-2 space-y-10">
-            {event.description && (
-              <div>
-                <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
-                  Om evenemanget
-                </p>
-                <p className="text-foreground/80 leading-relaxed text-base">
-                  {event.description.replace(/<[^>]+>/g, "")}
-                </p>
-              </div>
-            )}
-
             <div>
               <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
                 Välj biljettkategori
