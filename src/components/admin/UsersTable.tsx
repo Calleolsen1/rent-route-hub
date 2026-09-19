@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { format } from "date-fns";
+import { svDateFull } from "@/lib/formatSek";
 import { MoreVertical, Mail, MessageSquare, UserCog, Eye } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -391,7 +391,7 @@ export function UsersTable({ users, loading, hasActiveFilters }: UsersTableProps
                 {user.orders_count}
               </TableCell>
               <TableCell className="text-muted-foreground hidden 3xl:table-cell">
-                {format(new Date(user.created_at), "MMM dd, yyyy")}
+                {svDateFull(user.created_at)}
               </TableCell>
               <TableCell>
                 <StatusBadge status={user.status as any} />

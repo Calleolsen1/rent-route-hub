@@ -1,5 +1,5 @@
 import { MessageThread } from "@/types/inbox";
-import { format } from "date-fns";
+import { svDateShort } from "@/lib/formatSek";
 
 interface ConversationListItemProps {
   thread: MessageThread;
@@ -26,7 +26,7 @@ export const ConversationListItem = ({
               {thread.other_user_name}
             </h4>
             <span className="text-xs text-muted-foreground ml-2 shrink-0">
-              {format(new Date(thread.last_message_time), "MMM dd")}
+              {svDateShort(thread.last_message_time)}
             </span>
           </div>
           <p className="text-sm text-[#64748B] truncate mb-1">

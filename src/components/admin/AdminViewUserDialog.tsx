@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { format } from "date-fns";
+
 
 interface UserBasic {
   id: string;
@@ -102,11 +102,11 @@ export function AdminViewUserDialog({ open, onOpenChange, user }: Props) {
               <Field label="Nationalitet" value={profile?.nationality} />
               <Field
                 label="Födelsedatum"
-                value={profile?.date_of_birth ? format(new Date(profile.date_of_birth), "dd/MM/yyyy") : null}
+                value={profile?.date_of_birth ?? null}
               />
               <Field
                 label="Registrerad"
-                value={profile?.created_at ? format(new Date(profile.created_at), "dd/MM/yyyy") : null}
+                value={profile?.created_at ? svDateFull(profile.created_at) : null}
               />
             </div>
 
@@ -119,7 +119,7 @@ export function AdminViewUserDialog({ open, onOpenChange, user }: Props) {
                 <Field label="Passnummer" value={profile?.passport_number} />
                 <Field
                   label="Passutgångsdatum"
-                  value={profile?.passport_expiry ? format(new Date(profile.passport_expiry), "dd/MM/yyyy") : null}
+                  value={profile?.passport_expiry ? svDateFull(profile.passport_expiry) : null}
                 />
               </div>
             </div>

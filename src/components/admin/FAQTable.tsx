@@ -22,7 +22,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Edit, Trash2 } from "lucide-react";
-import { format } from "date-fns";
+import { svDateFull } from "@/lib/formatSek";
 import type { FAQ } from "./types/content";
 
 interface FAQTableProps {
@@ -122,10 +122,10 @@ export default function FAQTable({ faqs, isLoading, onEdit, onDelete }: FAQTable
                 <StatusBadge status={faq.status === 'published' ? 'approved' : 'draft'} />
               </TableCell>
               <TableCell className="text-muted-foreground">
-                {format(new Date(faq.created_at), 'MMM d, yyyy')}
+                {svDateFull(faq.created_at)}
               </TableCell>
               <TableCell className="text-muted-foreground">
-                {format(new Date(faq.updated_at), 'MMM d, yyyy')}
+                {svDateFull(faq.updated_at)}
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-1">
