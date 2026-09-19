@@ -607,6 +607,12 @@ const Home = () => {
                         ) : (
                           <span className="text-sm text-muted-foreground">Pris på förfrågan</span>
                         )}
+                        <Button asChild className="mt-5 h-12 w-full rounded-full text-base font-semibold">
+                          <span>
+                            Se erbjudanden
+                            <ArrowRight className="ml-auto" />
+                          </span>
+                        </Button>
                       </div>
                     </div>
                   </Link>
