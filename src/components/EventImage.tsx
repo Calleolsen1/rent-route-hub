@@ -28,54 +28,18 @@ type Props = {
 };
 
 /**
- * Club colours for the sides we sell most. Everything else derives a stable
- * hue from the name, so an unmapped club still gets a consistent, distinct
- * card rather than a grey box.
+ * Every fallback plate uses the same navy palette - club colours are not
+ * used anywhere on the site, so all cards share one consistent blue tone.
  */
-const CLUB_COLOURS: Record<string, [string, string]> = {
-  "Arsenal": ["#EF0107", "#9C824A"],
-  "Chelsea": ["#034694", "#DBA111"],
-  "Liverpool": ["#C8102E", "#00B2A9"],
-  "Manchester City": ["#6CABDD", "#1C2C5B"],
-  "Manchester United": ["#DA291C", "#FBE122"],
-  "Tottenham Hotspur": ["#132257", "#FFFFFF"],
-  "West Ham United": ["#7A263A", "#1BB1E7"],
-  "Aston Villa": ["#95BFE5", "#670E36"],
-  "Real Madrid": ["#FEBE10", "#00529F"],
-  "FC Barcelona": ["#A50044", "#004D98"],
-  "Atlético Madrid": ["#CB3524", "#262E62"],
-  "Bayern München": ["#DC052D", "#0066B2"],
-  "Borussia Dortmund": ["#FDE100", "#000000"],
-  "Juventus": ["#000000", "#FFFFFF"],
-  "Inter": ["#0068A8", "#000000"],
-  "Milan": ["#FB090B", "#000000"],
-  "Roma": ["#8E1F2F", "#F0BC42"],
-  "Lazio": ["#87D8F7", "#0B2C5C"],
-  "Napoli": ["#12A0D7", "#001B5C"],
-};
+const NAVY: [string, string] = ["#1E3A5F", "#0F1F33"];
 
-/** Deterministic hue so the same club always renders the same colour. */
-function hashHue(s: string): number {
-  let h = 0;
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 360;
-  return h;
+function coloursFor(_name: string | null): [string, string] {
+  return NAVY;
 }
 
-function coloursFor(name: string | null): [string, string] {
-  if (!name) return ["#1E3A5F", "#0F1F33"];
-  const mapped = CLUB_COLOURS[name];
-  if (mapped) return mapped;
-  const hue = hashHue(name);
-  return [`hsl(${hue} 52% 34%)`, `hsl(${(hue + 38) % 360} 46% 18%)`];
-}
-
-/** Readable text colour for a given background. */
-function inkFor(hex: string): string {
-  if (!hex.startsWith("#")) return "#FFFFFF";
-  const n = parseInt(hex.slice(1), 16);
-  const [r, g, b] = [(n >> 16) & 255, (n >> 8) & 255, n & 255];
-  // Rec. 709 luma — the yellow/white club colours need dark ink.
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b > 150 ? "#101828" : "#FFFFFF";
+/** Readable text colour for a given background - always white on navy. */
+function inkFor(_hex: string): string {
+  return "#FFFFFF";
 }
 
 export default function EventImage({
