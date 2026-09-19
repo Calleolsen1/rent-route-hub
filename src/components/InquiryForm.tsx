@@ -203,7 +203,7 @@ export default function InquiryForm({
   // env var isn't set (component returns null).
   if (submitted) {
     return (
-      <div className="bg-white border border-border p-10 text-center">
+      <div className="bg-background border border-border/60 rounded-xl p-10 text-center">
         <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
           <Check className="h-6 w-6 text-primary" />
         </div>
@@ -216,62 +216,62 @@ export default function InquiryForm({
     );
   }
 
-  const inputCls = `rounded-none border-border focus-visible:ring-1 focus-visible:ring-primary ${compact ? "h-9" : ""}`;
+  const inputCls = `rounded-lg border-border bg-muted/40 focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all placeholder:text-muted-foreground/50 ${compact ? "h-10" : "h-11"}`;
 
   return (
     <form
       onSubmit={handleSubmit}
-      className={`bg-white border border-border ${compact ? "p-6 space-y-3" : "p-6 md:p-10 space-y-5"}`}
+      className={`bg-background ${compact ? "p-6 md:p-8 space-y-5" : "p-6 md:p-10 space-y-6"}`}
     >
       <div className="mb-1">
         {eyebrow && (
-          <p className={`text-[11px] tracking-[0.3em] text-primary uppercase font-sans font-semibold ${compact ? "mb-1" : "mb-3"}`}>
+          <p className={`text-[11px] tracking-[0.2em] text-primary uppercase font-sans font-semibold ${compact ? "mb-2" : "mb-3"}`}>
             {eyebrow}
           </p>
         )}
-        <h3 className={`font-display ${compact ? "text-xl" : "text-3xl"}`}>{heading}</h3>
+        <h3 className={`font-display ${compact ? "text-2xl md:text-[28px] leading-tight" : "text-3xl"}`}>{heading}</h3>
         {intro && (
-          <p className={`${compact ? "mt-1 text-[13px]" : "mt-3 text-sm"} text-muted-foreground leading-relaxed`}>{intro}</p>
+          <p className={`${compact ? "mt-2.5 text-sm" : "mt-3 text-sm"} text-muted-foreground leading-relaxed max-w-lg`}>{intro}</p>
         )}
       </div>
 
-      <div className={`grid md:grid-cols-2 ${compact ? "gap-x-4 gap-y-3" : "gap-4"}`}>
+      <div className={`grid md:grid-cols-2 ${compact ? "gap-x-6 gap-y-4" : "gap-x-6 gap-y-5"}`}>
         <div>
-          <Label htmlFor="name" className="text-xs uppercase tracking-wider">Namn *</Label>
+          <Label htmlFor="name" className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Namn *</Label>
           <Input id="name" name="name" required maxLength={120} className={inputCls} />
           {errors.name && <p className="text-xs text-destructive mt-1">{errors.name}</p>}
         </div>
         <div>
-          <Label htmlFor="email" className="text-xs uppercase tracking-wider">E-post *</Label>
+          <Label htmlFor="email" className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">E-post *</Label>
           <Input id="email" name="email" type="email" required maxLength={255} className={inputCls} />
           {errors.email && <p className="text-xs text-destructive mt-1">{errors.email}</p>}
         </div>
         <div>
-          <Label htmlFor="phone" className="text-xs uppercase tracking-wider">Telefon *</Label>
+          <Label htmlFor="phone" className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Telefon *</Label>
           <Input id="phone" name="phone" type="tel" required maxLength={40} className={inputCls} />
           {errors.phone && <p className="text-xs text-destructive mt-1">{errors.phone}</p>}
         </div>
         <div>
-          <Label htmlFor="company" className="text-xs uppercase tracking-wider">Företag (valfritt)</Label>
+          <Label htmlFor="company" className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Företag (valfritt)</Label>
           <Input id="company" name="company" maxLength={160} className={inputCls} />
         </div>
 
         {fieldShowGroupSize && (
           <div>
-            <Label htmlFor="group_size" className="text-xs uppercase tracking-wider">Antal personer</Label>
+            <Label htmlFor="group_size" className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Antal personer</Label>
             <Input id="group_size" name="group_size" type="number" min={1} max={10000} className={inputCls} />
           </div>
         )}
         {fieldShowDestination && (
           <div>
-            <Label htmlFor="destination" className="text-xs uppercase tracking-wider">Destination</Label>
+            <Label htmlFor="destination" className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Destination</Label>
             <Input id="destination" name="destination" maxLength={160} defaultValue={defaultDestination} key={defaultDestination} className={inputCls} />
           </div>
         )}
         {fieldShowDates && (
           <>
             <div>
-              <Label htmlFor="preferred_dates_start" className="text-xs uppercase tracking-wider">Önskat datum (från)</Label>
+              <Label htmlFor="preferred_dates_start" className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Önskat datum (från)</Label>
               <Input
                 id="preferred_dates_start"
                 name="preferred_dates_start"
@@ -293,7 +293,7 @@ export default function InquiryForm({
               />
             </div>
             <div>
-              <Label htmlFor="preferred_dates_end" className="text-xs uppercase tracking-wider">Önskat datum (till)</Label>
+              <Label htmlFor="preferred_dates_end" className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Önskat datum (till)</Label>
               <Input
                 id="preferred_dates_end"
                 name="preferred_dates_end"
@@ -308,7 +308,7 @@ export default function InquiryForm({
         )}
         {fieldShowBudget && (
           <div className="md:col-span-2">
-            <Label htmlFor="budget_sek" className="text-xs uppercase tracking-wider">Ungefärlig budget (SEK)</Label>
+            <Label htmlFor="budget_sek" className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Ungefärlig budget (SEK)</Label>
             <Input id="budget_sek" name="budget_sek" type="number" min={0} step={1000} className={inputCls} />
           </div>
         )}
@@ -316,11 +316,11 @@ export default function InquiryForm({
 
       {showTripParts && (
         <div>
-          <Label className="text-xs uppercase tracking-wider">Vad vill ni ha offert på? *</Label>
+          <Label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Vad vill ni ha offert på? *</Label>
           <p className="text-[11px] text-muted-foreground mt-1 mb-2">
             Välj en, två eller alla tre - vi sätter ihop paketet och återkommer med pris.
           </p>
-          <div className={`grid grid-cols-3 gap-2`}>
+          <div className="grid grid-cols-3 gap-3">
             {TRIP_PARTS.map((part) => {
               const active = tripParts.includes(part.id);
               return (
@@ -329,10 +329,10 @@ export default function InquiryForm({
                   type="button"
                   aria-pressed={active}
                   onClick={() => toggleTripPart(part.id)}
-                  className={`relative flex items-center justify-center gap-2 rounded-lg border px-3 text-sm transition-all ${compact ? "py-2" : "py-3"} ${
+                  className={`relative flex items-center justify-center gap-2 rounded-full border px-3 text-sm transition-all ${compact ? "py-2.5" : "py-3"} ${
                     active
-                      ? "border-primary bg-primary text-primary-foreground font-semibold shadow-md"
-                      : "border-border bg-background text-muted-foreground hover:border-primary/60 hover:bg-primary/5"
+                      ? "border-primary bg-primary text-primary-foreground font-semibold shadow-lg shadow-primary/25"
+                      : "border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground"
                   }`}
                 >
                   {active && (
@@ -350,14 +350,14 @@ export default function InquiryForm({
       )}
 
       <div>
-        <Label htmlFor="message" className="text-xs uppercase tracking-wider">Meddelande *</Label>
+        <Label htmlFor="message" className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Meddelande *</Label>
         <Textarea
           id="message"
           name="message"
           required
-          rows={compact ? 2 : 5}
+          rows={compact ? 3 : 5}
           maxLength={4000}
-          className={`${inputCls} resize-none ${compact ? "min-h-0" : ""}`}
+          className={`${inputCls} resize-none`}
           placeholder="Berätta gärna mer om er resa, era önskemål och vad ni vill uppleva."
         />
         {errors.message && <p className="text-xs text-destructive mt-1">{errors.message}</p>}
@@ -371,11 +371,11 @@ export default function InquiryForm({
         </div>
       )}
 
-      <div className={compact ? "flex flex-wrap items-center justify-between gap-3" : "space-y-3"}>
+      <div className={compact ? "flex flex-col md:flex-row md:items-center gap-4 border-t border-border/60 pt-5" : "space-y-3"}>
         <Button
           type="submit"
           disabled={submitting}
-          className="rounded-none px-8 tracking-wider text-xs bg-primary hover:bg-primary/90 h-11"
+          className="rounded-lg px-8 tracking-wide text-sm font-semibold bg-primary hover:bg-primary/90 h-12 shadow-md shadow-primary/20 active:scale-[0.98] transition-all w-full md:w-auto"
         >
           {submitting ? (
             <>
@@ -386,7 +386,7 @@ export default function InquiryForm({
           )}
         </Button>
 
-        <p className={`text-muted-foreground ${compact ? "text-[11px] max-w-sm leading-snug" : "text-xs"}`}>
+        <p className={`text-muted-foreground italic ${compact ? "text-[11px] leading-relaxed" : "text-xs"}`}>
           Genom att skicka formuläret godkänner du att vi kontaktar dig angående din förfrågan.
         </p>
       </div>

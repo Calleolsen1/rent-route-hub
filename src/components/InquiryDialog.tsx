@@ -37,7 +37,7 @@ export function InquiryDialogProvider({ children }: { children: ReactNode }) {
     <InquiryDialogContext.Provider value={{ open }}>
       {children}
       <Dialog open={opts !== null} onOpenChange={(v) => { if (!v) close(); }}>
-        <DialogContent className="max-w-3xl max-h-[92vh] overflow-y-auto p-0">
+        <DialogContent className="max-w-2xl max-h-[92vh] overflow-y-auto p-0 rounded-xl border-border/60 shadow-2xl">
           {opts && (
             <InquiryForm
               key={`${opts.type}-${opts.defaultDestination ?? ""}-${opts.presetTopic ?? ""}`}
