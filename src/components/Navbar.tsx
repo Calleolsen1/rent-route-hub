@@ -117,7 +117,7 @@ const Navbar = () => {
                       </div>
                     )}
                     {isOpen && sport.menu_style === "list" && (
-                      <div className="absolute top-full left-0 bg-card border border-border shadow-xl z-50 min-w-[260px] py-2">
+                      <div className="absolute top-full left-0 bg-card border border-border shadow-xl z-50 min-w-[300px] py-2">
                         {sportEntries.map((entry) => (
                           <Link
                             key={entry.id}
@@ -126,7 +126,7 @@ const Navbar = () => {
                             className="flex items-center justify-between gap-6 px-5 py-2.5 hover:bg-accent transition-colors group"
                           >
                             <span className="text-sm font-medium text-foreground group-hover:text-primary tracking-wide">
-                              {entry.name.replace(/s Grand Prix$/i, "").replace(/ Grand Prix$/i, "")}
+                              {entry.name}
                             </span>
                             {entry.short_date && (
                               <span className="text-xs text-muted-foreground">{entry.short_date}</span>
