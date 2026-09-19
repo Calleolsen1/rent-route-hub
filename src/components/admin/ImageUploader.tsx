@@ -10,14 +10,14 @@ import { toast } from "sonner";
  *
  * Permissions are enforced server-side by storage RLS (email-assets bucket
  * allows writes only when the caller is an admin), so we don't need a custom
- * edge function — the browser SDK call is fine.
+ * edge function - the browser SDK call is fine.
  */
 type Props = {
   /** Current image URL, if any. Renders as preview. */
   value?: string | null;
   /** Storage bucket id. Defaults to email-assets. */
   bucket?: string;
-  /** Path prefix inside the bucket — e.g. "event-covers". */
+  /** Path prefix inside the bucket - e.g. "event-covers". */
   prefix: string;
   /** Called with the public URL once upload succeeds. */
   onUploaded: (url: string) => void;
@@ -56,7 +56,7 @@ export function ImageUploader({
       const path = `${prefix.replace(/\/+$/, "")}/${crypto.randomUUID()}.${ext}`;
       const { error } = await supabase.storage.from(bucket).upload(path, file, {
         upsert: false,
-        cacheControl: "31536000", // 1 year — paths are uuid-stamped
+        cacheControl: "31536000", // 1 year - paths are uuid-stamped
       });
       if (error) throw error;
       const { data } = supabase.storage.from(bucket).getPublicUrl(path);
@@ -70,7 +70,7 @@ export function ImageUploader({
     }
   };
 
-  // Drag-drop handlers — entire component is a drop zone, even when an image
+  // Drag-drop handlers - entire component is a drop zone, even when an image
   // is already showing (drop replaces it).
   const onDragOver = (e: React.DragEvent) => {
     e.preventDefault();

@@ -24,13 +24,13 @@ const SPORT_LABELS: Record<"all" | "soccer" | "formula1", string> = {
 const formatDateRange = (from?: string, to?: string): string => {
   if (!from && !to) return "Alla datum";
   const fmt = (iso: string) => new Date(iso).toLocaleDateString("sv-SE", { day: "numeric", month: "short" });
-  if (from && to) return `${fmt(from)} – ${fmt(to)}`;
+  if (from && to) return `${fmt(from)} - ${fmt(to)}`;
   if (from) return `Från ${fmt(from)}`;
   return `Till ${fmt(to!)}`;
 };
 
 /**
- * Three-segment unified search bar — sport / dates / free-text — modeled after
+ * Three-segment unified search bar - sport / dates / free-text - modeled after
  * the StubHub-style horizontal control. Replaces the older filter-grid layout
  * that felt over-engineered relative to a small sport-ticket catalog.
  */

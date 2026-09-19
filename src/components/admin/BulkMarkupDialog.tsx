@@ -69,7 +69,7 @@ export function BulkMarkupDialog({
         .in("event_id", eventIds)
         .select("*", { count: "exact", head: true });
       if (error) throw error;
-      toast.success(`Uppdaterade ${count ?? "—"} kategorier`);
+      toast.success(`Uppdaterade ${count ?? "-"} kategorier`);
       onApplied();
       onOpenChange(false);
     } catch (e: any) {

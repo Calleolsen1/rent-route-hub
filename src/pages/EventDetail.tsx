@@ -122,7 +122,7 @@ export default function EventDetail() {
         return;
       }
 
-      // Non-xs2 path (manual/Stripe-product inventory) — unchanged
+      // Non-xs2 path (manual/Stripe-product inventory) - unchanged
       const { data: cats } = await supabase
         .from("ticket_categories")
         .select("*")
@@ -154,20 +154,20 @@ export default function EventDetail() {
   // Build the page-meta title from whichever event data is available; the
   // hook re-runs when event loads and overwrites with the real title.
   const metaTitle = event
-    ? `${event.sport === "soccer" ? `${event.home_team} vs ${event.away_team}` : event.race_name ?? event.tournament_name} — Kaisen Travel Group`
-    : "Evenemang — Kaisen Travel Group";
+    ? `${event.sport === "soccer" ? `${event.home_team} vs ${event.away_team}` : event.race_name ?? event.tournament_name} - Kaisen Travel Group`
+    : "Evenemang - Kaisen Travel Group";
   usePageMeta({
     title: metaTitle,
     description: event?.description
       ? event.description.slice(0, 160)
-      : "Köp biljetter via Kaisen Travel Group — säker betalning, personlig service.",
+      : "Köp biljetter via Kaisen Travel Group - säker betalning, personlig service.",
     image: event?.cover_image_url ?? undefined,
     type: "article",
   });
 
   const priceFor = (c: CategoryRow) => livePrices[c.id] ?? Number(c.unit_price_sek);
 
-  // Unified view for the picker — both paths produce { id, name, description,
+  // Unified view for the picker - both paths produce { id, name, description,
   // party_size_together, price, available }
   const pickerOptions = useMemo(() => {
     if (isXs2) {
@@ -388,7 +388,7 @@ export default function EventDetail() {
             </div>
           </div>
 
-          {/* Right — sticky summary */}
+          {/* Right - sticky summary */}
           <aside className="lg:sticky lg:top-24 self-start">
             <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
               <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">

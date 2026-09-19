@@ -11,7 +11,7 @@ type TeamMember = {
 
 /**
  * Team grid on the About page. Content is fully admin-editable via
- * /admin/team — the section hides itself when nothing is published.
+ * /admin/team - the section hides itself when nothing is published.
  */
 export default function TeamSection() {
   const [members, setMembers] = useState<TeamMember[]>([]);

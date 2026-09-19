@@ -20,7 +20,7 @@ const CONTACT_KEYS = [
 
 export default function Contact() {
   usePageMeta({
-    title: "Kontakt — Kaisen Travel Group",
+    title: "Kontakt - Kaisen Travel Group",
     description: "Skicka en förfrågan så återkommer en konsult inom 24 timmar med ett skräddarsytt förslag.",
   });
   const { get } = useSiteContent(CONTACT_KEYS);
@@ -30,7 +30,7 @@ export default function Contact() {
     { icon: Phone, label: "Telefon", value: phone, href: `tel:${phone.replace(/\s+/g, "")}` },
     { icon: Mail, label: "E-post", value: email, href: `mailto:${email}` },
     { icon: MapPin, label: "Adress", value: get("contact_address", "Helsingborg, Sweden") },
-    { icon: Clock, label: "Öppettider", value: get("contact_hours", "Mån–Fre 09–18") },
+    { icon: Clock, label: "Öppettider", value: get("contact_hours", "Mån-Fre 09-18") },
   ];
   return (
     <div className="min-h-screen">
@@ -61,7 +61,7 @@ export default function Contact() {
               </h2>
               <div className="w-8 h-px bg-primary mb-8" />
               <p className="text-muted-foreground leading-relaxed mb-10 text-sm">
-                {get("contact_intro", "Föredrar du att ringa eller mejla direkt? Ingen mall — bara ett riktigt samtal. En dedikerad rådgivare återkommer normalt inom 24 timmar på vardagar.")}
+                {get("contact_intro", "Föredrar du att ringa eller mejla direkt? Ingen mall - bara ett riktigt samtal. En dedikerad rådgivare återkommer normalt inom 24 timmar på vardagar.")}
               </p>
               <div className="space-y-6">
                 {contactInfo.map((info) => (
@@ -90,7 +90,7 @@ export default function Contact() {
                 type="contact"
                 eyebrow="Reseförfrågan"
                 heading="Berätta Om Er Resa"
-                intro="Skriv några rader om vad ni planerar — antal personer, ungefärliga datum, destination och önskemål. Vi återkommer med ett förslag."
+                intro="Skriv några rader om vad ni planerar - antal personer, ungefärliga datum, destination och önskemål. Vi återkommer med ett förslag."
               />
             </div>
           </div>

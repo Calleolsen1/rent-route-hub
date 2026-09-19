@@ -323,7 +323,7 @@ export const AuthDialog = ({ open, onOpenChange }: AuthDialogProps) => {
                     Laddar demo...
                   </>
                 ) : (
-                  "Demo — Resenär"
+                  "Demo - Resenär"
                 )}
               </Button>
               <Button
@@ -339,7 +339,7 @@ export const AuthDialog = ({ open, onOpenChange }: AuthDialogProps) => {
                       Laddar demo...
                     </>
                   ) : (
-                    "Demo — Arrangör"
+                    "Demo - Arrangör"
                   )}
                 </Button>
                 <Button
@@ -355,7 +355,7 @@ export const AuthDialog = ({ open, onOpenChange }: AuthDialogProps) => {
                       Laddar demo...
                     </>
                   ) : (
-                    "Demo — Admin"
+                    "Demo - Admin"
                   )}
                 </Button>
             </div>

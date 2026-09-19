@@ -37,7 +37,7 @@ const topics: Topic[] = [
  },
  {
  question: "Hur håller jag koll på min resa?",
- answer: "Just nu skickar vi all information om din resa via e-post — bekräftelser, fakturor och uppdateringar. Vår kommande portal 'Mitt Kaisen' kommer samla allt på ett ställe.",
+ answer: "Just nu skickar vi all information om din resa via e-post - bekräftelser, fakturor och uppdateringar. Vår kommande portal 'Mitt Kaisen' kommer samla allt på ett ställe.",
  },
  {
  question: "Uppdatera mina kontaktuppgifter",
@@ -61,11 +61,11 @@ const topics: Topic[] = [
  },
  {
  question: "Vad händer om jag behöver avboka?",
- answer: "Avbokningsregler varierar beroende på resa och tidpunkt. Vi informerar alltid om villkoren innan du bekräftar. Kontakta oss direkt om du behöver avboka — vi hjälper dig på bästa möjliga sätt.",
+ answer: "Avbokningsregler varierar beroende på resa och tidpunkt. Vi informerar alltid om villkoren innan du bekräftar. Kontakta oss direkt om du behöver avboka - vi hjälper dig på bästa möjliga sätt.",
  },
  {
  question: "Var finns mina resehandlingar och vouchers?",
- answer: "Alla resehandlingar skickas till din e-postadress i god tid innan avresa. Har du inte fått dem — kontakta oss på info@kaisengroup.se så skickar vi om dem direkt.",
+ answer: "Alla resehandlingar skickas till din e-postadress i god tid innan avresa. Har du inte fått dem - kontakta oss på info@kaisengroup.se så skickar vi om dem direkt.",
  },
  {
  question: "Kan jag boka med kort varsel?",
@@ -85,11 +85,11 @@ const topics: Topic[] = [
  },
  {
  question: "Krävs det en handpenning?",
- answer: "Ja, för de flesta bokningar krävs en handpenning vid bekräftelse — vanligtvis 20–30% av totalsumman. Resterande belopp faktureras normalt 30 dagar efter bokning eller enligt överenskommelse.",
+ answer: "Ja, för de flesta bokningar krävs en handpenning vid bekräftelse - vanligtvis 20-30% av totalsumman. Resterande belopp faktureras normalt 30 dagar efter bokning eller enligt överenskommelse.",
  },
  {
  question: "Hur får jag min faktura?",
- answer: "Fakturan skickas automatiskt till din e-postadress vid bekräftelse och vid eventuella uppdateringar. Behöver du en kopia eller ändrad fakturaadress — kontakta oss på info@kaisengroup.se.",
+ answer: "Fakturan skickas automatiskt till din e-postadress vid bekräftelse och vid eventuella uppdateringar. Behöver du en kopia eller ändrad fakturaadress - kontakta oss på info@kaisengroup.se.",
  },
  {
  question: "Vilka betalningsmetoder accepterar ni?",
@@ -101,7 +101,7 @@ const topics: Topic[] = [
  },
  {
  question: "Vad händer om priset ändras efter bokning?",
- answer: "Det bekräftade priset gäller — vi tar aldrig ut extra kostnader utan att informera dig i förväg. Ändras externa kostnader väsentligt kontaktar vi alltid dig innan vi bekräftar.",
+ answer: "Det bekräftade priset gäller - vi tar aldrig ut extra kostnader utan att informera dig i förväg. Ändras externa kostnader väsentligt kontaktar vi alltid dig innan vi bekräftar.",
  },
  ],
  },
@@ -109,11 +109,11 @@ const topics: Topic[] = [
  icon: Users,
  slug: "gruppresor",
  title: "Gruppresor",
- desc: "Specifika frågor om att resa i grupp — logistik, priser och upplägg.",
+ desc: "Specifika frågor om att resa i grupp - logistik, priser och upplägg.",
  articles: [
  {
  question: "Hur många personer krävs för en gruppresa?",
- answer: "Vi arbetar med grupper från 8 personer och uppåt — utan något tak. Vi har arrangerat resor för upp till 200+ personer.",
+ answer: "Vi arbetar med grupper från 8 personer och uppåt - utan något tak. Vi har arrangerat resor för upp till 200+ personer.",
  },
  {
  question: "Vad ingår i en gruppresa?",
@@ -125,11 +125,11 @@ const topics: Topic[] = [
  },
  {
  question: "Hur hanterar ni specialkost och tillgänglighet?",
- answer: "Vi tar hänsyn till alla specialbehov — allergier, dietrestriktioner och tillgänglighetsbehov. Uppge detta i din förfrågan så ordnar vi det.",
+ answer: "Vi tar hänsyn till alla specialbehov - allergier, dietrestriktioner och tillgänglighetsbehov. Uppge detta i din förfrågan så ordnar vi det.",
  },
  {
  question: "Kan ni arrangera företagsevent utomlands?",
- answer: "Absolut — det är ett av våra starkaste områden. Vi har stor erfarenhet av incentiveresor, konferenser och företagsgetaways. Kontakta oss för ett skräddarsytt förslag.",
+ answer: "Absolut - det är ett av våra starkaste områden. Vi har stor erfarenhet av incentiveresor, konferenser och företagsgetaways. Kontakta oss för ett skräddarsytt förslag.",
  },
  ],
  },
@@ -141,7 +141,7 @@ const topics: Topic[] = [
  articles: [
  {
  question: "Vilka destinationer arbetar ni med?",
- answer: "Vi arbetar med destinationer över hela världen — med särskilt fokus på Europa. Populära destinationer inkluderar Monaco, Barcelona, London, Milano och Skandinavien. Men hör av dig — vi fixar det mesta.",
+ answer: "Vi arbetar med destinationer över hela världen - med särskilt fokus på Europa. Populära destinationer inkluderar Monaco, Barcelona, London, Milano och Skandinavien. Men hör av dig - vi fixar det mesta.",
  },
  {
  question: "Kan ni ordna VIP-biljetter till sportevent?",
@@ -153,7 +153,7 @@ const topics: Topic[] = [
  },
  {
  question: "Vad är Incoming-tjänsten?",
- answer: "Incoming innebär att vi tar emot internationella grupper i Sverige och ordnar hela deras vistelse — transport, boende, aktiviteter och guidning. Perfekt för utländska företag och organisationer.",
+ answer: "Incoming innebär att vi tar emot internationella grupper i Sverige och ordnar hela deras vistelse - transport, boende, aktiviteter och guidning. Perfekt för utländska företag och organisationer.",
  },
  ],
  },
@@ -169,7 +169,7 @@ const topics: Topic[] = [
  },
  {
  question: "Hur kontaktar jag er utanför kontorstid?",
- answer: "Akuta ärenden under pågående resa: ring +46 8 000 00 00. För icke-akuta ärenden — skicka ett mejl till info@kaisengroup.se så svarar vi nästa arbetsdag.",
+ answer: "Akuta ärenden under pågående resa: ring +46 8 000 00 00. För icke-akuta ärenden - skicka ett mejl till info@kaisengroup.se så svarar vi nästa arbetsdag.",
  },
  {
  question: "Vad händer vid förseningar och störningar?",
@@ -187,7 +187,7 @@ import { usePageMeta } from "@/lib/usePageMeta";
 
 export default function HelpCenter() {
  usePageMeta({
-   title: "Hjälpcenter — Kaisen Travel Group",
+   title: "Hjälpcenter - Kaisen Travel Group",
    description: "Hjälpcenter med vanliga frågor om bokning, betalning, biljettleverans och kundsupport.",
  });
  const [openTopic, setOpenTopic] = useState<string | null>(null);
@@ -216,7 +216,7 @@ export default function HelpCenter() {
  Hur kan vi <em className="italic font-light text-white">hjälpa dig?</em>
  </h1>
  <p className="text-white/60 max-w-xl mx-auto leading-relaxed mb-8">
- Hitta svar på dina frågor eller kontakta oss direkt — vi svarar alltid inom en timme.
+ Hitta svar på dina frågor eller kontakta oss direkt - vi svarar alltid inom en timme.
  </p>
  {/* Search */}
  <div className="max-w-md mx-auto relative">
@@ -241,7 +241,7 @@ export default function HelpCenter() {
  <LogIn className="h-4 w-4 text-primary" />
  </div>
  <div>
- <p className="text-sm font-medium text-foreground">Mitt Kaisen — Lanseras snart</p>
+ <p className="text-sm font-medium text-foreground">Mitt Kaisen - Lanseras snart</p>
  <p className="text-xs text-muted-foreground">Logga in och håll koll på din resa, fakturor och uppdateringar i realtid.</p>
  </div>
  </div>
@@ -337,7 +337,7 @@ export default function HelpCenter() {
  <div className="text-center mb-12">
  <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Transparens</p>
  <h2 className="font-display text-3xl text-foreground mb-2">
- Alltid uppdaterad — <em className="italic font-light">utan ansträngning</em>
+ Alltid uppdaterad - <em className="italic font-light">utan ansträngning</em>
  </h2>
  <div className="w-10 h-px bg-primary mx-auto" />
  </div>
@@ -351,12 +351,12 @@ export default function HelpCenter() {
  {
  icon: Headphones,
  title: "E-postnotiser",
- desc: "Du får alltid ett mejl när vi gör en ändring — ingen uppdatering sker utan att du informeras.",
+ desc: "Du får alltid ett mejl när vi gör en ändring - ingen uppdatering sker utan att du informeras.",
  },
  {
  icon: LogIn,
  title: "Reseportal (kommer snart)",
- desc: "Snart lanserar vi 'Mitt Kaisen' — en inloggningssida där du ser alla dina resor, fakturor och uppdateringar på ett ställe.",
+ desc: "Snart lanserar vi 'Mitt Kaisen' - en inloggningssida där du ser alla dina resor, fakturor och uppdateringar på ett ställe.",
  },
  ].map((item) => (
  <div key={item.title} className="text-center">

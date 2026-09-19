@@ -9,7 +9,7 @@ import { useSport, useEntry } from "@/hooks/useNavigation";
 import UpcomingEventsList from "@/components/UpcomingEventsList";
 
 /**
- * Unified landing page for any sport entry — replaces the old TeamPage +
+ * Unified landing page for any sport entry - replaces the old TeamPage +
  * F1RacePage split. Labels and the fallback hero image change based on
  * the parent sport's `entry_kind` ('team' vs 'race'), but the page
  * structure is identical so admins editing a new sport (Tennis, MMA, …)
@@ -23,7 +23,7 @@ const FALLBACKS_BY_KIND: Record<string, string> = {
 const KIND_LABELS = {
   team: {
     eyebrow: (sportLabel: string, groupLabel?: string | null) =>
-      `${sportLabel}sresor${groupLabel ? ` — ${groupLabel}` : ""}`,
+      `${sportLabel}sresor${groupLabel ? ` - ${groupLabel}` : ""}`,
     venueLabel: "Arena",
     venueIcon: Trophy,
     groupLabel: "Liga",

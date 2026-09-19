@@ -1,15 +1,15 @@
 import { useEffect } from "react";
 
 type Meta = {
-  /** Page title — also used as og:title fallback */
+  /** Page title - also used as og:title fallback */
   title: string;
-  /** Plain description — also used as og:description fallback */
+  /** Plain description - also used as og:description fallback */
   description?: string;
   /** Full URL of the page (for og:url + canonical). Falls back to current window URL. */
   url?: string;
   /** Image URL for social previews (og:image). Falls back to site default. */
   image?: string;
-  /** og:type — default "website", use "article" for editorial */
+  /** og:type - default "website", use "article" for editorial */
   type?: "website" | "article";
 };
 

@@ -57,7 +57,7 @@ const fallbackHeroSlides: HeroSlide[] = [
     title: "Resor skapade",
     italic: "Just för dig",
     description:
-      "Sportresor, gruppresor, träningsläger och VIP-service — levererat med personlig omsorg av en dedikerad resekonsult.",
+      "Sportresor, gruppresor, träningsläger och VIP-service - levererat med personlig omsorg av en dedikerad resekonsult.",
     primary: { label: "Planera din resa", to: "/contact" },
   },
   {
@@ -66,7 +66,7 @@ const fallbackHeroSlides: HeroSlide[] = [
     title: "Upplev sportens",
     italic: "största ögonblick",
     description:
-      "F1-race i Monaco, Premier League på Anfield eller Champions League-finaler — vi ordnar biljetter, boende och VIP-access.",
+      "F1-race i Monaco, Premier League på Anfield eller Champions League-finaler - vi ordnar biljetter, boende och VIP-access.",
     primary: { label: "Se sportresor", to: "/services/sportresor" },
   },
   {
@@ -75,7 +75,7 @@ const fallbackHeroSlides: HeroSlide[] = [
     title: "Gruppresor &",
     italic: "konferenser",
     description:
-      "Från företagsevent till kompisgäng — vi sköter hela logistiken för grupper från 8 upp till 200+ personer.",
+      "Från företagsevent till kompisgäng - vi sköter hela logistiken för grupper från 8 upp till 200+ personer.",
     primary: { label: "Läs mer", to: "/group-travel" },
   },
   {
@@ -84,7 +84,7 @@ const fallbackHeroSlides: HeroSlide[] = [
     title: "Träna där",
     italic: "proffsen tränar",
     description:
-      "Fotboll, simning, friidrott och fler sporter — kompletta läger med boende, transfer och planhyra.",
+      "Fotboll, simning, friidrott och fler sporter - kompletta läger med boende, transfer och planhyra.",
     primary: { label: "Se träningsläger", to: "/services/traningslager" },
   },
 ];
@@ -97,7 +97,7 @@ const fallbackHeroSlides: HeroSlide[] = [
 //   { value: "...", label: "År av expertis" },
 // ];
 
-// Inquiry-funnel tiles (group / training / conference) — these aren't xs2
+// Inquiry-funnel tiles (group / training / conference) - these aren't xs2
 // ticket events, they're CTAs into the inquiry form, so they stay static.
 const inquiryOffers: FeaturedOffer[] = [
   { image: offerLisbon, title: "Gruppresa Lissabon", date: "Q1 2027", tag: "Grupp", days: "5 dagar", fromPrice: null, compareAtPrice: null, compareAtPct: null, currentPriceSek: null, href: "/group-travel", isNew: false },
@@ -139,7 +139,7 @@ function mapEventToOffer(ev: {
   compare_at_pct: number | null;
 }): FeaturedOffer {
   const title = ev.sport === "soccer"
-    ? `${ev.home_team ?? ""} – ${ev.away_team ?? ""}`.trim()
+    ? `${ev.home_team ?? ""} - ${ev.away_team ?? ""}`.trim()
     : ev.race_name ?? ev.tournament_name;
   const days = ev.ends_at
     ? `${Math.max(1, Math.round((new Date(ev.ends_at).getTime() - new Date(ev.starts_at).getTime()) / 86400000) + 1)} dagar`
@@ -177,13 +177,13 @@ const services = [
       "Från företagsevent och konferenser till kompisgäng och familjeresor. Vi sköter hela logistiken för grupper från 8 upp till 200+ personer.",
     image: groupImage,
     href: "/group-travel",
-    tag: "8–200+ personer",
+    tag: "8-200+ personer",
   },
   {
     title: "Träningsläger",
     subtitle: "Fotboll · Simning · Friidrott",
     description:
-      "Kompletta träningsläger på de bästa destinationerna — boende, transfer, planhyra och måltider ingår.",
+      "Kompletta träningsläger på de bästa destinationerna - boende, transfer, planhyra och måltider ingår.",
     image: incomingImage,
     href: "/services/traningslager",
     tag: "Lag & klubbar",
@@ -201,7 +201,7 @@ const services = [
     title: "VIP-service",
     subtitle: "Din personliga reseassistent",
     description:
-      "En dedikerad rådgivare som hanterar all din reseservice — privata resor, affärsresor och sista minuten-ändringar.",
+      "En dedikerad rådgivare som hanterar all din reseservice - privata resor, affärsresor och sista minuten-ändringar.",
     image: vipImage,
     href: "/services/vip-service",
     tag: "Exklusivt · Personligt",
@@ -211,7 +211,7 @@ const services = [
 const testimonials = [
   {
     quote:
-      "Kaisen ordnade vår F1-resa till Monaco ner i minsta detalj. VIP-paddock, hotell med utsikt över banan och middag på Michelin-restaurang — helt magiskt.",
+      "Kaisen ordnade vår F1-resa till Monaco ner i minsta detalj. VIP-paddock, hotell med utsikt över banan och middag på Michelin-restaurang - helt magiskt.",
     author: "Erik Lindström",
     role: "VD, Nordic Ventures",
     rating: 5,
@@ -232,7 +232,7 @@ const testimonials = [
   },
   {
     quote:
-      "Vårt träningsläger i Spanien blev över förväntan. Allt klaffade — boende, mat, planer och transfer. Kommer definitivt boka igen.",
+      "Vårt träningsläger i Spanien blev över förväntan. Allt klaffade - boende, mat, planer och transfer. Kommer definitivt boka igen.",
     author: "Johan Eriksson",
     role: "Tränare, IFK Göteborg P-08",
     rating: 5,
@@ -248,7 +248,7 @@ const whyUs = [
   {
     icon: Trophy,
     title: "Sportspecialister",
-    description: "Djup kunskap om F1, fotboll och golf — VIP-access, paddock-pass och de bästa platserna.",
+    description: "Djup kunskap om F1, fotboll och golf - VIP-access, paddock-pass och de bästa platserna.",
   },
   {
     icon: Globe,
@@ -397,7 +397,7 @@ const Home = () => {
     <div className="min-h-screen">
       <Navbar />
 
-      {/* Search bar — full width, above hero (Intrepid-style) */}
+      {/* Search bar - full width, above hero (Intrepid-style) */}
       <section className="bg-background">
         <div className="w-full max-w-4xl mx-auto px-6 md:px-10 pt-6 md:pt-8 pb-4">
           <SearchTypeahead />
@@ -405,7 +405,7 @@ const Home = () => {
       </section>
 
 
-      {/* Hero carousel — contained rounded card, Intrepid-style */}
+      {/* Hero carousel - contained rounded card, Intrepid-style */}
       <section className="relative bg-background pb-4 md:pb-6">
         <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
           <div className="relative rounded-2xl md:rounded-3xl overflow-hidden">
@@ -488,7 +488,7 @@ const Home = () => {
 
 
 
-      {/* Konkreta reseerbjudanden — Intrepid-style cards */}
+      {/* Konkreta reseerbjudanden - Intrepid-style cards */}
       <section className="pt-4 pb-8 md:pb-10 bg-background">
         <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
@@ -576,7 +576,7 @@ const Home = () => {
 
       </section>
 
-      {/* Längre erbjudanden — service cards carousel */}
+      {/* Längre erbjudanden - service cards carousel */}
       <section className="pt-4 pb-12 md:pb-16 bg-background">
         <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
           <div className="flex items-center justify-between mb-8 gap-6">
@@ -637,7 +637,7 @@ const Home = () => {
                 Resor designade kring dig
               </h3>
               <p className="text-foreground/70 text-base md:text-lg leading-relaxed mb-8">
-                I en värld av automatiserade bokningar och standardpaket sticker Kaisen Travel Group ut. Vi tror att de bästa reseupplevelserna börjar med en riktig mänsklig kontakt — ett samtal, en gemensam vision och ett åtagande att få varje detalj att stämma.
+                I en värld av automatiserade bokningar och standardpaket sticker Kaisen Travel Group ut. Vi tror att de bästa reseupplevelserna börjar med en riktig mänsklig kontakt - ett samtal, en gemensam vision och ett åtagande att få varje detalj att stämma.
               </p>
               <Link
                 to="/about"
@@ -661,7 +661,7 @@ const Home = () => {
 
 
 
-      {/* Referenser — testimonials carousel */}
+      {/* Referenser - testimonials carousel */}
       <section className="py-10 md:py-14 bg-cream">
         <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
           <div className="text-center mb-14">
@@ -713,7 +713,7 @@ const Home = () => {
                 Ditt nästa äventyr börjar med ett <em className="italic font-light text-white">samtal</em>
               </h2>
               <p className="text-base text-white/70 leading-relaxed">
-                Prata med en Kaisen-konsult idag. Inga mallar, inga algoritmer — bara genuin expertis dedikerad till din perfekta resa.
+                Prata med en Kaisen-konsult idag. Inga mallar, inga algoritmer - bara genuin expertis dedikerad till din perfekta resa.
               </p>
             </div>
             <Link to="/contact" className="relative md:justify-self-end">

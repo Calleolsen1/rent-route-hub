@@ -217,7 +217,7 @@ export default function BackofficeBookings() {
     setDeleting(false);
     setConfirmDelete(null);
     if (error) return toast.error(error.message);
-    toast.success("Resan är raderad — återställ den under Raderade resor");
+    toast.success("Resan är raderad - återställ den under Raderade resor");
     load();
   };
 
@@ -320,7 +320,7 @@ export default function BackofficeBookings() {
         <div>
           <h1 className="font-display text-2xl text-foreground">Bokningar</h1>
           <p className="text-sm text-muted-foreground">
-            Resor med hotell, flyg, biljetter och transfer — samt marginal per resa.
+            Resor med hotell, flyg, biljetter och transfer - samt marginal per resa.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -429,9 +429,9 @@ export default function BackofficeBookings() {
                         <div className="text-xs text-muted-foreground">{r.destination}</div>
                       </td>
                       <td className="px-4 py-3">{r.company_name || r.contact_name}</td>
-                      <td className="px-4 py-3">{r.depart_date ?? "—"}</td>
+                      <td className="px-4 py-3">{r.depart_date ?? "-"}</td>
                       <td className="px-4 py-3 text-muted-foreground">
-                        {r.deleted_at?.slice(0, 10) ?? "—"}
+                        {r.deleted_at?.slice(0, 10) ?? "-"}
                       </td>
                       <td className="px-4 py-3 text-right whitespace-nowrap">
                         <Button
@@ -511,7 +511,7 @@ export default function BackofficeBookings() {
                     <div className="text-xs text-muted-foreground">{r.destination}</div>
                   </td>
                   <td className="px-4 py-3">{r.company_name || r.contact_name}</td>
-                  <td className="px-4 py-3">{r.depart_date ?? "—"}</td>
+                  <td className="px-4 py-3">{r.depart_date ?? "-"}</td>
                   <td className="px-4 py-3">{r.travellers_count}</td>
                   <td className="px-4 py-3 text-right">{formatSek(r.sale_total_sek)}</td>
                   <td className="px-4 py-3 text-right text-muted-foreground">

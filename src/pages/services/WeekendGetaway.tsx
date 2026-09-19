@@ -58,7 +58,7 @@ const destinations = [
  image: veniceImage,
  tagline: "Gondoler, solnedgångar & cicchetti",
  description:
- "Gå vilse bland Venedigs smala kanaler och rondola-broar — det är omöjligt att inte charmas. Prova cicchetti (venetiansk tapas) på en lokal bacaro och se solnedgången spegla sig i vattnet.",
+ "Gå vilse bland Venedigs smala kanaler och rondola-broar - det är omöjligt att inte charmas. Prova cicchetti (venetiansk tapas) på en lokal bacaro och se solnedgången spegla sig i vattnet.",
  },
 ];
 
@@ -75,7 +75,7 @@ export default function WeekendGetaway() {
  </div>
  <div className="relative container mx-auto px-4 pb-14">
  <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
- Tjänster — Weekend Getaway
+ Tjänster - Weekend Getaway
  </p>
  <h1 className="font-display text-4xl md:text-6xl text-white">
  Europas Mysigaste <em className="italic font-light text-white">Helgresmål</em>

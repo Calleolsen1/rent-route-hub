@@ -87,7 +87,7 @@ export default function UpcomingEventsList({
       if (dateTo) q = q.lte("starts_at", dateTo);
       if (query && query.trim()) {
         const term = query.trim().replace(/[,]/g, " ");
-        // Cross-field substring match — Supabase doesn't expose ILIKE-OR easily,
+        // Cross-field substring match - Supabase doesn't expose ILIKE-OR easily,
         // so search the most common surfaces individually
         q = q.or(
           `home_team.ilike.%${term}%,away_team.ilike.%${term}%,race_name.ilike.%${term}%,tournament_name.ilike.%${term}%,venue_name.ilike.%${term}%,city.ilike.%${term}%`,
@@ -110,7 +110,7 @@ export default function UpcomingEventsList({
   if (!events.length) {
     return (
       <div className="text-center py-10 text-muted-foreground text-sm">
-        Inga evenemang matchade — testa att rensa filtren eller hör av dig så letar vi åt dig.
+        Inga evenemang matchade - testa att rensa filtren eller hör av dig så letar vi åt dig.
       </div>
     );
   }

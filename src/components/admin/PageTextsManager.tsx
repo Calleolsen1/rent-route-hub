@@ -21,7 +21,7 @@ const isStringArray = (v: unknown): v is string[] =>
  * Editor for site_content. Rows are grouped into one tab per public page so
  * admins see ~5 related fields at a time instead of scrolling through every
  * key on every page. Page assignment is done by key prefix
- * (about_*, contact_*, group_*, training_*) — anything that doesn't match
+ * (about_*, contact_*, group_*, training_*) - anything that doesn't match
  * lands in "Övrigt" so developer-added keys aren't lost.
  *
  * Saves on blur for textareas and immediately on paragraph add/remove.
@@ -106,7 +106,7 @@ export default function PageTextsManager() {
   if (rows.length === 0) {
     return (
       <p className="text-sm text-muted-foreground py-8 text-center">
-        Inga sidtexter konfigurerade — utvecklaren lägger till nya när de
+        Inga sidtexter konfigurerade - utvecklaren lägger till nya när de
         kopplas in på en sida.
       </p>
     );
@@ -216,7 +216,7 @@ function ContentField({
         />
       ) : (
         <p className="text-xs text-muted-foreground italic">
-          Ovanlig datatyp — kontakta utvecklaren för att redigera den här.
+          Ovanlig datatyp - kontakta utvecklaren för att redigera den här.
         </p>
       )}
     </div>

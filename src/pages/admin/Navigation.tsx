@@ -89,7 +89,7 @@ function useXs2NameMatch(name: string, kind: "team" | "race"): Xs2Match {
     const handle = setTimeout(async () => {
       try {
         if (kind === "team") {
-          // Exact match check — home_team or away_team
+          // Exact match check - home_team or away_team
           const { data: exactRows } = await (supabase as any)
             .from("events")
             .select("id, home_team, away_team, starts_at, status")
@@ -100,7 +100,7 @@ function useXs2NameMatch(name: string, kind: "team" | "race"): Xs2Match {
             setResult({ status: "match", count, suggestions: [] });
             return;
           }
-          // Fuzzy fallback — show top suggestions
+          // Fuzzy fallback - show top suggestions
           const { data: fuzzyRows } = await (supabase as any)
             .from("events")
             .select("home_team, away_team")
@@ -155,13 +155,13 @@ export default function AdminNavigation() {
       <div>
         <h1 className="text-3xl font-display mb-2">Navigation</h1>
         <p className="text-sm text-muted-foreground">
-          Här bygger du upp menyn och landningssidorna. Ändringar går live direkt — besökare ser dem nästa gång de fokuserar fliken.
+          Här bygger du upp menyn och landningssidorna. Ändringar går live direkt - besökare ser dem nästa gång de fokuserar fliken.
         </p>
       </div>
       <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900 flex items-start gap-2">
         <AlertTriangle className="h-4 w-4 flex-shrink-0 mt-0.5" />
         <span>
-          <strong>Tips:</strong> Namnet på lag/race måste exakt matcha det xs2event skickar (t.ex. "Arsenal", inte "Arsenal FC") — annars hittas inga biljetter på landningssidan.
+          <strong>Tips:</strong> Namnet på lag/race måste exakt matcha det xs2event skickar (t.ex. "Arsenal", inte "Arsenal FC") - annars hittas inga biljetter på landningssidan.
         </span>
       </div>
 
@@ -452,7 +452,7 @@ function SportsEditor() {
                 </div>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   {sport.menu_style === "grouped" ? "Grupperad meny (sub-rubriker)" : "Enkel lista"} ·
-                  xs2-filter: <code className="bg-muted px-1 rounded">{sport.sport_filter ?? "—"}</code>
+                  xs2-filter: <code className="bg-muted px-1 rounded">{sport.sport_filter ?? "-"}</code>
                 </p>
               </div>
               <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
@@ -468,7 +468,7 @@ function SportsEditor() {
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-xs text-muted-foreground">
                     Sidor under <strong>{sport.label}</strong>
-                    {sport.menu_style === "grouped" && ` — grupperade efter "${sport.entry_kind === "team" ? "liga" : "kategori"}"`}
+                    {sport.menu_style === "grouped" && ` - grupperade efter "${sport.entry_kind === "team" ? "liga" : "kategori"}"`}
                   </p>
                   <Button size="sm" variant="outline" onClick={() => setNewEntryFor(sport)}>
                     <Plus className="h-3 w-3 mr-1.5" /> Lägg till {sport.entry_kind === "team" ? "lag" : "race"}
@@ -592,7 +592,7 @@ function EntriesList({
                     {entry.is_active && entry.show_in_menu === false && <span className="text-xs text-muted-foreground">· dold från meny</span>}
                   </div>
                   <div className="text-xs text-muted-foreground mt-0.5">
-                    {[entry.city, entry.venue].filter(Boolean).join(" · ") || <span className="italic">Saknar info — klicka redigera</span>}
+                    {[entry.city, entry.venue].filter(Boolean).join(" · ") || <span className="italic">Saknar info - klicka redigera</span>}
                   </div>
                 </div>
                 <a
@@ -767,7 +767,7 @@ function GroupLabelPicker({
           }}
           className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
         >
-          <option value="">— ingen gruppering —</option>
+          <option value="">- ingen gruppering -</option>
           {existing.map((opt) => (
             <option key={opt} value={opt}>{opt}</option>
           ))}
@@ -1123,7 +1123,7 @@ function EntryDialog({ open, onOpenChange, sport, initial, nextOrder, existingGr
           {xs2.status === "no-match" && name.trim().length >= 2 && !forceSave && (
             <label className="text-xs text-amber-700 flex items-center gap-2 mr-auto">
               <input type="checkbox" checked={forceSave} onChange={(e) => setForceSave(e.target.checked)} />
-              Spara ändå — sidan visar inga biljetter förrän xs2 har en match
+              Spara ändå - sidan visar inga biljetter förrän xs2 har en match
             </label>
           )}
           <Button variant="ghost" onClick={() => onOpenChange(false)}>Avbryt</Button>
@@ -1146,7 +1146,7 @@ function EntryDialog({ open, onOpenChange, sport, initial, nextOrder, existingGr
 
 function Xs2MatchHint({ xs2, isRace, onPickSuggestion }: { xs2: Xs2Match; isRace: boolean; onPickSuggestion: (s: string) => void }) {
   if (xs2.status === "idle") {
-    return <p className="text-[11px] text-muted-foreground mt-1">Måste matcha xs2events {isRace ? "race_name" : "home_team"} exakt — vi söker direkt när du skriver.</p>;
+    return <p className="text-[11px] text-muted-foreground mt-1">Måste matcha xs2events {isRace ? "race_name" : "home_team"} exakt - vi söker direkt när du skriver.</p>;
   }
   if (xs2.status === "loading") {
     return <p className="text-[11px] text-muted-foreground mt-1">Söker i xs2-data…</p>;

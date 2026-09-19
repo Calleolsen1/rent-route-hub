@@ -84,7 +84,7 @@ export default function Checkout() {
     })();
   }, [orderId, user, authLoading, navigate]);
 
-  // Reservation hold countdown — xs2 holds tickets for 10 minutes. Refuse to
+  // Reservation hold countdown - xs2 holds tickets for 10 minutes. Refuse to
   // start payment once expired; nudge the user back to the event page.
   useEffect(() => {
     if (!order?.reservation_expires_at) return;
@@ -126,7 +126,7 @@ export default function Checkout() {
         .maybeSingle();
       if (o) setOrder(o as unknown as OrderRow);
       if ((data as any)?.price_changed) {
-        toast.warning("Priset har ändrats — granska summan innan du betalar.");
+        toast.warning("Priset har ändrats - granska summan innan du betalar.");
         // Reload items so the right-column summary shows the new prices
         const { data: its } = await supabase
           .from("order_items")
@@ -136,7 +136,7 @@ export default function Checkout() {
           .eq("order_id", order.id);
         setItems((its as unknown as ItemRow[]) ?? []);
       } else {
-        toast.success("Reservationen är förnyad — 10 nya minuter.");
+        toast.success("Reservationen är förnyad - 10 nya minuter.");
       }
     } catch (e: any) {
       toast.error(e.message ?? "Kunde inte förnya reservationen");
@@ -149,7 +149,7 @@ export default function Checkout() {
     e.preventDefault();
     if (!order) return;
     if (reservationExpired) {
-      toast.error("Reservationen har gått ut — gå tillbaka och välj biljetter igen.");
+      toast.error("Reservationen har gått ut - gå tillbaka och välj biljetter igen.");
       return;
     }
     setSubmitting(true);
@@ -243,7 +243,7 @@ export default function Checkout() {
               </>
             ) : (
               <span>
-                Biljetterna är reserverade i {formattedHold} — slutför betalningen innan dess.
+                Biljetterna är reserverade i {formattedHold} - slutför betalningen innan dess.
               </span>
             )}
           </div>

@@ -103,7 +103,7 @@ export default function TestimonialsManager() {
       </div>
 
       {rows.length === 0 ? (
-        <p className="text-sm text-muted-foreground py-8 text-center">Inga citat — klicka "Nytt citat" för att börja.</p>
+        <p className="text-sm text-muted-foreground py-8 text-center">Inga citat - klicka "Nytt citat" för att börja.</p>
       ) : (
         rows.map((r, i) => (
           <div key={r.id} className="rounded-xl border border-border p-4 space-y-3">

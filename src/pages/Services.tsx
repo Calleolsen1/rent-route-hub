@@ -30,11 +30,11 @@ const categories = [
  id: "sports",
  tag: "Sports & Adventure",
  title: "Elite Sporting Experiences",
- description: "We are the go-to agency for sports enthusiasts who demand premium experiences. From golf pilgrimages to alpine ski weeks, sailing regattas to motorsport grand prix weekends — we take you to the heart of the action.",
+ description: "We are the go-to agency for sports enthusiasts who demand premium experiences. From golf pilgrimages to alpine ski weeks, sailing regattas to motorsport grand prix weekends - we take you to the heart of the action.",
  image: sportsImage,
  features: [
- "Golf — St Andrews, Augusta, Pebble Beach",
- "Skiing — Verbier, Zermatt, Aspen",
+ "Golf - St Andrews, Augusta, Pebble Beach",
+ "Skiing - Verbier, Zermatt, Aspen",
  "Sailing & Yacht charters",
  "Motorsport & Grand Prix packages",
  "Cycling, trekking & endurance events",
@@ -47,7 +47,7 @@ const categories = [
  id: "luxury",
  tag: "Luxury Escapes",
  title: "Uncompromising Excellence",
- description: "For travelers who expect perfection, we curate experiences that money alone cannot buy — exclusive access, private collections, Michelin dining, and accommodation that defines a destination.",
+ description: "For travelers who expect perfection, we curate experiences that money alone cannot buy - exclusive access, private collections, Michelin dining, and accommodation that defines a destination.",
  image: luxuryImage,
  features: [
  "Private villa & château rentals",
@@ -85,7 +85,7 @@ export default function Services() {
  <section className="bg-cream py-16">
  <div className="container mx-auto px-4 max-w-3xl text-center">
  <p className="font-display text-2xl md:text-3xl text-foreground italic font-light leading-relaxed">
- "Every journey begins with a single conversation. We listen first — then we build something extraordinary."
+ "Every journey begins with a single conversation. We listen first - then we build something extraordinary."
  </p>
  <div className="w-8 h-px bg-primary mx-auto mt-8" />
  </div>

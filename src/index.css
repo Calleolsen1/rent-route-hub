@@ -52,7 +52,7 @@
     --navy: 201 100% 21%;
     --navy-foreground: 0 0% 100%;
 
-    /* Legacy "gold" tokens remapped to navy/neutrals — DO NOT use gold hues here */
+    /* Legacy "gold" tokens remapped to navy/neutrals - DO NOT use gold hues here */
     --gold: 210 39% 45%; /* muted navy-blue accent */
     --gold-light: 210 39% 65%;
     --gold-pale: 210 50% 95%;
@@ -65,7 +65,7 @@
     --terracotta: 18 55% 52%;
     --terracotta-light: 18 45% 88%;
 
-    /* Sidebar — navy palette, no gold */
+    /* Sidebar - navy palette, no gold */
     --sidebar-background: 222 50% 10%;
     --sidebar-foreground: 210 20% 92%;
     --sidebar-primary: 201 100% 35%;

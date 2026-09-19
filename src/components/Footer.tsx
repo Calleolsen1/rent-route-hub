@@ -26,9 +26,9 @@ const Footer = () => {
           user_agent: navigator.userAgent.slice(0, 200),
         });
       if (error) {
-        // Unique constraint violation = already subscribed — treat as success
+        // Unique constraint violation = already subscribed - treat as success
         if (error.code === "23505") {
-          toast.success("Du är redan anmäld — tack!");
+          toast.success("Du är redan anmäld - tack!");
         } else {
           throw error;
         }
@@ -37,7 +37,7 @@ const Footer = () => {
       }
       setEmail("");
     } catch (e: any) {
-      toast.error(e.message ?? "Något gick fel — försök igen");
+      toast.error(e.message ?? "Något gick fel - försök igen");
     } finally {
       setSubmitting(false);
     }
@@ -95,7 +95,7 @@ const Footer = () => {
               <div className="text-[10px] tracking-[0.3em] text-white/60 font-sans uppercase mt-1.5">Travel Group</div>
             </Link>
             <p className="text-sm text-white/60 leading-relaxed mt-6 max-w-xs">
-              Skräddarsydda upplevelser för sport, gruppresor och affärsresor — med personlig service hela vägen.
+              Skräddarsydda upplevelser för sport, gruppresor och affärsresor - med personlig service hela vägen.
             </p>
           </div>
 

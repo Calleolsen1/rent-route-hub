@@ -112,7 +112,7 @@ export default function AdminMarkupDefaults() {
   const applyToAll = async () => {
     if (
       !confirm(
-        "Detta överskriver påslagsvärden på ALLA befintliga kategorier — även de du tidigare anpassat manuellt. Är du säker?",
+        "Detta överskriver påslagsvärden på ALLA befintliga kategorier - även de du tidigare anpassat manuellt. Är du säker?",
       )
     ) {
       return;
@@ -128,7 +128,7 @@ export default function AdminMarkupDefaults() {
         .gte("created_at", "1900-01-01") // matches every row
         .select("*", { count: "exact", head: true });
       if (error) throw error;
-      toast.success(`Uppdaterade ${count ?? "—"} kategorier`);
+      toast.success(`Uppdaterade ${count ?? "-"} kategorier`);
     } catch (e: any) {
       toast.error(e.message ?? "Kunde inte uppdatera");
     } finally {
@@ -153,7 +153,7 @@ export default function AdminMarkupDefaults() {
         <div>
           <h2 className="font-display text-lg">Växelkurs EUR → SEK</h2>
           <p className="text-xs text-muted-foreground mt-1">
-            xs2event prissätter alla biljetter i euro. Den här kursen styr vad svenska kunder betalar i SEK. Uppdatera manuellt — påverkar nya prisberäkningar omedelbart, inte redan reserverade ordrar.
+            xs2event prissätter alla biljetter i euro. Den här kursen styr vad svenska kunder betalar i SEK. Uppdatera manuellt - påverkar nya prisberäkningar omedelbart, inte redan reserverade ordrar.
           </p>
         </div>
         <div className="max-w-[200px]">
@@ -234,7 +234,7 @@ export default function AdminMarkupDefaults() {
         <div>
           <h2 className="font-display text-lg">Jämförelsepris (rabatt-streck)</h2>
           <p className="text-xs text-muted-foreground mt-1">
-            Visar ett överstruket högre pris bredvid det riktiga priset, t.ex. <span className="line-through">3&nbsp;600&nbsp;kr</span>&nbsp;<strong>3&nbsp;000&nbsp;kr&nbsp;–17%</strong>. Används bara när eventet saknar ett eget compare_at-värde (sätts då automatiskt från xs2event-biljettens face value, eller manuellt per event i Biljetter).
+            Visar ett överstruket högre pris bredvid det riktiga priset, t.ex. <span className="line-through">3&nbsp;600&nbsp;kr</span>&nbsp;<strong>3&nbsp;000&nbsp;kr&nbsp;-17%</strong>. Används bara när eventet saknar ett eget compare_at-värde (sätts då automatiskt från xs2event-biljettens face value, eller manuellt per event i Biljetter).
           </p>
         </div>
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">
@@ -263,7 +263,7 @@ export default function AdminMarkupDefaults() {
       <div className="rounded-xl border border-amber-200 bg-amber-50 p-6">
         <h2 className="font-display text-lg mb-1">Tillämpa på alla befintliga kategorier</h2>
         <p className="text-sm text-amber-900 mb-4">
-          Skriver över <strong>alla</strong> nuvarande påslagsvärden — även anpassade. Använd bara om du verkligen vill nollställa till nya standardvärden.
+          Skriver över <strong>alla</strong> nuvarande påslagsvärden - även anpassade. Använd bara om du verkligen vill nollställa till nya standardvärden.
         </p>
         <Button variant="outline" onClick={applyToAll} disabled={applying}>
           {applying && <Loader2 className="h-3 w-3 animate-spin mr-2" />}

@@ -29,10 +29,10 @@ export default function Integritetspolicy() {
           <Section title="2. Vilka uppgifter vi samlar in">
             <p>När du använder vår webbplats kan vi samla in följande uppgifter om dig:</p>
             <ul>
-              <li><strong>Kontaktuppgifter</strong> — namn, e-postadress, telefonnummer som du anger i förfrågningsformulär eller vid beställning.</li>
-              <li><strong>Beställningsuppgifter</strong> — vilka biljetter, paket eller resor du har bokat, fakturahistorik och betalningsstatus (men inte kortuppgifter, som hanteras av Stripe).</li>
-              <li><strong>Kontoinformation</strong> — om du skapar ett konto i Mitt Kaisen: lösenord (hashad), profilbild och inställningar.</li>
-              <li><strong>Tekniska uppgifter</strong> — IP-adress, webbläsartyp och cookies (se avsnitt 5).</li>
+              <li><strong>Kontaktuppgifter</strong> - namn, e-postadress, telefonnummer som du anger i förfrågningsformulär eller vid beställning.</li>
+              <li><strong>Beställningsuppgifter</strong> - vilka biljetter, paket eller resor du har bokat, fakturahistorik och betalningsstatus (men inte kortuppgifter, som hanteras av Stripe).</li>
+              <li><strong>Kontoinformation</strong> - om du skapar ett konto i Mitt Kaisen: lösenord (hashad), profilbild och inställningar.</li>
+              <li><strong>Tekniska uppgifter</strong> - IP-adress, webbläsartyp och cookies (se avsnitt 5).</li>
             </ul>
           </Section>
 
@@ -53,12 +53,12 @@ export default function Integritetspolicy() {
           <Section title="4. Tredje parter och biträdesavtal">
             <p>Vi delar uppgifter med följande underleverantörer som är personuppgiftsbiträden:</p>
             <ul>
-              <li><strong>Stripe</strong> (USA / EU) — kortbetalningar och fakturering.</li>
-              <li><strong>xs2event</strong> (EU) — biljettleverantör; bokningsmottagare och e-postadress lämnas vid bokning.</li>
-              <li><strong>Resend</strong> (USA) — utskick av e-post (orderbekräftelse, lösenordsåterställning).</li>
-              <li><strong>Supabase</strong> (EU) — databas, autentisering och fillagring.</li>
-              <li><strong>Cloudflare</strong> (USA / EU) — botskydd via Turnstile på formulär (IP-adress och webbläsarsignaler behandlas tillfälligt).</li>
-              <li><strong>Sentry</strong> (USA) — felövervakning i frontend (anonym sessions-id, webbläsarstack och URL vid fel).</li>
+              <li><strong>Stripe</strong> (USA / EU) - kortbetalningar och fakturering.</li>
+              <li><strong>xs2event</strong> (EU) - biljettleverantör; bokningsmottagare och e-postadress lämnas vid bokning.</li>
+              <li><strong>Resend</strong> (USA) - utskick av e-post (orderbekräftelse, lösenordsåterställning).</li>
+              <li><strong>Supabase</strong> (EU) - databas, autentisering och fillagring.</li>
+              <li><strong>Cloudflare</strong> (USA / EU) - botskydd via Turnstile på formulär (IP-adress och webbläsarsignaler behandlas tillfälligt).</li>
+              <li><strong>Sentry</strong> (USA) - felövervakning i frontend (anonym sessions-id, webbläsarstack och URL vid fel).</li>
             </ul>
             <p>
               Vi har ingått personuppgiftsbiträdesavtal (DPA) med samtliga och tillämpar standardavtalsklausuler för överföringar utanför EU/EES.

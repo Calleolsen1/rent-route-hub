@@ -24,7 +24,7 @@ const benefits = [
  {
  icon: Shield,
  title: "Trygg flexibilitet",
- description: "Planer ändras — vi har avbokningsskydd och snabb ombokning.",
+ description: "Planer ändras - vi har avbokningsskydd och snabb ombokning.",
  },
  {
  icon: Globe,
@@ -60,7 +60,7 @@ export default function Affarsresor() {
  </div>
  <div className="relative container mx-auto px-4 pb-14">
  <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
- Tjänster — Affärsresor
+ Tjänster - Affärsresor
  </p>
  <h1 className="font-display text-4xl md:text-6xl text-white">
  Skräddarsydda <em className="italic font-light text-white">Affärsresor</em>
@@ -94,11 +94,11 @@ export default function Affarsresor() {
  Skräddarsytt för dig
  </span>
  <h2 className="font-display text-3xl md:text-4xl text-foreground mt-4 mb-2">
- Inga mallar — bara din resa
+ Inga mallar - bara din resa
  </h2>
  <div className="w-10 h-px bg-primary mb-6" />
  <p className="text-muted-foreground leading-relaxed mb-8 text-base">
- Varje affärsresa är unik. Vi lyssnar på dina behov och skapar ett upplägg som passar ditt schema, din budget och dina förväntningar — från enklare dagsresor till komplexa flerstadsturer.
+ Varje affärsresa är unik. Vi lyssnar på dina behov och skapar ett upplägg som passar ditt schema, din budget och dina förväntningar - från enklare dagsresor till komplexa flerstadsturer.
  </p>
  <ul className="space-y-3 mb-10">
  {tailored.map((f) => (

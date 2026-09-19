@@ -77,7 +77,7 @@ const App = () => (
               <Route path="/" element={<Home />} />
               <Route path="/services" element={<Services />} />
               <Route path="/services/sportresor" element={<Sportresor />} />
-              {/* Generic sport entry page — drives /:sport/:entry for any sport in nav_sports */}
+              {/* Generic sport entry page - drives /:sport/:entry for any sport in nav_sports */}
               <Route path="/services/sportresor/:sport/:entry" element={<SportEntryPage />} />
               <Route path="/services/traningslager" element={<Traningslager />} />
               <Route path="/services/affarsresor" element={<Affarsresor />} />
@@ -133,10 +133,10 @@ const App = () => (
                 <Route path="backoffice/rapporter" element={<BackofficeReports />} />
               </Route>
 
-              {/* Mitt Kaisen — public routes */}
+              {/* Mitt Kaisen - public routes */}
               <Route path="/mitt-kaisen" element={<MittKaisenLogin />} />
               <Route path="/mitt-kaisen/aterstall-losenord" element={<MittKaisenResetPassword />} />
-              {/* Mitt Kaisen — protected routes */}
+              {/* Mitt Kaisen - protected routes */}
               <Route path="/mitt-kaisen" element={<MittKaisenLayout />}>
                 <Route path="dashboard" element={<MittKaisenDashboard />} />
                 <Route path="biljetter" element={<MittKaisenBiljetter />} />

@@ -94,7 +94,7 @@ export function AdminSendMessageDialog({ open, onOpenChange, user }: Props) {
         }
       );
 
-      // Email send is best-effort — don't fail if it errors
+      // Email send is best-effort - don't fail if it errors
       if (!res.ok) {
         console.warn("Email send failed but inbox message was delivered");
       }

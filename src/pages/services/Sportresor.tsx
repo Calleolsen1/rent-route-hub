@@ -20,7 +20,7 @@ const sports = [
  title: "Formel 1",
  image: f1Image,
  description:
- "Känn adrenalinet när racerna dundrar förbi. Vi arrangerar F1-resor till Monaco, Silverstone, Spa och fler ikoniska banor — med bra platser, boende och all logistik ordnad.",
+ "Känn adrenalinet när racerna dundrar förbi. Vi arrangerar F1-resor till Monaco, Silverstone, Spa och fler ikoniska banor - med bra platser, boende och all logistik ordnad.",
  features: [
  "Biljetter till träningar, kval och race",
  "Hotell nära banan med bra läge",
@@ -33,7 +33,7 @@ const sports = [
  title: "Fotboll",
  image: fotbollImage,
  description:
- "Från Premier League-derbyn till Champions League — vi fixar biljetter och resor till de matcher du drömt om att se live. Enkelt, smidigt och med bra service.",
+ "Från Premier League-derbyn till Champions League - vi fixar biljetter och resor till de matcher du drömt om att se live. Enkelt, smidigt och med bra service.",
  features: [
  "Premier League, La Liga & Bundesliga",
  "Champions League & Europa League",
@@ -72,19 +72,19 @@ const sports = [
  title: "Golf",
  image: golfImage,
  description:
- "Spela på världens finaste golfbanor eller se de bästa proffsen tävla live. Vi ordnar golfresorna — från St Andrews till Pebble Beach — för allt från nybörjare till hängiven golfare.",
+ "Spela på världens finaste golfbanor eller se de bästa proffsen tävla live. Vi ordnar golfresorna - från St Andrews till Pebble Beach - för allt från nybörjare till hängiven golfare.",
  features: [
  "St Andrews, Carnoustie & Turnberry",
  "Pebble Beach & Augusta National",
  "The Masters & The Open Championship",
- "Golfresa för grupper 4–20 spelare",
+ "Golfresa för grupper 4-20 spelare",
  ],
  },
 ];
 
 export default function Sportresor() {
  usePageMeta({
-   title: "Sportresor — F1, Fotboll & Golf | Kaisen Travel Group",
+   title: "Sportresor - F1, Fotboll & Golf | Kaisen Travel Group",
    description: "Köp biljetter och resepaket till F1-race, Premier League, Champions League, golfturneringar och fler sportevent. Personlig service från Kaisen Travel Group.",
  });
  const [filters, setFilters] = useState<SportFilterValues>(emptyFilters);
@@ -92,7 +92,7 @@ export default function Sportresor() {
  <div className="min-h-screen">
  <Navbar />
 
- {/* Hero with search bar — search is the first thing visible (above the fold) */}
+ {/* Hero with search bar - search is the first thing visible (above the fold) */}
  <section className="relative flex flex-col">
  <div className="absolute inset-0">
  <img src={sportsImage} alt="Sportresor" className="w-full h-full object-cover" />
@@ -101,7 +101,7 @@ export default function Sportresor() {
  <div className="relative container mx-auto px-4 pt-24 md:pt-28 pb-8 flex flex-col">
  <div className="max-w-3xl">
  <p className="text-xs tracking-[0.3em] text-primary uppercase mb-2 font-sans">
- Tjänster — Sportresor
+ Tjänster - Sportresor
  </p>
  <h1 className="font-display text-3xl md:text-5xl text-white mb-2">
  Resor för <em className="italic font-light text-white">Sportälskare</em>
@@ -117,7 +117,7 @@ export default function Sportresor() {
  </div>
  </section>
 
-  {/* Live tickets results — visible immediately on entry */}
+  {/* Live tickets results - visible immediately on entry */}
   <section className="py-8 md:py-10 bg-background">
   <div className="container mx-auto px-4 max-w-6xl">
   <UpcomingEventsList
@@ -194,7 +194,7 @@ export default function Sportresor() {
  Vilken sport vill du uppleva live?
  </h2>
  <p className="text-white/60 max-w-lg mx-auto mb-10 leading-relaxed">
- Hör av dig till oss och berätta vilken match eller tävling du vill se — så fixar vi resten.
+ Hör av dig till oss och berätta vilken match eller tävling du vill se - så fixar vi resten.
  </p>
  <Link to="/contact">
  <Button

@@ -216,7 +216,7 @@ export const useAdminInbox = (adminUserId: string | undefined) => {
               body,
             }),
           }
-        ).catch(() => {}); // Best-effort — don't block on email
+        ).catch(() => {}); // Best-effort - don't block on email
       }
     } catch (err: any) {
       toast({ title: "Fel", description: err.message || "Kunde inte skicka meddelande", variant: "destructive" });

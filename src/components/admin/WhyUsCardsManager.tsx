@@ -104,7 +104,7 @@ export default function WhyUsCardsManager() {
     <div className="space-y-4">
       <div className="flex justify-between items-start">
         <p className="text-xs text-muted-foreground">
-          "Vad gör oss annorlunda"-korten. Visas inte ännu publikt — säkerhetsdata för
+          "Vad gör oss annorlunda"-korten. Visas inte ännu publikt - säkerhetsdata för
           framtida placering. Du kan redigera dem nu så de är redo när de aktiveras.
         </p>
         <Button size="sm" onClick={add}>

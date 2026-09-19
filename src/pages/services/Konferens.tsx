@@ -32,7 +32,7 @@ const packages = [
     icon: Car,
     title: "Transport & Logistik",
     tagline: "Flyg · Transfer · Shuttle",
-    desc: "Vi hanterar alla deltagares resor — från flygbiljetter till shuttlebussar mellan hotell och lokal.",
+    desc: "Vi hanterar alla deltagares resor - från flygbiljetter till shuttlebussar mellan hotell och lokal.",
   },
   {
     icon: Wifi,
@@ -49,10 +49,10 @@ const packages = [
 ];
 
 const formats = [
-  { title: "Dagsmöte", desc: "Lokal, teknik, lunch och fika — allt klart när ni kommer.", guests: "10–50" },
-  { title: "2–3 dagars konferens", desc: "Boende, middagar och aktiviteter. Komplett paket.", guests: "20–150" },
-  { title: "Incentive-resa", desc: "Belöna era bästa medarbetare med en upplevelse utomlands.", guests: "10–100" },
-  { title: "Stor kongress", desc: "Internationella kongresser i Europas bästa kongresscentra.", guests: "100–500+" },
+  { title: "Dagsmöte", desc: "Lokal, teknik, lunch och fika - allt klart när ni kommer.", guests: "10-50" },
+  { title: "2-3 dagars konferens", desc: "Boende, middagar och aktiviteter. Komplett paket.", guests: "20-150" },
+  { title: "Incentive-resa", desc: "Belöna era bästa medarbetare med en upplevelse utomlands.", guests: "10-100" },
+  { title: "Stor kongress", desc: "Internationella kongresser i Europas bästa kongresscentra.", guests: "100-500+" },
 ];
 
 export default function Konferens() {
@@ -85,13 +85,13 @@ export default function Konferens() {
         </div>
       </section>
 
-      {/* Packages Grid — SALES FIRST */}
+      {/* Packages Grid - SALES FIRST */}
       <section className="py-14 md:py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Vad Vi Fixar</p>
             <h2 className="font-display text-3xl md:text-4xl text-foreground">
-              Helheten — <em className="italic font-light">från idé till avslut</em>
+              Helheten - <em className="italic font-light">från idé till avslut</em>
             </h2>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -108,7 +108,7 @@ export default function Konferens() {
         </div>
       </section>
 
-      {/* Formats — compact cards */}
+      {/* Formats - compact cards */}
       <section className="py-12 md:py-16 bg-cream">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
@@ -143,7 +143,7 @@ export default function Konferens() {
         </div>
       </section>
 
-      {/* Full Service — short pitch */}
+      {/* Full Service - short pitch */}
       <section className="py-12 md:py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
@@ -163,7 +163,7 @@ export default function Konferens() {
               </h2>
               <div className="w-10 h-px bg-primary mb-6" />
               <p className="text-muted-foreground leading-relaxed mb-6">
-                Istället för att ringa hotell, lokal, catering och teknik separat — pratar du med oss. Vi koordinerar hela kedjan och ser till att inget glöms.
+                Istället för att ringa hotell, lokal, catering och teknik separat - pratar du med oss. Vi koordinerar hela kedjan och ser till att inget glöms.
               </p>
               <div className="grid grid-cols-2 gap-3 mb-8">
                 {["Lokalbokning", "AV & teknik", "Catering", "Logistik", "Aktiviteter", "Support på plats"].map((item) => (
