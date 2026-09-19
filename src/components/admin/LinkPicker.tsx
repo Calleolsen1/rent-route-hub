@@ -106,7 +106,7 @@ export function LinkPicker({
         };
       });
 
-      setDynamic([...entryOptions, ...eventOptions]);
+      setDynamic([...leagueOptions, ...entryOptions, ...eventOptions]);
     })();
     return () => {
       cancelled = true;
