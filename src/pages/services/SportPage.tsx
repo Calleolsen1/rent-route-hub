@@ -91,17 +91,17 @@ export default function SportPage() {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative h-[38vh] min-h-[280px] flex items-end">
+      <section className="relative h-[26vh] min-h-[200px] md:h-[38vh] md:min-h-[280px] flex items-end">
         <div className="absolute inset-0">
           <img src={heroImage} alt={sport.label} className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-navy/75" />
         </div>
-        <div className="relative container mx-auto px-4 pb-10">
-          <p className="text-[10px] tracking-[0.28em] text-primary uppercase mb-2 font-sans">
+        <div className="relative container mx-auto px-4 pb-5 md:pb-10">
+          <p className="text-[10px] tracking-[0.28em] text-primary uppercase mb-1.5 md:mb-2 font-sans">
             Sportresor
           </p>
-          <h1 className="font-display text-4xl md:text-6xl text-white mb-3">{sport.label}</h1>
-          <p className="text-white/80 max-w-xl leading-relaxed">
+          <h1 className="font-display text-3xl md:text-6xl text-white mb-1.5 md:mb-3">{sport.label}</h1>
+          <p className="text-white/80 max-w-xl leading-relaxed text-sm sm:text-base">
             {isRace
               ? "Välj ett race så bygger vi resan - bra platser vid banan, hotell nära action och all logistik ordnad."
               : "Välj liga och lag så tar vi fram en komplett resa med platser på läktaren, hotell, flyg och transfer."}
