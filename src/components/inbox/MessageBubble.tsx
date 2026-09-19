@@ -1,5 +1,5 @@
 import { Message } from "@/types/inbox";
-import { format } from "date-fns";
+import { svTime } from "@/lib/formatSek";
 
 interface MessageBubbleProps {
   message: Message;
@@ -27,7 +27,7 @@ export const MessageBubble = ({ message, isOutgoing }: MessageBubbleProps) => {
           {message.body}
         </p>
         <p className={`text-xs mt-1 ${isOutgoing ? "text-[#64748B]" : "text-muted-foreground"}`}>
-          {format(new Date(message.created_at), "h:mm a")}
+          {svTime(message.created_at)}
         </p>
       </div>
     </div>

@@ -415,7 +415,7 @@ export default function AdminTickets() {
                       <span className={`h-1.5 w-1.5 rounded-full ${dot}`} />
                       <span className="font-mono uppercase tracking-wider">{l.resource_type}</span>
                       <span className="text-muted-foreground">
-                        {new Date(l.started_at).toLocaleString("sv-SE")}
+                        {new Date(l.started_at).toLocaleString("sv-SE", { timeZone: "Europe/Stockholm" })}
                       </span>
                       <span className="text-muted-foreground">· {l.trigger}</span>
                     </div>

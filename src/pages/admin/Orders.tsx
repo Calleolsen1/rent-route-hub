@@ -292,7 +292,7 @@ export default function AdminOrders() {
                     <div className="text-xs text-muted-foreground">{o.customer_email}</div>
                   </TableCell>
                   <TableCell className="text-sm">
-                    {new Date(o.created_at).toLocaleDateString("sv-SE")}
+                    {new Date(o.created_at).toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" })}
                   </TableCell>
                   <TableCell>{formatSek(o.total_sek)}</TableCell>
                   <TableCell>
@@ -377,7 +377,7 @@ function OrderDetail({
           </Badge>
           {isQuote && <Badge variant="outline">Offert</Badge>}
           <span className="text-xs text-muted-foreground ml-auto">
-            {new Date(order.created_at).toLocaleString("sv-SE")}
+            {new Date(order.created_at).toLocaleString("sv-SE", { timeZone: "Europe/Stockholm" })}
           </span>
         </div>
 
@@ -408,7 +408,7 @@ function OrderDetail({
                     <p className="font-medium">{headline}</p>
                     <p className="text-xs text-muted-foreground">
                       {ev?.venue_name}{ev?.city ? `, ${ev.city}` : ""}
-                      {ev?.starts_at && ` · ${new Date(ev.starts_at).toLocaleDateString("sv-SE")}`}
+                      {ev?.starts_at && ` · ${new Date(ev.starts_at).toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" })}`}
                     </p>
                     <div className="flex items-center justify-between mt-2 text-xs">
                       <span>{it.ticket_categories?.name ?? "-"} × {it.qty}</span>
@@ -458,7 +458,7 @@ function OrderDetail({
                 <div className="flex justify-between mb-1">
                   <span className="font-medium">{formatSek(Number(r.amount_sek))}</span>
                   <span className="text-muted-foreground">
-                    {new Date(r.created_at).toLocaleDateString("sv-SE")}
+                    {new Date(r.created_at).toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" })}
                   </span>
                 </div>
                 {r.reason && <p className="text-muted-foreground">{r.reason}</p>}

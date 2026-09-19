@@ -170,7 +170,7 @@ function OrderCard({ order }: { order: OrderWithItems }) {
             Beställning {orderRef}
           </p>
           <p className="text-xs mt-1" style={{ color: C.textDim }}>
-            {new Date(order.created_at).toLocaleDateString("sv-SE")}
+            {new Date(order.created_at).toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" })}
           </p>
         </div>
         <span

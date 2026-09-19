@@ -63,7 +63,7 @@ Deno.serve(async (req) => {
         const title = it.events?.home_team
           ? `${it.events.home_team} vs ${it.events.away_team}`
           : it.events?.race_name ?? "Evenemang";
-        const when = new Date(it.events?.starts_at).toLocaleDateString("sv-SE", {
+        const when = new Date(it.events?.starts_at).toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm",
           day: "numeric", month: "long", year: "numeric",
         });
         return `
@@ -85,8 +85,8 @@ Deno.serve(async (req) => {
     const ex = total / (1 + VAT_RATE);
     const vat = total - ex;
     const paidDate = (order as any).paid_at
-      ? new Date((order as any).paid_at).toLocaleDateString("sv-SE")
-      : new Date((order as any).created_at).toLocaleDateString("sv-SE");
+      ? new Date((order as any).paid_at).toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" })
+      : new Date((order as any).created_at).toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" });
 
     const html = `<!doctype html><html lang="sv"><head><meta charset="utf-8"/>
 <title>Faktura ${(order as any).invoice_number ?? ""}</title>

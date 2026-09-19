@@ -230,7 +230,7 @@ Deno.serve(async (req) => {
         ${row("Budget (SEK)", data.budget_sek ? data.budget_sek.toLocaleString("sv-SE") : "")}
         ${row("Sport / ämne", data.sport_or_topic)}
         ${row("Källa", data.source_page)}
-        ${row("Inkommen", new Date(inserted.created_at).toLocaleString("sv-SE"))}
+        ${row("Inkommen", new Date(inserted.created_at).toLocaleString("sv-SE", { timeZone: "Europe/Stockholm" }))}
       </table>
       <div style="margin-top:20px;padding-top:20px;border-top:1px solid #e2e8f0;">
         <div style="font-size:12px;color:#64748b;text-transform:uppercase;letter-spacing:.15em;margin-bottom:8px;">Meddelande</div>

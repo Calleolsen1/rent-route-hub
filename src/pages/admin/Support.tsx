@@ -10,7 +10,7 @@ import { AdminComposeDialog } from "@/components/admin/AdminComposeDialog";
 import { ArrowLeft, MessageSquarePlus, Search, MessageSquare, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { format, isToday } from "date-fns";
+import { svDateShort, svTime, svYmd } from "@/lib/formatSek";
 import { cn } from "@/lib/utils";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel,
@@ -24,11 +24,8 @@ const getRoleBadge = (role: string) => {
   return { label: "Kund", variant: "outline" as const };
 };
 
-const formatTime = (ts: string) => {
-  const d = new Date(ts);
-  if (isToday(d)) return format(d, "HH:mm");
-  return format(d, "d MMM");
-};
+const formatTime = (ts: string) =>
+  svYmd(ts) === svYmd(new Date()) ? svTime(ts) : svDateShort(ts);
 
 function ThreadItem({ thread, isActive, onClick }: { thread: AdminThread; isActive: boolean; onClick: () => void }) {
   const badge = getRoleBadge(thread.other_user_role);

@@ -12,7 +12,7 @@ export default function Integritetspolicy() {
             Juridiskt
           </p>
           <h1 className="font-display text-4xl md:text-5xl mb-2">Integritetspolicy</h1>
-          <p className="text-sm text-muted-foreground">Senast uppdaterad: {new Date().toLocaleDateString("sv-SE")}</p>
+          <p className="text-sm text-muted-foreground">Senast uppdaterad: {new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" })}</p>
         </div>
       </section>
 

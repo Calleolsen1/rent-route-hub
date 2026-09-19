@@ -95,7 +95,7 @@ export default function MittKaisenFakturor() {
                   {o.invoice_number ?? `#${o.id.slice(0, 8).toUpperCase()}`}
                 </p>
                 <p className="text-xs mt-1" style={{ color: "hsl(210 20% 60%)" }}>
-                  {new Date(o.paid_at ?? o.created_at).toLocaleDateString("sv-SE")}
+                  {new Date(o.paid_at ?? o.created_at).toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" })}
                 </p>
               </div>
               <div className="flex items-center gap-4">
