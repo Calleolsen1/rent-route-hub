@@ -221,21 +221,21 @@ export default function InquiryForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className={`bg-white border border-border ${compact ? "p-6 md:p-8 space-y-4" : "p-6 md:p-10 space-y-5"}`}
+      className={`bg-white border border-border ${compact ? "p-6 space-y-3" : "p-6 md:p-10 space-y-5"}`}
     >
       <div className="mb-1">
         {eyebrow && (
-          <p className={`text-[11px] tracking-[0.3em] text-primary uppercase mb-2 font-sans font-semibold ${compact ? "mb-1.5" : "mb-3"}`}>
+          <p className={`text-[11px] tracking-[0.3em] text-primary uppercase font-sans font-semibold ${compact ? "mb-1" : "mb-3"}`}>
             {eyebrow}
           </p>
         )}
-        <h3 className={`font-display ${compact ? "text-2xl" : "text-3xl"}`}>{heading}</h3>
+        <h3 className={`font-display ${compact ? "text-xl" : "text-3xl"}`}>{heading}</h3>
         {intro && (
-          <p className={`${compact ? "mt-1.5 text-[13px]" : "mt-3 text-sm"} text-muted-foreground leading-relaxed`}>{intro}</p>
+          <p className={`${compact ? "mt-1 text-[13px]" : "mt-3 text-sm"} text-muted-foreground leading-relaxed`}>{intro}</p>
         )}
       </div>
 
-      <div className={`grid md:grid-cols-2 ${compact ? "gap-3" : "gap-4"}`}>
+      <div className={`grid md:grid-cols-2 ${compact ? "gap-x-4 gap-y-3" : "gap-4"}`}>
         <div>
           <Label htmlFor="name" className="text-xs uppercase tracking-wider">Namn *</Label>
           <Input id="name" name="name" required maxLength={120} className={inputCls} />
