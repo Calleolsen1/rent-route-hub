@@ -251,6 +251,9 @@ export default function AdminHomeTrips() {
               </div>
             </div>
           ))}
+          <Button variant="outline" onClick={addTrip} className="w-full h-12 border-dashed">
+            <Plus className="h-4 w-4 mr-2" /> Lägg till ytterligare resa
+          </Button>
         </div>
       )}
     </div>
