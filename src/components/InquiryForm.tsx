@@ -64,7 +64,7 @@ const FormSchema = z.object({
   preferred_dates_end: z.string().optional(),
   destination: z.string().trim().max(160).optional(),
   budget_sek: z.string().optional(),
-  message: z.string().trim().min(5, "Skriv ett kort meddelande").max(4000),
+  message: z.string().trim().min(1, "Skriv ett meddelande").max(4000),
 });
 
 const defaultFor = (type: InquiryType, key: keyof Props) => {
