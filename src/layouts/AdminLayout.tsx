@@ -62,6 +62,7 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
 const PREVIEW_FOR_ROUTE: Record<string, string> = {
   "/admin/banners": "/",
   "/admin/hemsidan/resor": "/",
+  "/admin/hemsidan/upplevelser": "/",
   "/admin/content": "/",
   "/admin/navigation": "/",
   "/admin/team": "/about",
