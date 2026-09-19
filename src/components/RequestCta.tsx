@@ -2,6 +2,7 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useInquiryDialog } from "@/components/InquiryDialog";
 import type { InquiryType } from "@/components/InquiryForm";
+import fansBgAsset from "@/assets/fans-cta-bg.png.asset.json";
 
 type Props = {
   /** Förfrågningstyp som popupen öppnas med. */
@@ -26,8 +27,15 @@ const RequestCta = ({
   const { open } = useInquiryDialog();
 
   return (
-    <section className="bg-primary text-primary-foreground">
-      <div className="container mx-auto px-4 py-10 md:py-14 text-center">
+    <section className="relative overflow-hidden bg-primary text-primary-foreground">
+      <img
+        src={fansBgAsset.url}
+        alt=""
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+      />
+      <div className="pointer-events-none absolute inset-0 bg-primary/80" aria-hidden="true" />
+      <div className="relative container mx-auto px-4 py-10 md:py-14 text-center">
         <p className="text-xs uppercase tracking-[0.25em] text-primary-foreground/70 mb-3">
           Personlig service
         </p>
