@@ -1885,6 +1885,7 @@ export type Database = {
           id: string
           image_url: string | null
           match_key: string
+          seatmap_note: string | null
           seatmap_url: string | null
           sport: Database["public"]["Enums"]["event_sport"]
           updated_at: string
@@ -1895,6 +1896,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           match_key: string
+          seatmap_note?: string | null
           seatmap_url?: string | null
           sport: Database["public"]["Enums"]["event_sport"]
           updated_at?: string
@@ -1905,6 +1907,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           match_key?: string
+          seatmap_note?: string | null
           seatmap_url?: string | null
           sport?: Database["public"]["Enums"]["event_sport"]
           updated_at?: string
@@ -2164,6 +2167,7 @@ export type Database = {
           image_url: string | null
           match_key: string | null
           sample_venue: string | null
+          seatmap_note: string | null
           seatmap_url: string | null
           sport: Database["public"]["Enums"]["event_sport"] | null
         }

@@ -11,27 +11,35 @@ import { supabase } from "@/integrations/supabase/client";
 export function useSeatmap(
   sport: string | null,
   matchKey: string | null,
-): string | null {
-  const [url, setUrl] = useState<string | null>(null);
+): { url: string | null; note: string | null } {
+  const [state, setState] = useState<{ url: string | null; note: string | null }>({
+    url: null,
+    note: null,
+  });
 
   useEffect(() => {
     let cancelled = false;
-    if (!sport || !matchKey) { setUrl(null); return; }
+    if (!sport || !matchKey) { setState({ url: null, note: null }); return; }
     (async () => {
       try {
         const { data } = await (supabase as any)
           .from("team_venue_photos")
-          .select("seatmap_url")
+          .select("seatmap_url, seatmap_note")
           .eq("sport", sport)
           .eq("match_key", matchKey)
           .maybeSingle();
-        if (!cancelled) setUrl((data?.seatmap_url as string) ?? null);
+        if (!cancelled) {
+          setState({
+            url: (data?.seatmap_url as string) ?? null,
+            note: (data?.seatmap_note as string) ?? null,
+          });
+        }
       } catch {
-        if (!cancelled) setUrl(null);
+        if (!cancelled) setState({ url: null, note: null });
       }
     })();
     return () => { cancelled = true; };
   }, [sport, matchKey]);
 
-  return url;
+  return state;
 }
