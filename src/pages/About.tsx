@@ -76,9 +76,6 @@ export default function About() {
   <p>
   Kaisen Travel Group är en resebyrå för dig som uppskattar personlig service, gedigen erfarenhet och någon som verkligen bryr sig om hela resan. Vi är ett mindre team av seniora resespecialister med över 50 års samlad erfarenhet från resebranschen.
   </p>
-  <p>
-  I en tid där allt fler resor bokas snabbt och digitalt har vi valt att gå åt andra hållet. Hos oss får du personlig kontakt med en erfaren resespecialist som lyssnar, förstår dina önskemål och tar ansvar för helheten - från första idé till att du är hemma igen.
-  </p>
   </div>
   </div>
   <div className="relative">
