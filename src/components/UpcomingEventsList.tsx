@@ -88,7 +88,11 @@ export default function UpcomingEventsList({
         .order("starts_at", { ascending: sort === "soonest" })
         .limit(limit);
       if (sport) q = q.eq("sport", sport);
-      if (team) q = q.or(`home_team.eq.${team},away_team.eq.${team}`);
+      // Home fixtures only. A team page sells the trip to that club's city —
+      // an away game means a different stadium, a different city, and the
+      // wrong venue photo (EventImage keys on home_team), so it has no place
+      // on the page even though the club is playing in it.
+      if (team) q = q.eq("home_team", team);
       if (race) q = q.eq("race_name", race);
       if (tournament) q = q.ilike("tournament_name", `%${tournament}%`);
       if (dateTo) q = q.lte("starts_at", dateTo);
