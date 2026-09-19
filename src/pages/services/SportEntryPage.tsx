@@ -9,6 +9,7 @@ import f1Image from "@/assets/sport-f1.jpg";
 import { useSport, useEntry } from "@/hooks/useNavigation";
 import UpcomingEventsList from "@/components/UpcomingEventsList";
 import { useInquiryDialog } from "@/components/InquiryDialog";
+import { useVenuePhotos, venuePhotoFor } from "@/hooks/useVenuePhotos";
 
 /**
  * Unified landing page for any sport entry - replaces the old TeamPage +

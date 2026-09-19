@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import fotbollImage from "@/assets/sport-fotboll.jpg";
 import f1Image from "@/assets/sport-f1.jpg";
 import { useSport, useEntriesForSport } from "@/hooks/useNavigation";
+import { useVenuePhotos, venuePhotoFor } from "@/hooks/useVenuePhotos";
 import { slugify } from "@/data/sports";
 import { usePageMeta } from "@/lib/usePageMeta";
 
@@ -14,6 +15,7 @@ export default function SportPage() {
   const { sport: sportSlug } = useParams<{ sport: string }>();
   const sport = useSport(sportSlug);
   const entries = useEntriesForSport(sportSlug);
+  const venuePhotos = useVenuePhotos();
 
   const isRace = sport?.entry_kind === "race";
   const heroImage = isRace ? f1Image : fotbollImage;
@@ -91,7 +93,11 @@ export default function SportPage() {
                 >
                   <div className="aspect-[4/3] overflow-hidden">
                     <img
-                      src={race.hero_image_url ?? f1Image}
+                      src={
+                        venuePhotoFor(venuePhotos, race.venue, race.name) ??
+                        race.hero_image_url ??
+                        f1Image
+                      }
                       alt={race.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                     />
