@@ -127,7 +127,13 @@ export default function AdminHomeTrips() {
       ) : (
         <div className="space-y-4">
           {trips.map((trip, i) => (
-            <div key={trip.id} className="rounded-xl border border-border bg-card p-5 space-y-4">
+            <div
+              key={trip.id}
+              id={`home-trip-${trip.id}`}
+              className={`rounded-xl border bg-card p-5 space-y-4 transition-colors ${
+                highlightId === trip.id ? "border-primary ring-2 ring-primary/40" : "border-border"
+              }`}
+            >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex flex-wrap items-center gap-4">
                   <span className="text-xs font-mono text-muted-foreground">#{i + 1}</span>
