@@ -22,6 +22,7 @@ import groupImage from "@/assets/kaisen-group.jpg";
 import sportsImage from "@/assets/kaisen-sports.jpg";
 import incomingImage from "@/assets/kaisen-incoming.jpg";
 import weekendImage from "@/assets/kaisen-weekend.jpg";
+import valenciaImage from "@/assets/camp-valencia-pitch.jpg.asset.json";
 import vipImage from "@/assets/kaisen-vip.jpg";
 import luxuryImage from "@/assets/kaisen-luxury.jpg";
 import offerF1Monza from "@/assets/offer-f1-monza.jpg";
@@ -185,7 +186,7 @@ const services = [
     subtitle: "Fotboll · Simning · Friidrott",
     description:
       "Kompletta träningsläger på de bästa destinationerna - boende, transfer, planhyra och måltider ingår.",
-    image: incomingImage,
+    image: valenciaImage.url,
     href: "/services/traningslager",
     tag: "Lag & klubbar",
   },
