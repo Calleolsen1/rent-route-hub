@@ -552,7 +552,7 @@ const Home = () => {
               })}
             </div>
             <Link
-              to="/tjanster"
+              to="/resor"
               className="self-start md:self-auto inline-flex items-center justify-center text-sm font-semibold text-foreground border border-border px-5 py-2.5 rounded-full hover:bg-foreground hover:text-background transition-colors"
             >
               Utforska alla resor
@@ -627,7 +627,7 @@ const Home = () => {
             <h2 className="font-sans font-semibold text-xl md:text-2xl text-foreground relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-16 after:h-[2px] after:bg-primary">
               Upplevelser som formar minnen
             </h2>
-            <Link to="/tjanster" className="hidden md:inline-flex items-center gap-2 text-sm font-semibold text-primary border border-primary/30 px-5 py-2.5 rounded-full hover:bg-primary hover:text-primary-foreground transition-colors">
+            <Link to="/resor" className="hidden md:inline-flex items-center gap-2 text-sm font-semibold text-primary border border-primary/30 px-5 py-2.5 rounded-full hover:bg-primary hover:text-primary-foreground transition-colors">
               Se alla
             </Link>
           </div>
