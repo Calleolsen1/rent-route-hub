@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { stockholmTodayPlusDays, stockholmLocalToIso } from "@/lib/formatSek";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -36,8 +37,7 @@ type Props = {
   onCreated: () => void;
 };
 
-const todayPlusDays = (days: number): string => {
-  const d = new Date();
+const todayPlusDays = stockholmTodayPlusDays;
   d.setDate(d.getDate() + days);
   // Format for datetime-local input: YYYY-MM-DDTHH:mm
   return d.toISOString().slice(0, 16);
@@ -100,8 +100,8 @@ export function ManualEventDialog({ open, onOpenChange, onCreated }: Props) {
         venue_name: venueName.trim() || null,
         city: city.trim() || null,
         country: country.trim() || null,
-        starts_at: new Date(startsAt).toISOString(),
-        ends_at: endsAt ? new Date(endsAt).toISOString() : null,
+        starts_at: stockholmLocalToIso(startsAt),
+        ends_at: endsAt ? stockholmLocalToIso(endsAt) : null,
         description: description.trim() || null,
         status: "upcoming",
       });
