@@ -412,13 +412,26 @@ const Home = () => {
     { id: "populara" as const, label: "Populära resor" },
   ];
 
-  // Featured events first, then inquiry-funnel CTAs to fill the row.
-  const combinedOffers: FeaturedOffer[] = [...featured, ...inquiryOffers];
+  // Admin-curated trips first, then ticket events. The static inquiry tiles
+  // only top up the row when there are fewer than 3 cards, so the section is
+  // never sparse - even with the ticket API switched off.
+  const baseOffers: FeaturedOffer[] = [...curatedTrips, ...featured];
+  const combinedOffers: FeaturedOffer[] =
+    baseOffers.length >= 3 ? baseOffers : [...baseOffers, ...inquiryOffers];
+
+  // Tabs always show something: fall back to the full row when nothing is
+  // flagged as new/popular.
+  const newOffers = combinedOffers.filter((o) => o.isNew);
+  const popularOffers = combinedOffers.filter((o) => o.isPopular);
   const filteredOffers =
     offerTab === "nya"
-      ? combinedOffers.filter((o) => o.isNew)
+      ? newOffers.length
+        ? newOffers
+        : combinedOffers
       : offerTab === "populara"
-      ? combinedOffers.slice(0, 5)
+      ? popularOffers.length
+        ? popularOffers
+        : combinedOffers.slice(0, 5)
       : combinedOffers;
 
 
