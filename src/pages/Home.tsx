@@ -474,7 +474,7 @@ const Home = () => {
 
       {/* Search bar - full width, above hero (Intrepid-style) */}
       <section className="bg-background">
-        <div className="w-full max-w-4xl mx-auto px-6 md:px-10 pt-6 md:pt-8 pb-4">
+        <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 md:px-10 pt-4 sm:pt-6 md:pt-8 pb-3 sm:pb-4">
           <SearchTypeahead />
         </div>
       </section>
@@ -482,7 +482,7 @@ const Home = () => {
 
       {/* Hero carousel - contained rounded card, Intrepid-style */}
       <section className="relative bg-background pb-4 md:pb-6">
-        <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
           <div className="relative rounded-2xl md:rounded-3xl overflow-hidden">
             <Carousel
               opts={{ loop: true }}
@@ -495,20 +495,20 @@ const Home = () => {
               <CarouselContent>
                 {heroSlides.map((slide, idx) => (
                   <CarouselItem key={idx}>
-                    <div className="relative h-[58vh] min-h-[420px] max-h-[640px] overflow-hidden">
+                    <div className="relative h-[54vh] min-h-[340px] max-h-[640px] md:h-[58vh] md:min-h-[420px] overflow-hidden">
                       <img
                         src={slide.image}
                         alt={slide.title}
                         className="absolute inset-0 w-full h-full object-cover"
                         loading={idx === 0 ? "eager" : "lazy"}
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-navy/85 via-navy/30 to-transparent" />
-                      <div className="relative h-full flex items-end p-8 md:p-14">
+                      <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/40 to-transparent" />
+                      <div className="relative h-full flex items-end p-5 pb-12 sm:p-8 md:p-14">
                         <div className="max-w-xl">
-                          <p className="text-[11px] eyebrow text-white uppercase mb-4 font-sans">
+                          <p className="text-[11px] eyebrow text-white uppercase mb-2 sm:mb-4 font-sans">
                             {slide.eyebrow}
                           </p>
-                          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-light text-white leading-tight mb-6">
+                          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-white leading-tight mb-4 sm:mb-6">
                             {slide.title}
                             <br />
                             <em className="font-light italic text-white">{slide.italic}</em>
@@ -516,7 +516,7 @@ const Home = () => {
                           <Link to={slide.primary.to}>
                             <Button
                               size="lg"
-                              className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-7 h-12 text-sm font-medium"
+                              className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-6 sm:px-7 h-11 sm:h-12 text-sm font-medium"
                             >
                               {slide.primary.label}
                             </Button>
@@ -527,8 +527,8 @@ const Home = () => {
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="left-4 md:left-6 bg-white hover:bg-white/90 text-foreground border-0 h-11 w-11 shadow-md" />
-              <CarouselNext className="right-4 md:right-6 bg-white hover:bg-white/90 text-foreground border-0 h-11 w-11 shadow-md" />
+              <CarouselPrevious className="hidden sm:flex left-4 md:left-6 bg-white hover:bg-white/90 text-foreground border-0 h-11 w-11 shadow-md" />
+              <CarouselNext className="hidden sm:flex right-4 md:right-6 bg-white hover:bg-white/90 text-foreground border-0 h-11 w-11 shadow-md" />
             </Carousel>
 
             {/* Dots */}

@@ -242,7 +242,7 @@ export function SearchTypeahead({
         onSubmit={submit}
         className="flex items-stretch bg-card border border-border rounded-full shadow-sm p-1.5 md:p-2"
       >
-        <div className="relative flex items-center flex-1 pl-4 md:pl-5">
+        <div className="relative flex items-center flex-1 min-w-0 pl-3 sm:pl-4 md:pl-5">
           <MapPin className="h-5 w-5 text-muted-foreground flex-shrink-0" strokeWidth={2} />
           <Input
             ref={inputRef}
@@ -252,17 +252,18 @@ export function SearchTypeahead({
             onFocus={() => setOpen(true)}
             onKeyDown={onKey}
             placeholder={placeholder}
-            className="h-11 md:h-12 border-0 bg-transparent pl-3 text-base focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none placeholder:text-muted-foreground"
+            className="h-11 md:h-12 border-0 bg-transparent pl-2 sm:pl-3 text-base focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none placeholder:text-muted-foreground truncate"
             autoComplete="off"
           />
         </div>
         <Button
           type="submit"
           size="lg"
-          className="h-11 md:h-12 rounded-full bg-primary hover:bg-primary/90 px-7 text-sm font-medium flex-shrink-0"
+          aria-label="Sök"
+          className="h-11 md:h-12 rounded-full bg-primary hover:bg-primary/90 px-4 sm:px-7 text-sm font-medium flex-shrink-0"
         >
-          Sök
-          <Search className="ml-2 h-4 w-4" />
+          <span className="hidden sm:inline">Sök</span>
+          <Search className="sm:ml-2 h-4 w-4" />
         </Button>
       </form>
 
