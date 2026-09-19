@@ -66,7 +66,7 @@ export default function About() {
   <div>
   <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Vilka vi är</p>
   <h2 className="font-display text-3xl md:text-4xl text-foreground mb-2 leading-tight">
-  Vi vill tillhöra eliten inom resor
+   Vi tillhöra eliten inom resor
   </h2>
   <div className="w-10 h-px bg-primary mb-8" />
   <p className="text-foreground leading-relaxed italic mb-6">
