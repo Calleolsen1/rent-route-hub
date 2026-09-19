@@ -4,6 +4,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { svDateFull } from "@/lib/formatSek";
+
 
 
 interface UserBasic {
