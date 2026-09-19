@@ -8,6 +8,7 @@ import fotbollImage from "@/assets/sport-fotboll.jpg";
 import f1Image from "@/assets/sport-f1.jpg";
 import { useSport, useEntry } from "@/hooks/useNavigation";
 import UpcomingEventsList from "@/components/UpcomingEventsList";
+import { useInquiryDialog } from "@/components/InquiryDialog";
 
 /**
  * Unified landing page for any sport entry - replaces the old TeamPage +
@@ -64,6 +65,7 @@ export default function SportEntryPage() {
   const { sport: sportSlug, entry: entrySlug } = useParams<{ sport: string; entry: string }>();
   const sport = useSport(sportSlug);
   const info = useEntry(sportSlug, entrySlug);
+  const { open: openInquiry } = useInquiryDialog();
 
   if (!sport || !info) {
     return (
@@ -119,6 +121,27 @@ export default function SportEntryPage() {
             title={labels.upcomingTitle(info.name)}
             compact
           />
+          <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3 text-center">
+            <p className="text-sm text-muted-foreground">
+              Hittar du inte matchen du letar efter? Vi kan säkert fixa det ändå.
+            </p>
+            <Button
+              variant="outline"
+              className="rounded-full"
+              onClick={() =>
+                openInquiry({
+                  type: "contact",
+                  presetTopic: `Förfrågan: ${info.name}`,
+                  defaultDestination: info.name,
+                  heading: "Skicka en förfrågan",
+                  intro: "Berätta vilken match du vill se så återkommer vi med ett förslag.",
+                  showTripParts: true,
+                })
+              }
+            >
+              Skicka förfrågan <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </section>
 
