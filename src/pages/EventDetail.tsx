@@ -274,7 +274,8 @@ export default function EventDetail() {
                 Efterfråga komplett paket
               </Button>
               <p className="text-[11px] text-muted-foreground text-center mt-3">
-                Pris på förfrågan - vi återkommer med biljetter, hotell och flyg efter era önskemål.
+                Pris på förfrågan - vi återkommer med biljetter, hotell och flyg
+                efter era önskemål. Vi återkommer inom 24h.
               </p>
             </div>
 
