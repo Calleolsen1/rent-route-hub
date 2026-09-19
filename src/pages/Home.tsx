@@ -595,7 +595,7 @@ const Home = () => {
           </div>
 
           <Carousel opts={{ align: "start", dragFree: true }}>
-            <CarouselContent className="-ml-5">
+            <CarouselContent className="-ml-4">
               {filteredOffers.map((offer) => (
                 <CarouselItem
                   key={offer.title}
