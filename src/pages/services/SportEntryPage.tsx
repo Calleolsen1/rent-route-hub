@@ -121,6 +121,27 @@ export default function SportEntryPage() {
             title={labels.upcomingTitle(info.name)}
             compact
           />
+          <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3 text-center">
+            <p className="text-sm text-muted-foreground">
+              Hittar du inte matchen du letar efter? Vi kan säkert fixa det ändå.
+            </p>
+            <Button
+              variant="outline"
+              className="rounded-full"
+              onClick={() =>
+                openInquiry({
+                  type: "contact",
+                  presetTopic: `Förfrågan: ${info.name}`,
+                  defaultDestination: info.name,
+                  heading: "Skicka en förfrågan",
+                  intro: "Berätta vilken match du vill se så återkommer vi med ett förslag.",
+                  showTripParts: true,
+                })
+              }
+            >
+              Skicka förfrågan <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </section>
 
