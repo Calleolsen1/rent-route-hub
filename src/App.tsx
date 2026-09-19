@@ -62,6 +62,8 @@ import Checkout from "./pages/Checkout";
 import OrderConfirmation from "./pages/OrderConfirmation";
 import QuotePage from "./pages/Quote";
 
+import { InquiryDialogProvider } from "@/components/InquiryDialog";
+
 const queryClient = new QueryClient();
 
 const App = () => (
