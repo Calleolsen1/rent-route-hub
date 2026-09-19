@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { User, LogOut, Menu, X, ChevronDown, Globe } from "lucide-react";
@@ -27,6 +27,16 @@ const Navbar = () => {
   const entries = useEntries();
   const topMenu = useTopMenu();
 
+  // Lock background scrolling while the mobile menu is open
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [mobileOpen]);
+
   const entriesFor = (sportId: string) =>
     // show_in_menu defaults to true if absent (backward compat with static fallback)
     entries.filter((e) => e.sport_id === sportId && (e.show_in_menu ?? true));
@@ -44,7 +54,7 @@ const Navbar = () => {
   return (
     <>
       <nav className="border-b border-border/40 bg-card/95 backdrop-blur-sm sticky top-0 z-50">
-        <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
           {/* 3-col grid keeps the menu group dead-centered regardless of how wide
               the logo or right-side controls become */}
           <div className="grid grid-cols-[1fr_auto_1fr] items-center h-16 md:h-20 gap-4">
