@@ -1736,6 +1736,45 @@ export type Database = {
         }
         Relationships: []
       }
+      supplier_sync_log: {
+        Row: {
+          error_message: string | null
+          finished_at: string | null
+          id: string
+          records_fetched: number
+          records_upserted: number
+          resource_type: string
+          source: string
+          started_at: string
+          status: string
+          trigger: string
+        }
+        Insert: {
+          error_message?: string | null
+          finished_at?: string | null
+          id?: string
+          records_fetched?: number
+          records_upserted?: number
+          resource_type: string
+          source?: string
+          started_at?: string
+          status?: string
+          trigger?: string
+        }
+        Update: {
+          error_message?: string | null
+          finished_at?: string | null
+          id?: string
+          records_fetched?: number
+          records_upserted?: number
+          resource_type?: string
+          source?: string
+          started_at?: string
+          status?: string
+          trigger?: string
+        }
+        Relationships: []
+      }
       system_errors: {
         Row: {
           created_at: string
@@ -2036,45 +2075,6 @@ export type Database = {
           sort_order?: number
           title?: string
           updated_at?: string
-        }
-        Relationships: []
-      }
-      xs2_sync_log: {
-        Row: {
-          error_message: string | null
-          finished_at: string | null
-          id: string
-          records_fetched: number
-          records_upserted: number
-          resource_type: string
-          source: string
-          started_at: string
-          status: string
-          trigger: string
-        }
-        Insert: {
-          error_message?: string | null
-          finished_at?: string | null
-          id?: string
-          records_fetched?: number
-          records_upserted?: number
-          resource_type: string
-          source?: string
-          started_at?: string
-          status?: string
-          trigger?: string
-        }
-        Update: {
-          error_message?: string | null
-          finished_at?: string | null
-          id?: string
-          records_fetched?: number
-          records_upserted?: number
-          resource_type?: string
-          source?: string
-          started_at?: string
-          status?: string
-          trigger?: string
         }
         Relationships: []
       }
