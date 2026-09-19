@@ -10,6 +10,8 @@ import { useSport, useEntriesForSport } from "@/hooks/useNavigation";
 import { useVenuePhotos, venuePhotoFor } from "@/hooks/useVenuePhotos";
 import { slugify } from "@/data/sports";
 import { usePageMeta } from "@/lib/usePageMeta";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function SportPage() {
   const { sport: sportSlug } = useParams<{ sport: string }>();
@@ -19,6 +21,37 @@ export default function SportPage() {
 
   const isRace = sport?.entry_kind === "race";
   const heroImage = isRace ? f1Image : fotbollImage;
+
+  // Map race name -> event id so cards can link straight to the event page.
+  const [raceEventIds, setRaceEventIds] = useState<Record<string, string>>({});
+  useEffect(() => {
+    if (!isRace) return;
+    supabase
+      .from("events")
+      .select("id, race_name")
+      .eq("sport", "formula1")
+      .not("race_name", "is", null)
+      .then(({ data }) => {
+        const byName: Record<string, string> = {};
+        for (const e of data ?? []) {
+          if (e.race_name && !byName[e.race_name.toLowerCase()]) byName[e.race_name.toLowerCase()] = e.id;
+        }
+        // Swedish nav names -> event race names
+        const alias: Record<string, string> = {
+          "italiens grand prix": "italian grand prix",
+          "ungerns grand prix": "hungarian grand prix",
+          "spaniens grand prix": "spanish grand prix",
+          "österrikes grand prix": "austrian grand prix",
+        };
+        const map: Record<string, string> = {};
+        for (const race of entries) {
+          const key = race.name.toLowerCase();
+          const id = byName[key] ?? byName[alias[key] ?? ""];
+          if (id) map[race.name] = id;
+        }
+        setRaceEventIds(map);
+      });
+  }, [isRace]);
 
   usePageMeta({
     title: sport
@@ -88,7 +121,7 @@ export default function SportPage() {
               {entries.map((race) => (
                 <Link
                   key={race.id}
-                  to={`/services/sportresor/${sport.slug}/${race.slug}`}
+                  to={raceEventIds[race.name] ? `/sport/event/${raceEventIds[race.name]}` : `/services/sportresor/${sport.slug}/${race.slug}`}
                   className="group bg-card border border-border overflow-hidden hover:shadow-xl transition-shadow"
                 >
                   <div className="aspect-[4/3] overflow-hidden">
