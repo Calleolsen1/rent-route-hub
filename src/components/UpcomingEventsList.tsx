@@ -111,6 +111,7 @@ export default function UpcomingEventsList({
   eyebrow = "Köp biljett",
   compact = false,
   showFilters = false,
+  onEmptyChange,
 }: Props) {
   // A filtered list needs the whole season in hand to build its month chips;
   // an unfiltered teaser keeps the old six-card default.
