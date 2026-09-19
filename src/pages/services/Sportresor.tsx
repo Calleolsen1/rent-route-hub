@@ -37,8 +37,8 @@ const sports = [
 
 export default function Sportresor() {
  usePageMeta({
-   title: "Sportresor - F1, Fotboll & Golf | Kaisen Travel Group",
-   description: "Skräddarsydda sportresor med hotell, transfer och upplevelser till F1-race, Premier League, Champions League, golfturneringar och fler sportevent. Personlig service från Kaisen Travel Group.",
+   title: "Sportresor - F1 & Fotboll | Kaisen Travel Group",
+   description: "Skräddarsydda sportresor med hotell, transfer och upplevelser till F1-race, Premier League, Champions League och fler sportevent. Personlig service från Kaisen Travel Group.",
  });
  return (
  <div className="min-h-screen">
@@ -59,7 +59,7 @@ export default function Sportresor() {
  Resor för <em className="italic font-light text-white">Sportälskare</em>
  </h1>
  <p className="text-white/80 text-sm max-w-xl">
- Vi skräddarsyr din resa till F1, fotboll, ishockey, tennis och golf - med hotell, transfer och allt det praktiska ordnat.
+ Vi skräddarsyr din resa till F1 och fotboll - med hotell, transfer och allt det praktiska ordnat.
  </p>
  </div>
  </div>
