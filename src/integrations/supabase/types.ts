@@ -1235,6 +1235,56 @@ export type Database = {
         }
         Relationships: []
       }
+      oneclicket_orders: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          id: string
+          order_id: string | null
+          placed_at: string | null
+          request_payload: Json
+          response_payload: Json | null
+          status: string
+          supplier_order_code: string | null
+          supplier_order_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          order_id?: string | null
+          placed_at?: string | null
+          request_payload: Json
+          response_payload?: Json | null
+          status?: string
+          supplier_order_code?: string | null
+          supplier_order_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          order_id?: string | null
+          placed_at?: string | null
+          request_payload?: Json
+          response_payload?: Json | null
+          status?: string
+          supplier_order_code?: string | null
+          supplier_order_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "oneclicket_orders_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       order_items: {
         Row: {
           category_id: string
@@ -1826,6 +1876,11 @@ export type Database = {
           party_size_together: number
           qty_available: number
           stripe_price_id: string | null
+          supplier_buy_multiplier: number
+          supplier_display_quantity: number
+          supplier_split_quantity: number
+          supplier_split_type: string | null
+          supplier_version_id: string | null
           unit_price_sek: number
           updated_at: string
         }
@@ -1846,6 +1901,11 @@ export type Database = {
           party_size_together?: number
           qty_available?: number
           stripe_price_id?: string | null
+          supplier_buy_multiplier?: number
+          supplier_display_quantity?: number
+          supplier_split_quantity?: number
+          supplier_split_type?: string | null
+          supplier_version_id?: string | null
           unit_price_sek: number
           updated_at?: string
         }
@@ -1866,6 +1926,11 @@ export type Database = {
           party_size_together?: number
           qty_available?: number
           stripe_price_id?: string | null
+          supplier_buy_multiplier?: number
+          supplier_display_quantity?: number
+          supplier_split_quantity?: number
+          supplier_split_type?: string | null
+          supplier_version_id?: string | null
           unit_price_sek?: number
           updated_at?: string
         }
@@ -1982,6 +2047,7 @@ export type Database = {
           records_fetched: number
           records_upserted: number
           resource_type: string
+          source: string
           started_at: string
           status: string
           trigger: string
@@ -1993,6 +2059,7 @@ export type Database = {
           records_fetched?: number
           records_upserted?: number
           resource_type: string
+          source?: string
           started_at?: string
           status?: string
           trigger?: string
@@ -2004,6 +2071,7 @@ export type Database = {
           records_fetched?: number
           records_upserted?: number
           resource_type?: string
+          source?: string
           started_at?: string
           status?: string
           trigger?: string
