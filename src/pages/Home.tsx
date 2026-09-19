@@ -269,6 +269,7 @@ const Home = () => {
   const [offerTab, setOfferTab] = useState<"alla" | "nya" | "populara">("alla");
   const navigate = useNavigate();
   const [featured, setFeatured] = useState<FeaturedOffer[]>([]);
+  const [curatedTrips, setCuratedTrips] = useState<FeaturedOffer[]>([]);
   const [heroSlides, setHeroSlides] = useState<HeroSlide[]>(fallbackHeroSlides);
   const [compareAtDefaultPct, setCompareAtDefaultPct] = useState<number>(0);
 
