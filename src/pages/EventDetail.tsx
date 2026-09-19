@@ -238,7 +238,7 @@ export default function EventDetail() {
           <aside className="lg:sticky lg:top-24 self-start">
             <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
               <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">
-                Din beställning
+                Din förfrågan
               </p>
               <p className="font-display text-2xl mb-1">{headline}</p>
               <p className="text-xs text-muted-foreground mb-5">
