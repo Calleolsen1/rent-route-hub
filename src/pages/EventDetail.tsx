@@ -143,7 +143,7 @@ export default function EventDetail() {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative h-[28vh] min-h-[200px] flex items-end">
+      <section className="relative h-[36vh] min-h-[300px] md:h-[28vh] md:min-h-[200px] flex items-end">
         <div className="absolute inset-0">
           <EventImage
             sport={event.sport}
@@ -157,12 +157,14 @@ export default function EventDetail() {
                     crests={teamCrests}
           />
           <div className="absolute inset-0 bg-navy/75" />
+          {/* Extra shading at the bottom so the headline stays readable over crests */}
+          <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-navy via-navy/80 to-transparent" />
         </div>
-        <div className="relative container mx-auto px-4 pb-6">
-          <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-2 font-sans">
+        <div className="relative container mx-auto px-4 pb-5 md:pb-6">
+          <p className="text-[11px] sm:text-xs eyebrow text-white/70 uppercase mb-2 font-sans">
             {event.tournament_name}
           </p>
-          <h1 className="font-display text-3xl md:text-4xl text-white mb-2">
+          <h1 className="font-display text-2xl sm:text-3xl md:text-4xl text-white mb-2 leading-tight">
             {headline}
           </h1>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-white/80 text-sm">
