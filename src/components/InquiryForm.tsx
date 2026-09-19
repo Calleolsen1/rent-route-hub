@@ -216,7 +216,7 @@ export default function InquiryForm({
     );
   }
 
-  const inputCls = "rounded-none border-border focus-visible:ring-1 focus-visible:ring-primary";
+  const inputCls = `rounded-none border-border focus-visible:ring-1 focus-visible:ring-primary ${compact ? "h-9" : ""}`;
 
   return (
     <form
@@ -329,7 +329,7 @@ export default function InquiryForm({
                   type="button"
                   aria-pressed={active}
                   onClick={() => toggleTripPart(part.id)}
-                  className={`relative flex items-center justify-center gap-2 rounded-lg border px-3 text-sm transition-all ${compact ? "py-2.5" : "py-3"} ${
+                  className={`relative flex items-center justify-center gap-2 rounded-lg border px-3 text-sm transition-all ${compact ? "py-2" : "py-3"} ${
                     active
                       ? "border-primary bg-primary text-primary-foreground font-semibold shadow-md"
                       : "border-border bg-background text-muted-foreground hover:border-primary/60 hover:bg-primary/5"
@@ -355,9 +355,9 @@ export default function InquiryForm({
           id="message"
           name="message"
           required
-          rows={compact ? 3 : 5}
+          rows={compact ? 2 : 5}
           maxLength={4000}
-          className={`${inputCls} resize-none`}
+          className={`${inputCls} resize-none ${compact ? "min-h-0" : ""}`}
           placeholder="Berätta gärna mer om er resa, era önskemål och vad ni vill uppleva."
         />
         {errors.message && <p className="text-xs text-destructive mt-1">{errors.message}</p>}
