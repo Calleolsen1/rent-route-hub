@@ -7,7 +7,7 @@ import FloatingInquiryButton from "@/components/FloatingInquiryButton";
 import { useInquiryDialog } from "@/components/InquiryDialog";
 import heroImage from "@/assets/camps-hero.jpg";
 import valenciaImg from "@/assets/camp-valencia-pitch.jpg.asset.json";
-import antalyaImg from "@/assets/camp-antalya-pitch.jpg.asset.json";
+import antalyaImg from "@/assets/camp-antalya-hotel.jpg.asset.json";
 import ayiaNapaImg from "@/assets/camp-ayianapa-pitch.jpg.asset.json";
 import torremolinosSwimAsset from "@/assets/torremolinos-50m.jpg.asset.json";
 import nerjaImg from "@/assets/camp-nerja-athletics-v2.jpg.asset.json";
