@@ -116,6 +116,7 @@ type FeaturedOffer = {
   currentPriceSek: number | null;
   href: string;
   isNew: boolean;
+  isPopular?: boolean;
 };
 
 // Image fallbacks by sport when an event has no cover_image_url.
