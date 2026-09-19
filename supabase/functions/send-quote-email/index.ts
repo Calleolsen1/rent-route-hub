@@ -74,7 +74,7 @@ Deno.serve(async (req) => {
     if (!apiKey && !preview) throw new Error("RESEND_API_KEY missing");
 
     const link = `${SITE_URL.replace(/\/+$/, "")}/quote/${quote.public_token}`;
-    const expiresFmt = new Date(quote.expires_at).toLocaleDateString("sv-SE", {
+    const expiresFmt = new Date(quote.expires_at).toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm",
       day: "numeric",
       month: "long",
       year: "numeric",

@@ -103,7 +103,7 @@ async function sendOrderConfirmationEmail(orderId: string) {
         const title = it.events?.home_team
           ? `${it.events.home_team} vs ${it.events.away_team}`
           : it.events?.race_name ?? "Evenemang";
-        const date = new Date(it.events?.starts_at).toLocaleDateString("sv-SE", {
+        const date = new Date(it.events?.starts_at).toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm",
           weekday: "long",
           day: "numeric",
           month: "long",

@@ -63,7 +63,7 @@ Deno.serve(async (req) => {
         const title = it.events?.home_team
           ? `${it.events.home_team} vs ${it.events.away_team}`
           : it.events?.race_name ?? "Evenemang";
-        const when = new Date(it.events?.starts_at).toLocaleDateString("sv-SE", {
+        const when = new Date(it.events?.starts_at).toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm",
           day: "numeric", month: "long", year: "numeric",
         });
         return `
