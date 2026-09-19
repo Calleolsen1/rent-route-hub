@@ -226,8 +226,9 @@ export default function EventDetail() {
                     className="w-full h-auto"
                   />
                   <p className="text-xs text-muted-foreground p-4 border-t border-border">
-                    Berätta i förfrågan vilken del av arenan ni helst vill sitta i, så
-                    ordnar vi platser därefter.
+                    {seatmapNote?.trim()
+                      ? seatmapNote
+                      : "Berätta i förfrågan vilken del av arenan ni helst vill sitta i, så ordnar vi platser därefter."}
                   </p>
                 </div>
               </div>
