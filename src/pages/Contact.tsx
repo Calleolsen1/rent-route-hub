@@ -53,8 +53,19 @@ export default function Contact() {
       <section className="py-12 md:py-16 bg-cream">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-3 gap-12 lg:gap-16">
+            {/* Form - first on mobile so it is seen directly */}
+            <div className="lg:col-span-2 order-1 lg:order-2">
+              <InquiryForm
+                type="contact"
+                eyebrow="Reseförfrågan"
+                heading="Berätta Om Er Resa"
+                intro="Skriv några rader om vad ni planerar - antal personer, ungefärliga datum, destination och önskemål. Vi återkommer med ett förslag."
+                showTripParts
+              />
+            </div>
+
             {/* Contact Info */}
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-1 order-2 lg:order-1">
               <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">{get("contact_section_eyebrow", "Tala med oss")}</p>
               <h2 className="font-display text-3xl text-foreground mb-2">
                 {get("contact_section_title", "Vi startar med ett Samtal")}
@@ -82,17 +93,6 @@ export default function Contact() {
                   </div>
                 ))}
               </div>
-            </div>
-
-            {/* Form */}
-            <div className="lg:col-span-2">
-              <InquiryForm
-                type="contact"
-                eyebrow="Reseförfrågan"
-                heading="Berätta Om Er Resa"
-                intro="Skriv några rader om vad ni planerar - antal personer, ungefärliga datum, destination och önskemål. Vi återkommer med ett förslag."
-                showTripParts
-              />
             </div>
           </div>
         </div>
