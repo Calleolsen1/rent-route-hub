@@ -264,7 +264,17 @@ const Home = () => {
   const navigate = useNavigate();
   const [featured, setFeatured] = useState<FeaturedOffer[]>([]);
   const [curatedTrips, setCuratedTrips] = useState<FeaturedOffer[]>([]);
-  const [experienceRows, setExperienceRows] = useState<typeof services | null>(null);
+  const [experienceRows, setExperienceRows] = useState<
+    Array<{
+      title: string;
+      subtitle: string;
+      description: string;
+      image: string;
+      href: string;
+      tag: string;
+      ctaLabel?: string;
+    }> | null
+  >(null);
   const [heroSlides, setHeroSlides] = useState<HeroSlide[]>(fallbackHeroSlides);
   const [compareAtDefaultPct, setCompareAtDefaultPct] = useState<number>(0);
   const { enabled: showPrices } = usePublicPricesEnabled();
