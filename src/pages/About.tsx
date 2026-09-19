@@ -28,11 +28,6 @@ const values = [
 }];
 
 
-const expertise = [
-{ area: "Gruppresor & Logistik", years: "Erfaren" },
-{ area: "Sportevent & VIP-biljetter", years: "Erfaren" },
-{ area: "Konferenser & Incentive", years: "Erfaren" },
-{ area: "Affärs- & Privatresor", years: "Erfaren" }];
 
 
 import { usePageMeta } from "@/lib/usePageMeta";
@@ -129,19 +124,6 @@ export default function About() {
   <p>
   Resultatet är det vi tycker att en modern resebyrå borde stå för: hög kompetens, personlig service och ett genuint engagemang.
   </p>
-  </div>
-  <div className="grid sm:grid-cols-2 gap-x-10 mt-10 border border-border">
-  {expertise.map((e, i) =>
-  <div
-  key={e.area}
-  className={`flex items-center justify-between p-6 hover:bg-accent/30 transition-colors ${
-  i < expertise.length - 1 ? "border-b border-border" : ""}`
-  }>
-
-  <span className="font-display text-lg text-foreground">{e.area}</span>
-  <span className="text-primary text-sm font-sans tracking-wider">{e.years}</span>
-  </div>
-  )}
   </div>
   </div>
   </section>
