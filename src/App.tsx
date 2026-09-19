@@ -68,6 +68,7 @@ import OrderConfirmation from "./pages/OrderConfirmation";
 import QuotePage from "./pages/Quote";
 
 import { InquiryDialogProvider } from "@/components/InquiryDialog";
+import MobileInquiryBar from "@/components/MobileInquiryBar";
 
 const queryClient = new QueryClient();
 
@@ -164,6 +165,7 @@ const App = () => (
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<><Navbar /><NotFound /></>} />
             </Routes>
+            <MobileInquiryBar />
             </InquiryDialogProvider>
             <CookieConsent />
           </DemoProvider>
