@@ -601,14 +601,17 @@ export default function EventDetail() {
                   ) : (
                     <>
                       <Button
-                        onClick={() => setInquiryOpen(true)}
+                        onClick={() => {
+                          setInquiryParts(["biljett"]);
+                          setInquiryOpen(true);
+                        }}
                         className="w-full rounded-full bg-primary hover:bg-primary/90 tracking-wider text-sm"
                       >
                         Begär pris
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
                       <p className="text-[11px] text-muted-foreground text-center mt-3">
-                        Vi återkommer med pris och tillgänglighet för {qty} biljett{qty === 1 ? "" : "er"}.
+                        Vi återkommer med pris och tillgänglighet. Vill du även ha hotell och flyg paketerar vi hela resan.
                       </p>
                     </>
                   )}
@@ -633,6 +636,7 @@ export default function EventDetail() {
       <Dialog open={inquiryOpen} onOpenChange={setInquiryOpen}>
         <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
           <InquiryForm
+            key={inquiryParts.join(",")}
             type="contact"
             eyebrow="Prisförfrågan"
             heading={`Begär pris - ${headline ?? event.tournament_name}`}
@@ -645,7 +649,7 @@ export default function EventDetail() {
             ].filter(Boolean).join(" · ")}
             showDates={false}
             showTripParts
-            defaultTripParts={["biljett"]}
+            defaultTripParts={inquiryParts}
           />
         </DialogContent>
       </Dialog>
