@@ -33,6 +33,8 @@ const sports = [
  "Champions League & Europa League",
  "Hotelarrangemang nära arenan",
  "Paket för kompisgäng och familjer",
+ ],
+ },
 ];
 
 export default function Sportresor() {
