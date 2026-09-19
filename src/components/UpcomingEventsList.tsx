@@ -85,6 +85,8 @@ type Props = {
    * hides most of what is on sale.
    */
   showFilters?: boolean;
+  /** Meddelar föräldern när listan visar sitt "inga evenemang"-läge (eller inte). */
+  onEmptyChange?: (isEmpty: boolean) => void;
 };
 
 /** Svenska månadsnamn för filterknapparna. */
