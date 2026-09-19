@@ -474,7 +474,7 @@ const Home = () => {
 
       {/* Search bar - full width, above hero (Intrepid-style) */}
       <section className="bg-background">
-        <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 md:px-10 pt-4 sm:pt-6 md:pt-8 pb-3 sm:pb-4">
+        <div className="w-full max-w-4xl mx-auto px-4 sm:px-4 sm:px-6 md:px-10 pt-4 sm:pt-6 md:pt-8 pb-3 sm:pb-4">
           <SearchTypeahead />
         </div>
       </section>
@@ -482,7 +482,7 @@ const Home = () => {
 
       {/* Hero carousel - contained rounded card, Intrepid-style */}
       <section className="relative bg-background pb-4 md:pb-6">
-        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-4 sm:px-6 md:px-10">
           <div className="relative rounded-2xl md:rounded-3xl overflow-hidden">
             <Carousel
               opts={{ loop: true }}
@@ -549,7 +549,7 @@ const Home = () => {
       {/* TODO: Stats-sektion borttagen tills riktiga siffror finns att redovisa.
           Avkommentera och fyll i i Home.tsx när data är på plats.
       <section className="bg-background pt-2 md:pt-3 pb-8 md:pb-10">
-        <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
           <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border/60">
             <div className="px-6 py-4 md:py-2 text-center">
               <p className="font-sans font-semibold text-lg md:text-xl text-foreground leading-snug">
@@ -565,7 +565,7 @@ const Home = () => {
 
       {/* Konkreta reseerbjudanden - Intrepid-style cards */}
       <section className="pt-4 pb-8 md:pb-10 bg-background">
-        <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
             <div className="flex flex-wrap items-end gap-x-8 gap-y-3">
               {offerTabs.map((tab) => {
@@ -663,7 +663,7 @@ const Home = () => {
 
       {/* Längre erbjudanden - service cards carousel */}
       <section className="pt-4 pb-12 md:pb-16 bg-background">
-        <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
           <div className="flex items-center justify-between mb-8 gap-6">
             <h2 className="font-sans font-semibold text-xl md:text-2xl text-foreground relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-16 after:h-[2px] after:bg-primary">
               Upplevelser som formar minnen
@@ -711,7 +711,7 @@ const Home = () => {
 
       {/* Om oss */}
       <section className="py-10 md:py-14 bg-background">
-        <div className="w-full max-w-[1400px] mx-auto px-6 md:px-10">
+        <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10">
           <h2 className="font-sans font-semibold text-3xl md:text-5xl text-foreground text-center mb-16 md:mb-20">
             Vad gör oss annorlunda
           </h2>
@@ -748,7 +748,7 @@ const Home = () => {
 
       {/* Referenser - testimonials carousel */}
       <section className="py-10 md:py-14 bg-cream">
-        <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
           <div className="text-center mb-14">
             <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Referenser</p>
             <h2 className="font-display text-4xl md:text-5xl text-foreground">
@@ -786,7 +786,7 @@ const Home = () => {
 
       {/* Kontakta oss CTA */}
       <section className="py-16 md:py-24 bg-background">
-        <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10">
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
           <div className="relative overflow-hidden rounded-3xl bg-navy p-10 md:p-16 grid md:grid-cols-[1fr_auto] gap-10 items-center">
             {/* Decorative blurred orbs */}
             <div className="pointer-events-none absolute -top-24 -right-16 w-80 h-80 rounded-full bg-primary/30 blur-3xl" />

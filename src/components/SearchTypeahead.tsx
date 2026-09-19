@@ -65,7 +65,7 @@ const KIND_LABELS = {
  * handles general queries.
  */
 export function SearchTypeahead({
-  placeholder = "Sök destination, lag, race eller resetyp...",
+  placeholder = "Sök destination, lag eller race",
 }: { placeholder?: string }) {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
