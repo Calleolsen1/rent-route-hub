@@ -676,29 +676,30 @@ const Home = () => {
           <Carousel opts={{ align: "start" }}>
             <CarouselContent className="-ml-4">
               {(experienceRows ?? services).map((service: any) => (
-                <CarouselItem key={service.title} className="pl-4 basis-[70%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
+                <CarouselItem key={service.title} className="pl-4 basis-[62%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
                   <Link to={service.href} className="group block h-full">
-                    <div className="relative overflow-hidden rounded-lg aspect-[4/3] mb-3">
+                    <div className="relative overflow-hidden rounded-lg aspect-[16/10] sm:aspect-[4/3] mb-2 sm:mb-3">
                       <img
                         src={service.image}
                         alt={service.title}
+                        loading="lazy"
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/20 to-transparent" />
                       {service.tag ? (
-                        <div className="absolute top-3 left-3">
-                          <span className="text-[9px] tracking-[0.2em] uppercase bg-primary text-primary-foreground px-2.5 py-1 font-sans">
+                        <div className="absolute top-2 left-2 sm:top-3 sm:left-3">
+                          <span className="text-[8px] sm:text-[9px] tracking-[0.2em] uppercase bg-primary text-primary-foreground px-2 py-0.5 sm:px-2.5 sm:py-1 font-sans">
                             {service.tag}
                           </span>
                         </div>
                       ) : null}
-                      <div className="absolute bottom-0 left-0 right-0 p-4">
-                        <h3 className="font-display text-lg text-white mb-0.5">{service.title}</h3>
-                        <p className="text-[10px] tracking-wider text-white uppercase font-sans">{service.subtitle}</p>
+                      <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
+                        <h3 className="font-display text-base sm:text-lg text-white mb-0.5 leading-tight">{service.title}</h3>
+                        <p className="text-[9px] sm:text-[10px] tracking-wider text-white uppercase font-sans">{service.subtitle}</p>
                       </div>
                     </div>
-                    <p className="text-muted-foreground text-xs leading-relaxed mb-2">{service.description}</p>
-                    <span className="text-primary text-xs font-medium tracking-wide flex items-center gap-2 transition-all group-hover:gap-3">
+                    <p className="text-muted-foreground text-[11px] sm:text-xs leading-relaxed mb-1.5 sm:mb-2 line-clamp-3">{service.description}</p>
+                    <span className="text-primary text-[11px] sm:text-xs font-medium tracking-wide flex items-center gap-2 transition-all group-hover:gap-3">
                       {service.ctaLabel ?? "Läs mer"} <ArrowRight className="h-3 w-3" />
                     </span>
                   </Link>
