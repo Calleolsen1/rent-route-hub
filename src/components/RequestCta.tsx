@@ -2,7 +2,6 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useInquiryDialog } from "@/components/InquiryDialog";
 import type { InquiryType } from "@/components/InquiryForm";
-import fansBgAsset from "@/assets/fans-cta-bg.png.asset.json";
 
 type Props = {
   /** Förfrågningstyp som popupen öppnas med. */
