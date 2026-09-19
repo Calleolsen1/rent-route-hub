@@ -581,6 +581,49 @@ export default function EventDetail() {
               )}
             </div>
 
+            {/* Package tiers - inspired by classic travel-package cards,
+                shown without prices since every trip is quoted individually. */}
+            <div className="mt-4 rounded-xl border border-border bg-card p-6 shadow-sm">
+              <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">
+                Välj ditt paket
+              </p>
+              <div className="space-y-3 mb-5">
+                {[
+                  { icons: [Ticket], label: "Endast biljetter" },
+                  { icons: [Ticket, Hotel], label: "Biljetter + hotell" },
+                  { icons: [Ticket, Plane, Hotel], label: "Biljetter + flyg + hotell" },
+                ].map(({ icons, label }) => (
+                  <div
+                    key={label}
+                    className="flex items-center justify-between gap-3 border-b border-border/60 pb-3 last:border-0 last:pb-0"
+                  >
+                    <span className="text-sm font-medium">{label}</span>
+                    <span className="flex items-center gap-1.5 text-muted-foreground">
+                      {icons.map((Icon, i) => (
+                        <span key={i} className="flex items-center gap-1.5">
+                          {i > 0 && <Plus className="h-3 w-3 text-muted-foreground/50" />}
+                          <Icon className="h-4 w-4" />
+                        </span>
+                      ))}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <Button
+                className="w-full rounded-full bg-primary hover:bg-primary/90 tracking-wider text-sm"
+                onClick={() => {
+                  setInquiryParts(["biljett", "hotell", "flyg"]);
+                  setInquiryOpen(true);
+                }}
+              >
+                Visa paket
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+              <p className="text-[11px] text-muted-foreground text-center mt-3">
+                Pris på förfrågan - vi sätter ihop resan efter era önskemål.
+              </p>
+            </div>
+
             <Link
               to="/services/sportresor"
               className="mt-4 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
