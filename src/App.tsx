@@ -48,6 +48,7 @@ import Anvandarvillkor from "./pages/Anvandarvillkor";
 import CookieConsent from "./components/CookieConsent";
 import NotFound from "./pages/NotFound";
 import Services from "./pages/Services";
+import Resor from "./pages/Resor";
 import GroupTravel from "./pages/GroupTravel";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
@@ -82,6 +83,7 @@ const App = () => (
             <InquiryDialogProvider>
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/resor" element={<Resor />} />
               <Route path="/tjanster" element={<Services />} />
               <Route path="/services" element={<Navigate to="/tjanster" replace />} />
               <Route path="/services/sportresor" element={<Sportresor />} />
