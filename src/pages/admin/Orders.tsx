@@ -173,7 +173,7 @@ export default function AdminOrders() {
       const cancelledCount = (cancelled as { id: string }[] | null)?.length ?? 0;
 
       toast.success(
-        `Städning klar — ${expiredQuotes} utgångna offerter, ${cancelledCount} släppta reservationer.`,
+        `Städning klar - ${expiredQuotes} utgångna offerter, ${cancelledCount} släppta reservationer.`,
       );
       load();
     } catch (e: any) {
@@ -292,7 +292,7 @@ export default function AdminOrders() {
                     {o.invoice_number ?? `#${o.id.slice(0, 8).toUpperCase()}`}
                   </TableCell>
                   <TableCell>
-                    <div className="text-sm">{o.customer_name ?? "—"}</div>
+                    <div className="text-sm">{o.customer_name ?? "-"}</div>
                     <div className="text-xs text-muted-foreground">{o.customer_email}</div>
                   </TableCell>
                   <TableCell className="text-sm">
@@ -302,7 +302,7 @@ export default function AdminOrders() {
                   <TableCell>
                     {o.refunded_sek && Number(o.refunded_sek) > 0
                       ? <span className="text-amber-700">{formatSek(Number(o.refunded_sek))}</span>
-                      : <span className="text-muted-foreground">—</span>}
+                      : <span className="text-muted-foreground">-</span>}
                   </TableCell>
                   <TableCell>
                     <Badge variant={STATUS_VARIANTS[o.status] ?? "outline"}>
@@ -403,7 +403,7 @@ function OrderDetail({
           </Label>
           {order.order_items.length === 0 && isQuote ? (
             <p className="text-xs text-muted-foreground">
-              Offertbetalning — rader finns på offerten.
+              Offertbetalning - rader finns på offerten.
             </p>
           ) : (
             <div className="space-y-2">
@@ -411,7 +411,7 @@ function OrderDetail({
                 const ev = it.events;
                 const headline = ev?.home_team
                   ? `${ev.home_team} vs ${ev.away_team}`
-                  : ev?.race_name ?? "—";
+                  : ev?.race_name ?? "-";
                 return (
                   <div key={it.id} className="border border-border rounded-lg p-3 text-sm">
                     <p className="font-medium">{headline}</p>
@@ -420,7 +420,7 @@ function OrderDetail({
                       {ev?.starts_at && ` · ${new Date(ev.starts_at).toLocaleDateString("sv-SE")}`}
                     </p>
                     <div className="flex items-center justify-between mt-2 text-xs">
-                      <span>{it.ticket_categories?.name ?? "—"} × {it.qty}</span>
+                      <span>{it.ticket_categories?.name ?? "-"} × {it.qty}</span>
                       <span>{formatSek(Number(it.unit_price_sek) * it.qty)}</span>
                     </div>
                   </div>
@@ -493,7 +493,7 @@ function OrderDetail({
           </div>
         )}
 
-        {/* Manual-fulfillment banner — Stripe paid but xs2 confirm failed */}
+        {/* Manual-fulfillment banner - Stripe paid but xs2 confirm failed */}
         {needsManualFulfillment && (
           <div className="rounded-lg border border-amber-300 bg-amber-50 p-3 space-y-2">
             <div className="flex items-start gap-2 text-xs text-amber-900">
@@ -503,7 +503,7 @@ function OrderDetail({
                 <p>
                   Kunden har betalat men xs2-bokningen kunde inte slutföras automatiskt.
                   Kontakta xs2event-support och bekräfta bokningen där. Klicka sedan
-                  "Markera som löst" — kunden får ingen ny aviseringsmail automatiskt.
+                  "Markera som löst" - kunden får ingen ny aviseringsmail automatiskt.
                 </p>
               </div>
             </div>

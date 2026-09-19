@@ -66,7 +66,7 @@ export function BulkCompareAtDialog({
         p_tournament_name: target.tournament ?? null,
       });
       if (error) throw error;
-      toast.success(`Uppdaterade ${data ?? "—"} event`);
+      toast.success(`Uppdaterade ${data ?? "-"} event`);
       onApplied();
       onOpenChange(false);
     } catch (e: any) {
@@ -93,8 +93,8 @@ export function BulkCompareAtDialog({
         p_tournament_name: target.tournament ?? null,
       });
       if (error) throw error;
-      // pct=0 disables the synthetic compare-at — same as cleared for display purposes.
-      toast.success(`Rensade ${data ?? "—"} event`);
+      // pct=0 disables the synthetic compare-at - same as cleared for display purposes.
+      toast.success(`Rensade ${data ?? "-"} event`);
       onApplied();
       onOpenChange(false);
     } catch (e: any) {

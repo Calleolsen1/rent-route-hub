@@ -175,11 +175,11 @@ export default function BackofficeCustomers() {
               {filtered.map((r) => (
                 <tr key={r.id} className="border-t border-border">
                   <td className="px-4 py-3 text-muted-foreground">{r.customer_number}</td>
-                  <td className="px-4 py-3 font-medium">{r.company_name || "—"}</td>
+                  <td className="px-4 py-3 font-medium">{r.company_name || "-"}</td>
                   <td className="px-4 py-3">{r.contact_name}</td>
                   <td className="px-4 py-3">{r.email}</td>
-                  <td className="px-4 py-3">{r.phone || "—"}</td>
-                  <td className="px-4 py-3">{r.city || "—"}</td>
+                  <td className="px-4 py-3">{r.phone || "-"}</td>
+                  <td className="px-4 py-3">{r.city || "-"}</td>
                   <td className="px-4 py-3 text-right">
                     <Button
                       variant="ghost"

@@ -63,7 +63,7 @@ export default function AdminBanners() {
       return;
     }
     setSlides((prev) => [...prev, data as Slide]);
-    toast.success("Slide skapad — kom ihåg att aktivera när den är klar");
+    toast.success("Slide skapad - kom ihåg att aktivera när den är klar");
   };
 
   const removeSlide = async (id: string) => {

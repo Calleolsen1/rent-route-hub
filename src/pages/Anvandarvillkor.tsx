@@ -77,7 +77,7 @@ export default function Anvandarvillkor() {
 
           <Section title="7. Immateriella rättigheter">
             <p>
-              Allt innehåll på webbplatsen — texter, bilder, varumärken — tillhör Kaisen eller våra licensgivare och är skyddat enligt upphovsrättslagen. Du får inte kopiera, distribuera eller på annat sätt nyttja innehållet kommersiellt utan vårt skriftliga medgivande.
+              Allt innehåll på webbplatsen - texter, bilder, varumärken - tillhör Kaisen eller våra licensgivare och är skyddat enligt upphovsrättslagen. Du får inte kopiera, distribuera eller på annat sätt nyttja innehållet kommersiellt utan vårt skriftliga medgivande.
             </p>
           </Section>
 

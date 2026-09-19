@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * Cloudflare Turnstile widget — invisible-friendly captcha.
+ * Cloudflare Turnstile widget - invisible-friendly captcha.
  *
  * Defensive: when no `VITE_TURNSTILE_SITE_KEY` env is configured, this
  * component renders nothing and the parent form should submit without a

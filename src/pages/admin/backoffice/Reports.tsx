@@ -164,8 +164,8 @@ export default function BackofficeReports() {
             rows={departures.map((r) => [
               r.booking_number,
               r.title,
-              r.destination ?? "—",
-              r.depart_date ?? "—",
+              r.destination ?? "-",
+              r.depart_date ?? "-",
               r.travellers_count,
               r.company_name || r.contact_name,
               STATUS_LABEL[r.status as keyof typeof STATUS_LABEL] ?? r.status,
@@ -198,7 +198,7 @@ export default function BackofficeReports() {
             head={["Månad", "Destination", "Bokningar", "Försäljning", "Vinst"]}
             rows={forecast.map((r) => [
               String(r.month).slice(0, 7),
-              r.destination ?? "—",
+              r.destination ?? "-",
               r.bookings_count,
               formatSek(r.sale_total_sek),
               formatSek(r.margin_sek),
@@ -304,7 +304,7 @@ function Table({ head, rows }: { head: string[]; rows: (string | number | null)[
             <tr key={i} className="border-t border-border">
               {r.map((c, j) => (
                 <td key={j} className="px-4 py-3">
-                  {c ?? "—"}
+                  {c ?? "-"}
                 </td>
               ))}
             </tr>

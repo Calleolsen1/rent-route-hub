@@ -8,7 +8,7 @@ const channels = [
  {
  icon: Phone,
  title: "Ring oss",
- desc: "För akuta ärenden — vi svarar direkt under kontorstid.",
+ desc: "För akuta ärenden - vi svarar direkt under kontorstid.",
  detail: "+46 8 000 00 00",
  href: "tel:+4680000000",
  cta: "Ring nu",
@@ -24,7 +24,7 @@ const channels = [
  {
  icon: MessageSquare,
  title: "Kontaktformulär",
- desc: "Beskriv ditt ärende i detalj — vi tar hand om resten.",
+ desc: "Beskriv ditt ärende i detalj - vi tar hand om resten.",
  detail: "Svar inom 1 timme",
  href: "/contact",
  cta: "Öppna formulär",
@@ -52,7 +52,7 @@ const supportTypes = [
  color: "text-green-600",
  bg: "bg-green-50",
  title: "Feedback & förbättringar",
- desc: "Har du rest med oss och vill dela med dig av dina intryck? Vi tar alltid emot feedback — positiv och negativ — för att bli bättre.",
+ desc: "Har du rest med oss och vill dela med dig av dina intryck? Vi tar alltid emot feedback - positiv och negativ - för att bli bättre.",
  },
 ];
 
@@ -60,7 +60,7 @@ import { usePageMeta } from "@/lib/usePageMeta";
 
 export default function Support() {
  usePageMeta({
-   title: "Support — Kaisen Travel Group",
+   title: "Support - Kaisen Travel Group",
    description: "Behöver du hjälp under resan eller med din beställning? Vi finns tillgängliga dygnet runt för aktiva kunder.",
  });
  return (
@@ -75,7 +75,7 @@ export default function Support() {
  Vi är här för <em className="italic font-light text-white">dig</em>
  </h1>
  <p className="text-white/60 max-w-xl mx-auto leading-relaxed">
- Personlig och snabb hjälp — oavsett om du planerar, packar eller redan är på plats.
+ Personlig och snabb hjälp - oavsett om du planerar, packar eller redan är på plats.
  </p>
  </div>
  </section>
@@ -85,7 +85,7 @@ export default function Support() {
  <div className="container mx-auto px-4 flex items-center justify-center gap-2 text-sm">
  <Clock className="h-4 w-4 text-primary" />
  <span className="text-foreground font-medium">Kontorstid:</span>
- <span className="text-muted-foreground">Mån–Fre 09:00–18:00 · Lör 10:00–16:00 · Akutlinje dygnet runt för aktiva kunder</span>
+ <span className="text-muted-foreground">Mån-Fre 09:00-18:00 · Lör 10:00-16:00 · Akutlinje dygnet runt för aktiva kunder</span>
  </div>
  </div>
 
@@ -150,7 +150,7 @@ export default function Support() {
  <div className="container mx-auto px-4 text-center max-w-2xl">
  <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Vårt löfte</p>
  <h2 className="font-display text-3xl text-white mb-6">
- Vi svarar alltid — <em className="italic font-light text-white">på riktigt</em>
+ Vi svarar alltid - <em className="italic font-light text-white">på riktigt</em>
  </h2>
  <p className="text-white/60 leading-relaxed mb-8">
  Hos Kaisen Travel Group pratar du alltid med en riktig människa. Inga automatiserade svar, ingen kö. En dedikerad rådgivare tar hand om ditt ärende från start till mål.

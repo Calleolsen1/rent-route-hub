@@ -5,7 +5,7 @@ import WhyUsCardsManager from "./WhyUsCardsManager";
 import PageTextsManager from "./PageTextsManager";
 
 /**
- * Admin content hub — tabbed editor for everything that ships marketing copy
+ * Admin content hub - tabbed editor for everything that ships marketing copy
  * to the public site. Each tab is a focused CRUD interface so non-technical
  * operators can update content without touching code.
  */

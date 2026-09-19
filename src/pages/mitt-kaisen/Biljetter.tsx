@@ -40,7 +40,7 @@ type OrderWithItems = {
 };
 
 // xs2-retry-pending gives up after 48 attempts (~2 days). At that point
-// the order genuinely needs ops intervention — UI flips to the warning.
+// the order genuinely needs ops intervention - UI flips to the warning.
 const FULFILLMENT_RETRY_MAX = 48;
 
 const STATUS_LABELS: Record<string, string> = {
@@ -53,7 +53,7 @@ const STATUS_LABELS: Record<string, string> = {
   cancelled: "Avbruten",
 };
 
-// Mitt Kaisen colour tokens — preserved from the original layout.
+// Mitt Kaisen colour tokens - preserved from the original layout.
 const C = {
   text: "hsl(210 30% 92%)",
   textMuted: "hsl(210 20% 70%)",
@@ -143,7 +143,7 @@ function OrderCard({ order }: { order: OrderWithItems }) {
   const isPaidButPending = isFulfilled && !hasAnyTicketFile;
   // Friendly "tickets coming soon" while retry job is still working.
   const ticketsPending = isPaidButPending && attempts < FULFILLMENT_RETRY_MAX;
-  // Hard failure — retry exhausted, ops needs to step in.
+  // Hard failure - retry exhausted, ops needs to step in.
   const fulfillmentStuck = isPaidButPending && attempts >= FULFILLMENT_RETRY_MAX;
   const orderRef = order.invoice_number ?? order.id.slice(0, 8).toUpperCase();
 
@@ -187,7 +187,7 @@ function OrderCard({ order }: { order: OrderWithItems }) {
         </span>
       </div>
 
-      {/* Status banner — calm while retry job works, warning only after retries exhausted */}
+      {/* Status banner - calm while retry job works, warning only after retries exhausted */}
       {ticketsPending && (
         <div
           className="rounded-lg p-3 mb-3 flex items-start gap-2 text-xs"
@@ -195,7 +195,7 @@ function OrderCard({ order }: { order: OrderWithItems }) {
         >
           <Ticket className="h-4 w-4 flex-shrink-0 mt-0.5" />
           <span>
-            Betalningen är klar. Biljetterna släpps från arrangören närmare evenemanget — vi mejlar dig direkt när de finns att ladda ner.
+            Betalningen är klar. Biljetterna släpps från arrangören närmare evenemanget - vi mejlar dig direkt när de finns att ladda ner.
           </span>
         </div>
       )}
@@ -266,7 +266,7 @@ function ItemRow({ it, isFulfilled }: { it: OrderItem; isFulfilled: boolean }) {
     <div className="text-sm flex items-start justify-between gap-4" style={{ color: C.text }}>
       <div className="min-w-0">
         <p>
-          {headline} — {it.ticket_categories.name} × {it.qty}
+          {headline} - {it.ticket_categories.name} × {it.qty}
         </p>
         <p className="text-xs" style={{ color: C.textDim }}>
           {formatEventDateTime(it.events.starts_at)} · {it.events.venue_name}

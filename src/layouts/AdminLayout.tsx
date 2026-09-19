@@ -65,7 +65,7 @@ const PREVIEW_FOR_ROUTE: Record<string, string> = {
   "/admin/media": "/",
 };
 
-/** Admin pages where a live preview actually adds value — preview auto-opens there. */
+/** Admin pages where a live preview actually adds value - preview auto-opens there. */
 const PREVIEW_ENABLED = Object.keys(PREVIEW_FOR_ROUTE);
 
 export default function AdminLayout() {

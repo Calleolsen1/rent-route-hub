@@ -154,7 +154,7 @@ export default function MittKaisenForfragningar() {
                 </div>
                 {r.status === "quoted" && (
                   <p className="mt-3 text-xs" style={{ color: STATUS.quoted.color }}>
-                    En offert har skickats till din e-post — kolla din inkorg.
+                    En offert har skickats till din e-post - kolla din inkorg.
                   </p>
                 )}
               </div>

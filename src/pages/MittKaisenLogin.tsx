@@ -61,7 +61,7 @@ export default function MittKaisenLogin() {
 
  return (
  <div className="min-h-screen flex" style={{ backgroundColor: "hsl(222 50% 12%)" }}>
- {/* Left panel — branding */}
+ {/* Left panel - branding */}
  <div className="hidden lg:flex lg:w-1/2 flex-col justify-between p-16" style={{ backgroundColor: "hsl(222 50% 9%)" }}>
  <div>
  <div className="flex items-center gap-3 mb-16">
@@ -78,7 +78,7 @@ export default function MittKaisenLogin() {
  Din personliga<br />reseportal
  </h1>
  <p className="text-lg font-light leading-relaxed" style={{ color: "hsl(215 15% 65%)" }}>
- Följ dina resor, se fakturor och håll koll på alla detaljer — allt på ett ställe.
+ Följ dina resor, se fakturor och håll koll på alla detaljer - allt på ett ställe.
  </p>
  </div>
  </div>
@@ -90,7 +90,7 @@ export default function MittKaisenLogin() {
  </div>
  </div>
 
- {/* Right panel — login form */}
+ {/* Right panel - login form */}
  <div className="flex-1 flex items-center justify-center p-8">
  <div className="w-full max-w-md">
  {/* Mobile logo */}

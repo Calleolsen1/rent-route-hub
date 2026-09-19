@@ -36,7 +36,7 @@ const camps = [
     sport: "Fotboll",
     location: "Ayia Napa, Cypern",
     title: "Där fotboll möter perfekta förhållanden",
-    desc: "Träna tillsammans, umgås tillsammans och skapa minnen tillsammans — Milea Hotel blir er bas under ett träningsläger ni sent kommer att glömma. Nära stranden och centralt beläget med allt laget behöver för en härlig vistelse på solsäkra Cypern.",
+    desc: "Träna tillsammans, umgås tillsammans och skapa minnen tillsammans - Milea Hotel blir er bas under ett träningsläger ni sent kommer att glömma. Nära stranden och centralt beläget med allt laget behöver för en härlig vistelse på solsäkra Cypern.",
     price: "från 7 100 kr / person",
   },
   {
@@ -53,7 +53,7 @@ const camps = [
     sport: "Simning",
     location: "Torremolinos, Spanien",
     title: "50-metersbassäng under öppen himmel",
-    desc: "Sol, värme och hårda träningspass i uppvärmd 50-metersbassäng — ett simläger i Torremolinos är den perfekta kombinationen av träning och gemenskap. Med bra träningsmöjligheter, härligt klimat och roliga aktiviteter får simmarna chansen att utvecklas både i bassängen och som lag.",
+    desc: "Sol, värme och hårda träningspass i uppvärmd 50-metersbassäng - ett simläger i Torremolinos är den perfekta kombinationen av träning och gemenskap. Med bra träningsmöjligheter, härligt klimat och roliga aktiviteter får simmarna chansen att utvecklas både i bassängen och som lag.",
     price: "från 8 700 kr / person",
   },
   {
@@ -108,13 +108,13 @@ export default function Traningslager() {
  </div>
  <div className="relative container mx-auto px-4 pb-14">
  <p className="text-xs tracking-[0.3em] text-white uppercase mb-3 font-sans">
- {get("training_hero_eyebrow", "Tjänster — Träningsläger")}
+ {get("training_hero_eyebrow", "Tjänster - Träningsläger")}
  </p>
  <h1 className="font-display text-4xl md:text-6xl text-white leading-tight">
  {get("training_hero_title", "En värld där idrott och resor möts")}
  </h1>
  <p className="text-white/70 mt-4 text-lg font-light max-w-xl">
- {get("training_hero_tagline", "Träningsläger för fotboll, simning och friidrott — för föreningar, lag och grupper som vill ta träningen till nästa nivå.")}
+ {get("training_hero_tagline", "Träningsläger för fotboll, simning och friidrott - för föreningar, lag och grupper som vill ta träningen till nästa nivå.")}
  </p>
  <div className="mt-6 flex flex-wrap gap-3">
  <a href="#forfragan">
@@ -195,7 +195,7 @@ export default function Traningslager() {
  <section className="bg-background py-16">
  <div className="container mx-auto px-4 max-w-3xl text-center">
  <p className="font-display text-2xl md:text-3xl text-foreground italic font-light leading-relaxed">
- "Hos oss handlar det inte bara om träning — det handlar om att skapa energi, laganda och motivation som varar långt efter lägret är slut."
+ "Hos oss handlar det inte bara om träning - det handlar om att skapa energi, laganda och motivation som varar långt efter lägret är slut."
  </p>
  <div className="w-8 h-px bg-primary mx-auto mt-8" />
  </div>
@@ -212,7 +212,7 @@ export default function Traningslager() {
  </h2>
  <div className="w-10 h-px bg-primary mb-6" />
  <p className="text-muted-foreground leading-relaxed">
- Våra destinationer i Europa är noggrant utvalda för att ge bästa förutsättningarna för träning, vila och inspiration. Spanien, Turkiet, Italien, Portugal, Polen, Holland, Tyskland, Danmark och Sverige — soliga kustorter, moderna anläggningar och klassiska idrottsstäder.
+ Våra destinationer i Europa är noggrant utvalda för att ge bästa förutsättningarna för träning, vila och inspiration. Spanien, Turkiet, Italien, Portugal, Polen, Holland, Tyskland, Danmark och Sverige - soliga kustorter, moderna anläggningar och klassiska idrottsstäder.
  </p>
  </div>
  <div>
@@ -222,7 +222,7 @@ export default function Traningslager() {
  </h2>
  <div className="w-10 h-px bg-primary mb-6" />
  <p className="text-muted-foreground leading-relaxed">
- Att planera ett träningsläger kan vara komplext — men vi gör det enkelt. Transport, boende, träningstider och praktiska detaljer hanterar vi. Varje upplägg skräddarsys efter era mål och förväntningar.
+ Att planera ett träningsläger kan vara komplext - men vi gör det enkelt. Transport, boende, träningstider och praktiska detaljer hanterar vi. Varje upplägg skräddarsys efter era mål och förväntningar.
  </p>
  </div>
  </div>
@@ -240,7 +240,7 @@ export default function Traningslager() {
  </h2>
  <div className="w-10 h-px bg-primary mb-6" />
  <p className="text-muted-foreground leading-relaxed mb-6">
- Ett framgångsrikt träningsläger handlar om gemenskap, glädje och att skapa minnen tillsammans. Vi planerar varje del med omtanke — från träning till fritid, från logistik till upplevelser.
+ Ett framgångsrikt träningsläger handlar om gemenskap, glädje och att skapa minnen tillsammans. Vi planerar varje del med omtanke - från träning till fritid, från logistik till upplevelser.
  </p>
  <p className="text-muted-foreground leading-relaxed">
  Målet är att varje deltagare ska känna sig motiverad, inspirerad och delaktig.
@@ -266,7 +266,7 @@ export default function Traningslager() {
   defaultDestination={selectedDestination}
   eyebrow="Förfrågan träningsläger"
  heading="Berätta om ert lag"
- intro="Sport, antal spelare och stab, önskad period och destination — vi tar fram ett upplägg som passar just ert lag."
+ intro="Sport, antal spelare och stab, önskad period och destination - vi tar fram ett upplägg som passar just ert lag."
  />
  </div>
  </section>

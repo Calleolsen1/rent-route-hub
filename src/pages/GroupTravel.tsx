@@ -15,7 +15,7 @@ const experiences = [
     icon: Trophy,
     title: "Sport på riktigt",
     tagline: "Fotboll i London · F1 i Monaco · Golf i Skottland",
-    desc: "Biljetter, boende och transfer — för hela gänget. Inte en enda pappa ska behöva \u201cfixa allt\u201d.",
+    desc: "Biljetter, boende och transfer - för hela gänget. Inte en enda pappa ska behöva \u201cfixa allt\u201d.",
   },
   {
     icon: PartyPopper,
@@ -74,8 +74,8 @@ const FALLBACK_GROUP_ACTIVITIES = [
 
 export default function GroupTravel() {
   usePageMeta({
-    title: "Gruppresor — 8 till 200+ personer | Kaisen Travel Group",
-    description: "Skräddarsydda gruppresor, företagsevent och incentiveresor. Vi sköter logistiken — från flyg och hotell till middag och aktiviteter.",
+    title: "Gruppresor - 8 till 200+ personer | Kaisen Travel Group",
+    description: "Skräddarsydda gruppresor, företagsevent och incentiveresor. Vi sköter logistiken - från flyg och hotell till middag och aktiviteter.",
   });
   const { get, getArray } = useSiteContent(GROUP_KEYS);
   const editableActivities = getArray("group_activities", FALLBACK_GROUP_ACTIVITIES);
@@ -92,10 +92,10 @@ export default function GroupTravel() {
         <div className="relative container mx-auto px-4 pb-14">
           <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">{get("group_hero_eyebrow", "Gruppresor")}</p>
           <h1 className="font-display text-4xl md:text-6xl text-white leading-tight">
-            {get("group_hero_title", "Bättre tillsammans — Alltid")}
+            {get("group_hero_title", "Bättre tillsammans - Alltid")}
           </h1>
           <p className="text-white/70 mt-4 text-lg font-light max-w-lg">
-            {get("group_hero_tagline", "Sport, äventyr eller fest — vi planerar, ni upplever.")}
+            {get("group_hero_tagline", "Sport, äventyr eller fest - vi planerar, ni upplever.")}
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <a href="#forfragan">
@@ -108,7 +108,7 @@ export default function GroupTravel() {
         </div>
       </section>
 
-      {/* Experience Grid — SALES FIRST */}
+      {/* Experience Grid - SALES FIRST */}
       <section className="py-14 md:py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -134,7 +134,7 @@ export default function GroupTravel() {
         </div>
       </section>
 
-      {/* Sport — image + short pitch */}
+      {/* Sport - image + short pitch */}
       <section className="py-12 md:py-16 bg-cream">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
@@ -147,7 +147,7 @@ export default function GroupTravel() {
               </h2>
               <div className="w-10 h-px bg-primary mb-6" />
               <p className="text-muted-foreground leading-relaxed mb-6">
-                Premier League, Monaco Grand Prix, Champions League — vi fixar biljetter, boende och transfer för hela gänget. En kontaktpunkt. Noll huvudbry.
+                Premier League, Monaco Grand Prix, Champions League - vi fixar biljetter, boende och transfer för hela gänget. En kontaktpunkt. Noll huvudbry.
               </p>
               <div className="grid grid-cols-2 gap-3 mb-8">
                 {["Biljetter till matcher & event", "Gruppbokade hotell", "Privat transfer", "Cityguide & tips"].map((item) => (
@@ -175,7 +175,7 @@ export default function GroupTravel() {
         </div>
       </section>
 
-      {/* Corporate — reversed */}
+      {/* Corporate - reversed */}
       <section className="py-12 md:py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
@@ -195,7 +195,7 @@ export default function GroupTravel() {
               </h2>
               <div className="w-10 h-px bg-primary mb-6" />
               <p className="text-muted-foreground leading-relaxed mb-6">
-                Kickoff i Barcelona. Incentive till Kroatien. Retreat i Toscana. Vi skapar upplevelser som teamet pratar om länge — och faktiskt stärker sammanhållningen.
+                Kickoff i Barcelona. Incentive till Kroatien. Retreat i Toscana. Vi skapar upplevelser som teamet pratar om länge - och faktiskt stärker sammanhållningen.
               </p>
               <div className="grid grid-cols-2 gap-3 mb-8">
                 {["Boende & logistik", "Aktiviteter & teambuilding", "Middagar & event", "Pris efter budget"].map((item) => (
@@ -216,14 +216,14 @@ export default function GroupTravel() {
         </div>
       </section>
 
-      {/* What's included — compact */}
+      {/* What's included - compact */}
       <section className="py-14 md:py-20 bg-cream">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <div>
               <p className="text-xs tracking-[0.3em] text-primary uppercase mb-3 font-sans">Vad Ingår</p>
               <h2 className="font-display text-3xl md:text-4xl text-foreground mb-2">
-                Allt ordnat — <em className="italic font-light">ingenting glömt</em>
+                Allt ordnat - <em className="italic font-light">ingenting glömt</em>
               </h2>
               <div className="w-10 h-px bg-primary mb-8" />
               <div className="grid sm:grid-cols-2 gap-4 mb-10">
@@ -235,7 +235,7 @@ export default function GroupTravel() {
                 ))}
               </div>
               <div className="bg-navy p-6 inline-block">
-                <div className="font-display text-2xl text-white mb-1">6 – 200+ personer</div>
+                <div className="font-display text-2xl text-white mb-1">6 - 200+ personer</div>
                 <p className="text-white/60 text-sm">Ingen grupp är för liten eller för stor.</p>
               </div>
             </div>
@@ -257,7 +257,7 @@ export default function GroupTravel() {
             type="group"
             eyebrow="Skicka förfrågan"
             heading="Berätta om er gruppresa"
-            intro="Antal personer, ungefärliga datum, destination och budget — vi återkommer med ett skräddarsytt förslag inom 24 timmar på vardagar."
+            intro="Antal personer, ungefärliga datum, destination och budget - vi återkommer med ett skräddarsytt förslag inom 24 timmar på vardagar."
           />
         </div>
       </section>

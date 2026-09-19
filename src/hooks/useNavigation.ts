@@ -138,7 +138,7 @@ async function fetchAll(): Promise<void> {
   return inFlight;
 }
 
-/** Invalidate the cache — call after admin mutations so reads are fresh. */
+/** Invalidate the cache - call after admin mutations so reads are fresh. */
 export function invalidateNavigation() {
   cache = {};
   inFlight = null;
@@ -146,7 +146,7 @@ export function invalidateNavigation() {
 }
 
 /**
- * Refetch on window focus — gives near-real-time sync without Supabase
+ * Refetch on window focus - gives near-real-time sync without Supabase
  * Realtime overhead. Bound once at module load so all subscribers benefit.
  */
 if (typeof window !== "undefined") {

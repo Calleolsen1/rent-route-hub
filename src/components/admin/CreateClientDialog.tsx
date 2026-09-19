@@ -119,7 +119,7 @@ export function CreateClientDialog({ open, onOpenChange, onSuccess }: Props) {
             )}
 
             <p className="text-xs text-muted-foreground mb-6">
-              Kunden klickar på länken i mejlet och sätter sitt lösenord direkt — inga extra steg behövs.
+              Kunden klickar på länken i mejlet och sätter sitt lösenord direkt - inga extra steg behövs.
             </p>
             <Button className="w-full" onClick={() => handleClose(false)}>
               Stäng
@@ -174,7 +174,7 @@ export function CreateClientDialog({ open, onOpenChange, onSuccess }: Props) {
               </div>
 
               <div className="rounded-lg p-3 bg-muted text-xs text-muted-foreground leading-relaxed">
-                Kunden får ett mejl med en länk där de sätter sitt lösenord direkt — inga extra steg behövs.
+                Kunden får ett mejl med en länk där de sätter sitt lösenord direkt - inga extra steg behövs.
               </div>
 
               <div className="flex gap-3 pt-1">

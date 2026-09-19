@@ -180,7 +180,7 @@ export default function OrderConfirmation() {
         <div className="container mx-auto px-4 py-32 text-center">
           <h1 className="font-display text-4xl mb-4">Beställningen hittades inte</h1>
           <p className="text-muted-foreground mb-6 text-sm">
-            Är du inloggad med samma konto som lade beställningen? Annars — kontrollera länken i orderbekräftelsen i din e-post.
+            Är du inloggad med samma konto som lade beställningen? Annars - kontrollera länken i orderbekräftelsen i din e-post.
           </p>
           <Link to="/">
             <Button className="rounded-full">Till startsidan</Button>

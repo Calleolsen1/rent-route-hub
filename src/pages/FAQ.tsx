@@ -16,22 +16,22 @@ const faqs: FAQItem[] = [
  {
  category: "allmant",
  question: "Vad är Kaisen Travel Group?",
- answer: "Kaisen Travel Group är ett personligt reseföretag med stor erfarenhet. Vi arrangerar skräddarsydda resor för privatpersoner, grupper och företag — från sportevent och konferenser till weekendresor och VIP-service. Vi arbetar alltid med en dedikerad rådgivare per kund."
+ answer: "Kaisen Travel Group är ett personligt reseföretag med stor erfarenhet. Vi arrangerar skräddarsydda resor för privatpersoner, grupper och företag - från sportevent och konferenser till weekendresor och VIP-service. Vi arbetar alltid med en dedikerad rådgivare per kund."
  },
  {
  category: "allmant",
  question: "Hur skiljer ni er från vanliga resebyråer?",
- answer: "Vi erbjuder inga standardpaket. Varje resa skapas utifrån dina önskemål — destination, budget, grupstorlek och upplevelse. Du har alltid en personlig kontakt som ansvarar för hela resan, från första förfrågan till hemkomst."
+ answer: "Vi erbjuder inga standardpaket. Varje resa skapas utifrån dina önskemål - destination, budget, grupstorlek och upplevelse. Du har alltid en personlig kontakt som ansvarar för hela resan, från första förfrågan till hemkomst."
  },
  {
  category: "allmant",
  question: "Hur kontaktar jag Kaisen Travel Group?",
- answer: "Du kan nå oss via kontaktformuläret på hemsidan, telefon eller e-post. Vi svarar inom en timme under kontorstid (mån–fre 09–18, lör 10–16). För akuta ärenden under pågående resa finns vi tillgängliga dygnet runt."
+ answer: "Du kan nå oss via kontaktformuläret på hemsidan, telefon eller e-post. Vi svarar inom en timme under kontorstid (mån-fre 09-18, lör 10-16). För akuta ärenden under pågående resa finns vi tillgängliga dygnet runt."
  },
  {
  category: "allmant",
  question: "Vilka typer av resor arrangerar ni?",
- answer: "Vi arrangerar sportresor (F1, fotboll, golf), gruppresor (8–200+ personer), affärsresor, konferenser & incentiveresor, weekend getaways i Europa, VIP-service och incoming-tjänster för internationella grupper som besöker Sverige."
+ answer: "Vi arrangerar sportresor (F1, fotboll, golf), gruppresor (8-200+ personer), affärsresor, konferenser & incentiveresor, weekend getaways i Europa, VIP-service och incoming-tjänster för internationella grupper som besöker Sverige."
  },
  // Bokning & Process
  {
@@ -42,7 +42,7 @@ const faqs: FAQItem[] = [
  {
  category: "bokning",
  question: "Hur lång tid tar det att planera en resa?",
- answer: "Det beror på resans komplexitet. En enklare weekendresa kan vi ofta sätta ihop på 24–48 timmar. Stora gruppresor och evenemang kräver ofta 4–12 veckors planeringstid för bästa tillgänglighet och pris."
+ answer: "Det beror på resans komplexitet. En enklare weekendresa kan vi ofta sätta ihop på 24-48 timmar. Stora gruppresor och evenemang kräver ofta 4-12 veckors planeringstid för bästa tillgänglighet och pris."
  },
  {
  category: "bokning",
@@ -63,7 +63,7 @@ const faqs: FAQItem[] = [
  {
  category: "betalning",
  question: "Krävs det en handpenning?",
- answer: "För de flesta bokningar krävs en handpenning vid bekräftelse, vanligtvis 20–30% av totalsumman. Resterande belopp faktureras normalt 30 dagar efter bokning eller enligt överenskommelse."
+ answer: "För de flesta bokningar krävs en handpenning vid bekräftelse, vanligtvis 20-30% av totalsumman. Resterande belopp faktureras normalt 30 dagar efter bokning eller enligt överenskommelse."
  },
  {
  category: "betalning",
@@ -73,13 +73,13 @@ const faqs: FAQItem[] = [
  {
  category: "betalning",
  question: "Vad händer om priset ändras efter bokning?",
- answer: "Det bekräftade priset gäller — vi tar aldrig ut extra kostnader utan att informera dig i förväg. Om externa kostnader (t.ex. flygpriser) förändras väsentligt kontaktar vi alltid dig innan vi bekräftar."
+ answer: "Det bekräftade priset gäller - vi tar aldrig ut extra kostnader utan att informera dig i förväg. Om externa kostnader (t.ex. flygpriser) förändras väsentligt kontaktar vi alltid dig innan vi bekräftar."
  },
  // Gruppresor
  {
  category: "grupp",
  question: "Hur många personer krävs för en gruppresa?",
- answer: "Vi arbetar med grupper från 8 personer och uppåt, utan något tak — vi har arrangerat resor för upp till 200+ personer. Ju större grupp, desto bättre kan vi oftast förhandla fram priser och upplevelser."
+ answer: "Vi arbetar med grupper från 8 personer och uppåt, utan något tak - vi har arrangerat resor för upp till 200+ personer. Ju större grupp, desto bättre kan vi oftast förhandla fram priser och upplevelser."
  },
  {
  category: "grupp",
@@ -89,7 +89,7 @@ const faqs: FAQItem[] = [
  {
  category: "grupp",
  question: "Kan ni arrangera företagsevent utomlands?",
- answer: "Absolut — det är ett av våra starkaste områden. Vi har stor erfarenhet av incentiveresor, konferenser och företagsgetaways. Kontakta oss för ett skräddarsytt förslag."
+ answer: "Absolut - det är ett av våra starkaste områden. Vi har stor erfarenhet av incentiveresor, konferenser och företagsgetaways. Kontakta oss för ett skräddarsytt förslag."
  },
 ];
 
@@ -105,7 +105,7 @@ import { usePageMeta } from "@/lib/usePageMeta";
 
 export default function FAQ() {
  usePageMeta({
-   title: "Vanliga frågor — Kaisen Travel Group",
+   title: "Vanliga frågor - Kaisen Travel Group",
    description: "Svar på vanliga frågor om beställning, betalning, biljetter och avbokning hos Kaisen Travel Group.",
  });
  const [activeCategory, setActiveCategory] = useState("alla");
@@ -125,7 +125,7 @@ export default function FAQ() {
  Här svarar vi på <em className="italic font-light text-white">Dina Frågor</em>
  </h1>
  <p className="text-white/60 max-w-xl mx-auto leading-relaxed">
- Hittar du inte svaret? Kontakta oss direkt — vi svarar alltid inom en timme under kontorstid.
+ Hittar du inte svaret? Kontakta oss direkt - vi svarar alltid inom en timme under kontorstid.
  </p>
  </div>
  </section>
@@ -183,7 +183,7 @@ export default function FAQ() {
  <div className="container mx-auto px-4 text-center max-w-2xl">
  <h2 className="font-display text-3xl text-foreground mb-4">Hittar du inte svaret?</h2>
  <p className="text-muted-foreground leading-relaxed mb-8">
- Vi är alltid tillgängliga för ett personligt samtal. Ring, maila eller fyll i kontaktformuläret — vi svarar snabbt.
+ Vi är alltid tillgängliga för ett personligt samtal. Ring, maila eller fyll i kontaktformuläret - vi svarar snabbt.
  </p>
  <div className="flex flex-col sm:flex-row gap-4 justify-center">
  <a href="tel:+442012345678">

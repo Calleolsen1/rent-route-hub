@@ -10,19 +10,19 @@ import founderImage from "@/assets/about-founder.jpg";
 const values = [
 {
  title: "Personlig Service",
- desc: "Vi tror att den bästa reseupplevelsen börjar med ett genuint samtal. Ingen mall, ingen automatisering — bara människor som bryr sig om din resa."
+ desc: "Vi tror att den bästa reseupplevelsen börjar med ett genuint samtal. Ingen mall, ingen automatisering - bara människor som bryr sig om din resa."
 },
 {
  title: "Expertis i Världsklass",
- desc: "Vårt team har djup erfarenhet inom alla resekategorier — från sportevent och konferenser till lyxresor och gruppresor i alla storlekar."
+ desc: "Vårt team har djup erfarenhet inom alla resekategorier - från sportevent och konferenser till lyxresor och gruppresor i alla storlekar."
 },
 {
  title: "Pålitlighet",
- desc: "Vi vet vad som krävs vet vi vad som krävs för att leverera — varje gång, utan undantag."
+ desc: "Vi vet vad som krävs vet vi vad som krävs för att leverera - varje gång, utan undantag."
 },
 {
  title: "Diskretion",
- desc: "Vi hanterar alla kundrelationer med fullständig konfidentialitet och professionell integritet — oavsett uppdragets storlek."
+ desc: "Vi hanterar alla kundrelationer med fullständig konfidentialitet och professionell integritet - oavsett uppdragets storlek."
 }];
 
 
@@ -39,14 +39,14 @@ import { usePageMeta } from "@/lib/usePageMeta";
 
 const FALLBACK_ABOUT_STORY = [
  "Kaisen Travel Group grundades med övertygelsen om att resor ska kännas personliga, inte som en produkt ur en hylla. Vi tror på att varje kund förtjänar full uppmärksamhet och en upplevelse anpassad just för dem.",
- "Vi arrangerar allt från sportresor och elitevent till konferenser, incentive och skräddarsydda gruppresor — alltid med en dedikerad rådgivare som ansvarar för varje detalj.",
- "Idag har vi ett brett team med specialister inom alla resekategorier — men vår filosofi är densamma som dag ett: varje kund förtjänar personlig uppmärksamhet och en resa som är skräddarsydd just för dem."
+ "Vi arrangerar allt från sportresor och elitevent till konferenser, incentive och skräddarsydda gruppresor - alltid med en dedikerad rådgivare som ansvarar för varje detalj.",
+ "Idag har vi ett brett team med specialister inom alla resekategorier - men vår filosofi är densamma som dag ett: varje kund förtjänar personlig uppmärksamhet och en resa som är skräddarsydd just för dem."
 ];
 
 export default function About() {
  usePageMeta({
-   title: "Om oss — Kaisen Travel Group",
-   description: "Kaisen Travel Group arrangerar skräddarsydda lyx- och sportresor. Personlig service från en dedikerad rådgivare — inga mallar, inga callcenter.",
+   title: "Om oss - Kaisen Travel Group",
+   description: "Kaisen Travel Group arrangerar skräddarsydda lyx- och sportresor. Personlig service från en dedikerad rådgivare - inga mallar, inga callcenter.",
  });
  const [story, setStory] = useState<string[]>(FALLBACK_ABOUT_STORY);
 
@@ -161,11 +161,11 @@ export default function About() {
  <div>
  <p className="text-xs tracking-[0.3em] text-primary uppercase mb-4 font-sans">Vårt Team</p>
  <h2 className="font-display text-3xl md:text-4xl text-foreground mb-2">
- Bred Expertis — <em className="italic font-light">Djup Erfarenhet</em>
+ Bred Expertis - <em className="italic font-light">Djup Erfarenhet</em>
  </h2>
  <div className="w-10 h-px bg-primary mb-8" />
  <p className="text-muted-foreground leading-relaxed mb-8">
- Vi är ett team av resespecialister med lång erfarenhet inom varje nisch vi arbetar med. Ingen fråga är för komplex, ingen grupp för stor — vi har sett och löst det mesta under åren.
+ Vi är ett team av resespecialister med lång erfarenhet inom varje nisch vi arbetar med. Ingen fråga är för komplex, ingen grupp för stor - vi har sett och löst det mesta under åren.
  </p>
  <p className="text-muted-foreground leading-relaxed">
  Det som skiljer oss åt är kombinationen av branscherfarenhet och personligt engagemang. Vi behandlar varje uppdrag som om det vore vårt eget.

@@ -148,7 +148,7 @@ export default function AdminDiagnostics() {
         if (!ev) {
           setTests((p) => ({
             ...p,
-            [key]: { ...p[key], result: "fail", message: "Inga xs2-events i databasen — kör seed först" },
+            [key]: { ...p[key], result: "fail", message: "Inga xs2-events i databasen - kör seed först" },
           }));
           return;
         }
@@ -206,7 +206,7 @@ export default function AdminDiagnostics() {
           <div className="text-sm text-amber-900">
             <p className="font-semibold mb-1">🟡 Mock-läge aktivt</p>
             <p className="text-xs leading-relaxed">
-              <code className="bg-amber-100 px-1 rounded">XS2_API_KEY</code> är inte satt — xs2event-funktionerna returnerar fixturer från <code className="bg-amber-100 px-1 rounded">_shared/xs2event.ts</code>. Sätt nyckeln när xs2 har levererat den och funktionerna går automatiskt live.
+              <code className="bg-amber-100 px-1 rounded">XS2_API_KEY</code> är inte satt - xs2event-funktionerna returnerar fixturer från <code className="bg-amber-100 px-1 rounded">_shared/xs2event.ts</code>. Sätt nyckeln när xs2 har levererat den och funktionerna går automatiskt live.
             </p>
           </div>
         </div>
@@ -377,7 +377,7 @@ function Count({ label, value, hint }: { label: string; value: number | undefine
   return (
     <div className="rounded-lg border border-border p-3">
       <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</p>
-      <p className="font-display text-2xl">{value ?? "—"}</p>
+      <p className="font-display text-2xl">{value ?? "-"}</p>
       {hint && <p className="text-[10px] text-muted-foreground font-mono">{hint}</p>}
     </div>
   );

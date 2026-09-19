@@ -49,7 +49,7 @@ export default function AdminTeam() {
     const { error } = await supabase.from("team_members").update(values).eq("id", id);
     setSavingId(null);
     if (error) toast.error(error.message);
-    else toast.success("Sparad — förhandsvisningen uppdateras");
+    else toast.success("Sparad - förhandsvisningen uppdateras");
   };
 
   const add = async () => {

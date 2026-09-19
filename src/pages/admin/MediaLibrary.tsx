@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Trash2, Copy, Upload, Loader2 } from "lucide-react";
 
 /**
- * Admin browser for the email-assets storage bucket — list, preview, copy URL,
+ * Admin browser for the email-assets storage bucket - list, preview, copy URL,
  * delete. Folders within the bucket (event-covers/, home-slides/) are flattened
  * into one list with a path prefix shown on each card.
  */
@@ -156,7 +156,7 @@ export default function AdminMediaLibrary() {
       ) : filtered.length === 0 ? (
         <p className="text-sm text-muted-foreground text-center py-8">
           {files.length === 0
-            ? "Inga bilder än — ladda upp via knappen ovan eller via evenemangs-/banner-redigerarna."
+            ? "Inga bilder än - ladda upp via knappen ovan eller via evenemangs-/banner-redigerarna."
             : "Inga bilder matchar sökningen."}
         </p>
       ) : (

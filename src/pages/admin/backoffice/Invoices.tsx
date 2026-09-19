@@ -196,7 +196,7 @@ export default function BackofficeInvoices() {
         </div>
       ) : filtered.length === 0 ? (
         <p className="rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-          Inga fakturor ännu — skapa en från en bokning.
+          Inga fakturor ännu - skapa en från en bokning.
         </p>
       ) : (
         <div className="overflow-x-auto rounded-lg border border-border">
@@ -220,7 +220,7 @@ export default function BackofficeInvoices() {
                   className={`border-t border-border ${highlight === r.id ? "bg-accent/40" : ""}`}
                 >
                   <td className="px-4 py-3">{r.invoice_number}</td>
-                  <td className="px-4 py-3">{customers[r.customer_id] ?? "—"}</td>
+                  <td className="px-4 py-3">{customers[r.customer_id] ?? "-"}</td>
                   <td className="px-4 py-3">{r.issue_date}</td>
                   <td className="px-4 py-3">{r.due_date}</td>
                   <td className="px-4 py-3 text-right">{formatSek(r.total_sek)}</td>
@@ -275,7 +275,7 @@ export default function BackofficeInvoices() {
       <Dialog open={!!payFor} onOpenChange={(o) => !o && setPayFor(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Registrera betalning – {payFor?.invoice_number}</DialogTitle>
+            <DialogTitle>Registrera betalning - {payFor?.invoice_number}</DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
             <div>

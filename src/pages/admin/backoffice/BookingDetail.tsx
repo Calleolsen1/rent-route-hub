@@ -266,7 +266,7 @@ export default function BackofficeBookingDetail() {
       case "flight": {
         const route =
           d.from_airport && d.to_airport
-            ? `${d.from_airport}${d.is_round_trip ? "⇄" : "–"}${d.to_airport}`
+            ? `${d.from_airport}${d.is_round_trip ? "⇄" : "-"}${d.to_airport}`
             : null;
         const base =
           [d.airline, d.flight_number, route].filter(Boolean).join(" ") || "Flyg";
@@ -275,7 +275,7 @@ export default function BackofficeBookingDetail() {
       case "ticket":
         return [d.event_name, d.ticket_category].filter(Boolean).join(", ") || "Biljett";
       case "transfer":
-        return [d.transfer_from, d.transfer_to].filter(Boolean).join(" – ") || "Transfer";
+        return [d.transfer_from, d.transfer_to].filter(Boolean).join(" - ") || "Transfer";
       default:
         return "Rad";
     }
@@ -350,7 +350,7 @@ export default function BackofficeBookingDetail() {
     return msg;
   };
 
-  // Older log rows were written before we started saving the email body — in
+  // Older log rows were written before we started saving the email body - in
   // that case we rebuild the document with the same preview endpoints.
   const openDoc = async (d: DocRow) => {
     if (d.html) return setDocView(d);
@@ -647,7 +647,7 @@ export default function BackofficeBookingDetail() {
         : [
             {
               invoice_id: inv.id,
-              description: `${booking!.title}${booking!.destination ? ` – ${booking!.destination}` : ""} (paketpris)`,
+              description: `${booking!.title}${booking!.destination ? ` - ${booking!.destination}` : ""} (paketpris)`,
               qty: 1,
               unit_price_sek: subtotal,
               sort_order: 0,
@@ -1023,7 +1023,7 @@ export default function BackofficeBookingDetail() {
                     </td>
                     <td className="px-4 py-3">{DOC_LABEL[d.doc_type] ?? d.doc_type}</td>
                     <td className="px-4 py-3 text-muted-foreground">{d.recipient_email}</td>
-                    <td className="px-4 py-3">{d.subject ?? "—"}</td>
+                    <td className="px-4 py-3">{d.subject ?? "-"}</td>
                     <td className="px-4 py-3">
                       {d.status === "sent" ? (
                         <Badge variant="secondary">Skickat</Badge>
@@ -1139,7 +1139,7 @@ export default function BackofficeBookingDetail() {
                             </span>
                           )}
                         </td>
-                        <td className="px-4 py-3 text-muted-foreground">{i.supplier ?? "—"}</td>
+                        <td className="px-4 py-3 text-muted-foreground">{i.supplier ?? "-"}</td>
                         <td className="px-4 py-3 text-right">{i.qty}</td>
                         <td className="px-4 py-3 text-right text-muted-foreground">
                           {formatSek(i.cost_sek)}
@@ -1230,10 +1230,10 @@ export default function BackofficeBookingDetail() {
                 {travellers.map((t) => (
                   <tr key={t.id} className="border-t border-border">
                     <td className="px-4 py-3">{t.full_name}</td>
-                    <td className="px-4 py-3">{t.date_of_birth ?? "—"}</td>
-                    <td className="px-4 py-3">{t.passport_number ?? "—"}</td>
-                    <td className="px-4 py-3">{t.passport_expiry ?? "—"}</td>
-                    <td className="px-4 py-3">{t.nationality ?? "—"}</td>
+                    <td className="px-4 py-3">{t.date_of_birth ?? "-"}</td>
+                    <td className="px-4 py-3">{t.passport_number ?? "-"}</td>
+                    <td className="px-4 py-3">{t.passport_expiry ?? "-"}</td>
+                    <td className="px-4 py-3">{t.nationality ?? "-"}</td>
                     <td className="px-4 py-3 text-right">
                       <Button
                         variant="ghost"
@@ -1552,7 +1552,7 @@ export default function BackofficeBookingDetail() {
         <DialogContent className="max-w-3xl">
           <DialogHeader>
             <DialogTitle>
-              {docView ? DOC_LABEL[docView.doc_type] ?? docView.doc_type : ""} —{" "}
+              {docView ? DOC_LABEL[docView.doc_type] ?? docView.doc_type : ""} -{" "}
               {docView?.recipient_email}
             </DialogTitle>
           </DialogHeader>
@@ -1611,7 +1611,7 @@ export default function BackofficeBookingDetail() {
                     {hotels.map((h) => (
                       <SelectItem key={h.id} value={h.id}>
                         {h.name}
-                        {h.city ? ` – ${h.city}` : ""}
+                        {h.city ? ` - ${h.city}` : ""}
                       </SelectItem>
                     ))}
                   </SelectContent>

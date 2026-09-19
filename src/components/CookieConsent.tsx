@@ -9,7 +9,7 @@ import { X } from "lucide-react";
  * We currently only use cookies that are strictly necessary (Supabase auth
  * session, Stripe session during checkout), so even "endast nödvändiga"
  * doesn't disable anything today. The structure is in place for when we add
- * analytics or marketing cookies — gate those behind `getCookieConsent() === "all"`.
+ * analytics or marketing cookies - gate those behind `getCookieConsent() === "all"`.
  *
  * Stored in localStorage so it survives reloads but not cross-device. Reset
  * via the "Cookie-inställningar" link in the footer.
@@ -59,7 +59,7 @@ export default function CookieConsent() {
           <h2 className="font-display text-lg">Vi använder cookies</h2>
           <button
             onClick={() => choose("essential")}
-            aria-label="Stäng — endast nödvändiga cookies"
+            aria-label="Stäng - endast nödvändiga cookies"
             className="text-muted-foreground hover:text-foreground"
           >
             <X className="h-4 w-4" />

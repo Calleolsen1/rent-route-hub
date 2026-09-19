@@ -57,7 +57,7 @@ const KIND_LABELS = {
 /**
  * Hero-search typeahead. Suggests three buckets keyed off what the user types:
  *   1. Upcoming events (specific games from public.events)
- *   2. Teams / races (from nav_menu_entries — every editable landing page)
+ *   2. Teams / races (from nav_menu_entries - every editable landing page)
  *   3. Leagues (distinct group_label values across nav_menu_entries)
  *
  * Clicking a suggestion navigates straight to that page. Pressing Enter without
@@ -112,7 +112,7 @@ export function SearchTypeahead({
     const out: Suggestion[] = [];
 
     // Pre-compute: names of race-style landing pages, normalized for fuzzy
-    // matching. Used below to suppress duplicate event rows for F1 — the
+    // matching. Used below to suppress duplicate event rows for F1 - the
     // landing page already covers the same scheduled race, so showing both
     // a "MATCH Monaco Grand Prix" and a "RACE Monacos Grand Prix" is just
     // two doors to the same room.
@@ -147,7 +147,7 @@ export function SearchTypeahead({
       });
     }
 
-    // 2. Teams / races (nav_menu_entries) — match name, group_label, city, venue
+    // 2. Teams / races (nav_menu_entries) - match name, group_label, city, venue
     const seenSlugs = new Set<string>();
     for (const entry of entries) {
       if (entry.is_active === false) continue;

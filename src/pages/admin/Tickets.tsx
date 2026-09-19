@@ -135,7 +135,7 @@ export default function AdminTickets() {
       const msg = Object.entries(summary)
         .map(([r, s]: any) => `${r}: ${s.upserted}/${s.fetched}`)
         .join(", ");
-      toast.success(msg ? `Synk klar — ${msg}` : "Synk klar");
+      toast.success(msg ? `Synk klar - ${msg}` : "Synk klar");
       await load();
     } catch (e: any) {
       toast.error(e.message ?? "Synk misslyckades");
@@ -808,7 +808,7 @@ export default function AdminTickets() {
                 <div>
                   <p className="font-medium">{title} · {d.order_items.ticket_categories.name} × {d.order_items.qty}</p>
                   <p className="text-xs text-muted-foreground">
-                    {d.order_items.orders.customer_name ?? "—"} · {d.order_items.orders.customer_email}
+                    {d.order_items.orders.customer_name ?? "-"} · {d.order_items.orders.customer_email}
                   </p>
                   <p className="text-xs text-muted-foreground font-mono">
                     {d.order_items.orders.invoice_number ?? d.order_items.orders.id.slice(0, 8).toUpperCase()}
@@ -849,7 +849,7 @@ export default function AdminTickets() {
  * Single source-of-truth row for "what applies to every category under this
  * game by default". Two side-by-side editors: compare-at (resolution-chain,
  * cascades automatically) and markup (writes back to all categories on
- * apply — no event-level markup column, so the value here is just a bulk
+ * apply - no event-level markup column, so the value here is just a bulk
  * action against ticket_categories).
  */
 function EventDefaultsPanel({
@@ -885,7 +885,7 @@ function EventDefaultsPanel({
     const pct = Number(pctText);
     const fixed = Number(fixedText);
     if (!Number.isFinite(pct) || pct < 0 || pct > 200) {
-      toast.error("Procent måste vara 0–200");
+      toast.error("Procent måste vara 0-200");
       return;
     }
     if (!Number.isFinite(fixed) || fixed < 0) {
@@ -910,7 +910,7 @@ function EventDefaultsPanel({
         </p>
         {!allSameMarkup && event.ticket_categories?.length ? (
           <span className="text-[10px] text-amber-700">
-            ⚠️ Olika påslag per kategori — fält visar första kategorin
+            ⚠️ Olika påslag per kategori - fält visar första kategorin
           </span>
         ) : null}
       </div>
@@ -1017,7 +1017,7 @@ function CompareAtEditor({
   const cur = Number(minPriceSek);
   const sekNum = Number(sekText);
   const pctNum = Number(pctText);
-  // Live preview — SEK wins, then pct
+  // Live preview - SEK wins, then pct
   const previewCompare = Number.isFinite(sekNum) && sekNum > cur
     ? sekNum
     : Number.isFinite(pctNum) && pctNum > 0 && cur > 0
@@ -1110,7 +1110,7 @@ function CompareAtEditor({
                 <span className="text-primary font-semibold">−{pctOff}%</span>
               </>
             ) : (
-              <>Pris från <strong>{formatSek(cur)}</strong> — fyll i SEK eller % för att visa rabatt</>
+              <>Pris från <strong>{formatSek(cur)}</strong> - fyll i SEK eller % för att visa rabatt</>
             )
           ) : (
             <>Pris saknas</>
@@ -1171,7 +1171,7 @@ function CategoryRow({
           </p>
           {!isXs2 && (
             <p className="text-[11px] text-muted-foreground font-mono mt-1">
-              lookup_key: {c.stripe_price_id ?? "–"}
+              lookup_key: {c.stripe_price_id ?? "-"}
             </p>
           )}
         </div>
@@ -1225,7 +1225,7 @@ function CategoryRow({
       </div>
       <div className="pt-2 border-t border-dashed border-border/60">
         <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">
-          Jämförelsepris för denna kategori (valfritt — vinner över event-nivå)
+          Jämförelsepris för denna kategori (valfritt - vinner över event-nivå)
         </p>
         <CompareAtEditor
           targetId={c.id}

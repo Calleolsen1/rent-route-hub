@@ -12,7 +12,7 @@ if (dsn) {
   Sentry.init({
     dsn,
     environment: import.meta.env.MODE,
-    // Conservative defaults — bump tracesSampleRate to 0.1+ for performance
+    // Conservative defaults - bump tracesSampleRate to 0.1+ for performance
     // monitoring once traffic warrants the volume.
     tracesSampleRate: 0,
     replaysSessionSampleRate: 0,

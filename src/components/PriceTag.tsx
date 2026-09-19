@@ -1,7 +1,7 @@
 import { formatSek } from "@/lib/formatSek";
 
 /**
- * Inputs covering the full compare-at priority chain. All optional —
+ * Inputs covering the full compare-at priority chain. All optional -
  * callers pass whichever levels apply to their render context.
  *
  * Priority (most specific wins; SEK beats % at the same level):
@@ -81,12 +81,12 @@ type Props = {
   currentSek?: number | null;
   /** Legacy single-explicit-SEK override. Prefer `compareAt` for multi-level resolution. */
   compareAtSek?: number | null;
-  /** Multi-level override input — overrides `compareAtSek` and `defaultPct` if provided. */
+  /** Multi-level override input - overrides `compareAtSek` and `defaultPct` if provided. */
   compareAt?: ResolveInput;
   defaultPct?: number | null;
-  /** Show the "Från" prefix. Default true — turn off for single-ticket views where price is exact. */
+  /** Show the "Från" prefix. Default true - turn off for single-ticket views where price is exact. */
   showFrom?: boolean;
-  /** Variant — "card" for compact list display, "large" for hero / EventDetail. */
+  /** Variant - "card" for compact list display, "large" for hero / EventDetail. */
   variant?: "card" | "large";
   /** Fallback CTA when no price is available. */
   fallbackLabel?: string;
