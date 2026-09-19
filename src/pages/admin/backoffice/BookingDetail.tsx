@@ -1081,7 +1081,7 @@ export default function BackofficeBookingDetail() {
                 {items.map((i) => {
                   const details: [string, string][] = [];
                   const fmtDt = (v: string | null) =>
-                    v ? new Date(v).toLocaleString("sv-SE", { dateStyle: "short", timeStyle: "short" }) : null;
+                    v ? new Date(v).toLocaleString("sv-SE", { dateStyle: "short", timeStyle: "short", timeZone: "Europe/Stockholm" }) : null;
                   if (i.item_type === "hotel") {
                     if (i.check_in) details.push(["Incheckning", i.check_in]);
                     if (i.check_out) details.push(["Utcheckning", i.check_out]);
