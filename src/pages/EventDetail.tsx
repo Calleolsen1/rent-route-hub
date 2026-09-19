@@ -55,7 +55,7 @@ export default function EventDetail() {
   const { enabled: showPrices } = usePublicPricesEnabled();
   const teamPhotos = useTeamPhotos();
   const teamCrests = useTeamCrests();
-  const seatmapUrl = useSeatmap(
+  const { url: seatmapUrl, note: seatmapNote } = useSeatmap(
     event?.sport ?? null,
     (event?.sport === "formula1" ? event?.race_name : event?.home_team) ?? null,
   );
