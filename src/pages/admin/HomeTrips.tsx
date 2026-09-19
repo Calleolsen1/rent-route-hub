@@ -29,6 +29,7 @@ type Trip = {
 export default function AdminHomeTrips() {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState(true);
+  const [highlightId, setHighlightId] = useState<string | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -65,8 +66,17 @@ export default function AdminHomeTrips() {
       return;
     }
     setTrips((prev) => [...prev, data as Trip]);
+    setHighlightId((data as Trip).id);
     toast.success("Resa skapad - aktivera när den är klar");
   };
+
+  useEffect(() => {
+    if (!highlightId) return;
+    const el = document.getElementById(`home-trip-${highlightId}`);
+    el?.scrollIntoView({ behavior: "smooth", block: "center" });
+    const t = setTimeout(() => setHighlightId(null), 2500);
+    return () => clearTimeout(t);
+  }, [highlightId]);
 
   const removeTrip = async (id: string) => {
     if (!confirm("Ta bort resan från startsidan?")) return;
@@ -117,7 +127,13 @@ export default function AdminHomeTrips() {
       ) : (
         <div className="space-y-4">
           {trips.map((trip, i) => (
-            <div key={trip.id} className="rounded-xl border border-border bg-card p-5 space-y-4">
+            <div
+              key={trip.id}
+              id={`home-trip-${trip.id}`}
+              className={`rounded-xl border bg-card p-5 space-y-4 transition-colors ${
+                highlightId === trip.id ? "border-primary ring-2 ring-primary/40" : "border-border"
+              }`}
+            >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex flex-wrap items-center gap-4">
                   <span className="text-xs font-mono text-muted-foreground">#{i + 1}</span>
