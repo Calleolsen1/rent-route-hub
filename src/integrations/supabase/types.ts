@@ -1819,6 +1819,24 @@ export type Database = {
           },
         ]
       }
+      team_crests: {
+        Row: {
+          crest_url: string
+          team_name: string
+          updated_at: string
+        }
+        Insert: {
+          crest_url: string
+          team_name: string
+          updated_at?: string
+        }
+        Update: {
+          crest_url?: string
+          team_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       team_members: {
         Row: {
           bio: string | null
@@ -1858,6 +1876,36 @@ export type Database = {
           role_title?: string | null
           sort_order?: number
           updated_at?: string
+        }
+        Relationships: []
+      }
+      team_venue_photos: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string
+          match_key: string
+          sport: Database["public"]["Enums"]["event_sport"]
+          updated_at: string
+          venue_label: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url: string
+          match_key: string
+          sport: Database["public"]["Enums"]["event_sport"]
+          updated_at?: string
+          venue_label?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string
+          match_key?: string
+          sport?: Database["public"]["Enums"]["event_sport"]
+          updated_at?: string
+          venue_label?: string | null
         }
         Relationships: []
       }
@@ -2106,6 +2154,16 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      home_team_photo_coverage: {
+        Row: {
+          event_count: number | null
+          image_url: string | null
+          match_key: string | null
+          sample_venue: string | null
+          sport: Database["public"]["Enums"]["event_sport"] | null
+        }
+        Relationships: []
       }
       public_profiles: {
         Row: {
