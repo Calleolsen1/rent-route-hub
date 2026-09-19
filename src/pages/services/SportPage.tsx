@@ -32,9 +32,22 @@ export default function SportPage() {
       .eq("sport", "formula1")
       .not("race_name", "is", null)
       .then(({ data }) => {
-        const map: Record<string, string> = {};
+        const byName: Record<string, string> = {};
         for (const e of data ?? []) {
-          if (e.race_name && !map[e.race_name]) map[e.race_name] = e.id;
+          if (e.race_name && !byName[e.race_name.toLowerCase()]) byName[e.race_name.toLowerCase()] = e.id;
+        }
+        // Swedish nav names -> event race names
+        const alias: Record<string, string> = {
+          "italiens grand prix": "italian grand prix",
+          "ungerns grand prix": "hungarian grand prix",
+          "spaniens grand prix": "spanish grand prix",
+          "österrikes grand prix": "austrian grand prix",
+        };
+        const map: Record<string, string> = {};
+        for (const race of entries) {
+          const key = race.name.toLowerCase();
+          const id = byName[key] ?? byName[alias[key] ?? ""];
+          if (id) map[race.name] = id;
         }
         setRaceEventIds(map);
       });
