@@ -6,6 +6,7 @@ import { useTeamPhotos } from "@/hooks/useTeamPhotos";
 import EventImage from "@/components/EventImage";
 import { ArrowRight, Calendar, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useInquiryDialog } from "@/components/InquiryDialog";
 import { formatEventDate } from "@/lib/formatSek";
 import { PriceTag } from "@/components/PriceTag";
 
@@ -63,6 +64,7 @@ export default function UpcomingEventsList({
   compact = false,
 }: Props) {
   const [events, setEvents] = useState<EventRow[]>([]);
+  const { open: openInquiry } = useInquiryDialog();
   const [loading, setLoading] = useState(true);
   const [defaultPct, setDefaultPct] = useState<number>(0);
   const { enabled: showPrices } = usePublicPricesEnabled();
@@ -114,8 +116,27 @@ export default function UpcomingEventsList({
 
   if (!events.length) {
     return (
-      <div className="text-center py-10 text-muted-foreground text-sm">
-        Inga evenemang matchade - testa att rensa filtren eller hör av dig så letar vi åt dig.
+      <div className="text-center py-10">
+        <p className="text-muted-foreground text-sm mb-2">
+          Inga evenemang matchade - testa att rensa filtren.
+        </p>
+        <p className="text-foreground font-medium mb-5">
+          Hittar du inte det du letar efter? Vi kan säkert fixa det ändå.
+        </p>
+        <Button
+          className="gap-2"
+          onClick={() =>
+            openInquiry({
+              type: "contact",
+              presetTopic: "Förfrågan: evenemang som inte listas",
+              heading: "Skicka en förfrågan",
+              intro: "Berätta vilket evenemang eller vilken resa du letar efter så återkommer vi med ett förslag.",
+              showTripParts: true,
+            })
+          }
+        >
+          Skicka förfrågan <ArrowRight className="h-4 w-4" />
+        </Button>
       </div>
     );
   }

@@ -318,7 +318,6 @@ export default function EventDetail() {
             <Button className="rounded-full">Tillbaka till Sportresor</Button>
           </Link>
         </div>
-        <RequestCta />
       <Footer />
       </div>
     );
@@ -659,6 +658,7 @@ export default function EventDetail() {
         </DialogContent>
       </Dialog>
 
+      <RequestCta />
       <Footer />
     </div>
   );

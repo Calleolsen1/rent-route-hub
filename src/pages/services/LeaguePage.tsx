@@ -36,7 +36,6 @@ export default function LeaguePage() {
             <Button className="rounded-full">Tillbaka till Sportresor</Button>
           </Link>
         </div>
-        <RequestCta />
       <Footer />
       </div>
     );
@@ -132,6 +131,7 @@ export default function LeaguePage() {
         </div>
       </section>
 
+      <RequestCta />
       <Footer />
     </div>
   );
