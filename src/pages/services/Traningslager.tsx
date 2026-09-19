@@ -259,20 +259,14 @@ export default function Traningslager() {
  </div>
  </section>
 
- {/* Inquiry form */}
- <section id="forfragan" className="bg-cream py-16 md:py-24">
- <div className="container mx-auto px-4 max-w-3xl">
-  <InquiryForm
-  type="training_camp"
-  defaultDestination={selectedDestination}
-  eyebrow="Förfrågan träningsläger"
- heading="Berätta om ert lag"
- intro="Sport, antal spelare och stab, önskad period och destination - vi tar fram ett upplägg som passar just ert lag."
- />
- </div>
- </section>
-
- <FloatingInquiryButton />
+  <FloatingInquiryButton
+    inquiry={{
+      type: "training_camp",
+      eyebrow: "Förfrågan träningsläger",
+      heading: "Berätta om ert lag",
+      intro: "Sport, antal spelare och stab, önskad period och destination - vi tar fram ett upplägg som passar just ert lag.",
+    }}
+  />
  <Footer />
  </div>
  );
