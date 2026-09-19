@@ -108,7 +108,7 @@ export default function SportPage() {
               {entries.map((race) => (
                 <Link
                   key={race.id}
-                  to={`/services/sportresor/${sport.slug}/${race.slug}`}
+                  to={raceEventIds[race.name] ? `/sport/event/${raceEventIds[race.name]}` : `/services/sportresor/${sport.slug}/${race.slug}`}
                   className="group bg-card border border-border overflow-hidden hover:shadow-xl transition-shadow"
                 >
                   <div className="aspect-[4/3] overflow-hidden">
