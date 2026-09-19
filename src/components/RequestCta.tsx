@@ -27,7 +27,7 @@ const RequestCta = ({
 
   return (
     <section className="bg-primary text-primary-foreground">
-      <div className="container mx-auto px-4 py-14 md:py-20 text-center">
+      <div className="container mx-auto px-4 py-10 md:py-14 text-center">
         <p className="text-xs uppercase tracking-[0.25em] text-primary-foreground/70 mb-3">
           Personlig service
         </p>
