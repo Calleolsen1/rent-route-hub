@@ -20,7 +20,7 @@ export default function MobileInquiryBar() {
           intro: "Berätta vad du är ute efter - vi återkommer inom 24h.",
         })
       }
-      className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-primary text-primary-foreground h-14 flex items-center justify-center gap-2 text-sm font-medium tracking-wide shadow-lg shadow-navy/30 pb-[env(safe-area-inset-bottom)] active:bg-primary/90 transition-colors"
+      className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-primary text-primary-foreground h-14 flex items-center justify-center gap-2 text-sm font-medium tracking-wide shadow-[0_-4px_16px_rgba(0,0,0,0.35)] ring-1 ring-white/20 pb-[env(safe-area-inset-bottom)] active:bg-primary/90 transition-colors"
       aria-label="Skicka en förfrågan"
     >
       <MessageSquare className="h-4 w-4" />
