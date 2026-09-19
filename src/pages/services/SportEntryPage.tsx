@@ -75,7 +75,6 @@ export default function SportEntryPage() {
             <Button className="rounded-full">Tillbaka till Sportresor</Button>
           </Link>
         </div>
-        <RequestCta />
       <Footer />
       </div>
     );
@@ -198,6 +197,7 @@ export default function SportEntryPage() {
         </div>
       </section>
 
+      <RequestCta />
       <Footer />
     </div>
   );
