@@ -60,7 +60,8 @@ export default function EventDetail() {
     (event?.sport === "formula1" ? event?.race_name : event?.home_team) ?? null,
   );
   const [inquiryOpen, setInquiryOpen] = useState(false);
-  const [inquiryParts, setInquiryParts] = useState<string[]>(["biljett"]);
+  const [inquiryParts, setInquiryParts] = useState<string[]>(["biljett", "hotell", "flyg"]);
+  const [selectedPackage, setSelectedPackage] = useState<string>("komplett");
 
   useEffect(() => {
     (async () => {
