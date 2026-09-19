@@ -72,18 +72,27 @@ export default function LeaguePage() {
           </p>
           <h2 className="font-display text-3xl md:text-4xl text-center mb-12">Vilket lag vill du se live?</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {teams.map((team) => (
+            {teams.map((team) => {
+              const venueImage =
+                venuePhotoFor(venuePhotos, team.venue, team.name) || team.hero_image_url || null;
+              return (
               <Link
                 key={team.id}
                 to={`/services/sportresor/${sport.slug}/${team.slug}`}
                 className="group bg-card border border-border overflow-hidden hover:shadow-xl transition-shadow"
               >
-                <div className="aspect-[4/3] overflow-hidden bg-navy flex items-center justify-center p-10">
-                  {crests[team.name] ? (
+                <div className="aspect-[4/3] overflow-hidden bg-navy flex items-center justify-center">
+                  {venueImage ? (
+                    <img
+                      src={venueImage}
+                      alt={`${team.venue || team.name} arena`}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : crests[team.name] ? (
                     <img
                       src={crests[team.name]}
                       alt={`${team.name} klubbmärke`}
-                      className="w-full h-full object-contain drop-shadow-lg group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-contain drop-shadow-lg p-10 group-hover:scale-105 transition-transform duration-500"
                     />
                   ) : (
                     <span className="font-display text-2xl text-primary-foreground text-center">
