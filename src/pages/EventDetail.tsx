@@ -9,7 +9,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, Calendar, MapPin, Minus, Plus, Ticket, Users } from "lucide-react";
+import { ArrowLeft, ArrowRight, Calendar, Hotel, MapPin, Minus, Plane, Plus, Ticket, Users } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { formatEventDateTime, formatSek } from "@/lib/formatSek";
@@ -98,6 +98,7 @@ export default function EventDetail() {
   const { enabled: showPrices } = usePublicPricesEnabled();
   const teamPhotos = useTeamPhotos();
   const [inquiryOpen, setInquiryOpen] = useState(false);
+  const [inquiryParts, setInquiryParts] = useState<string[]>(["biljett"]);
 
   useEffect(() => {
     (async () => {
