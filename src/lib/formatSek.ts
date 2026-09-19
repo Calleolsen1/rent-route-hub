@@ -10,7 +10,7 @@ export const formatSek = (amount: number | string | null | undefined) => {
 export const TZ = "Europe/Stockholm";
 
 export const formatEventDate = (iso: string) =>
-  new Date(iso).toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm",
+  new Date(iso).toLocaleDateString("sv-SE", {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -19,7 +19,7 @@ export const formatEventDate = (iso: string) =>
   });
 
 export const formatEventDateTime = (iso: string) =>
-  new Date(iso).toLocaleString("sv-SE", { timeZone: "Europe/Stockholm",
+  new Date(iso).toLocaleString("sv-SE", {
     day: "numeric",
     month: "long",
     year: "numeric",
