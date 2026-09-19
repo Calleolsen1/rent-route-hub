@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, MapPin, MessageSquare } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import InquiryForm from "@/components/InquiryForm";
 import FloatingInquiryButton from "@/components/FloatingInquiryButton";
+import { useInquiryDialog } from "@/components/InquiryDialog";
 import heroImage from "@/assets/camps-hero.jpg";
 import valenciaImg from "@/assets/camp-valencia-pitch.jpg.asset.json";
 import antalyaImg from "@/assets/camp-antalya-pitch.jpg.asset.json";
@@ -90,11 +90,16 @@ const FALLBACK_TRAINING_FEATURES = [
 
 export default function Traningslager() {
   const { get, getArray } = useSiteContent(TRAINING_KEYS);
-  const [selectedDestination, setSelectedDestination] = useState<string | undefined>(undefined);
-  const chooseCamp = (location: string, sport: string) => {
-    setSelectedDestination(`${location} (${sport})`);
-    document.getElementById("forfragan")?.scrollIntoView({ behavior: "smooth" });
-  };
+  const { open: openInquiry } = useInquiryDialog();
+  const openCampInquiry = (destination?: string) =>
+    openInquiry({
+      type: "training_camp",
+      defaultDestination: destination,
+      eyebrow: "Förfrågan träningsläger",
+      heading: "Berätta om ert lag",
+      intro: "Sport, antal spelare och stab, önskad period och destination - vi tar fram ett upplägg som passar just ert lag.",
+    });
+  const chooseCamp = (location: string, sport: string) => openCampInquiry(`${location} (${sport})`);
  const editableFeatures = getArray("training_features", FALLBACK_TRAINING_FEATURES);
  return (
  <div className="min-h-screen">
