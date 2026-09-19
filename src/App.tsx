@@ -74,6 +74,7 @@ const App = () => (
           <DemoProvider>
             <SuspendedUserListener />
             <ScrollToTop />
+            <InquiryDialogProvider>
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/tjanster" element={<Services />} />
@@ -151,6 +152,7 @@ const App = () => (
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<><Navbar /><NotFound /></>} />
             </Routes>
+            </InquiryDialogProvider>
             <CookieConsent />
           </DemoProvider>
         </AuthProvider>
