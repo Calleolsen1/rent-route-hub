@@ -44,7 +44,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-navy text-white">
+    <footer className="bg-navy-deep text-white border-t border-white/15">
       <div className="w-full max-w-[1600px] mx-auto px-6 md:px-10 pt-10 md:pt-14 pb-8 md:pb-10">
         {/* Newsletter */}
         <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-end pb-12 md:pb-16">

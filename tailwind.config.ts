@@ -58,6 +58,7 @@ export default {
         warning: "hsl(var(--warning))",
         info: "hsl(var(--info))",
         navy: "hsl(var(--navy))",
+        "navy-deep": "hsl(var(--navy-deep))",
         gold: "hsl(var(--gold))",
         "gold-light": "hsl(var(--gold-light))",
         "gold-pale": "hsl(var(--gold-pale))",
