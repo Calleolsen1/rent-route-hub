@@ -303,31 +303,36 @@ const Navbar = () => {
               <Link
                 key={item.id}
                 to={item.href}
-                className="block text-sm font-medium tracking-wide py-3 px-2 text-foreground/80 hover:text-primary transition-colors border-t border-border/40"
+                className="block text-base font-medium tracking-wide py-4 px-2 text-foreground/80 border-b border-border/40"
                 onClick={() => setMobileOpen(false)}
               >
                 {item.label}
               </Link>
             ))}
 
-            <div className="pt-4 space-y-3 border-t border-border/40">
+            <div className="pt-4 pb-2 space-y-3">
+              <Link to="/contact" onClick={() => setMobileOpen(false)} className="block">
+                <Button className="w-full h-12 rounded-full bg-primary text-base">Planera din resa</Button>
+              </Link>
               {user ? (
                 <>
-                  <Link to="/mitt-kaisen/dashboard" onClick={() => setMobileOpen(false)}>
-                    <Button variant="outline" className="w-full rounded-none">Mitt Kaisen</Button>
+                  <Link to="/mitt-kaisen/dashboard" onClick={() => setMobileOpen(false)} className="block">
+                    <Button variant="outline" className="w-full h-12 rounded-full">Mitt Kaisen</Button>
                   </Link>
-                  <Button variant="ghost" className="w-full rounded-none" onClick={signOut}>
+                  {isAdmin && (
+                    <Link to="/admin/dashboard" onClick={() => setMobileOpen(false)} className="block">
+                      <Button variant="outline" className="w-full h-12 rounded-full">Admin-panel</Button>
+                    </Link>
+                  )}
+                  <Button variant="ghost" className="w-full h-12 rounded-full" onClick={signOut}>
                     <LogOut className="h-4 w-4 mr-2" /> Logga ut
                   </Button>
                 </>
               ) : (
-                <Button variant="outline" className="w-full rounded-none border-primary text-primary" onClick={() => { setAuthDialogOpen(true); setMobileOpen(false); }}>
+                <Button variant="outline" className="w-full h-12 rounded-full border-primary text-primary text-base" onClick={() => { setAuthDialogOpen(true); setMobileOpen(false); }}>
                   Logga in
                 </Button>
               )}
-              <Link to="/contact" onClick={() => setMobileOpen(false)}>
-                <Button className="w-full rounded-none bg-primary">Planera din resa</Button>
-              </Link>
             </div>
           </div>
         )}
