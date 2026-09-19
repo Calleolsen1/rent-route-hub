@@ -9,6 +9,7 @@ import { useSport, useEntriesForSport } from "@/hooks/useNavigation";
 import { slugify } from "@/data/sports";
 import { usePageMeta } from "@/lib/usePageMeta";
 import { useTeamCrests } from "@/hooks/useTeamCrests";
+import { useVenuePhotos, venuePhotoFor } from "@/hooks/useVenuePhotos";
 
 export default function LeaguePage() {
   const { sport: sportSlug, league: leagueSlug } = useParams<{ sport: string; league: string }>();
