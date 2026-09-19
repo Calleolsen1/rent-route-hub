@@ -12,6 +12,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Check, ChevronsUpDown } from "lucide-react";
+import { slugify } from "@/data/sports";
 
 type Option = { label: string; value: string; group: string };
 
