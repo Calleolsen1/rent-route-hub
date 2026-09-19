@@ -100,7 +100,7 @@ export function PriceTag({
   defaultPct,
   showFrom = true,
   variant = "card",
-  fallbackLabel = "Se biljetter →",
+  fallbackLabel = "Se erbjudanden →",
   className,
 }: Props) {
   const cur = Number(currentSek);
