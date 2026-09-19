@@ -170,10 +170,8 @@ export default function AdminBanners() {
                         prev.map((s) => (s.id === slide.id ? { ...s, eyebrow: e.target.value } : s)),
                       )
                     }
-                    onBlur={(e) =>
-                      e.target.value !== (slide.eyebrow ?? "") &&
-                      patch(slide.id, { eyebrow: e.target.value || null })
-                    }
+                    onBlur={(e) => patch(slide.id, { eyebrow: e.target.value || null })}
+
                   />
                 </div>
                 <div>
@@ -185,9 +183,8 @@ export default function AdminBanners() {
                         prev.map((s) => (s.id === slide.id ? { ...s, title: e.target.value } : s)),
                       )
                     }
-                    onBlur={(e) =>
-                      e.target.value !== slide.title && patch(slide.id, { title: e.target.value })
-                    }
+                    onBlur={(e) => patch(slide.id, { title: e.target.value })}
+
                   />
                 </div>
                 <div>
@@ -200,10 +197,8 @@ export default function AdminBanners() {
                         prev.map((s) => (s.id === slide.id ? { ...s, italic: e.target.value } : s)),
                       )
                     }
-                    onBlur={(e) =>
-                      e.target.value !== (slide.italic ?? "") &&
-                      patch(slide.id, { italic: e.target.value || null })
-                    }
+                    onBlur={(e) => patch(slide.id, { italic: e.target.value || null })}
+
                   />
                 </div>
                 <div className="md:col-span-2">
@@ -218,10 +213,8 @@ export default function AdminBanners() {
                         ),
                       )
                     }
-                    onBlur={(e) =>
-                      e.target.value !== (slide.description ?? "") &&
-                      patch(slide.id, { description: e.target.value || null })
-                    }
+                    onBlur={(e) => patch(slide.id, { description: e.target.value || null })}
+
                   />
                 </div>
                 <div>
@@ -236,10 +229,8 @@ export default function AdminBanners() {
                         ),
                       )
                     }
-                    onBlur={(e) =>
-                      e.target.value !== (slide.cta_label ?? "") &&
-                      patch(slide.id, { cta_label: e.target.value || null })
-                    }
+                    onBlur={(e) => patch(slide.id, { cta_label: e.target.value || null })}
+
                   />
                 </div>
                 <div>
@@ -252,10 +243,8 @@ export default function AdminBanners() {
                         prev.map((s) => (s.id === slide.id ? { ...s, cta_to: e.target.value } : s)),
                       )
                     }
-                    onBlur={(e) =>
-                      e.target.value !== (slide.cta_to ?? "") &&
-                      patch(slide.id, { cta_to: e.target.value || null })
-                    }
+                    onBlur={(e) => patch(slide.id, { cta_to: e.target.value || null })}
+
                   />
                 </div>
               </div>
