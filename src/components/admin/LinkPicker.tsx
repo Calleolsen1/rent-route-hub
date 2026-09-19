@@ -65,13 +65,32 @@ export function LinkPicker({
 
       if (cancelled) return;
 
-      const entryOptions: Option[] = ((entriesRes.data as any[]) ?? [])
+      const raw = (entriesRes.data as any[]) ?? [];
+      const entryOptions: Option[] = raw
         .filter((e) => e.nav_sports?.slug)
         .map((e) => ({
           label: `${e.name}${e.city ? ` - ${e.city}` : ""}`,
           value: `/services/sportresor/${e.nav_sports.slug}/${e.slug}`,
           group: e.nav_sports.label ?? "Sportsidor",
         }));
+
+      // Ligasidor som redan finns byggda: /services/sportresor/:sport/liga/:slug
+      const seenLeagues = new Set<string>();
+      const leagueOptions: Option[] = [];
+      raw.forEach((e) => {
+        const sportSlug = e.nav_sports?.slug;
+        const sportLabel = e.nav_sports?.label;
+        if (!sportSlug || !sportLabel || !e.group_label) return;
+        const leagueSlug = slugify(e.group_label);
+        const key = `${sportSlug}/${leagueSlug}`;
+        if (seenLeagues.has(key)) return;
+        seenLeagues.add(key);
+        leagueOptions.push({
+          label: e.group_label,
+          value: `/services/sportresor/${sportSlug}/liga/${leagueSlug}`,
+          group: `${sportLabel} - Ligor`,
+        });
+      });
 
       const eventOptions: Option[] = ((eventsRes.data as any[]) ?? []).map((ev) => {
         const name =
