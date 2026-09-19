@@ -334,7 +334,7 @@ export default function EventDetail() {
       {/* Price-on-request enquiry. Carries the exact event + ticket category
           in presetTopic so ops can quote without asking the customer again. */}
       <Dialog open={inquiryOpen} onOpenChange={setInquiryOpen}>
-        <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[92vh] overflow-y-auto">
           <InquiryForm
             key={inquiryParts.join(",")}
             type="contact"
@@ -348,6 +348,7 @@ export default function EventDetail() {
             showDates={false}
             showTripParts
             defaultTripParts={inquiryParts}
+            compact
           />
         </DialogContent>
       </Dialog>

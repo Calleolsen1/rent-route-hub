@@ -35,14 +35,12 @@ type Props = {
   showDates?: boolean;
   /** Show budget field. Default: true for group/conference/vip. */
   showBudget?: boolean;
-  /**
-   * Show the Hotell / Biljett / Flyg picker. The site sells packages on
-   * request rather than single items through a checkout, so the first thing
-   * ops needs to know is which parts of the trip the customer wants.
-   */
+  /** Show the Hotell / Biljett / Flyg picker. */
   showTripParts?: boolean;
   /** Trip parts ticked on open, e.g. ["biljett"] from an event page. */
   defaultTripParts?: readonly string[];
+  /** Tighter layout that fits a dialog without scrolling. */
+  compact?: boolean;
 };
 
 /** The three things a Kaisen trip is assembled from. */
@@ -91,6 +89,7 @@ export default function InquiryForm({
   showBudget,
   showTripParts = false,
   defaultTripParts,
+  compact = false,
 }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const [dateFrom, setDateFrom] = useState("");
@@ -217,21 +216,26 @@ export default function InquiryForm({
     );
   }
 
-  const inputCls = "rounded-none border-border focus-visible:ring-1 focus-visible:ring-primary";
+  const inputCls = `rounded-none border-border focus-visible:ring-1 focus-visible:ring-primary ${compact ? "h-9" : ""}`;
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white border border-border p-6 md:p-10 space-y-5">
-      <div className="mb-2">
+    <form
+      onSubmit={handleSubmit}
+      className={`bg-white border border-border ${compact ? "p-6 space-y-3" : "p-6 md:p-10 space-y-5"}`}
+    >
+      <div className="mb-1">
         {eyebrow && (
-          <p className="text-[11px] tracking-[0.3em] text-primary uppercase mb-3 font-sans font-semibold">
+          <p className={`text-[11px] tracking-[0.3em] text-primary uppercase font-sans font-semibold ${compact ? "mb-1" : "mb-3"}`}>
             {eyebrow}
           </p>
         )}
-        <h3 className="font-display text-3xl">{heading}</h3>
-        {intro && <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{intro}</p>}
+        <h3 className={`font-display ${compact ? "text-xl" : "text-3xl"}`}>{heading}</h3>
+        {intro && (
+          <p className={`${compact ? "mt-1 text-[13px]" : "mt-3 text-sm"} text-muted-foreground leading-relaxed`}>{intro}</p>
+        )}
       </div>
 
-      <div className="grid md:grid-cols-2 gap-4">
+      <div className={`grid md:grid-cols-2 ${compact ? "gap-x-4 gap-y-3" : "gap-4"}`}>
         <div>
           <Label htmlFor="name" className="text-xs uppercase tracking-wider">Namn *</Label>
           <Input id="name" name="name" required maxLength={120} className={inputCls} />
@@ -316,7 +320,7 @@ export default function InquiryForm({
           <p className="text-[11px] text-muted-foreground mt-1 mb-2">
             Välj en, två eller alla tre - vi sätter ihop paketet och återkommer med pris.
           </p>
-          <div className="grid grid-cols-3 gap-2">
+          <div className={`grid grid-cols-3 gap-2`}>
             {TRIP_PARTS.map((part) => {
               const active = tripParts.includes(part.id);
               return (
@@ -325,7 +329,7 @@ export default function InquiryForm({
                   type="button"
                   aria-pressed={active}
                   onClick={() => toggleTripPart(part.id)}
-                  className={`relative flex items-center justify-center gap-2 rounded-lg border px-3 py-3 text-sm transition-all ${
+                  className={`relative flex items-center justify-center gap-2 rounded-lg border px-3 text-sm transition-all ${compact ? "py-2" : "py-3"} ${
                     active
                       ? "border-primary bg-primary text-primary-foreground font-semibold shadow-md"
                       : "border-border bg-background text-muted-foreground hover:border-primary/60 hover:bg-primary/5"
@@ -351,9 +355,9 @@ export default function InquiryForm({
           id="message"
           name="message"
           required
-          rows={5}
+          rows={compact ? 2 : 5}
           maxLength={4000}
-          className={`${inputCls} resize-none`}
+          className={`${inputCls} resize-none ${compact ? "min-h-0" : ""}`}
           placeholder="Berätta gärna mer om er resa, era önskemål och vad ni vill uppleva."
         />
         {errors.message && <p className="text-xs text-destructive mt-1">{errors.message}</p>}
@@ -367,23 +371,25 @@ export default function InquiryForm({
         </div>
       )}
 
-      <Button
-        type="submit"
-        disabled={submitting}
-        className="rounded-none px-8 tracking-wider text-xs bg-primary hover:bg-primary/90 h-11"
-      >
-        {submitting ? (
-          <>
-            <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Skickar...
-          </>
-        ) : (
-          "Skicka förfrågan"
-        )}
-      </Button>
+      <div className={compact ? "flex flex-wrap items-center justify-between gap-3" : "space-y-3"}>
+        <Button
+          type="submit"
+          disabled={submitting}
+          className="rounded-none px-8 tracking-wider text-xs bg-primary hover:bg-primary/90 h-11"
+        >
+          {submitting ? (
+            <>
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Skickar...
+            </>
+          ) : (
+            "Skicka förfrågan"
+          )}
+        </Button>
 
-      <p className="text-xs text-muted-foreground">
-        Genom att skicka formuläret godkänner du att vi kontaktar dig angående din förfrågan.
-      </p>
+        <p className={`text-muted-foreground ${compact ? "text-[11px] max-w-sm leading-snug" : "text-xs"}`}>
+          Genom att skicka formuläret godkänner du att vi kontaktar dig angående din förfrågan.
+        </p>
+      </div>
     </form>
   );
 }
