@@ -10,7 +10,7 @@
 // both the event rows and the ticket_category rows, and the crawl is bounded
 // by max_pages so a sync can't run away against the full catalogue.
 
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { createClient, type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import {
   OneClicketClient,
   OC_CATEGORY_SOCCER,
