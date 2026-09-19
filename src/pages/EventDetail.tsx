@@ -541,8 +541,6 @@ export default function EventDetail() {
             intro={`${formatEventDateTime(event.starts_at)}${event.venue_name ? ` · ${event.venue_name}` : ""}. Skriv gärna om ni vill sitta ihop eller har andra önskemål - vi återkommer med pris och tillgänglighet.`}
             presetTopic={[
               headline ?? event.tournament_name,
-              selected?.name,
-              `${qty} biljett${qty === 1 ? "" : "er"}`,
               `event:${event.id}`,
             ].filter(Boolean).join(" · ")}
             showDates={false}
