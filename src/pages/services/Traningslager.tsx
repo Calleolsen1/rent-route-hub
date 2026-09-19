@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, MapPin, MessageSquare } from "lucide-react";
 import Footer from "@/components/Footer";
+import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
 import FloatingInquiryButton from "@/components/FloatingInquiryButton";
 import { useInquiryDialog } from "@/components/InquiryDialog";
@@ -265,7 +266,8 @@ export default function Traningslager() {
       intro: "Sport, antal spelare och stab, önskad period och destination - vi tar fram ett upplägg som passar just ert lag.",
     }}
   />
- <Footer />
+ <RequestCta />
+      <Footer />
  </div>
  );
 }

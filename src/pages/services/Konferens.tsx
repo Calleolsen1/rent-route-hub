@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, Users, Projector, Utensils, Wifi, Car, Award, Mic2, Coffee, Palette, MessageSquare } from "lucide-react";
 import Footer from "@/components/Footer";
+import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
 import FloatingInquiryButton from "@/components/FloatingInquiryButton";
 import { useInquiryDialog } from "@/components/InquiryDialog";
@@ -197,6 +198,7 @@ export default function Konferens() {
           intro: "Antal deltagare, ungefärliga datum, destination och budget. Vi återkommer med ett komplett förslag.",
         }}
       />
+      <RequestCta />
       <Footer />
     </div>
   );

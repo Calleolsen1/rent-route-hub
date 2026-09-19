@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Calendar, Hotel, MapPin, Minus, Plane, Plus, Ticket, Users } from "lucide-react";
 import Footer from "@/components/Footer";
+import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
 import { formatEventDateTime, formatSek } from "@/lib/formatSek";
 import { getStripeEnvironment } from "@/lib/stripe";
@@ -317,7 +318,8 @@ export default function EventDetail() {
             <Button className="rounded-full">Tillbaka till Sportresor</Button>
           </Link>
         </div>
-        <Footer />
+        <RequestCta />
+      <Footer />
       </div>
     );
   }

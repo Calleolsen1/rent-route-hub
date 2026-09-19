@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Check } from "lucide-react";
 import Footer from "@/components/Footer";
+import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
 import sportsImage from "@/assets/kaisen-sports.jpg";
 import luxuryImage from "@/assets/kaisen-luxury.jpg";
@@ -146,7 +147,8 @@ export default function Sportresor() {
     </div>
   </section>
 
- <Footer />
+ <RequestCta />
+      <Footer />
  </div>
  );
 }
