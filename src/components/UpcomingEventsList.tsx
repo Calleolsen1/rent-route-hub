@@ -58,8 +58,8 @@ type Props = {
 
 /** Svenska månadsnamn för filterknapparna. */
 const MONTHS_SV = [
-  "jan", "feb", "mars", "april", "maj", "juni",
-  "juli", "aug", "sep", "okt", "nov", "dec",
+  "Jan", "Feb", "Mar", "Apr", "Maj", "Jun",
+  "Jul", "Aug", "Sep", "Okt", "Nov", "Dec",
 ];
 
 const monthKey = (iso: string) => iso.slice(0, 7); // YYYY-MM

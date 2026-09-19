@@ -54,13 +54,19 @@ export const formatEventDateTime = (iso: string) => {
   });
 };
 
-/** Kort datum t.ex. "19 sep" (alltid svensk tid). */
-export const svDateShort = (iso: string) =>
-  new Date(iso).toLocaleDateString("sv-SE", { day: "numeric", month: "short", timeZone: TZ });
+/** Kort datum t.ex. "19 Sep" (alltid svensk tid). */
+export const svDateShort = (iso: string) => {
+  const s = new Date(iso).toLocaleDateString("sv-SE", { day: "numeric", month: "short", timeZone: TZ });
+  const i = s.lastIndexOf(" ");
+  return i === -1 ? s : `${s.slice(0, i + 1)}${s.charAt(i + 1).toUpperCase()}${s.slice(i + 2)}`;
+};
 
-/** Datum med år t.ex. "19 sep 2026" (alltid svensk tid). */
-export const svDateFull = (iso: string) =>
-  new Date(iso).toLocaleDateString("sv-SE", { day: "numeric", month: "short", year: "numeric", timeZone: TZ });
+/** Datum med år t.ex. "19 Sep 2026" (alltid svensk tid). */
+export const svDateFull = (iso: string) => {
+  const s = new Date(iso).toLocaleDateString("sv-SE", { day: "numeric", month: "short", year: "numeric", timeZone: TZ });
+  const i = s.lastIndexOf(" ");
+  return i === -1 ? s : `${s.slice(0, i + 1)}${s.charAt(i + 1).toUpperCase()}${s.slice(i + 2)}`;
+};
 
 /** Klockslag t.ex. "19:30" (alltid svensk tid). */
 export const svTime = (iso: string) =>
