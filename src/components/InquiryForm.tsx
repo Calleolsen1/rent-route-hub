@@ -320,7 +320,7 @@ export default function InquiryForm({
           <p className="text-[11px] text-muted-foreground mt-1 mb-2">
             Välj en, två eller alla tre - vi sätter ihop paketet och återkommer med pris.
           </p>
-          <div className="grid grid-cols-3 gap-2">
+          <div className={`grid grid-cols-3 gap-2`}>
             {TRIP_PARTS.map((part) => {
               const active = tripParts.includes(part.id);
               return (
@@ -329,7 +329,7 @@ export default function InquiryForm({
                   type="button"
                   aria-pressed={active}
                   onClick={() => toggleTripPart(part.id)}
-                  className={`relative flex items-center justify-center gap-2 rounded-lg border px-3 py-3 text-sm transition-all ${
+                  className={`relative flex items-center justify-center gap-2 rounded-lg border px-3 text-sm transition-all ${compact ? "py-2.5" : "py-3"} ${
                     active
                       ? "border-primary bg-primary text-primary-foreground font-semibold shadow-md"
                       : "border-border bg-background text-muted-foreground hover:border-primary/60 hover:bg-primary/5"
