@@ -332,11 +332,6 @@ const Navbar = () => {
                   <Link to="/mitt-kaisen/dashboard" onClick={() => setMobileOpen(false)} className="block">
                     <Button variant="outline" className="w-full h-12 rounded-full">Mitt Kaisen</Button>
                   </Link>
-                  {isAdmin && (
-                    <Link to="/admin/dashboard" onClick={() => setMobileOpen(false)} className="block">
-                      <Button variant="outline" className="w-full h-12 rounded-full">Admin-panel</Button>
-                    </Link>
-                  )}
                   <Button variant="ghost" className="w-full h-12 rounded-full" onClick={signOut}>
                     <LogOut className="h-4 w-4 mr-2" /> Logga ut
                   </Button>
