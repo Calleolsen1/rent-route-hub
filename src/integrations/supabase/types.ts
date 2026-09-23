@@ -396,6 +396,24 @@ export type Database = {
           },
         ]
       }
+      cron_secrets: {
+        Row: {
+          created_at: string
+          name: string
+          secret: string
+        }
+        Insert: {
+          created_at?: string
+          name: string
+          secret: string
+        }
+        Update: {
+          created_at?: string
+          name?: string
+          secret?: string
+        }
+        Relationships: []
+      }
       customers: {
         Row: {
           address_line1: string | null
@@ -2690,6 +2708,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      invoke_sync_function: { Args: { p_function: string }; Returns: number }
       make_user_admin: { Args: { target_user_id: string }; Returns: undefined }
       search_inbox_conversations: {
         Args: { p_search_query?: string; p_sort_by?: string; p_user_id: string }
