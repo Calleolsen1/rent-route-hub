@@ -579,6 +579,30 @@ export type Database = {
         }
         Relationships: []
       }
+      fx_rates: {
+        Row: {
+          currency: string
+          fetched_at: string
+          rate_date: string | null
+          rate_to_sek: number
+          source: string
+        }
+        Insert: {
+          currency: string
+          fetched_at?: string
+          rate_date?: string | null
+          rate_to_sek: number
+          source: string
+        }
+        Update: {
+          currency?: string
+          fetched_at?: string
+          rate_date?: string | null
+          rate_to_sek?: number
+          source?: string
+        }
+        Relationships: []
+      }
       home_experiences: {
         Row: {
           created_at: string
@@ -1864,6 +1888,197 @@ export type Database = {
           },
         ]
       }
+      tc_bookings: {
+        Row: {
+          agent_reference: string | null
+          booking_id: string | null
+          created_at: string
+          created_by: string | null
+          environment: string
+          error_message: string | null
+          event_id: string | null
+          id: string
+          invoice_url: string | null
+          lines: Json
+          order_id: string | null
+          order_num: string | null
+          request_payload: Json | null
+          reservation_expires_at: string | null
+          reservation_num: string | null
+          response_payload: Json | null
+          status: string
+          supplier_currency: string | null
+          supplier_status: string | null
+          supplier_total: number | null
+          updated_at: string
+          voucher_urls: Json
+        }
+        Insert: {
+          agent_reference?: string | null
+          booking_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          environment: string
+          error_message?: string | null
+          event_id?: string | null
+          id?: string
+          invoice_url?: string | null
+          lines?: Json
+          order_id?: string | null
+          order_num?: string | null
+          request_payload?: Json | null
+          reservation_expires_at?: string | null
+          reservation_num?: string | null
+          response_payload?: Json | null
+          status?: string
+          supplier_currency?: string | null
+          supplier_status?: string | null
+          supplier_total?: number | null
+          updated_at?: string
+          voucher_urls?: Json
+        }
+        Update: {
+          agent_reference?: string | null
+          booking_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          environment?: string
+          error_message?: string | null
+          event_id?: string | null
+          id?: string
+          invoice_url?: string | null
+          lines?: Json
+          order_id?: string | null
+          order_num?: string | null
+          request_payload?: Json | null
+          reservation_expires_at?: string | null
+          reservation_num?: string | null
+          response_payload?: Json | null
+          status?: string
+          supplier_currency?: string | null
+          supplier_status?: string | null
+          supplier_total?: number | null
+          updated_at?: string
+          voucher_urls?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tc_bookings_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "booking_margin_view"
+            referencedColumns: ["booking_id"]
+          },
+          {
+            foreignKeyName: "tc_bookings_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tc_bookings_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "upcoming_departures_view"
+            referencedColumns: ["booking_id"]
+          },
+          {
+            foreignKeyName: "tc_bookings_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tc_bookings_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tc_product_links: {
+        Row: {
+          created_at: string
+          event_id: string | null
+          guest_details_required: boolean
+          in_scope: boolean
+          last_seen_at: string
+          match_method: string
+          match_note: string | null
+          tc_away_team: string | null
+          tc_competition: string | null
+          tc_competition_id: number | null
+          tc_currency: string | null
+          tc_date_confirmed: boolean
+          tc_home_team: string | null
+          tc_name: string
+          tc_product_id: number
+          tc_starts_at: string | null
+          tc_status: string | null
+          tc_time_confirmed: boolean
+          tc_type: string
+          tc_venue_id: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          event_id?: string | null
+          guest_details_required?: boolean
+          in_scope?: boolean
+          last_seen_at?: string
+          match_method?: string
+          match_note?: string | null
+          tc_away_team?: string | null
+          tc_competition?: string | null
+          tc_competition_id?: number | null
+          tc_currency?: string | null
+          tc_date_confirmed?: boolean
+          tc_home_team?: string | null
+          tc_name: string
+          tc_product_id: number
+          tc_starts_at?: string | null
+          tc_status?: string | null
+          tc_time_confirmed?: boolean
+          tc_type: string
+          tc_venue_id?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string | null
+          guest_details_required?: boolean
+          in_scope?: boolean
+          last_seen_at?: string
+          match_method?: string
+          match_note?: string | null
+          tc_away_team?: string | null
+          tc_competition?: string | null
+          tc_competition_id?: number | null
+          tc_currency?: string | null
+          tc_date_confirmed?: boolean
+          tc_home_team?: string | null
+          tc_name?: string
+          tc_product_id?: number
+          tc_starts_at?: string | null
+          tc_status?: string | null
+          tc_time_confirmed?: boolean
+          tc_type?: string
+          tc_venue_id?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tc_product_links_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: true
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       team_crests: {
         Row: {
           crest_url: string
@@ -2010,12 +2225,15 @@ export type Database = {
           last_synced_at: string | null
           markup_fixed_sek: number
           markup_pct: number
+          max_purchase_qty: number | null
           name: string
           party_size_together: number
           qty_available: number
           stripe_price_id: string | null
           supplier_buy_multiplier: number
+          supplier_currency: string | null
           supplier_display_quantity: number
+          supplier_price: number | null
           supplier_split_quantity: number
           supplier_split_type: string | null
           supplier_version_id: string | null
@@ -2035,12 +2253,15 @@ export type Database = {
           last_synced_at?: string | null
           markup_fixed_sek?: number
           markup_pct?: number
+          max_purchase_qty?: number | null
           name: string
           party_size_together?: number
           qty_available?: number
           stripe_price_id?: string | null
           supplier_buy_multiplier?: number
+          supplier_currency?: string | null
           supplier_display_quantity?: number
+          supplier_price?: number | null
           supplier_split_quantity?: number
           supplier_split_type?: string | null
           supplier_version_id?: string | null
@@ -2060,12 +2281,15 @@ export type Database = {
           last_synced_at?: string | null
           markup_fixed_sek?: number
           markup_pct?: number
+          max_purchase_qty?: number | null
           name?: string
           party_size_together?: number
           qty_available?: number
           stripe_price_id?: string | null
           supplier_buy_multiplier?: number
+          supplier_currency?: string | null
           supplier_display_quantity?: number
+          supplier_price?: number | null
           supplier_split_quantity?: number
           supplier_split_type?: string | null
           supplier_version_id?: string | null
