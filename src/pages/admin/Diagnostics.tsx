@@ -9,6 +9,10 @@ import { getStripeEnvironment } from "@/lib/stripe";
 type ConfigStatus = {
   football_data_api_key: boolean;
   football_data_configured: boolean;
+  travelconnection_username?: boolean;
+  travelconnection_password?: boolean;
+  travelconnection_environment?: "sandbox" | "production";
+  travelconnection_orders_enabled?: boolean;
   stripe_sandbox: boolean;
   stripe_live: boolean;
   payments_sandbox_webhook: boolean;
@@ -199,6 +203,20 @@ export default function AdminDiagnostics() {
       <Section title="Hemligheter (secrets)">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <SecretCheck label="FOOTBALL_DATA_API_KEY" ok={config?.football_data_api_key} required hint="Matchsynken slutar fungera utan denna" />
+          <SecretCheck label="TRAVELCONNECTION_USERNAME" ok={config?.travelconnection_username} required hint="Biljettleverantören - live-priser och bokning" />
+          <SecretCheck label="TRAVELCONNECTION_PASSWORD" ok={config?.travelconnection_password} required />
+          <SecretCheck
+            label="TRAVELCONNECTION_BASE_URL"
+            ok
+            value={config?.travelconnection_environment}
+            hint={
+              config?.travelconnection_environment === "production"
+                ? config?.travelconnection_orders_enabled
+                  ? "Skarp miljö - bokningar skapar riktiga fakturor"
+                  : "Skarp miljö - bokningar avstängda (TRAVELCONNECTION_ORDERS_ENABLED)"
+                : "Sandlåda - inga riktiga köp"
+            }
+          />
           <SecretCheck label="STRIPE_SANDBOX_API_KEY" ok={config?.stripe_sandbox} required />
           <SecretCheck label="STRIPE_LIVE_API_KEY" ok={config?.stripe_live} hint="Krävs för live-betalningar" />
           <SecretCheck label="PAYMENTS_SANDBOX_WEBHOOK_SECRET" ok={config?.payments_sandbox_webhook} required />

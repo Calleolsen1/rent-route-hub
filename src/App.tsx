@@ -29,6 +29,7 @@ import UsersManagement from "./pages/admin/UsersManagement";
 import AdminSupport from "./pages/admin/Support";
 import ContentManagementPage from "./pages/admin/ContentManagement";
 import AdminTickets from "./pages/admin/Tickets";
+import AdminTravelConnection from "./pages/admin/TravelConnection";
 import AdminBanners from "./pages/admin/Banners";
 import AdminHomeTrips from "./pages/admin/HomeTrips";
 import AdminHomeExperiences from "./pages/admin/HomeExperiences";
@@ -124,6 +125,7 @@ const App = () => (
                 <Route path="inquiries" element={<AdminInquiries />} />
                 <Route path="orders" element={<AdminOrders />} />
                 <Route path="tickets" element={<AdminTickets />} />
+                <Route path="biljettleverantor" element={<AdminTravelConnection />} />
                 <Route path="banners" element={<AdminBanners />} />
                 <Route path="hemsidan/resor" element={<AdminHomeTrips />} />
                 <Route path="hemsidan/upplevelser" element={<AdminHomeExperiences />} />

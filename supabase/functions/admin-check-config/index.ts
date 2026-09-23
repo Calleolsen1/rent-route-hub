@@ -50,6 +50,18 @@ Deno.serve(async (req) => {
         // football-data.org — the fixtures source
         football_data_api_key: has("FOOTBALL_DATA_API_KEY"),
 
+        // Travel Connection — the ticket supplier. The environment is derived
+        // from the base URL (unset = sandbox); only the name is returned.
+        travelconnection_username: has("TRAVELCONNECTION_USERNAME"),
+        travelconnection_password: has("TRAVELCONNECTION_PASSWORD"),
+        travelconnection_environment: /sandbox/i.test(
+          Deno.env.get("TRAVELCONNECTION_BASE_URL") ?? "sandbox",
+        )
+          ? "sandbox"
+          : "production",
+        travelconnection_orders_enabled:
+          Deno.env.get("TRAVELCONNECTION_ORDERS_ENABLED") === "true",
+
         // stripe
         stripe_sandbox: has("STRIPE_SANDBOX_API_KEY"),
         stripe_live: has("STRIPE_LIVE_API_KEY"),

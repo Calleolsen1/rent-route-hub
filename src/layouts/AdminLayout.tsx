@@ -36,6 +36,7 @@ const navGroups = [
       { to: "/admin/media", label: "Bildbibliotek", icon: Images },
       { to: "/admin/stadium-photos", label: "Arenabilder", icon: Image },
       { to: "/admin/tickets", label: "Biljetter & Stripe", icon: Ticket },
+      { to: "/admin/biljettleverantor", label: "Biljettleverantör", icon: Ticket },
       { to: "/admin/markup-defaults", label: "Påslag", icon: Percent },
     ],
   },

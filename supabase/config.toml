@@ -55,3 +55,15 @@ verify_jwt = true
 # A full run is ~80s: 12 calls paced under a 10/min free-tier limit.
 [functions.football-sync]
 verify_jwt = true
+
+# Travel Connection ticket supplier. Sync + booking are admin-verified
+# inline; tickets is public (browsing needs no login) and only returns
+# prices when public_prices_enabled is on or the caller is admin.
+[functions.travelconnection-sync]
+verify_jwt = true
+
+[functions.travelconnection-book]
+verify_jwt = true
+
+[functions.travelconnection-tickets]
+verify_jwt = false
