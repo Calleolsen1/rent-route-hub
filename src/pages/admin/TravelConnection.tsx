@@ -98,6 +98,13 @@ type BookingRow = {
   events: { home_team: string | null; away_team: string | null; race_name: string | null; starts_at: string } | null;
 };
 
+type SyncLogRow = {
+  started_at: string;
+  status: "running" | "success" | "partial" | "failed";
+  trigger: "manual" | "cron";
+  error_message: string | null;
+};
+
 const eventTitle = (e: { home_team: string | null; away_team: string | null; race_name: string | null } | null) =>
   !e ? "-" : e.home_team ? `${e.home_team} – ${e.away_team}` : e.race_name ?? "-";
 
@@ -145,12 +152,13 @@ export default function AdminTravelConnection() {
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
   const [environment, setEnvironment] = useState<"sandbox" | "production" | null>(null);
+  const [lastSync, setLastSync] = useState<SyncLogRow | null>(null);
   const [linkTarget, setLinkTarget] = useState<LinkRow | null>(null);
   const [ticketsFor, setTicketsFor] = useState<LinkRow | null>(null);
   const [filter, setFilter] = useState("");
 
   const load = async () => {
-    const [{ data: l, error: lErr }, { data: b }] = await Promise.all([
+    const [{ data: l, error: lErr }, { data: b }, { data: log }] = await Promise.all([
       db
         .from("tc_product_links")
         .select("tc_product_id, event_id, match_method, match_note, in_scope, tc_type, tc_name, tc_competition, tc_starts_at, tc_date_confirmed, tc_currency, events(id, home_team, away_team, race_name, tournament_name, starts_at)")
@@ -161,10 +169,18 @@ export default function AdminTravelConnection() {
         .select("*, events(home_team, away_team, race_name, starts_at)")
         .order("created_at", { ascending: false })
         .limit(30),
+      db
+        .from("supplier_sync_log")
+        .select("started_at, status, trigger, error_message")
+        .eq("source", "travelconnection")
+        .order("started_at", { ascending: false })
+        .limit(1)
+        .maybeSingle(),
     ]);
     if (lErr) toast.error(`Kunde inte läsa kopplingar: ${lErr.message}`);
     setLinks((l as unknown as LinkRow[]) ?? []);
     setBookings((b as unknown as BookingRow[]) ?? []);
+    setLastSync((log as SyncLogRow | null) ?? null);
     setLoading(false);
   };
 
@@ -246,6 +262,19 @@ export default function AdminTravelConnection() {
           Synka katalogen
         </Button>
       </div>
+
+      <p className="text-xs text-muted-foreground -mt-4">
+        Synkas automatiskt varje natt runt 02–03 svensk tid, direkt efter matcherna från football-data och F1.
+        {lastSync && (
+          <>
+            {" "}Senast: {new Date(lastSync.started_at).toLocaleString("sv-SE", { timeZone: "Europe/Stockholm" })}
+            {lastSync.trigger === "cron" ? " (automatiskt)" : " (manuellt)"}
+            {lastSync.status === "failed" && (
+              <span className="text-red-700"> - misslyckades: {lastSync.error_message}</span>
+            )}
+          </>
+        )}
+      </p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <Stat label="Kopplade matcher" value={links.filter((l) => l.event_id && (l.match_method === "auto" || l.match_method === "manual")).length} />

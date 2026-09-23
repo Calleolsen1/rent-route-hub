@@ -1,7 +1,7 @@
 // f1-sync — pull the Formula 1 calendar from Jolpica into `events`.
 //
-// Body: { trigger?: "manual" | "cron" }
-// Auth: authenticated admin.
+// Body: none. A run is logged as "cron" when the nightly job made it.
+// Auth: authenticated admin, or the nightly pg_cron job (see _shared/cron_auth.ts).
 //
 // Games only. F1 rows carry no ticket_categories and no prices — the site
 // sells trips on request, so a race page needs the race, the circuit and a
@@ -10,6 +10,7 @@
 // Jolpica is free and keyless, so this costs one or two HTTP calls per run.
 
 import { createClient, type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { requireAdminOrCron } from "../_shared/cron_auth.ts";
 import {
   JolpicaClient,
   jolpicaExternalId,
@@ -28,25 +29,6 @@ const corsHeaders = {
 
 type Admin = SupabaseClient<any, "public", any>;
 
-async function requireAdmin(req: Request): Promise<string> {
-  const auth = req.headers.get("Authorization");
-  if (!auth) throw new Error("Missing Authorization header");
-
-  const userClient = createClient(
-    Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_ANON_KEY")!,
-    { global: { headers: { Authorization: auth } } },
-  );
-  const { data: { user } } = await userClient.auth.getUser();
-  if (!user) throw new Error("Unauthenticated");
-
-  const { data: isAdmin, error } = await userClient.rpc("has_role", {
-    _user_id: user.id,
-    _role: "admin",
-  });
-  if (error || !isAdmin) throw new Error("Admin role required");
-  return user.id;
-}
 
 function mapRaceRow(race: JolpicaRace) {
   const loc = race.Circuit?.Location;
@@ -91,9 +73,8 @@ Deno.serve(async (req) => {
   let logId: string | null = null;
 
   try {
-    await requireAdmin(req);
-    const body = await req.json().catch(() => ({}));
-    const trigger = body.trigger === "cron" ? "cron" : "manual";
+    const caller = await requireAdminOrCron(req, admin);
+    const trigger = caller.kind === "cron" ? "cron" : "manual";
 
     const { data: logRow } = await admin
       .from("supplier_sync_log")

@@ -1,7 +1,7 @@
 // football-sync — pull fixtures from football-data.org into `events`.
 //
-// Body: { competitions?: string[], trigger?: "manual" | "cron" }
-// Auth: authenticated admin.
+// Body: { competitions?: string[] }. A run is logged as "cron" when the nightly job made it.
+// Auth: authenticated admin, or the nightly pg_cron job (see _shared/cron_auth.ts).
 //
 // Games only: no ticket_categories, no prices. Every fixture is somebody's
 // home game, and the team pages filter on home_team, so syncing whole
@@ -12,6 +12,7 @@
 // and a full run takes ~80s.
 
 import { createClient, type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { requireAdminOrCron } from "../_shared/cron_auth.ts";
 import {
   FootballDataClient,
   COMPETITIONS,
@@ -37,23 +38,6 @@ function chunked<T>(rows: readonly T[], size = CHUNK): T[][] {
   return out;
 }
 
-async function requireAdmin(req: Request): Promise<string> {
-  const auth = req.headers.get("Authorization");
-  if (!auth) throw new Error("Missing Authorization header");
-  const userClient = createClient(
-    Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_ANON_KEY")!,
-    { global: { headers: { Authorization: auth } } },
-  );
-  const { data: { user } } = await userClient.auth.getUser();
-  if (!user) throw new Error("Unauthenticated");
-  const { data: isAdmin, error } = await userClient.rpc("has_role", {
-    _user_id: user.id,
-    _role: "admin",
-  });
-  if (error || !isAdmin) throw new Error("Admin role required");
-  return user.id;
-}
 
 function mapMatchRow(m: FdMatch, code: string, teams: Map<number, FdTeam>) {
   const home = teams.get(m.homeTeam.id);
@@ -98,12 +82,12 @@ Deno.serve(async (req) => {
   let logId: string | null = null;
 
   try {
-    await requireAdmin(req);
+    const caller = await requireAdminOrCron(req, admin);
     const body = await req.json().catch(() => ({}));
     const codes: string[] = Array.isArray(body.competitions) && body.competitions.length
       ? body.competitions.filter((c: unknown) => typeof c === "string")
       : [...COMPETITIONS];
-    const trigger = body.trigger === "cron" ? "cron" : "manual";
+    const trigger = caller.kind === "cron" ? "cron" : "manual";
 
     const { data: logRow } = await admin
       .from("supplier_sync_log")
