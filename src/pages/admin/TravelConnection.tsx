@@ -14,6 +14,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, RefreshCw, Link2, EyeOff, Ticket, ExternalLink, X } from "lucide-react";
 import { formatEventDateTime, formatSek } from "@/lib/formatSek";
+import MarkupRulesPanel from "@/components/admin/MarkupRulesPanel";
 
 // Travel Connection — the ticket supplier.
 //
@@ -69,12 +70,14 @@ type TicketGroup = {
   base_sek?: number;
   markup_pct?: number;
   markup_fixed_sek?: number;
+  markup_source?: "category" | "match" | "league" | "standard";
 };
 
 type TicketsResponse = {
   supplier: string | null;
   environment?: "sandbox" | "production";
   tc_product_id?: number;
+  league?: string | null;
   fx?: { currency: string; rate_to_sek: number; rate_date: string | null; source: string; stale: boolean };
   groups: TicketGroup[];
 };
@@ -82,7 +85,8 @@ type TicketsResponse = {
 type BookingRow = {
   id: string;
   environment: "sandbox" | "production";
-  status: "reserved" | "confirmed" | "cancelled" | "expired" | "failed";
+  status: "draft" | "reserved" | "confirmed" | "cancelled" | "expired" | "failed";
+  order_id: string | null;
   reservation_num: string | null;
   reservation_expires_at: string | null;
   order_num: string | null;
@@ -105,10 +109,18 @@ type SyncLogRow = {
   error_message: string | null;
 };
 
+const SOURCE_LABEL: Record<NonNullable<TicketGroup["markup_source"]>, string> = {
+  category: "kategori",
+  match: "match",
+  league: "liga",
+  standard: "standard",
+};
+
 const eventTitle = (e: { home_team: string | null; away_team: string | null; race_name: string | null } | null) =>
   !e ? "-" : e.home_team ? `${e.home_team} – ${e.away_team}` : e.race_name ?? "-";
 
 const STATUS_STYLE: Record<BookingRow["status"], string> = {
+  draft: "bg-muted text-muted-foreground",
   reserved: "bg-amber-100 text-amber-900",
   confirmed: "bg-green-100 text-green-900",
   cancelled: "bg-muted text-muted-foreground",
@@ -117,6 +129,7 @@ const STATUS_STYLE: Record<BookingRow["status"], string> = {
 };
 
 const STATUS_LABEL: Record<BookingRow["status"], string> = {
+  draft: "I kassan",
   reserved: "Reserverad",
   confirmed: "Bekräftad",
   cancelled: "Släppt",
@@ -296,6 +309,7 @@ export default function AdminTravelConnection() {
           <TabsTrigger value="linked">Kopplade ({linked.length})</TabsTrigger>
           <TabsTrigger value="ignored">Ignorerade ({ignored.length})</TabsTrigger>
           <TabsTrigger value="bookings">Bokningar ({bookings.length})</TabsTrigger>
+          <TabsTrigger value="markup">Påslag</TabsTrigger>
         </TabsList>
 
         <TabsContent value="review">
@@ -349,6 +363,12 @@ export default function AdminTravelConnection() {
                 Återställ
               </Button>
             )}
+          />
+        </TabsContent>
+
+        <TabsContent value="markup">
+          <MarkupRulesPanel
+            leagues={[...new Set(links.map((l) => l.events?.tournament_name).filter((n): n is string => !!n))].sort()}
           />
         </TabsContent>
 
@@ -647,8 +667,8 @@ function TicketsDialog({
                           {g.supplier_price != null ? `${g.supplier_price} ${g.supplier_currency}` : "-"}
                         </td>
                         <td className="p-3 text-right whitespace-nowrap">{g.base_sek != null ? formatSek(g.base_sek) : "-"}</td>
-                        <td className="p-3 text-right whitespace-nowrap text-muted-foreground">
-                          {g.markup_pct ?? 0}%{g.markup_fixed_sek ? ` + ${formatSek(g.markup_fixed_sek)}` : ""}
+                        <td className="p-3 text-right whitespace-nowrap">
+                          <CategoryMarkup group={g} onSaved={fetchTickets} />
                         </td>
                         <td className="p-3 text-right whitespace-nowrap font-medium">
                           {g.final_sek != null ? formatSek(g.final_sek) : "-"}
@@ -677,9 +697,9 @@ function TicketsDialog({
               </div>
             )}
 
-            <p className="text-xs text-muted-foreground">
-              Påslag ändras per kategori under Biljetter &amp; Stripe, standard under Påslag.
-            </p>
+            {target?.event_id && (
+              <MatchMarkup eventId={target.event_id} league={data.league ?? null} onSaved={fetchTickets} />
+            )}
 
             {!held && data.groups.some((g) => g.available) && (
               <div className="flex items-center justify-between gap-3 border-t border-border pt-4">
@@ -790,10 +810,14 @@ function HeldBooking({ booking, onDone }: { booking: BookingRow; onDone: () => v
 function BookingsTable({ rows, onChanged }: { rows: BookingRow[]; onChanged: () => void }) {
   const [busy, setBusy] = useState<string | null>(null);
 
-  const act = async (row: BookingRow, action: "refresh" | "cancel") => {
+  const act = async (row: BookingRow, action: "refresh" | "cancel" | "fulfil") => {
     setBusy(row.id);
     try {
-      await invoke("travelconnection-book", { action, tc_booking_id: row.id });
+      await invoke(
+        "travelconnection-book",
+        action === "fulfil" ? { action, order_id: row.order_id } : { action, tc_booking_id: row.id },
+      );
+      if (action === "fulfil") toast.success("Biljetterna är bokade");
       onChanged();
     } catch (e) {
       toast.error((e as Error).message);
@@ -826,6 +850,9 @@ function BookingsTable({ rows, onChanged }: { rows: BookingRow[]; onChanged: () 
                   {new Date(b.created_at).toLocaleString("sv-SE", { timeZone: "Europe/Stockholm" })}
                   {b.environment === "sandbox" && " · sandlåda"}
                 </p>
+                {b.order_id && (
+                  <p className="text-xs text-muted-foreground">Webbköp · order {b.order_id.slice(0, 8).toUpperCase()}</p>
+                )}
               </td>
               <td className="p-3 text-xs">
                 {b.lines.map((l, i) => (
@@ -863,6 +890,11 @@ function BookingsTable({ rows, onChanged }: { rows: BookingRow[]; onChanged: () 
                       {busy === b.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
                     </Button>
                   )}
+                  {b.status === "failed" && b.order_id && (
+                    <Button size="sm" variant="outline" disabled={busy === b.id} onClick={() => act(b, "fulfil")} title="Kunden har betalat - försök boka biljetterna igen">
+                      {busy === b.id ? <Loader2 className="h-3 w-3 animate-spin" /> : "Försök igen"}
+                    </Button>
+                  )}
                   {b.status === "reserved" && (
                     <Button size="sm" variant="ghost" disabled={busy === b.id} onClick={() => act(b, "cancel")} title="Släpp reservationen">
                       <X className="h-3 w-3" />
@@ -874,6 +906,151 @@ function BookingsTable({ rows, onChanged }: { rows: BookingRow[]; onChanged: () 
           ))}
         </tbody>
       </table>
+    </div>
+  );
+}
+
+/** Markup cell in the live-price table: shows where it comes from, edits the category's own. */
+function CategoryMarkup({ group, onSaved }: { group: TicketGroup; onSaved: () => void }) {
+  const [editing, setEditing] = useState(false);
+  const [pct, setPct] = useState("");
+  const [fixed, setFixed] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  const open = () => {
+    setPct(String(group.markup_pct ?? 0));
+    setFixed(group.markup_fixed_sek ? String(group.markup_fixed_sek) : "");
+    setEditing(true);
+  };
+
+  const save = async (override: boolean) => {
+    if (!group.category_id) return;
+    const p = Number(pct.replace(",", "."));
+    const f = Number((fixed || "0").replace(",", "."));
+    if (override && (!Number.isFinite(p) || !Number.isFinite(f) || p < 0 || f < 0)) {
+      toast.error("Ange ett tal, 0 eller mer");
+      return;
+    }
+    setBusy(true);
+    const { error } = await db
+      .from("ticket_categories")
+      .update(override ? { markup_override: true, markup_pct: p, markup_fixed_sek: f } : { markup_override: false })
+      .eq("id", group.category_id);
+    setBusy(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    setEditing(false);
+    toast.success(override ? `${group.name}: ${p}%${f ? ` + ${f} kr` : ""}` : `${group.name} följer match/liga/standard igen`);
+    onSaved();
+  };
+
+  if (!editing) {
+    return (
+      <button type="button" onClick={open} className="text-right group" title="Ändra påslag för kategorin">
+        <span className="group-hover:underline">
+          {group.markup_pct ?? 0}%{group.markup_fixed_sek ? ` + ${formatSek(group.markup_fixed_sek)}` : ""}
+        </span>
+        {group.markup_source && (
+          <span className={`block text-[10px] ${group.markup_source === "category" ? "text-primary" : "text-muted-foreground"}`}>
+            {SOURCE_LABEL[group.markup_source]}
+          </span>
+        )}
+      </button>
+    );
+  }
+
+  return (
+    <div className="flex items-center justify-end gap-1">
+      <Input value={pct} onChange={(e) => setPct(e.target.value)} className="w-14 h-7 text-right" inputMode="decimal" autoFocus />
+      <span className="text-xs">%+</span>
+      <Input value={fixed} onChange={(e) => setFixed(e.target.value)} placeholder="0" className="w-14 h-7 text-right" inputMode="decimal" />
+      <span className="text-xs">kr</span>
+      <Button size="sm" className="h-7 px-2" disabled={busy} onClick={() => save(true)}>
+        {busy ? <Loader2 className="h-3 w-3 animate-spin" /> : "Spara"}
+      </Button>
+      {group.markup_source === "category" && (
+        <Button size="sm" variant="ghost" className="h-7 px-2" disabled={busy} onClick={() => save(false)} title="Följ match/liga/standard igen">
+          Återställ
+        </Button>
+      )}
+      <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={() => setEditing(false)}>
+        <X className="h-3 w-3" />
+      </Button>
+    </div>
+  );
+}
+
+/** One markup for every category of this match, above league/standard. */
+function MatchMarkup({ eventId, league, onSaved }: { eventId: string; league: string | null; onSaved: () => void }) {
+  const [pct, setPct] = useState("");
+  const [fixed, setFixed] = useState("");
+  const [hasRule, setHasRule] = useState(false);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await db
+        .from("markup_rules")
+        .select("markup_pct, markup_fixed_sek")
+        .eq("scope", "event")
+        .eq("event_id", eventId)
+        .maybeSingle();
+      setHasRule(!!data);
+      setPct(data ? String(data.markup_pct) : "");
+      setFixed(data && Number(data.markup_fixed_sek) ? String(data.markup_fixed_sek) : "");
+    })();
+  }, [eventId]);
+
+  const save = async () => {
+    const p = Number(pct.replace(",", "."));
+    const f = Number((fixed || "0").replace(",", "."));
+    if (pct.trim() === "" || !Number.isFinite(p) || !Number.isFinite(f) || p < 0 || f < 0) {
+      toast.error("Ange procent, 0 eller mer");
+      return;
+    }
+    setBusy(true);
+    const { error } = await db
+      .from("markup_rules")
+      .upsert({ scope: "event", event_id: eventId, markup_pct: p, markup_fixed_sek: f, updated_at: new Date().toISOString() }, { onConflict: "event_id" });
+    setBusy(false);
+    if (error) return toast.error(error.message);
+    setHasRule(true);
+    toast.success(`Matchpåslag: ${p}%${f ? ` + ${f} kr` : ""}`);
+    onSaved();
+  };
+
+  const clear = async () => {
+    setBusy(true);
+    const { error } = await db.from("markup_rules").delete().eq("scope", "event").eq("event_id", eventId);
+    setBusy(false);
+    if (error) return toast.error(error.message);
+    setHasRule(false);
+    setPct("");
+    setFixed("");
+    toast.success("Matchen följer liga/standard igen");
+    onSaved();
+  };
+
+  return (
+    <div className="rounded-lg border border-border p-3 flex flex-wrap items-center gap-2 text-xs">
+      <span className="font-medium">Påslag för hela matchen</span>
+      <Input value={pct} onChange={(e) => setPct(e.target.value)} placeholder="%" className="w-16 h-7 text-right" inputMode="decimal" />
+      <span>%+</span>
+      <Input value={fixed} onChange={(e) => setFixed(e.target.value)} placeholder="0" className="w-16 h-7 text-right" inputMode="decimal" />
+      <span>kr</span>
+      <Button size="sm" className="h-7 px-2" disabled={busy} onClick={save}>
+        {busy ? <Loader2 className="h-3 w-3 animate-spin" /> : "Spara"}
+      </Button>
+      {hasRule && (
+        <Button size="sm" variant="ghost" className="h-7 px-2" disabled={busy} onClick={clear}>
+          Ta bort
+        </Button>
+      )}
+      <span className="text-muted-foreground">
+        {hasRule ? "Gäller alla kategorier utan eget påslag." : `Inget satt - följer ${league ? `${league}/` : ""}standard.`} Klicka på ett påslag i tabellen för att ändra en enskild kategori.
+      </span>
     </div>
   );
 }

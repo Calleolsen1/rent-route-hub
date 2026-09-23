@@ -1,7 +1,7 @@
 // f1-sync — pull the Formula 1 calendar from Jolpica into `events`.
 //
 // Body: none. A run is logged as "cron" when the nightly job made it.
-// Auth: authenticated admin, or the nightly pg_cron job (see _shared/cron_auth.ts).
+// Auth: authenticated admin, or the nightly pg_cron job (see _shared/auth.ts).
 //
 // Games only. F1 rows carry no ticket_categories and no prices — the site
 // sells trips on request, so a race page needs the race, the circuit and a
@@ -10,7 +10,7 @@
 // Jolpica is free and keyless, so this costs one or two HTTP calls per run.
 
 import { createClient, type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-import { requireAdminOrCron } from "../_shared/cron_auth.ts";
+import { requireAdminOrCron } from "../_shared/auth.ts";
 import {
   JolpicaClient,
   jolpicaExternalId,

@@ -1,7 +1,7 @@
 // football-sync — pull fixtures from football-data.org into `events`.
 //
 // Body: { competitions?: string[] }. A run is logged as "cron" when the nightly job made it.
-// Auth: authenticated admin, or the nightly pg_cron job (see _shared/cron_auth.ts).
+// Auth: authenticated admin, or the nightly pg_cron job (see _shared/auth.ts).
 //
 // Games only: no ticket_categories, no prices. Every fixture is somebody's
 // home game, and the team pages filter on home_team, so syncing whole
@@ -12,7 +12,7 @@
 // and a full run takes ~80s.
 
 import { createClient, type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-import { requireAdminOrCron } from "../_shared/cron_auth.ts";
+import { requireAdminOrCron } from "../_shared/auth.ts";
 import {
   FootballDataClient,
   COMPETITIONS,

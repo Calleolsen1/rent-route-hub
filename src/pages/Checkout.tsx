@@ -4,6 +4,7 @@ import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe
 import { supabase } from "@/integrations/supabase/client";
 import { usePublicPricesEnabled } from "@/hooks/usePublicPrices";
 import { useAuth } from "@/hooks/useAuth";
+import { useUserRole } from "@/hooks/useUserRole";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,7 +42,13 @@ type ItemRow = {
     city: string | null;
     starts_at: string;
   };
-  ticket_categories: { id: string; name: string };
+  ticket_categories: { id: string; name: string; description: string | null };
+};
+
+type CheckoutPayload = {
+  order: OrderRow;
+  items: ItemRow[];
+  hold_expires_at: string | null;
 };
 
 export default function Checkout() {
@@ -56,27 +63,29 @@ export default function Checkout() {
   const [phone, setPhone] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
-  const { enabled: sellingEnabled, loading: flagLoading } = usePublicPricesEnabled();
+  const [paymentError, setPaymentError] = useState<string | null>(null);
+  const { enabled: pricesPublic, loading: flagLoading } = usePublicPricesEnabled();
+  const { isAdmin, loading: roleLoading } = useUserRole();
+  // Admins can go through the whole purchase while the shop is closed, to
+  // test it with Stripe's test mode and the supplier sandbox.
+  const sellingEnabled = pricesPublic || isAdmin;
 
   useEffect(() => {
     if (authLoading) return;
     if (!orderId) return;
     (async () => {
-      const [{ data: o }, { data: its }] = await Promise.all([
-        supabase.from("orders").select("*").eq("id", orderId).maybeSingle(),
-        supabase
-          .from("order_items")
-          .select(
-            "id, qty, unit_price_sek, events(id, sport, tournament_name, home_team, away_team, race_name, venue_name, city, starts_at), ticket_categories(id, name)",
-          )
-          .eq("order_id", orderId),
-      ]);
-      setOrder(o as unknown as OrderRow | null);
-      setItems((its as unknown as ItemRow[]) ?? []);
-      if (o) {
-        setEmail((o as unknown as OrderRow).customer_email ?? user?.email ?? "");
-        setName((o as unknown as OrderRow).customer_name ?? "");
-        setPhone((o as unknown as OrderRow).customer_phone ?? "");
+      // One order by its exact id, through a database function: guests can't
+      // read the orders table directly (that used to expose every order).
+      const { data } = await (supabase as unknown as {
+        rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown }>;
+      }).rpc("get_checkout_order", { p_order_id: orderId });
+      const payload = data as CheckoutPayload | null;
+      setOrder(payload?.order ?? null);
+      setItems(payload?.items ?? []);
+      if (payload?.order) {
+        setEmail(payload.order.customer_email || user?.email || "");
+        setName(payload.order.customer_name ?? "");
+        setPhone(payload.order.customer_phone ?? "");
       }
       setLoading(false);
     })();
@@ -87,18 +96,19 @@ export default function Checkout() {
     if (!order) return;
     setSubmitting(true);
     try {
-      const { error } = await supabase
-        .from("orders")
-        .update({
-          customer_name: name,
-          customer_email: email,
-          customer_phone: phone,
-        })
-        .eq("id", order.id);
-      if (error) throw error;
+      const { data: saved, error } = await (supabase as unknown as {
+        rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: { message: string } | null }>;
+      }).rpc("set_checkout_contact", {
+        p_order_id: order.id,
+        p_name: name,
+        p_email: email,
+        p_phone: phone,
+      });
+      if (error) throw new Error(error.message);
+      if (saved !== true) throw new Error("Beställningen kan inte längre ändras");
       setShowCheckout(true);
-    } catch (err: any) {
-      toast.error(err.message ?? "Något gick fel");
+    } catch (err) {
+      toast.error((err as Error).message ?? "Något gick fel");
       setSubmitting(false);
     }
   };
@@ -109,7 +119,19 @@ export default function Checkout() {
       body: { orderId: order!.id, environment: getStripeEnvironment(), returnUrl },
     });
     if (error || !data?.clientSecret) {
-      throw new Error(error?.message || "Kunde inte starta betalningen");
+      // Sold out / price changed come back as 409 with a customer-readable
+      // message in the body; supabase-js hides that behind error.context.
+      let message = "Kunde inte starta betalningen";
+      try {
+        const parsed = await (error as { context?: Response })?.context?.json();
+        if (parsed?.error) message = parsed.error;
+      } catch {
+        /* keep the generic message */
+      }
+      setShowCheckout(false);
+      setSubmitting(false);
+      setPaymentError(message);
+      throw new Error(message);
     }
     return data.clientSecret as string;
   };
@@ -117,7 +139,7 @@ export default function Checkout() {
   // Selling is off — the site takes requests instead. No order can be created
   // in this state, so anyone landing here has a stale link; show the enquiry
   // route rather than a payment page with prices on it.
-  if (!flagLoading && !sellingEnabled) {
+  if (!flagLoading && !roleLoading && !sellingEnabled) {
     return (
       <div className="min-h-screen">
         <Navbar />
@@ -178,6 +200,16 @@ export default function Checkout() {
       <section className="py-12 bg-background">
         <div className="container mx-auto px-4 max-w-5xl grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
+            {paymentError && (
+              <div className="rounded-xl border border-red-300 bg-red-50 p-4 text-sm text-red-900">
+                <p>{paymentError}</p>
+                {items[0]?.events?.id && (
+                  <Link to={`/sport/event/${items[0].events.id}`} className="mt-2 inline-block underline">
+                    Tillbaka till matchen
+                  </Link>
+                )}
+              </div>
+            )}
             {!showCheckout ? (
               <form onSubmit={handleStartPayment} className="space-y-6">
                 <div className="rounded-xl border border-border bg-card p-6">
@@ -263,6 +295,9 @@ export default function Checkout() {
                     <div className="flex items-center justify-between mt-2">
                       <span className="text-xs">
                         {it.ticket_categories.name} × {it.qty}
+                        {it.ticket_categories.description && (
+                          <span className="block text-muted-foreground">{it.ticket_categories.description}</span>
+                        )}
                       </span>
                       <span className="text-sm">
                         {formatSek(Number(it.unit_price_sek) * it.qty)}

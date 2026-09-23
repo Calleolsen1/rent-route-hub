@@ -1,4 +1,10 @@
-// Who may run a sync: a signed-in admin, or the nightly pg_cron job.
+// Who is calling an edge function.
+//
+// callerIdentity / callerIsAdmin: for public endpoints that behave a little
+// differently for signed-in customers and admins.
+//
+// requireAdminOrCron: who may run a sync — a signed-in admin, or the nightly
+// pg_cron job.
 //
 // The cron job can't sign in as a user, and Supabase doesn't hand the
 // service-role key to pg_cron (the old xs2 cron needed it copied into Vault
@@ -22,6 +28,40 @@ function safeEqual(a: string, b: string): boolean {
   let diff = 0;
   for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
   return diff === 0;
+}
+
+export interface CallerIdentity {
+  userId: string;
+  email: string | null;
+  isAdmin: boolean;
+}
+
+/**
+ * The signed-in user behind a request, or null. Never throws. The browser
+ * client sends the anon key as a bearer token when nobody is signed in;
+ * getUser() simply finds no user for it.
+ */
+export async function callerIdentity(req: Request): Promise<CallerIdentity | null> {
+  const auth = req.headers.get("Authorization");
+  if (!auth) return null;
+  try {
+    const userClient = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_ANON_KEY")!,
+      { global: { headers: { Authorization: auth } } },
+    );
+    const { data: { user } } = await userClient.auth.getUser();
+    if (!user) return null;
+    const { data } = await userClient.rpc("has_role", { _user_id: user.id, _role: "admin" });
+    return { userId: user.id, email: user.email ?? null, isAdmin: data === true };
+  } catch {
+    return null;
+  }
+}
+
+/** Unlocks admin extras on public endpoints (supplier cost, checkout preview). */
+export async function callerIsAdmin(req: Request): Promise<boolean> {
+  return (await callerIdentity(req))?.isAdmin ?? false;
 }
 
 export async function requireAdminOrCron(req: Request, admin: Admin): Promise<Caller> {

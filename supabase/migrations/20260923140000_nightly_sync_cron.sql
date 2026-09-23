@@ -10,7 +10,7 @@
 --
 -- Auth: the functions keep verify_jwt = true, which the public anon key
 -- satisfies. What authorises the job is x-cron-secret — a random value made
--- here, stored in cron_secrets, and compared by _shared/cron_auth.ts. Unlike
+-- here, stored in cron_secrets, and compared by _shared/auth.ts. Unlike
 -- the old xs2 cron this needs nothing copied into Vault by hand.
 
 CREATE EXTENSION IF NOT EXISTS pg_cron;

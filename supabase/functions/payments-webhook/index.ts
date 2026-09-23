@@ -1,5 +1,7 @@
 import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2";
 import { type StripeEnv, verifyWebhook, createStripeClient } from "../_shared/stripe.ts";
+import { TravelConnectionClient } from "../_shared/travelconnection.ts";
+import { fulfilOrder } from "../_shared/tc_orders.ts";
 
 type DbClient = SupabaseClient<any, "public", any>;
 
@@ -305,10 +307,10 @@ async function handleCheckoutCompleted(session: any, env: StripeEnv) {
 
   // Decrement local stock and open a delivery row per line.
   //
-  // There is no confirm-at-payment step: fixtures come from a schedule API
-  // with no inventory, and trips are arranged by hand after a request. So
-  // every paid order lands here and is fulfilled from the ticket_deliveries
-  // queue in the admin Tickets page.
+  // The delivery rows are the queue in the admin Tickets page where the
+  // actual e-tickets are uploaded. Travel Connection tickets are booked just
+  // below, but the club's e-tickets still reach Kaisen close to the match
+  // and are forwarded from that queue.
   for (const it of items ?? []) {
     await getSupabase().rpc("decrement_ticket_qty", {
       p_category_id: (it as any).category_id,
@@ -318,6 +320,23 @@ async function handleCheckoutCompleted(session: any, env: StripeEnv) {
       order_item_id: (it as any).id,
       delivery_method: "email",
     });
+  }
+
+  // Supplier tickets: confirm the hold made at checkout (or re-take the same
+  // tickets if it lapsed during payment). A failure never fails the webhook —
+  // the customer has paid either way — it flags the booking and emails ops.
+  const { data: tcBooking } = await getSupabase()
+    .from("tc_bookings")
+    .select("id")
+    .eq("order_id", orderId)
+    .maybeSingle();
+  if (tcBooking) {
+    try {
+      const r = await fulfilOrder(getSupabase(), new TravelConnectionClient(), orderId);
+      console.log("[payments-webhook] travelconnection fulfilment", { orderId, ...r });
+    } catch (e) {
+      await logSystemError("tc_fulfilment_threw", e instanceof Error ? e.message : String(e), { orderId, details: e });
+    }
   }
 
   // Auto-create Mitt Kaisen account for guest checkouts and link to order

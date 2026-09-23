@@ -149,6 +149,9 @@ export default function AdminMarkupDefaults() {
         .update({
           markup_pct: Number(pct),
           markup_fixed_sek: Number(fixed),
+          // Clears hand-set category markups, so supplier tickets follow the
+          // standard (and any league/match rules) again.
+          markup_override: false,
         })
         .gte("created_at", "1900-01-01") // matches every row
         .select("*", { count: "exact", head: true });

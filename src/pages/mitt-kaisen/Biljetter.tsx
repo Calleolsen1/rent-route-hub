@@ -22,7 +22,7 @@ type OrderItem = {
     city: string | null;
     starts_at: string;
   };
-  ticket_categories: { name: string };
+  ticket_categories: { name: string; description: string | null };
   ticket_deliveries: Array<{ file_url: string | null; delivered_at: string | null }>;
 };
 
@@ -35,6 +35,8 @@ type OrderWithItems = {
   invoice_number: string | null;
   notes: string | null;
   fulfillment_attempt_count: number | null;
+  /** Supplier travel vouchers (Travel Connection), once issued. */
+  voucher_urls: string[] | null;
   order_items: OrderItem[];
 };
 
@@ -74,7 +76,7 @@ export default function MittKaisenBiljetter() {
       const { data } = await (supabase as any)
         .from("orders")
         .select(
-          "id, status, total_sek, refunded_sek, created_at, invoice_number, notes, fulfillment_attempt_count, order_items(id, qty, unit_price_sek, events(sport, tournament_name, home_team, away_team, race_name, venue_name, city, starts_at), ticket_categories(name), ticket_deliveries(file_url, delivered_at))",
+          "id, status, total_sek, refunded_sek, created_at, invoice_number, notes, fulfillment_attempt_count, voucher_urls, order_items(id, qty, unit_price_sek, events(sport, tournament_name, home_team, away_team, race_name, venue_name, city, starts_at), ticket_categories(name, description), ticket_deliveries(file_url, delivered_at))",
         )
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
@@ -212,6 +214,25 @@ function OrderCard({ order }: { order: OrderWithItems }) {
         ))}
       </div>
 
+      {/* Supplier vouchers: how the tickets will be delivered. The e-tickets
+          themselves arrive separately, closer to the match. */}
+      {isFulfilled && (order.voucher_urls ?? []).length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-3">
+          {(order.voucher_urls ?? []).map((url, i, all) => (
+            <a
+              key={url}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full"
+              style={{ backgroundColor: "rgba(120, 180, 220, 0.12)", color: C.text }}
+            >
+              <Download className="h-3 w-3" /> Resevoucher{all.length > 1 ? ` ${i + 1}` : ""}
+            </a>
+          ))}
+        </div>
+      )}
+
       {/* Footer */}
       <div
         className="flex items-center justify-between pt-3 border-t"
@@ -262,6 +283,11 @@ function ItemRow({ it, isFulfilled }: { it: OrderItem; isFulfilled: boolean }) {
         <p>
           {headline} - {it.ticket_categories.name} × {it.qty}
         </p>
+        {it.ticket_categories.description && (
+          <p className="text-xs" style={{ color: C.textMuted }}>
+            {it.ticket_categories.description}
+          </p>
+        )}
         <p className="text-xs" style={{ color: C.textDim }}>
           {formatEventDateTime(it.events.starts_at)} · {it.events.venue_name}
         </p>

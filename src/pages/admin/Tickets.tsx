@@ -248,7 +248,9 @@ export default function AdminTickets() {
     try {
       const { error, count } = await (supabase as any)
         .from("ticket_categories")
-        .update({ markup_pct: values.pct, markup_fixed_sek: values.fixed })
+        // markup_override: a value set here is deliberate, so supplier
+        // (Travel Connection) pricing must use it rather than the rules.
+        .update({ markup_pct: values.pct, markup_fixed_sek: values.fixed, markup_override: true })
         .eq("event_id", eventId)
         .select("*", { count: "exact", head: true });
       if (error) throw error;
@@ -327,7 +329,7 @@ export default function AdminTickets() {
     try {
       const { error } = await supabase
         .from("ticket_categories")
-        .update({ markup_pct, markup_fixed_sek })
+        .update({ markup_pct, markup_fixed_sek, markup_override: true })
         .eq("id", categoryId);
       if (error) throw error;
       toast.success("Påslag sparat");

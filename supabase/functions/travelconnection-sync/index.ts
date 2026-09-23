@@ -1,7 +1,7 @@
 // travelconnection-sync — link Travel Connection products onto our fixtures.
 //
 // Body: none. A run is logged as "cron" when the nightly job made it.
-// Auth: authenticated admin, or the nightly pg_cron job (see _shared/cron_auth.ts).
+// Auth: authenticated admin, or the nightly pg_cron job (see _shared/auth.ts).
 //
 // Never creates events. Fixtures come from football-data.org and Jolpica;
 // this only records, per supplier product, which of those fixtures it sells
@@ -15,7 +15,7 @@
 // paced at 60/min. The sandbox catalogue is ~10 calls, about 10 seconds.
 
 import { createClient, type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-import { requireAdminOrCron } from "../_shared/cron_auth.ts";
+import { requireAdminOrCron } from "../_shared/auth.ts";
 import {
   TravelConnectionClient,
   productStart,

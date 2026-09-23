@@ -9,6 +9,8 @@
 //     email?, phone? } }
 //   { action: "cancel",  tc_booking_id }
 //   { action: "refresh", tc_booking_id }
+//   { action: "fulfil",  order_id }        retry a paid website order whose
+//                                          tickets could not be booked
 //
 // A reservation holds the tickets for 10 minutes. Confirming turns it into a
 // supplier order and an invoice Kaisen must pay within 14 days (immediately
@@ -26,6 +28,7 @@ import {
   assertOrderingAllowed,
   type TcGuest,
 } from "../_shared/travelconnection.ts";
+import { fulfilOrder } from "../_shared/tc_orders.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -286,8 +289,18 @@ Deno.serve(async (req) => {
         return json(await cancel(admin, tc, body));
       case "refresh":
         return json(await refresh(admin, tc, body));
+      case "fulfil": {
+        if (!body.order_id || typeof body.order_id !== "string") throw new Error("order_id required");
+        const { data: order } = await admin.from("orders").select("status").eq("id", body.order_id).maybeSingle();
+        if (order?.status !== "paid" && order?.status !== "fulfilled") {
+          throw new Error("Ordern är inte betald - inget att boka");
+        }
+        const r = await fulfilOrder(admin, tc, body.order_id);
+        if (r.status === "failed") throw new Error(r.reason);
+        return json(r);
+      }
       default:
-        throw new Error("action must be reserve, confirm, cancel or refresh");
+        throw new Error("action must be reserve, confirm, cancel, refresh or fulfil");
     }
   } catch (e) {
     const message = (e as Error).message ?? "Unknown error";

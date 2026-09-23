@@ -90,6 +90,18 @@ export interface TcTicketOption {
   delivery_methods: number[];
 }
 
+export interface TcTicketCategory {
+  id: number;
+  product_type: string;
+  venue: number;
+  name: string | null;
+  /** HTML, e.g. "<ul><li><strong>Long side LATERAL UPPER</strong></li>…" */
+  description: string | null;
+  consumer_info: string | null;
+  color: string | null;
+  guest_data_requirements: unknown;
+}
+
 export interface TcInventory {
   id: number;
   status: "Upcoming" | "Expired" | string;
@@ -365,6 +377,12 @@ export class TravelConnectionClient {
   async competitionsById(): Promise<Map<number, string>> {
     const comps = await this.all<{ id: number; name: string }>("/competitions");
     return new Map(comps.map((c) => [c.id, c.name]));
+  }
+
+  /** What a ticket category is: stand, rules, colour on the seating plan. */
+  async getTicketCategory(id: number): Promise<TcTicketCategory> {
+    const body = await this.request<{ data: TcTicketCategory }>("GET", `/ticket-categories/${id}`);
+    return body.data;
   }
 
   /** Live prices and availability. Batches of 100 ids per call. */

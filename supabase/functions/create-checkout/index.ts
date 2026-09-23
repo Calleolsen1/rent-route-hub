@@ -1,5 +1,8 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { type StripeEnv, createStripeClient } from "../_shared/stripe.ts";
+import { callerIsAdmin } from "../_shared/auth.ts";
+import { TravelConnectionClient } from "../_shared/travelconnection.ts";
+import { PriceChangedError, SoldOutError, holdForPayment } from "../_shared/tc_orders.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -45,11 +48,13 @@ Deno.serve(async (req) => {
     // request can walk straight past. Selling is gated on the same
     // public_prices_enabled flag here so no Stripe session can be created at
     // all until the business turns pricing on.
-    const { data: pricesPublic } = await supabase.rpc("get_platform_bool", {
-      p_key: "public_prices_enabled",
-      p_default: false,
-    });
-    if (pricesPublic !== true) {
+    // Admins may pay while it's off: that is how the shop is tested (Stripe
+    // test mode + the Travel Connection sandbox) before it opens.
+    const [{ data: pricesPublic }, isAdmin] = await Promise.all([
+      supabase.rpc("get_platform_bool", { p_key: "public_prices_enabled", p_default: false }),
+      callerIsAdmin(req),
+    ]);
+    if (pricesPublic !== true && !isAdmin) {
       return new Response(
         JSON.stringify({
           error:
@@ -73,6 +78,31 @@ Deno.serve(async (req) => {
       .select("qty, unit_price_sek, ticket_categories(id, name, stripe_price_id), events(tournament_name, home_team, away_team, race_name)")
       .eq("order_id", orderId);
     if (itemsErr || !items?.length) throw new Error("No items on order");
+
+    // Supplier tickets are held now, as the customer goes to pay, so the
+    // supplier's 10-minute hold covers the card form. Sold out or a price
+    // rise stops here, before anyone is charged.
+    const { data: tcBooking } = await supabase
+      .from("tc_bookings")
+      .select("id")
+      .eq("order_id", orderId)
+      .maybeSingle();
+    if (tcBooking) {
+      try {
+        await holdForPayment(supabase, new TravelConnectionClient(), orderId);
+      } catch (e) {
+        if (e instanceof SoldOutError || e instanceof PriceChangedError) {
+          return new Response(
+            JSON.stringify({
+              error: `${e.message} Gå tillbaka till matchen och välj igen.`,
+              code: e instanceof SoldOutError ? "sold_out" : "price_changed",
+            }),
+            { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+          );
+        }
+        throw e;
+      }
+    }
 
     const stripe = createStripeClient(env);
     const currency = ((order.currency ?? "sek") as string).toLowerCase();

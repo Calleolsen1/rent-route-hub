@@ -61,7 +61,8 @@ export function BulkMarkupDialog({
     }
     setSubmitting(true);
     try {
-      const update: Record<string, number> = { markup_pct: pctNum };
+      // markup_override: set by hand, so it wins over supplier markup rules.
+      const update: Record<string, number | boolean> = { markup_pct: pctNum, markup_override: true };
       if (includeFixed) update.markup_fixed_sek = fixedNum;
       const { error, count } = await (supabase as any)
         .from("ticket_categories")

@@ -7,6 +7,8 @@ import { useTeamCrests } from "@/hooks/useTeamCrests";
 import { useSeatmap } from "@/hooks/useSeatmap";
 import EventImage from "@/components/EventImage";
 import InquiryForm from "@/components/InquiryForm";
+import TicketPicker from "@/components/TicketPicker";
+import { useUserRole } from "@/hooks/useUserRole";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
@@ -53,6 +55,9 @@ export default function EventDetail() {
   const [loading, setLoading] = useState(true);
   const [compareAtDefaultPct, setCompareAtDefaultPct] = useState<number>(0);
   const { enabled: showPrices } = usePublicPricesEnabled();
+  const { isAdmin } = useUserRole();
+  // True once the ticket picker has live, priced, buyable tickets.
+  const [canBuyOnline, setCanBuyOnline] = useState(false);
   const teamPhotos = useTeamPhotos();
   const teamCrests = useTeamCrests();
   const { url: seatmapUrl, note: seatmapNote } = useSeatmap(
@@ -216,6 +221,13 @@ export default function EventDetail() {
               </div>
             </div>
 
+            {/* Buy tickets online. Only mounts when prices are public or an
+                admin is previewing; the picker itself renders nothing when the
+                supplier has no tickets for this match. */}
+            {(showPrices || isAdmin) && (
+              <TicketPicker eventId={event.id} onAvailability={setCanBuyOnline} />
+            )}
+
             {seatmapUrl && (
               <div>
                 <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">
@@ -263,6 +275,23 @@ export default function EventDetail() {
                   </span>
                 </div>
               </div>
+
+              {canBuyOnline && (
+                <div className="px-6 pb-4">
+                  <a
+                    href="#biljetter"
+                    className="flex items-center justify-between gap-3 rounded-xl bg-primary text-primary-foreground px-4 py-3.5 text-sm font-semibold hover:bg-primary/90 transition-colors"
+                  >
+                    <span className="flex items-center gap-2">
+                      <Ticket className="h-4 w-4" /> Bara biljetter? Köp direkt
+                    </span>
+                    <ArrowRight className="h-4 w-4" />
+                  </a>
+                  <p className="mt-2 text-[11px] text-muted-foreground text-center">
+                    Paket med hotell och flyg offereras nedan.
+                  </p>
+                </div>
+              )}
 
               {/* Package tiers - shown without prices since every trip is
                   quoted individually. The selected tier drives the enquiry. */}

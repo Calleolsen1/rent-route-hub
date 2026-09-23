@@ -67,3 +67,12 @@ verify_jwt = true
 
 [functions.travelconnection-tickets]
 verify_jwt = false
+
+# Customer checkout: creates the order at server-computed prices. Public, but
+# refuses unless public_prices_enabled is on or the caller is admin.
+[functions.travelconnection-checkout]
+verify_jwt = false
+
+# Hourly: supplier invoices + vouchers, lapsed holds. Admin or cron secret.
+[functions.travelconnection-poll]
+verify_jwt = true
