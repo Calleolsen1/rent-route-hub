@@ -39,8 +39,12 @@ type Props = {
   showTripParts?: boolean;
   /** Trip parts ticked on open, e.g. ["biljett"] from an event page. */
   defaultTripParts?: readonly string[];
-  /** Pre-filled message the visitor can edit, e.g. the tickets they picked. */
-  defaultMessage?: string;
+  /**
+   * Tickets the visitor picked on a match page. Shown read-only at the top of
+   * the form and appended to the message sent to Kaisen, so ops can book
+   * exactly that; the visitor's own message then becomes optional.
+   */
+  selection?: string[];
   /** Tighter layout that fits a dialog without scrolling. */
   compact?: boolean;
 };
@@ -91,7 +95,7 @@ export default function InquiryForm({
   showBudget,
   showTripParts = false,
   defaultTripParts,
-  defaultMessage,
+  selection,
   compact = false,
 }: Props) {
   const [submitting, setSubmitting] = useState(false);
@@ -133,6 +137,9 @@ export default function InquiryForm({
       budget_sek: String(fd.get("budget_sek") ?? ""),
       message: String(fd.get("message") ?? ""),
     };
+    // With picked tickets the request speaks for itself; a note is optional.
+    const hasSelection = !!selection?.length;
+    if (hasSelection && !raw.message.trim()) raw.message = "Inga övriga önskemål.";
 
     if (showTripParts && tripParts.length === 0) {
       setErrors({ trip_parts: "Välj minst en del - hotell, biljett eller flyg" });
@@ -178,7 +185,9 @@ export default function InquiryForm({
                 .join(" + ")}`
             : null,
         ].filter(Boolean).join(" · ") || undefined,
-        message: parsed.data.message,
+        message: hasSelection
+          ? `${parsed.data.message}\n\nValda biljetter:\n${selection!.map((l) => `- ${l}`).join("\n")}`
+          : parsed.data.message,
         source_page:
           typeof window !== "undefined" ? window.location.pathname : undefined,
         turnstile_token: turnstileToken ?? undefined,
@@ -237,6 +246,17 @@ export default function InquiryForm({
           <p className={`${compact ? "mt-2.5 text-sm" : "mt-3 text-sm"} text-muted-foreground leading-relaxed max-w-lg`}>{intro}</p>
         )}
       </div>
+
+      {selection?.length ? (
+        <div className="rounded-xl border border-primary/20 bg-primary/5 px-4 py-3">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-primary mb-1.5">Din förfrågan</p>
+          <ul className="space-y-0.5 text-sm">
+            {selection.map((l) => (
+              <li key={l}>{l}</li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
 
       <div className={`grid md:grid-cols-2 ${compact ? "gap-x-6 gap-y-4" : "gap-x-6 gap-y-5"}`}>
         <div>
@@ -353,14 +373,15 @@ export default function InquiryForm({
       )}
 
       <div>
-        <Label htmlFor="message" className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Meddelande *</Label>
+        <Label htmlFor="message" className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+          {selection?.length ? "Övriga önskemål" : "Meddelande *"}
+        </Label>
         <Textarea
           id="message"
           name="message"
-          required
+          required={!selection?.length}
           rows={compact ? 3 : 5}
-          maxLength={4000}
-          defaultValue={defaultMessage}
+          maxLength={3500}
           className={`${inputCls} resize-none`}
           placeholder="Berätta gärna mer om er resa, era önskemål och vad ni vill uppleva."
         />

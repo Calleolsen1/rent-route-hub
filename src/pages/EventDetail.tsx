@@ -8,7 +8,7 @@ import EventImage from "@/components/EventImage";
 import InquiryForm from "@/components/InquiryForm";
 import TicketList, { TicketListSkeleton } from "@/components/tickets/TicketList";
 import TicketPlanCard from "@/components/tickets/TicketPlanCard";
-import BookingCard, { type PackageId } from "@/components/tickets/BookingCard";
+import BookingCard from "@/components/tickets/BookingCard";
 import CheckoutBar, { type Extras } from "@/components/tickets/CheckoutBar";
 import { useEventTickets } from "@/hooks/useEventTickets";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -66,13 +66,22 @@ export default function EventDetail() {
     (event?.sport === "formula1" ? event?.race_name : event?.home_team) ?? null,
   );
   const [inquiryOpen, setInquiryOpen] = useState(false);
-  const [inquiryParts, setInquiryParts] = useState<string[]>(["biljett", "hotell", "flyg"]);
-  // Hotel/flight added in the checkout bar: flips it from checkout to an
-  // enquiry for the whole trip, with the picked tickets carried along.
+  // Hotel/flight on top of the tickets — one choice shared by the package
+  // buttons in the booking card and the toggles in the bottom bar.
   const [extras, setExtras] = useState<Extras>({ hotel: false, flight: false });
-  // Ticket lines to carry into the enquiry, when it was opened from the bar.
-  const [enquiryTickets, setEnquiryTickets] = useState<string | null>(null);
-  const [selectedPackage, setSelectedPackage] = useState<string>("komplett");
+  // What the enquiry dialog was opened with, frozen so it doesn't shift
+  // under the visitor while they fill it in.
+  const [enquiry, setEnquiry] = useState<{ parts: string[]; selection: string[] }>({ parts: ["biljett"], selection: [] });
+  const openEnquiry = () => {
+    const parts = ["biljett", ...(extras.hotel ? ["hotell"] : []), ...(extras.flight ? ["flyg"] : [])];
+    const selection = [
+      ...t.lines.map(({ g, n }) => `${n} × ${g.name}`),
+      ...(extras.hotel ? ["+ Hotell"] : []),
+      ...(extras.flight ? ["+ Flyg"] : []),
+    ];
+    setEnquiry({ parts, selection: t.lines.length ? selection : [] });
+    setInquiryOpen(true);
+  };
 
   useEffect(() => {
     (async () => {
@@ -264,15 +273,9 @@ export default function EventDetail() {
                 headline={headline ?? event.tournament_name}
                 when={formatEventDateTime(event.starts_at)}
                 venue={event.venue_name ? `${event.venue_name}${event.city ? `, ${event.city}` : ""}` : null}
-                selectedPackage={selectedPackage as PackageId}
-                onSelectPackage={(id, parts) => {
-                  setSelectedPackage(id);
-                  setInquiryParts(parts);
-                }}
-                onEnquire={() => {
-                  setEnquiryTickets(null);
-                  setInquiryOpen(true);
-                }}
+                extras={extras}
+                onExtras={setExtras}
+                onEnquire={openEnquiry}
               />
               <Link
                 to="/services/sportresor"
@@ -290,7 +293,7 @@ export default function EventDetail() {
       <Dialog open={inquiryOpen} onOpenChange={setInquiryOpen}>
         <DialogContent className="max-w-2xl max-h-[92vh] overflow-y-auto">
           <InquiryForm
-            key={`${inquiryParts.join(",")}|${enquiryTickets ?? ""}`}
+            key={`${enquiry.parts.join(",")}|${enquiry.selection.join("|")}`}
             type="contact"
             eyebrow="Prisförfrågan"
             heading={`Begär pris - ${headline ?? event.tournament_name}`}
@@ -301,26 +304,23 @@ export default function EventDetail() {
             ].filter(Boolean).join(" · ")}
             showDates={false}
             showTripParts
-            defaultTripParts={inquiryParts}
-            // The topic line is capped at 160 characters, so the picked
-            // tickets go into the (editable) message instead.
-            defaultMessage={enquiryTickets ? `Vi vill gärna ha: ${enquiryTickets}.\n\n` : undefined}
+            defaultTripParts={enquiry.parts}
+            // Picked tickets are shown in the form and appended to the
+            // message Kaisen receives (the topic line is capped at 160).
+            selection={enquiry.selection}
             compact
           />
         </DialogContent>
       </Dialog>
 
       <RequestCta />
-      {/* Slides up once a ticket is added; checkout from anywhere on the page. */}
+      {/* Slides up once a ticket is added: send the request (or, when selling
+          is on, check out) from anywhere on the page. */}
       <CheckoutBar
         t={t}
         extras={extras}
         onToggleExtra={(key) => setExtras((e) => ({ ...e, [key]: !e[key] }))}
-        onEnquire={() => {
-          setInquiryParts(["biljett", ...(extras.hotel ? ["hotell"] : []), ...(extras.flight ? ["flyg"] : [])]);
-          setEnquiryTickets(t.lines.map(({ g, n }) => `${n} × ${g.name}`).join(", "));
-          setInquiryOpen(true);
-        }}
+        onEnquire={openEnquiry}
       />
       <Footer />
     </div>

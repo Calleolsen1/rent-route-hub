@@ -4,8 +4,9 @@ import { formatSek } from "@/lib/formatSek";
 import { normColor } from "@/lib/planColor";
 import { rowKey, type EventTickets } from "@/hooks/useEventTickets";
 
-// The ticket categories for a match: name, what the seat is, price and a
-// quantity stepper (when selling is on). Hovering a row lights up its area on
+// The ticket categories for a match: name, what the seat is, availability,
+// a quantity stepper — and the price when selling is on. With prices hidden
+// the quantities feed a request (nothing is booked); see useEventTickets. Hovering a row lights up its area on
 // the seating plan in the right-hand column; only that row is highlighted.
 
 export default function TicketList({ t }: { t: EventTickets }) {
@@ -17,7 +18,7 @@ export default function TicketList({ t }: { t: EventTickets }) {
         {t.canBuy ? "Biljetter" : "Biljettkategorier"}
       </p>
       <h2 className="font-display text-2xl md:text-3xl leading-tight mb-1">
-        {t.canBuy && t.fromPrice != null ? `Biljetter från ${formatSek(t.fromPrice)}` : "Välj var ni vill sitta"}
+        {t.canBuy && t.fromPrice != null ? `Biljetter från ${formatSek(t.fromPrice)}` : "Välj dina biljetter"}
       </h2>
       {t.hasPlan && t.onPlanColors && t.onPlanColors.size > 0 && (
         <p className="text-xs text-muted-foreground mb-4 hidden lg:block">
@@ -105,13 +106,16 @@ export default function TicketList({ t }: { t: EventTickets }) {
                           {t.pinnedKey === key ? "Dölj på kartan" : "Visa på kartan"}
                         </button>
                       )}
-                      {t.canBuy && (
-                        <span className="text-muted-foreground">
-                          {g.available ? `Max ${g.max_qty}` : "Slutsålt just nu"}
+                      {g.available ? (
+                        <span className="text-muted-foreground inline-flex items-center gap-1">
+                          {!t.canBuy && <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden />}
+                          {t.canBuy ? `Max ${g.max_qty}` : "Tillgänglig"}
                         </span>
+                      ) : (
+                        <span className="text-muted-foreground">Slutsålt just nu</span>
                       )}
                     </div>
-                    {t.canBuy && g.available && (
+                    {g.available && (
                       <QtyStepper
                         n={n}
                         max={g.max_qty}
@@ -136,7 +140,7 @@ export default function TicketList({ t }: { t: EventTickets }) {
             {" "}E-biljetterna släpps närmare matchen och skickas till din e-post och Mitt Kaisen.
           </>
         ) : (
-          "Skriv gärna vilken kategori ni vill ha i förfrågan, så återkommer vi med pris och tillgänglighet."
+          "Välj antal och skicka en förfrågan - vi återkommer med pris och tillgänglighet inom 24h. Inget bokas eller debiteras förrän ni har bekräftat."
         )}
       </p>
     </div>

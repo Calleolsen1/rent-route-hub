@@ -8,10 +8,12 @@ import type { EventTickets } from "@/hooks/useEventTickets";
 // on the page. It sits above the site's mobile "Skicka en förfrågan" bar
 // (z-40) and covers it while tickets are picked.
 //
-// Two small toggles offer hotel and flight on top of the tickets. With
-// neither on, the button is "Till kassan" (pay for the tickets now); with
-// either on, it flips to "Efterfråga paket" — the whole trip is quoted on
-// request, with the picked tickets already filled in.
+// Two small toggles offer hotel and flight on top of the tickets.
+//
+// Request mode (prices hidden — the normal public flow): no prices; the
+// button is always "Skicka förfrågan" and nothing is booked or charged.
+// Buy mode (prices public / admin preview): "Till kassan" pays for the
+// tickets; with hotel or flight on it flips to "Efterfråga paket".
 
 export type Extras = { hotel: boolean; flight: boolean };
 
@@ -26,8 +28,10 @@ export default function CheckoutBar({
   onToggleExtra: (key: keyof Extras) => void;
   onEnquire: () => void;
 }) {
-  const visible = t.canBuy && t.count > 0;
+  const visible = t.count > 0;
   const trip = extras.hotel || extras.flight;
+  // Anything but paying for tickets alone is a request.
+  const request = !t.canBuy || trip;
   const names = t.lines.map((l) => l.g.name);
   const summary = names.length > 1 ? `${names[0]} +${names.length - 1} till` : names[0] ?? "";
 
@@ -59,7 +63,7 @@ export default function CheckoutBar({
                   {t.count} biljett{t.count === 1 ? "" : "er"} · {summary}
                 </p>
                 <p className="font-display text-xl sm:text-2xl leading-tight tabular-nums">
-                  {formatSek(t.total)}
+                  {t.canBuy ? formatSek(t.total) : "Din förfrågan"}
                   {trip && <span className="ml-1.5 font-sans text-xs text-muted-foreground align-middle">+ {tripLabel(extras)}</span>}
                 </p>
               </div>
@@ -70,14 +74,14 @@ export default function CheckoutBar({
 
             {/* Next step */}
             <div className="flex-shrink-0 text-right">
-              {trip ? (
+              {request ? (
                 <Button
                   key="enquire"
                   onClick={onEnquire}
                   tabIndex={visible ? 0 : -1}
                   className="h-12 rounded-xl px-5 sm:px-8 text-sm tracking-wider animate-in fade-in zoom-in-95 duration-200"
                 >
-                  Efterfråga paket
+                  {t.canBuy ? "Efterfråga paket" : "Skicka förfrågan"}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               ) : (
@@ -93,8 +97,10 @@ export default function CheckoutBar({
                   {!t.busy && <ArrowRight className="ml-2 h-4 w-4" />}
                 </Button>
               )}
-              {trip && (
-                <p className="mt-1 text-[11px] text-muted-foreground hidden sm:block">Pris på hela resan inom 24h</p>
+              {request && (
+                <p className="mt-1 text-[11px] text-muted-foreground hidden sm:block">
+                  {trip ? "Pris på hela resan inom 24h" : "Vi återkommer med pris inom 24h"}
+                </p>
               )}
             </div>
           </div>
