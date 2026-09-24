@@ -16,6 +16,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { TravelConnectionClient, dbTokenStore } from "../_shared/travelconnection.ts";
 import { priceEvent } from "../_shared/tc_pricing.ts";
 import { callerIsAdmin } from "../_shared/auth.ts";
+import { planForHomeTeam } from "../_shared/tc_venues.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -55,7 +56,8 @@ Deno.serve(async (req) => {
     const priced = await priceEvent(db, tc, event_id, { fresh: isAdmin });
 
     // No supplier product for this fixture — a normal answer, not an error.
-    if (!priced) return json({ supplier: null, groups: [] });
+    // The page still gets the home ground's official plan when we have it.
+    if (!priced) return json({ supplier: null, groups: [], plan_url: await planForHomeTeam(db, event_id) });
 
     const groups = priced.options.map((o) => ({
       category_id: o.category_id,

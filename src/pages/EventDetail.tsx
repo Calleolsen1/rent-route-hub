@@ -58,7 +58,7 @@ export default function EventDetail() {
   const [compareAtDefaultPct, setCompareAtDefaultPct] = useState<number>(0);
   // Live supplier tickets, the seating plan and the checkout, shared by the
   // list (left) and the plan + booking card (right).
-  const t = useEventTickets(id);
+  const t = useEventTickets(id, event?.sport ?? null);
   const teamPhotos = useTeamPhotos();
   const teamCrests = useTeamCrests();
   const { url: seatmapUrl, note: seatmapNote } = useSeatmap(
@@ -265,7 +265,11 @@ export default function EventDetail() {
               scrollbar whenever plan + card were taller than the window. */}
           <aside className="contents lg:block lg:self-start lg:space-y-4">
             <div className="order-1 lg:order-none">
-              <TicketPlanCard t={t} venueName={event.venue_name} />
+              <TicketPlanCard
+                t={t}
+                venueName={event.venue_name}
+                photoUrl={teamPhotos[`${event.sport}|${event.sport === "formula1" ? event.race_name : event.home_team}`] ?? null}
+              />
             </div>
             <div className="order-3 lg:order-none">
               <BookingCard

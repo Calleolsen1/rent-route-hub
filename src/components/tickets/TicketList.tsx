@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, Eye, MapPin, Minus, Plus } from "lucide-react";
+import { ChevronDown, Eye, MapPin, Minus, Plus, Ticket } from "lucide-react";
 import { formatSek } from "@/lib/formatSek";
 import { normColor } from "@/lib/planColor";
 import { rowKey, type EventTickets } from "@/hooks/useEventTickets";
@@ -20,12 +20,17 @@ export default function TicketList({ t }: { t: EventTickets }) {
       <h2 className="font-display text-2xl md:text-3xl leading-tight mb-1">
         {t.canBuy && t.fromPrice != null ? `Biljetter från ${formatSek(t.fromPrice)}` : "Välj dina biljetter"}
       </h2>
-      {t.hasPlan && t.onPlanColors && t.onPlanColors.size > 0 && (
+      {t.isGeneric && (
+        <p className="text-xs text-muted-foreground mb-4">
+          Vi ordnar biljetter till den här matchen på förfrågan - välj nivå och antal.
+        </p>
+      )}
+      {!t.isGeneric && t.hasPlan && t.onPlanColors && t.onPlanColors.size > 0 && (
         <p className="text-xs text-muted-foreground mb-4 hidden lg:block">
           Håll muspekaren över en biljett för att se var den ligger på arenan.
         </p>
       )}
-      {!t.hasPlan && <div className="mb-4" />}
+      {!t.isGeneric && !t.hasPlan && <div className="mb-4" />}
 
       {t.preview && (
         <div className="mb-4 rounded-lg border border-amber-300 bg-amber-50 px-4 py-2.5 text-xs text-amber-900 flex items-center gap-2">
@@ -51,11 +56,15 @@ export default function TicketList({ t }: { t: EventTickets }) {
               style={lit && g.color ? { boxShadow: `inset 3px 0 0 ${normColor(g.color)}` } : undefined}
             >
               <div className="flex items-start gap-3">
-                <span
-                  className="mt-1.5 h-3 w-3 rounded-full flex-shrink-0 border border-black/10"
-                  style={{ backgroundColor: g.color ?? "transparent" }}
-                  aria-hidden
-                />
+                {g.color ? (
+                  <span
+                    className="mt-1.5 h-3 w-3 rounded-full flex-shrink-0 border border-black/10"
+                    style={{ backgroundColor: g.color }}
+                    aria-hidden
+                  />
+                ) : (
+                  <Ticket className="mt-1 h-3.5 w-3.5 flex-shrink-0 text-primary" aria-hidden />
+                )}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-start justify-between gap-3">
                     <p className="font-medium leading-snug">{g.name}</p>
@@ -80,7 +89,7 @@ export default function TicketList({ t }: { t: EventTickets }) {
 
                   <div className="mt-2 flex items-center justify-between gap-3">
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
-                      {g.description.length > 0 && (
+                      {g.description.length > 1 && (
                         <button
                           type="button"
                           onClick={() => setExpanded((p) => ({ ...p, [key]: !open }))}
@@ -106,7 +115,9 @@ export default function TicketList({ t }: { t: EventTickets }) {
                           {t.pinnedKey === key ? "Dölj på kartan" : "Visa på kartan"}
                         </button>
                       )}
-                      {g.available ? (
+                      {t.isGeneric ? (
+                        <span className="text-muted-foreground">Ordnas på förfrågan</span>
+                      ) : g.available ? (
                         <span className="text-muted-foreground inline-flex items-center gap-1">
                           {!t.canBuy && <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden />}
                           {t.canBuy ? `Max ${g.max_qty}` : "Tillgänglig"}

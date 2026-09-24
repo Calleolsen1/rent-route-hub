@@ -41,6 +41,24 @@ type TicketsResponse = {
 
 export const rowKey = (g: TicketGroup) => g.category_id ?? g.name;
 
+/**
+ * Shown when the supplier has no tickets for a fixture — most matches, and
+ * every F1 race today. Same list, steppers and request flow, so the page looks
+ * the same either way; Kaisen sources the tickets by hand. Never buyable.
+ */
+const GENERIC_TIERS: Record<string, TicketGroup[]> = {
+  soccer: [
+    { category_id: "generic:standard", name: "Standardbiljett", description: ["Bra platser på läktarna - sällskap placeras ihop i mån av plats."], color: null, available: true, max_qty: 20 },
+    { category_id: "generic:premium", name: "Premium", description: ["De bästa platserna på långsidan, nära mittlinjen."], color: null, available: true, max_qty: 20 },
+    { category_id: "generic:vip", name: "VIP & Hospitality", description: ["Lounge med mat och dryck och premiumstolar."], color: null, available: true, max_qty: 20 },
+  ],
+  formula1: [
+    { category_id: "generic:grandstand", name: "Tribunplats", description: ["Sittplats på en av tribunerna längs banan."], color: null, available: true, max_qty: 20 },
+    { category_id: "generic:ga", name: "General admission", description: ["Fri rörlighet i publikområdena runt banan."], color: null, available: true, max_qty: 20 },
+    { category_id: "generic:vip", name: "VIP & Paddock", description: ["Hospitality med lounge, mat och dryck - Paddock Club i mån av tillgång."], color: null, available: true, max_qty: 20 },
+  ],
+};
+
 async function errorMessage(error: unknown): Promise<string> {
   try {
     const ctx = (error as { context?: Response }).context;
@@ -52,7 +70,7 @@ async function errorMessage(error: unknown): Promise<string> {
   return (error as Error)?.message ?? "Något gick fel";
 }
 
-export function useEventTickets(eventId: string | undefined) {
+export function useEventTickets(eventId: string | undefined, sport: string | null = "soccer") {
   const navigate = useNavigate();
   const [data, setData] = useState<TicketsResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -84,10 +102,20 @@ export function useEventTickets(eventId: string | undefined) {
     };
   }, [eventId]);
 
-  const groups = useMemo(() => data?.groups ?? [], [data]);
-  const canBuy = !!data?.prices_visible;
+  const supplierGroups = useMemo(() => data?.groups ?? [], [data]);
+  // No supplier tickets: offer the generic tiers so the visitor can still say
+  // what they want. Not while loading, so the skeleton isn't replaced by
+  // generic rows that then swap for real ones.
+  const isGeneric = !loading && supplierGroups.length === 0;
+  const groups = useMemo(
+    () => (isGeneric ? GENERIC_TIERS[sport ?? "soccer"] ?? GENERIC_TIERS.soccer : supplierGroups),
+    [isGeneric, sport, supplierGroups],
+  );
+  const canBuy = !!data?.prices_visible && !isGeneric;
   const hasTickets = groups.length > 0;
-  const hasPlan = hasTickets && !!data?.plan_url;
+  // The home ground's official plan can come without tickets (borrowed from
+  // another fixture at the same stadium).
+  const hasPlan = !!data?.plan_url;
 
   const areas: PlanArea[] = useMemo(() => {
     const byColor = new Map<string, string[]>();
@@ -180,6 +208,7 @@ export function useEventTickets(eventId: string | undefined) {
     loading,
     groups,
     hasTickets,
+    isGeneric,
     canBuy,
     hasPlan,
     planUrl: data?.plan_url ?? null,

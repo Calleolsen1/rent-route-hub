@@ -8,9 +8,32 @@ import type { EventTickets } from "@/hooks/useEventTickets";
 // ticket list. Compact by design so the booking card fits under it; the
 // enlarge button opens the same interactive plan full size.
 
-export default function TicketPlanCard({ t, venueName }: { t: EventTickets; venueName?: string | null }) {
+export default function TicketPlanCard({
+  t,
+  venueName,
+  photoUrl,
+}: {
+  t: EventTickets;
+  venueName?: string | null;
+  /** Uploaded stadium photo, shown in the plan's place when there is no plan. */
+  photoUrl?: string | null;
+}) {
   const [big, setBig] = useState(false);
-  if (!t.hasPlan || !t.planUrl) return null;
+  if (!t.hasPlan || !t.planUrl) {
+    if (t.loading || !photoUrl) return null;
+    return (
+      <div className="rounded-2xl border border-border bg-card p-3 shadow-sm">
+        <p className="px-1 pb-2 text-[11px] font-bold uppercase tracking-[0.15em] text-foreground/70 font-sans">Arenan</p>
+        <img
+          src={photoUrl}
+          alt={venueName ?? "Arenan"}
+          loading="lazy"
+          className="w-full aspect-[4/3] object-cover rounded-xl"
+        />
+        {venueName && <p className="mt-1.5 text-[11px] text-muted-foreground text-center">{venueName}</p>}
+      </div>
+    );
+  }
   const alt = `Läktarkarta ${venueName ?? ""}`.trim();
   const interactive = !!t.onPlanColors && t.onPlanColors.size > 0;
 

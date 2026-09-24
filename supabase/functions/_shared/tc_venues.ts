@@ -152,3 +152,25 @@ export async function planSignedUrl(db: Db, path: string): Promise<string | null
   signedCache.set(path, { url: data.signedUrl, until: Date.now() + SIGNED_TTL_S * 1000 });
   return data.signedUrl;
 }
+
+/**
+ * The official plan for a fixture the supplier has NO product for, borrowed
+ * from another linked fixture played by the same home team (a cup tie at the
+ * Emirates gets the Emirates plan). Null when no fixture of that team is
+ * linked to a venue with a copied plan.
+ */
+export async function planForHomeTeam(db: Db, eventId: string): Promise<string | null> {
+  const { data: ev } = await db.from("events").select("home_team, sport").eq("id", eventId).maybeSingle();
+  if (!ev?.home_team || ev.sport !== "soccer") return null;
+  const { data: sibling } = await db
+    .from("tc_product_links")
+    .select("tc_venue_id, events!inner(home_team)")
+    .eq("events.home_team", ev.home_team)
+    .in("match_method", ["auto", "manual"])
+    .not("tc_venue_id", "is", null)
+    .limit(1)
+    .maybeSingle();
+  if (!sibling?.tc_venue_id) return null;
+  const { data: venue } = await db.from("tc_venues").select("plan_path").eq("tc_venue_id", sibling.tc_venue_id).maybeSingle();
+  return venue?.plan_path ? await planSignedUrl(db, venue.plan_path) : null;
+}
