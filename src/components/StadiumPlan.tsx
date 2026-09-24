@@ -19,10 +19,37 @@ export type PlanArea = {
 
 /** Pixels are analysed at this width; plenty for stand-sized areas. */
 const WORK_WIDTH = 1400;
-/** How dark everything outside the highlighted area becomes. */
-const DIM = 0.3;
-/** Areas below this share of the plan also get a ring, or they're easy to miss. */
-const RING_BELOW_SHARE = 0.01;
+/**
+ * Everything outside the highlighted area fades this far towards a light
+ * grey, so the lit stand stays in colour and the plan still reads as a plan.
+ */
+const FADE = 0.72;
+const FADE_TO = 236;
+/** Only single-block areas get a ring (Block 66 ≈ 0.0007); stands don't. */
+const RING_BELOW_SHARE = 0.0025;
+/** Near-white margin around the stadium that is cropped away. */
+const PAPER = 235;
+
+/** Bounding box of the drawing (anything not near-white), plus a small margin. */
+function contentBox(data: Uint8ClampedArray, w: number, h: number) {
+  let x0 = w, y0 = h, x1 = -1, y1 = -1;
+  for (let y = 0; y < h; y += 2) {
+    for (let x = 0; x < w; x += 2) {
+      const i = (y * w + x) * 4;
+      if (data[i] < PAPER || data[i + 1] < PAPER || data[i + 2] < PAPER) {
+        if (x < x0) x0 = x;
+        if (x > x1) x1 = x;
+        if (y < y0) y0 = y;
+        if (y > y1) y1 = y;
+      }
+    }
+  }
+  if (x1 < 0) return { x: 0, y: 0, w, h };
+  const m = Math.round(Math.max(w, h) * 0.015);
+  const x = Math.max(0, x0 - m);
+  const y = Math.max(0, y0 - m);
+  return { x, y, w: Math.min(w, x1 + m) - x, h: Math.min(h, y1 + m) - y };
+}
 
 export default function StadiumPlan({
   src,
@@ -66,14 +93,28 @@ export default function StadiumPlan({
       const canvas = canvasRef.current;
       if (!canvas) return;
       const scale = Math.min(1, WORK_WIDTH / img.naturalWidth);
-      const w = Math.round(img.naturalWidth * scale);
-      const h = Math.round(img.naturalHeight * scale);
+      const fw = Math.round(img.naturalWidth * scale);
+      const fh = Math.round(img.naturalHeight * scale);
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      if (!ctx) return setFailed(true);
+      // Draw once at full size to find the stadium, then keep only that:
+      // supplier plans carry wide white margins (Emirates: a third of the
+      // width), which made the stadium itself small in its frame.
+      canvas.width = fw;
+      canvas.height = fh;
+      ctx.drawImage(img, 0, 0, fw, fh);
+      let crop = { x: 0, y: 0, w: fw, h: fh };
+      try {
+        crop = contentBox(ctx.getImageData(0, 0, fw, fh).data, fw, fh);
+      } catch {
+        /* no CORS: keep the whole image */
+      }
+      const w = crop.w;
+      const h = crop.h;
       canvas.width = w;
       canvas.height = h;
       setAspect(w / h);
-      const ctx = canvas.getContext("2d", { willReadFrequently: true });
-      if (!ctx) return setFailed(true);
-      ctx.drawImage(img, 0, 0, w, h);
+      ctx.drawImage(img, crop.x / scale, crop.y / scale, w / scale, h / scale, 0, 0, w, h);
       try {
         const pixels = ctx.getImageData(0, 0, w, h);
         const plan = analysePlan(pixels.data, w, h, colors);
@@ -90,7 +131,7 @@ export default function StadiumPlan({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [src, colorsKey]);
 
-  // Draw: the plain plan, or everything outside the active area darkened.
+  // Draw: the plain plan, or everything outside the active area faded.
   useEffect(() => {
     const a = analysis.current;
     const canvas = canvasRef.current;
@@ -106,11 +147,18 @@ export default function StadiumPlan({
     const out = ctx.createImageData(plan.w, plan.h);
     const srcData = pixels.data;
     const dst = out.data;
+    const keep = 1 - FADE;
+    const toward = FADE_TO * FADE;
     for (let i = 0, p = 0; p < plan.index.length; i += 4, p++) {
-      const f = plan.index[p] === k ? 1 : DIM;
-      dst[i] = srcData[i] * f;
-      dst[i + 1] = srcData[i + 1] * f;
-      dst[i + 2] = srcData[i + 2] * f;
+      if (plan.index[p] === k) {
+        dst[i] = srcData[i];
+        dst[i + 1] = srcData[i + 1];
+        dst[i + 2] = srcData[i + 2];
+      } else {
+        dst[i] = srcData[i] * keep + toward;
+        dst[i + 1] = srcData[i + 1] * keep + toward;
+        dst[i + 2] = srcData[i + 2] * keep + toward;
+      }
       dst[i + 3] = 255;
     }
     ctx.putImageData(out, 0, 0);
@@ -144,13 +192,13 @@ export default function StadiumPlan({
   if (failed) return null;
 
   return (
-    // Width follows the height cap (36vh on phones, 44vh on desktop) so the
+    // Width follows the height cap (40vh on phones, 62vh on desktop) so the
     // canvas keeps its proportions and mouse positions map 1:1 to pixels.
     <div
       className="relative mx-auto w-full max-w-[var(--plan-max-sm)] lg:max-w-[var(--plan-max-lg)]"
       style={{
-        ["--plan-max-sm" as string]: `calc(36vh * ${aspect})`,
-        ["--plan-max-lg" as string]: `calc(44vh * ${aspect})`,
+        ["--plan-max-sm" as string]: `calc(40vh * ${aspect})`,
+        ["--plan-max-lg" as string]: `calc(62vh * ${aspect})`,
       }}
     >
       <canvas

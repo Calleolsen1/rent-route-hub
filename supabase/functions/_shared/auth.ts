@@ -41,9 +41,23 @@ export interface CallerIdentity {
  * client sends the anon key as a bearer token when nobody is signed in;
  * getUser() simply finds no user for it.
  */
+/** Role claim of a Supabase JWT, read without verifying (only used to skip work). */
+function jwtRole(auth: string): string | null {
+  try {
+    const payload = auth.replace(/^Bearer\s+/i, "").split(".")[1];
+    const json = JSON.parse(atob(payload.replace(/-/g, "+").replace(/_/g, "/")));
+    return typeof json.role === "string" ? json.role : null;
+  } catch {
+    return null;
+  }
+}
+
 export async function callerIdentity(req: Request): Promise<CallerIdentity | null> {
   const auth = req.headers.get("Authorization");
   if (!auth) return null;
+  // Anonymous visitors send the public anon key: no user to look up, so
+  // skip the round trip to the auth server. Any other token is verified.
+  if (jwtRole(auth) === "anon") return null;
   try {
     const userClient = createClient(
       Deno.env.get("SUPABASE_URL")!,

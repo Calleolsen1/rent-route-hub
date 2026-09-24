@@ -14,6 +14,7 @@
 import { rateToSek, type FxRate } from "./fx.ts";
 import { translateCategory } from "./translate.ts";
 import { planSignedUrl } from "./tc_venues.ts";
+import { background } from "./background.ts";
 import {
   TravelConnectionClient,
   type TcInventory,
@@ -185,6 +186,50 @@ interface InfoRow {
 
 const sameLines = (a: string[] | null, b: string[] | null) => JSON.stringify(a ?? []) === JSON.stringify(b ?? []);
 
+/** Last translation attempt per category on this instance, to back off after a failure. */
+const translationTried = new Map<number, number>();
+const TRANSLATION_RETRY_MS = 6 * 3_600_000;
+
+async function fetchCategory(db: Db, tc: TravelConnectionClient, id: number, prev: InfoRow | undefined): Promise<InfoRow | null> {
+  try {
+    const c = await tc.getTicketCategory(id);
+    const fresh = {
+      tc_category_id: id,
+      name: c.name,
+      description: htmlToLines(c.description),
+      color: c.color,
+      guest_data_requirements: c.guest_data_requirements ?? null,
+      fetched_at: new Date().toISOString(),
+    };
+    await db.from("tc_ticket_category_info").upsert(fresh, { onConflict: "tc_category_id" });
+    return { name_sv: null, description_sv: null, translated_from: null, sv_source: null, ...prev, ...fresh };
+  } catch (e) {
+    // A description is nice to have. Never let it take prices down.
+    console.warn(`[tc_pricing] category ${id}:`, (e as Error).message);
+    return null;
+  }
+}
+
+async function translateRow(db: Db, r: InfoRow): Promise<void> {
+  translationTried.set(r.tc_category_id, Date.now());
+  const sv = await translateCategory(r.name ?? "", r.description ?? []);
+  if (!sv) return;
+  await db.from("tc_ticket_category_info").update({
+    name_sv: sv.name,
+    description_sv: sv.lines,
+    translated_from: r.description ?? [],
+    sv_source: "ai",
+    translated_at: new Date().toISOString(),
+  }).eq("tc_category_id", r.tc_category_id);
+}
+
+/**
+ * What each category is, from our cache. Only a category never seen before
+ * is fetched while the visitor waits (its colour is needed for the map).
+ * The daily English refresh and the Swedish translation run after the
+ * response — they used to run first, costing seconds per view, and a failed
+ * translation was retried on every single view.
+ */
 async function categoryInfo(db: Db, tc: TravelConnectionClient, ids: number[]): Promise<Map<number, CategoryInfo>> {
   const out = new Map<number, CategoryInfo>();
   if (!ids.length) return out;
@@ -194,50 +239,29 @@ async function categoryInfo(db: Db, tc: TravelConnectionClient, ids: number[]): 
     .in("tc_category_id", ids);
   const rows = new Map<number, InfoRow>(((data ?? []) as InfoRow[]).map((r) => [r.tc_category_id, r]));
 
-  // English from the supplier, refreshed daily.
-  for (const id of ids) {
-    const r = rows.get(id);
-    if (r && Date.now() - new Date(r.fetched_at).getTime() < INFO_TTL_MS) continue;
-    try {
-      const c = await tc.getTicketCategory(id);
-      const fresh = {
-        tc_category_id: id,
-        name: c.name,
-        description: htmlToLines(c.description),
-        color: c.color,
-        guest_data_requirements: c.guest_data_requirements ?? null,
-        fetched_at: new Date().toISOString(),
-      };
-      await db.from("tc_ticket_category_info").upsert(fresh, { onConflict: "tc_category_id" });
-      rows.set(id, {
-        name_sv: null, description_sv: null, translated_from: null, sv_source: null,
-        ...r,
-        ...fresh,
-      });
-    } catch (e) {
-      // A description is nice to have. Never let it take prices down.
-      console.warn(`[tc_pricing] category ${id}:`, (e as Error).message);
-    }
-  }
+  const missing = ids.filter((id) => !rows.has(id));
+  const fetched = await Promise.all(missing.map((id) => fetchCategory(db, tc, id, undefined)));
+  for (const r of fetched) if (r) rows.set(r.tc_category_id, r);
 
-  // Swedish: translate what has never been translated, or whose English the
-  // supplier has since changed. Admin-written text is never replaced.
-  const stale = [...rows.values()].filter((r) =>
-    r.sv_source !== "manual" && (!r.description_sv || !sameLines(r.translated_from, r.description))
+  const stale = ids.filter((id) => {
+    const r = rows.get(id);
+    return r && !missing.includes(id) && Date.now() - new Date(r.fetched_at).getTime() >= INFO_TTL_MS;
+  });
+  const untranslated = [...rows.values()].filter((r) =>
+    r.sv_source !== "manual" &&
+    (!r.description_sv || !sameLines(r.translated_from, r.description)) &&
+    Date.now() - (translationTried.get(r.tc_category_id) ?? 0) > TRANSLATION_RETRY_MS
   );
-  await Promise.all(stale.map(async (r) => {
-    const sv = await translateCategory(r.name ?? "", r.description ?? []);
-    if (!sv) return;
-    const patch = {
-      name_sv: sv.name,
-      description_sv: sv.lines,
-      translated_from: r.description ?? [],
-      sv_source: "ai",
-      translated_at: new Date().toISOString(),
-    };
-    await db.from("tc_ticket_category_info").update(patch).eq("tc_category_id", r.tc_category_id);
-    Object.assign(r, patch);
-  }));
+  if (stale.length || untranslated.length) {
+    background("category refresh", (async () => {
+      const refreshed = await Promise.all(stale.map((id) => fetchCategory(db, tc, id, rows.get(id))));
+      const toTranslate = new Map(untranslated.map((r) => [r.tc_category_id, r]));
+      for (const r of refreshed) {
+        if (r && r.sv_source !== "manual" && !sameLines(r.translated_from, r.description)) toTranslate.set(r.tc_category_id, r);
+      }
+      await Promise.all([...toTranslate.values()].map((r) => translateRow(db, r)));
+    })());
+  }
 
   for (const r of rows.values()) {
     out.set(r.tc_category_id, {
@@ -329,17 +353,18 @@ export async function priceEvent(
     fx,
     league,
     guest_details_required: !!link.guest_details_required,
-    plan_url: venue?.plan_path ? await planSignedUrl(db, venue.plan_path) : null,
+    plan_url: venue?.plan_path ? await planSignedUrl(db, venue.plan_path) : null, // cached per instance
   };
   if (!options.length) return { ...base, options: [] };
 
-  const info = await categoryInfo(db, tc, [...new Set(options.map((o) => o.ticket_category))]);
-
-  const { data: rows, error: readErr } = await db
-    .from("ticket_categories")
-    .select("id, external_category_id, markup_override, markup_pct, markup_fixed_sek")
-    .eq("event_id", eventId)
-    .like("external_category_id", "tc_%");
+  const [info, { data: rows, error: readErr }] = await Promise.all([
+    categoryInfo(db, tc, [...new Set(options.map((o) => o.ticket_category))]),
+    db
+      .from("ticket_categories")
+      .select("id, external_category_id, markup_override, markup_pct, markup_fixed_sek")
+      .eq("event_id", eventId)
+      .like("external_category_id", "tc_%"),
+  ]);
   if (readErr) throw new Error(`ticket_categories read: ${readErr.message}`);
   const byKey = new Map<string, { id: string; markup_override: boolean; markup_pct: number; markup_fixed_sek: number }>(
     (rows ?? []).map((r: { external_category_id: string }) => [r.external_category_id, r]),
@@ -407,16 +432,18 @@ export async function priceEvent(
     const ids = new Map((created ?? []).map((r: { external_category_id: string; id: string }) => [r.external_category_id, r.id]));
     for (const p of priced) if (!p.out.category_id) p.out.category_id = (ids.get(p.key) as string) ?? null;
   }
-  await Promise.all(
-    priced.filter((p) => p.row).map((p) => db.from("ticket_categories").update(rowFields(p.out)).eq("id", p.row!.id)),
-  );
-
-  // Från-price for listings, once prices go public.
+  // Bookkeeping the visitor doesn't need to wait for: latest price/stock on
+  // existing rows (for admin), and the event's från-price for listings.
+  // Nothing reads these back in this request — the checkout prices from the
+  // live lookup, never from these columns.
   const live = priced.filter((p) => p.out.available).map((p) => p.out.final_sek);
-  await db.from("events").update({
-    min_price_sek: live.length ? Math.min(...live) : null,
-    max_price_sek: live.length ? Math.max(...live) : null,
-  }).eq("id", eventId);
+  background("price bookkeeping", Promise.all([
+    ...priced.filter((p) => p.row).map((p) => db.from("ticket_categories").update(rowFields(p.out)).eq("id", p.row!.id)),
+    db.from("events").update({
+      min_price_sek: live.length ? Math.min(...live) : null,
+      max_price_sek: live.length ? Math.max(...live) : null,
+    }).eq("id", eventId),
+  ]));
 
   const out = priced.map((p) => p.out);
   // Available first, then cheapest.

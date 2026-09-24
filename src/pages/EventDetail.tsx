@@ -182,6 +182,22 @@ export default function EventDetail() {
         </div>
       </section>
 
+      {/* Tickets + official seating plan, first thing under the hero: the
+          tickets are the product, so they must be visible without scrolling.
+          Buyable when prices are public or an admin is previewing; otherwise
+          a guide to the categories for the enquiry. Renders nothing when the
+          supplier has no tickets for this match. */}
+      <section className="pt-6 md:pt-8 bg-background">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <TicketPicker
+            eventId={event.id}
+            venueName={event.venue_name}
+            onAvailability={setCanBuyOnline}
+            onPlan={setHasSupplierPlan}
+          />
+        </div>
+      </section>
+
       {/* Body */}
       <section className="py-6 md:py-8 bg-background">
 
@@ -218,17 +234,6 @@ export default function EventDetail() {
                 )}
               </div>
             </div>
-
-            {/* Supplier tickets + official seating plan. Buyable when prices
-                are public or an admin is previewing; otherwise a guide to the
-                categories for the enquiry. Renders nothing when the supplier
-                has no tickets for this match. */}
-            <TicketPicker
-              eventId={event.id}
-              venueName={event.venue_name}
-              onAvailability={setCanBuyOnline}
-              onPlan={setHasSupplierPlan}
-            />
 
             {seatmapUrl && !hasSupplierPlan && (
               <div>

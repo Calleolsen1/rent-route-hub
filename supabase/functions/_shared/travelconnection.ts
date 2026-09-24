@@ -211,14 +211,26 @@ export function assertOrderingAllowed(): TcEnvironment {
 
 // ─── Rate limiting + auth ──────────────────────────────────────────────────
 
-/** 60/minute. Spaced rather than burst, so a long sync never hits a 429. */
-const MIN_INTERVAL_MS = 1050;
-let lastCallAt = 0;
+/**
+ * The supplier allows 60 requests/minute. Calls go out immediately until 55
+ * have been made within the last minute (a small safety margin);
+ * only then does a call wait. The old version spaced EVERY call a second
+ * apart, which added a second or more to each page view for nothing.
+ */
+const WINDOW_MS = 60_000;
+const MAX_PER_WINDOW = 55;
+const recentCalls: number[] = [];
 
 async function throttle(): Promise<void> {
-  const wait = lastCallAt + MIN_INTERVAL_MS - Date.now();
-  lastCallAt = Math.max(Date.now(), lastCallAt + MIN_INTERVAL_MS);
-  if (wait > 0) await new Promise((r) => setTimeout(r, wait));
+  for (;;) {
+    const now = Date.now();
+    while (recentCalls.length && recentCalls[0] <= now - WINDOW_MS) recentCalls.shift();
+    if (recentCalls.length < MAX_PER_WINDOW) {
+      recentCalls.push(now);
+      return;
+    }
+    await new Promise((r) => setTimeout(r, recentCalls[0] + WINDOW_MS - now + 10));
+  }
 }
 
 interface TokenState {
