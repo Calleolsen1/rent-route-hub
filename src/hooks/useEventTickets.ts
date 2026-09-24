@@ -116,6 +116,16 @@ export function useEventTickets(eventId: string | undefined) {
   const hoverRowColor = hoverRowKey ? groups.find((g) => rowKey(g) === hoverRowKey)?.color ?? null : null;
   const activeColor = hoverRowColor ? normColor(hoverRowColor) : hoverColor ?? pinned?.color ?? null;
 
+  /** Info-box text on the plan for the row hovered (or picked) in the list. */
+  const litRow = hoverRowKey
+    ? groups.find((g) => rowKey(g) === hoverRowKey)
+    : pinned
+      ? groups.find((g) => rowKey(g) === pinned.key)
+      : undefined;
+  const activeLabels = litRow
+    ? [canBuy && litRow.final_sek != null ? `${litRow.name} · ${formatSek(litRow.final_sek)}` : litRow.name]
+    : null;
+
   const rowLit = (g: TicketGroup) => hoverRowKey === rowKey(g) || (!hoverRowKey && pinned?.key === rowKey(g));
 
   const step = (g: TicketGroup, delta: number) => {
@@ -190,6 +200,7 @@ export function useEventTickets(eventId: string | undefined) {
     onPlanColors,
     setOnPlanColors,
     activeColor,
+    activeLabels,
     rowLit,
     hoverRow,
     setHoverColor,

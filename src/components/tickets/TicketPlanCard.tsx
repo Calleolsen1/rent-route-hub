@@ -30,6 +30,7 @@ export default function TicketPlanCard({ t, venueName }: { t: EventTickets; venu
         src={t.planUrl}
         areas={t.areas}
         active={t.activeColor}
+        activeLabels={t.activeLabels}
         onHover={t.setHoverColor}
         onPick={t.pickFromPlan}
         onAreasFound={t.setOnPlanColors}
@@ -51,6 +52,7 @@ export default function TicketPlanCard({ t, venueName }: { t: EventTickets; venu
               src={t.planUrl}
               areas={t.areas}
               active={t.activeColor}
+              activeLabels={t.activeLabels}
               onHover={t.setHoverColor}
               onPick={t.pickFromPlan}
               alt={alt}

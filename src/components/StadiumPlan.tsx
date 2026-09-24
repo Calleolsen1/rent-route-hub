@@ -135,6 +135,28 @@ function outlineMask(index: Int16Array, k: number, w: number, h: number): Uint8A
   return ring;
 }
 
+/**
+ * The dark info box over the plan. Centred on its anchor, but pulled inwards
+ * near the edges so it never gets squeezed into a narrow column.
+ */
+function InfoBox({ fx, fy, labels, below }: { fx: number; fy: number; labels: string[]; below?: boolean }) {
+  const shift = fx < 0.3 ? "-12%" : fx > 0.7 ? "-88%" : "-50%";
+  return (
+    <div
+      className="pointer-events-none absolute z-10 w-max max-w-[min(18rem,90%)] rounded-md bg-foreground px-2.5 py-1.5 text-xs leading-snug text-background shadow-lg"
+      style={{
+        left: `${fx * 100}%`,
+        top: `${fy * 100}%`,
+        transform: `translate(${shift}, ${below ? "10px" : "calc(-100% - 10px)"})`,
+      }}
+    >
+      {labels.map((l, i) => (
+        <p key={i}>{l}</p>
+      ))}
+    </div>
+  );
+}
+
 export default function StadiumPlan({
   src,
   areas,
@@ -144,6 +166,7 @@ export default function StadiumPlan({
   onAreasFound,
   alt,
   maxHeight = "44vh",
+  activeLabels,
 }: {
   src: string;
   areas: PlanArea[];
@@ -157,13 +180,20 @@ export default function StadiumPlan({
   alt: string;
   /** Tallest the plan may be (any CSS length); its width follows. */
   maxHeight?: string;
+  /**
+   * Text for the info box when the area is lit from outside the plan (a
+   * ticket hovered in the list). Shown above the area; the pointer's own box
+   * takes over while the mouse is on the plan.
+   */
+  activeLabels?: string[] | null;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [failed, setFailed] = useState(false);
   const [ready, setReady] = useState(false);
   // Width / height, so the plan can be capped by height without distorting.
   const [aspect, setAspect] = useState(1.4);
-  const [tip, setTip] = useState<{ x: number; y: number; labels: string[] } | null>(null);
+  // Pointer info box, in fractions of the canvas (0–1).
+  const [tip, setTip] = useState<{ fx: number; fy: number; labels: string[] } | null>(null);
   const analysis = useRef<{ plan: PlanAnalysis; pixels: ImageData } | null>(null);
   // Outline pixels per region, computed on first highlight.
   const outlines = useRef(new Map<number, Uint8Array>());
@@ -277,6 +307,20 @@ export default function StadiumPlan({
     return [...a.plan.regionOf.entries()].filter(([, r]) => r === k).map(([c]) => c);
   };
 
+  // Lit from the list: anchor the box at the top centre of the area (or
+  // under it, when the area is at the very top of the plan).
+  let listTip: { fx: number; fy: number; labels: string[]; below?: boolean } | null = null;
+  const a = analysis.current;
+  const litRegion = a && active ? a.plan.regionOf.get(normColor(active)) : undefined;
+  if (!tip && activeLabels?.length && a && litRegion !== undefined) {
+    const { x0, x1, y0, y1 } = a.plan.regions[litRegion].box;
+    const top = y0 / a.plan.h;
+    listTip = top < 0.18
+      ? { fx: (x0 + x1) / 2 / a.plan.w, fy: y1 / a.plan.h, labels: activeLabels, below: true }
+      : { fx: (x0 + x1) / 2 / a.plan.w, fy: top, labels: activeLabels };
+  }
+  const shownTip = tip ?? listTip;
+
   if (failed) return null;
 
   return (
@@ -293,7 +337,11 @@ export default function StadiumPlan({
           onHover?.(here[0] ?? null);
           const labels = areas.filter((a) => here.includes(normColor(a.color))).flatMap((a) => a.labels);
           const rect = e.currentTarget.getBoundingClientRect();
-          setTip(labels.length ? { x: e.clientX - rect.left, y: e.clientY - rect.top, labels } : null);
+          setTip(
+            labels.length
+              ? { fx: (e.clientX - rect.left) / rect.width, fy: (e.clientY - rect.top) / rect.height, labels }
+              : null,
+          );
         }}
         onMouseLeave={() => {
           onHover?.(null);
@@ -305,16 +353,7 @@ export default function StadiumPlan({
         }}
       />
       {!ready && <div className="absolute inset-0 animate-pulse rounded-lg bg-muted" />}
-      {tip && (
-        <div
-          className="pointer-events-none absolute z-10 max-w-[16rem] -translate-x-1/2 -translate-y-full rounded-md bg-foreground px-2.5 py-1.5 text-xs text-background shadow-lg"
-          style={{ left: tip.x, top: tip.y - 10 }}
-        >
-          {tip.labels.map((l, i) => (
-            <p key={i}>{l}</p>
-          ))}
-        </div>
-      )}
+      {shownTip && <InfoBox {...shownTip} />}
     </div>
   );
 }
