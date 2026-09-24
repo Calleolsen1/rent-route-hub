@@ -2165,6 +2165,39 @@ export type Database = {
         }
         Relationships: []
       }
+      tc_venues: {
+        Row: {
+          city: string | null
+          copied_at: string | null
+          name: string
+          plan_error: string | null
+          plan_path: string | null
+          source_url: string | null
+          tc_venue_id: number
+          updated_at: string
+        }
+        Insert: {
+          city?: string | null
+          copied_at?: string | null
+          name: string
+          plan_error?: string | null
+          plan_path?: string | null
+          source_url?: string | null
+          tc_venue_id: number
+          updated_at?: string
+        }
+        Update: {
+          city?: string | null
+          copied_at?: string | null
+          name?: string
+          plan_error?: string | null
+          plan_path?: string | null
+          source_url?: string | null
+          tc_venue_id?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       team_crests: {
         Row: {
           crest_url: string
