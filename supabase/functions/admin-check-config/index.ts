@@ -72,6 +72,9 @@ Deno.serve(async (req) => {
         // email
         resend_api_key: has("RESEND_API_KEY"),
 
+        // Claude: translates supplier ticket descriptions to Swedish
+        anthropic_api_key: has("ANTHROPIC_API_KEY"),
+
         // misc
         site_url: Deno.env.get("SITE_URL") ?? null,
 

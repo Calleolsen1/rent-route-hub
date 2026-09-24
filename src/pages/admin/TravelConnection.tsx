@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 import { Loader2, RefreshCw, Link2, EyeOff, Ticket, ExternalLink, X } from "lucide-react";
 import { formatEventDateTime, formatSek } from "@/lib/formatSek";
 import MarkupRulesPanel from "@/components/admin/MarkupRulesPanel";
@@ -65,6 +66,8 @@ type TicketGroup = {
   max_qty: number;
   final_sek?: number;
   ticket_option_id?: number;
+  tc_category_id?: number;
+  description?: string[];
   supplier_price?: number;
   supplier_currency?: string;
   base_sek?: number;
@@ -568,6 +571,7 @@ function TicketsDialog({
   const [qty, setQty] = useState<Record<number, number>>({});
   const [reserving, setReserving] = useState(false);
   const [held, setHeld] = useState<BookingRow | null>(null);
+  const [textFor, setTextFor] = useState<number | null>(null);
 
   const fetchTickets = async () => {
     if (!target?.event_id) return;
@@ -662,7 +666,19 @@ function TicketsDialog({
                   <tbody>
                     {data.groups.map((g) => (
                       <tr key={g.ticket_option_id ?? g.name} className={`border-b border-border last:border-0 ${g.available ? "" : "opacity-50"}`}>
-                        <td className="p-3">{g.name}</td>
+                        <td className="p-3">
+                          <p>{g.name}</p>
+                          {g.description?.[0] && <p className="text-xs text-muted-foreground">{g.description[0]}</p>}
+                          {g.tc_category_id != null && (
+                            <button
+                              type="button"
+                              className="text-xs text-primary hover:underline"
+                              onClick={() => setTextFor(g.tc_category_id!)}
+                            >
+                              Text
+                            </button>
+                          )}
+                        </td>
                         <td className="p-3 text-right whitespace-nowrap">
                           {g.supplier_price != null ? `${g.supplier_price} ${g.supplier_currency}` : "-"}
                         </td>
@@ -696,6 +712,15 @@ function TicketsDialog({
                 </table>
               </div>
             )}
+
+            <CategoryTextDialog
+              categoryId={textFor}
+              onClose={() => setTextFor(null)}
+              onSaved={() => {
+                setTextFor(null);
+                fetchTickets();
+              }}
+            />
 
             {target?.event_id && (
               <MatchMarkup eventId={target.event_id} league={data.league ?? null} onSaved={fetchTickets} />
@@ -1052,5 +1077,123 @@ function MatchMarkup({ eventId, league, onSaved }: { eventId: string; league: st
         {hasRule ? "Gäller alla kategorier utan eget påslag." : `Inget satt - följer ${league ? `${league}/` : ""}standard.`} Klicka på ett påslag i tabellen för att ändra en enskild kategori.
       </span>
     </div>
+  );
+}
+
+/** The Swedish text customers see for a supplier ticket category. */
+function CategoryTextDialog({
+  categoryId,
+  onClose,
+  onSaved,
+}: {
+  categoryId: number | null;
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const [row, setRow] = useState<{
+    name: string | null;
+    description: string[];
+    name_sv: string | null;
+    description_sv: string[] | null;
+    sv_source: "ai" | "manual" | null;
+  } | null>(null);
+  const [name, setName] = useState("");
+  const [text, setText] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (categoryId == null) return;
+    setRow(null);
+    (async () => {
+      const { data } = await db
+        .from("tc_ticket_category_info")
+        .select("name, description, name_sv, description_sv, sv_source")
+        .eq("tc_category_id", categoryId)
+        .maybeSingle();
+      setRow(data);
+      setName(data?.name_sv ?? "");
+      setText((data?.description_sv ?? []).join("\n"));
+    })();
+  }, [categoryId]);
+
+  const save = async (patch: Record<string, unknown>, message: string) => {
+    if (categoryId == null) return;
+    setBusy(true);
+    const { error } = await db.from("tc_ticket_category_info").update(patch).eq("tc_category_id", categoryId);
+    setBusy(false);
+    if (error) return toast.error(error.message);
+    toast.success(message);
+    onSaved();
+  };
+
+  return (
+    <Dialog open={categoryId != null} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="max-w-3xl">
+        <DialogHeader>
+          <DialogTitle>Text på hemsidan</DialogTitle>
+        </DialogHeader>
+        {!row ? (
+          <p className="text-sm text-muted-foreground">Laddar...</p>
+        ) : (
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2">Leverantören (engelska)</p>
+              <p className="text-sm font-medium mb-2">{row.name}</p>
+              <ul className="text-xs text-muted-foreground list-disc pl-4 space-y-1">
+                {row.description.map((l, i) => <li key={i}>{l}</li>)}
+              </ul>
+            </div>
+            <div className="space-y-2">
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                Kunden ser (svenska)
+                {row.sv_source === "manual" ? " · redigerad" : row.sv_source === "ai" ? " · automatiskt översatt" : " · inte översatt än"}
+              </p>
+              <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Namn" />
+              <Textarea
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                rows={Math.max(6, row.description.length + 1)}
+                placeholder="En punkt per rad"
+                className="text-sm"
+              />
+              <p className="text-xs text-muted-foreground">En punkt per rad. Namn som "CAT 2" visas alltid som "Kategori 2".</p>
+              <div className="flex justify-end gap-2">
+                {row.sv_source === "manual" && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    disabled={busy}
+                    onClick={() =>
+                      save(
+                        { sv_source: "ai", translated_from: null },
+                        "Översätts automatiskt igen nästa gång biljetterna visas",
+                      )}
+                  >
+                    Återställ till automatisk
+                  </Button>
+                )}
+                <Button
+                  size="sm"
+                  disabled={busy || !text.trim()}
+                  onClick={() =>
+                    save(
+                      {
+                        name_sv: name.trim() || null,
+                        description_sv: text.split("\n").map((l) => l.trim()).filter(Boolean),
+                        sv_source: "manual",
+                        translated_at: new Date().toISOString(),
+                      },
+                      "Texten är sparad",
+                    )}
+                >
+                  {busy && <Loader2 className="h-3 w-3 animate-spin mr-1" />}
+                  Spara
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+      </DialogContent>
+    </Dialog>
   );
 }

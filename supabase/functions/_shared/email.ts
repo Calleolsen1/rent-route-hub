@@ -1,39 +1,52 @@
-// Transactional email through the Lovable → Resend gateway, the same route
-// payments-webhook uses for order confirmations.
+// Transactional email, sent straight to the Resend API with RESEND_API_KEY —
+// the same way submit-inquiry, send-booking-confirmation and the other
+// working senders do.
+//
+// Do NOT route this through connector-gateway.lovable.dev with the key as
+// X-Connection-Api-Key: that expects a Lovable connection key, not a Resend
+// key, and every order confirmation sent that way failed silently (found
+// 2026-09-24 when a test purchase never got its email).
 
-const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
 const FROM = "Kaisen Travel Group <info@kaisengroup.se>";
 
 /** Where operational alerts go. */
 export const OPS_EMAIL = "info@kaisengroup.se";
 
-/** Sends one email. Never throws: returns false and logs on any failure. */
-export async function sendEmail(msg: { to: string; subject: string; html: string }): Promise<boolean> {
-  const lovable = Deno.env.get("LOVABLE_API_KEY");
-  const resend = Deno.env.get("RESEND_API_KEY");
-  if (!lovable || !resend) {
-    console.warn("[email] Resend not configured; skipping", msg.subject);
-    return false;
-  }
+export interface EmailMessage {
+  to: string;
+  subject: string;
+  html: string;
+  reply_to?: string;
+}
+
+/** Sends one email. Returns null on success, or why it failed. Never throws. */
+export async function sendEmailOrError(msg: EmailMessage): Promise<string | null> {
+  const key = Deno.env.get("RESEND_API_KEY");
+  if (!key) return "RESEND_API_KEY saknas";
   try {
-    const res = await fetch(`${GATEWAY_URL}/emails`, {
+    const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${lovable}`,
-        "X-Connection-Api-Key": resend,
-      },
-      body: JSON.stringify({ from: FROM, to: [msg.to], subject: msg.subject, html: msg.html }),
+      headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        from: FROM,
+        to: [msg.to],
+        subject: msg.subject,
+        html: msg.html,
+        ...(msg.reply_to ? { reply_to: msg.reply_to } : {}),
+      }),
     });
-    if (!res.ok) {
-      console.error("[email] send failed", res.status, await res.text().catch(() => ""));
-      return false;
-    }
-    return true;
+    if (!res.ok) return `Resend ${res.status}: ${await res.text().catch(() => "")}`.slice(0, 500);
+    return null;
   } catch (e) {
-    console.error("[email] send threw", (e as Error).message);
-    return false;
+    return `Resend request failed: ${(e as Error).message}`;
   }
+}
+
+/** Sends one email. Returns true on success; failures are logged, never thrown. */
+export async function sendEmail(msg: EmailMessage): Promise<boolean> {
+  const error = await sendEmailOrError(msg);
+  if (error) console.error("[email]", msg.subject, error);
+  return error === null;
 }
 
 export function escapeHtml(s: string): string {

@@ -2,6 +2,7 @@ import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2";
 import { type StripeEnv, verifyWebhook, createStripeClient } from "../_shared/stripe.ts";
 import { TravelConnectionClient } from "../_shared/travelconnection.ts";
 import { fulfilOrder } from "../_shared/tc_orders.ts";
+import { sendEmailOrError } from "../_shared/email.ts";
 
 type DbClient = SupabaseClient<any, "public", any>;
 
@@ -16,9 +17,6 @@ function getSupabase() {
   return _supabase;
 }
 
-const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
-const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
 /**
  * Structured error logging. Writes a row to public.system_errors so admins
@@ -47,10 +45,6 @@ async function logSystemError(
 }
 
 async function sendOrderConfirmationEmail(orderId: string) {
-  if (!LOVABLE_API_KEY || !RESEND_API_KEY) {
-    console.warn("Resend not configured; skipping email");
-    return;
-  }
   const supabase = getSupabase();
   const { data: order } = await supabase
     .from("orders")
@@ -162,28 +156,13 @@ async function sendOrderConfirmationEmail(orderId: string) {
     </div>
   </div>`;
 
-  try {
-    const res = await fetch(`${GATEWAY_URL}/emails`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
-        "X-Connection-Api-Key": RESEND_API_KEY,
-      },
-      body: JSON.stringify({
-        from: "Kaisen Travel Group <info@kaisengroup.se>",
-        to: [order.customer_email],
-        subject: `Orderbekräftelse · ${order.id.slice(0, 8).toUpperCase()}`,
-        html,
-      }),
-    });
-    if (!res.ok) {
-      const body = await res.text().catch(() => "(no body)");
-      await logSystemError("order_confirmation_email_resend_error", body, { orderId });
-    }
-  } catch (e) {
-    await logSystemError("order_confirmation_email_failed", e instanceof Error ? e.message : String(e), { orderId, details: e });
-  }
+  const error = await sendEmailOrError({
+    to: order.customer_email,
+    subject: `Orderbekräftelse · ${order.id.slice(0, 8).toUpperCase()}`,
+    html,
+  });
+  if (error) await logSystemError("order_confirmation_email_failed", error, { orderId });
+
 }
 
 async function ensureUserForGuestOrder(orderId: string) {
@@ -223,9 +202,9 @@ async function ensureUserForGuestOrder(orderId: string) {
       });
       await supabase.from("user_roles").upsert({ user_id: userId, role: "guest" });
 
-      // Send password-setup email via Resend gateway
+      // Password-setup email
       const actionLink = linkData.properties?.action_link;
-      if (LOVABLE_API_KEY && RESEND_API_KEY && actionLink) {
+      if (actionLink) {
         const html = `<!DOCTYPE html><html><body style="font-family:Georgia,serif;background:#0f1929;padding:32px;color:#c9d6e8;">
           <div style="max-width:560px;margin:0 auto;background:#162035;padding:32px;border:1px solid #1e2d4a;">
             <h1 style="color:#c9d6e8;font-weight:400;">Tack för ditt köp, ${firstName || ""}!</h1>
@@ -233,20 +212,12 @@ async function ensureUserForGuestOrder(orderId: string) {
             <p><a href="${actionLink}" style="display:inline-block;background:#1e3a5f;color:#fff;padding:14px 32px;text-decoration:none;letter-spacing:.15em;text-transform:uppercase;font-size:13px;">Sätt ditt lösenord</a></p>
             <p style="color:#4a5d75;font-size:12px;">Om knappen inte fungerar: <a href="${actionLink}" style="color:#c9d6e8;">${actionLink}</a></p>
           </div></body></html>`;
-        await fetch(`${GATEWAY_URL}/emails`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${LOVABLE_API_KEY}`,
-            "X-Connection-Api-Key": RESEND_API_KEY,
-          },
-          body: JSON.stringify({
-            from: "Kaisen Travel Group <info@kaisengroup.se>",
-            to: [email],
-            subject: "Välkommen till Mitt Kaisen – sätt ditt lösenord",
-            html,
-          }),
-        }).catch((e) => logSystemError("welcome_email_failed", e instanceof Error ? e.message : String(e), { orderId, details: e }));
+        const error = await sendEmailOrError({
+          to: email,
+          subject: "Välkommen till Mitt Kaisen – sätt ditt lösenord",
+          html,
+        });
+        if (error) await logSystemError("welcome_email_failed", error, { orderId });
       }
     }
   }

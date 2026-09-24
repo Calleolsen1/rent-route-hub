@@ -67,6 +67,7 @@ Deno.serve(async (req) => {
       ...(showPrices && { final_sek: o.final_sek }),
       ...(isAdmin && {
         ticket_option_id: o.ticket_option_id,
+        tc_category_id: o.tc_category_id,
         supplier_price: o.supplier_price,
         supplier_currency: o.supplier_currency,
         base_sek: o.base_sek,

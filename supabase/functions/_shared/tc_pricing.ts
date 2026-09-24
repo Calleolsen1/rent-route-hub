@@ -12,6 +12,7 @@
 // then the customer price is rounded UP to price_rounding_sek (1 = off).
 
 import { rateToSek, type FxRate } from "./fx.ts";
+import { translateCategory } from "./translate.ts";
 import {
   TravelConnectionClient,
   type TcInventory,
@@ -162,40 +163,101 @@ interface CategoryInfo {
   name: string | null;
   description: string[];
   color: string | null;
+  /** Swedish, once translated (or written by an admin). */
+  name_sv: string | null;
+  description_sv: string[] | null;
 }
+
+interface InfoRow {
+  tc_category_id: number;
+  name: string | null;
+  description: string[] | null;
+  color: string | null;
+  fetched_at: string;
+  name_sv: string | null;
+  description_sv: string[] | null;
+  translated_from: string[] | null;
+  sv_source: "ai" | "manual" | null;
+}
+
+const sameLines = (a: string[] | null, b: string[] | null) => JSON.stringify(a ?? []) === JSON.stringify(b ?? []);
 
 async function categoryInfo(db: Db, tc: TravelConnectionClient, ids: number[]): Promise<Map<number, CategoryInfo>> {
   const out = new Map<number, CategoryInfo>();
   if (!ids.length) return out;
   const { data } = await db
     .from("tc_ticket_category_info")
-    .select("tc_category_id, name, description, color, fetched_at")
+    .select("tc_category_id, name, description, color, fetched_at, name_sv, description_sv, translated_from, sv_source")
     .in("tc_category_id", ids);
-  const fresh = new Set<number>();
-  for (const r of data ?? []) {
-    out.set(r.tc_category_id, { name: r.name, description: r.description ?? [], color: r.color });
-    if (Date.now() - new Date(r.fetched_at).getTime() < INFO_TTL_MS) fresh.add(r.tc_category_id);
-  }
+  const rows = new Map<number, InfoRow>(((data ?? []) as InfoRow[]).map((r) => [r.tc_category_id, r]));
 
-  for (const id of ids.filter((i) => !fresh.has(i))) {
+  // English from the supplier, refreshed daily.
+  for (const id of ids) {
+    const r = rows.get(id);
+    if (r && Date.now() - new Date(r.fetched_at).getTime() < INFO_TTL_MS) continue;
     try {
       const c = await tc.getTicketCategory(id);
-      const info = { name: c.name, description: htmlToLines(c.description), color: c.color };
-      out.set(id, info);
-      await db.from("tc_ticket_category_info").upsert({
+      const fresh = {
         tc_category_id: id,
         name: c.name,
-        description: info.description,
+        description: htmlToLines(c.description),
         color: c.color,
         guest_data_requirements: c.guest_data_requirements ?? null,
         fetched_at: new Date().toISOString(),
-      }, { onConflict: "tc_category_id" });
+      };
+      await db.from("tc_ticket_category_info").upsert(fresh, { onConflict: "tc_category_id" });
+      rows.set(id, {
+        name_sv: null, description_sv: null, translated_from: null, sv_source: null,
+        ...r,
+        ...fresh,
+      });
     } catch (e) {
       // A description is nice to have. Never let it take prices down.
       console.warn(`[tc_pricing] category ${id}:`, (e as Error).message);
     }
   }
+
+  // Swedish: translate what has never been translated, or whose English the
+  // supplier has since changed. Admin-written text is never replaced.
+  const stale = [...rows.values()].filter((r) =>
+    r.sv_source !== "manual" && (!r.description_sv || !sameLines(r.translated_from, r.description))
+  );
+  await Promise.all(stale.map(async (r) => {
+    const sv = await translateCategory(r.name ?? "", r.description ?? []);
+    if (!sv) return;
+    const patch = {
+      name_sv: sv.name,
+      description_sv: sv.lines,
+      translated_from: r.description ?? [],
+      sv_source: "ai",
+      translated_at: new Date().toISOString(),
+    };
+    await db.from("tc_ticket_category_info").update(patch).eq("tc_category_id", r.tc_category_id);
+    Object.assign(r, patch);
+  }));
+
+  for (const r of rows.values()) {
+    out.set(r.tc_category_id, {
+      name: r.name,
+      description: r.description ?? [],
+      color: r.color,
+      name_sv: r.name_sv,
+      description_sv: r.description_sv,
+    });
+  }
   return out;
+}
+
+/**
+ * Swedish display name for a ticket option. "CAT 2" is rule-based; other
+ * names use the category's translation, keeping any per-date suffix the
+ * option adds to the category name ("… (Fri 25/09)").
+ */
+function optionDisplayName(optionName: string, ci: CategoryInfo | undefined, fallbackId: number): string {
+  const n = (optionName || ci?.name || "").trim();
+  if (/^cat(?:egory)?\.?\s*\d+[a-z]?$/i.test(n)) return displayName(n, fallbackId);
+  if (ci?.name_sv && ci.name && n.startsWith(ci.name)) return ci.name_sv + n.slice(ci.name.length);
+  return displayName(n, fallbackId);
 }
 
 // ─── Inventory (short public cache) ───────────────────────────────────────
@@ -291,8 +353,9 @@ export async function priceEvent(
         category_id: row?.id ?? null,
         ticket_option_id: o.id,
         tc_category_id: o.ticket_category,
-        name: displayName(o.name || ci?.name, o.ticket_category),
-        description: ci?.description ?? [],
+        name: optionDisplayName(o.name, ci, o.ticket_category),
+        // Swedish when translated; English until then, never nothing.
+        description: ci?.description_sv ?? ci?.description ?? [],
         color: ci?.color ?? null,
         available,
         max_qty: available ? o.max_purchase_qty : 0,

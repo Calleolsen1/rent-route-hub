@@ -163,11 +163,10 @@ Deno.serve(async (req) => {
       const actionLink = linkData.properties?.action_link;
 
       if (resendApiKey && actionLink) {
-        const emailRes = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
+        const emailRes = await fetch("https://api.resend.com/emails", {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${Deno.env.get("LOVABLE_API_KEY")}`,
-            "X-Connection-Api-Key": resendApiKey,
+            Authorization: `Bearer ${resendApiKey}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
@@ -179,7 +178,7 @@ Deno.serve(async (req) => {
         });
         if (!emailRes.ok) {
           const emailErr = await emailRes.json();
-          console.error("Resend gateway error:", emailErr);
+          console.error("Resend error:", emailErr);
           return new Response(
             JSON.stringify({ error: "Mejlet kunde inte skickas.", detail: emailErr }),
             { status: 500, headers: corsHeaders }
@@ -248,11 +247,10 @@ Deno.serve(async (req) => {
 
     // Send email via Resend
     if (resendApiKey && actionLink) {
-      const emailRes = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
+      const emailRes = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${Deno.env.get("LOVABLE_API_KEY")}`,
-          "X-Connection-Api-Key": resendApiKey,
+          Authorization: `Bearer ${resendApiKey}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -265,7 +263,7 @@ Deno.serve(async (req) => {
 
       if (!emailRes.ok) {
         const emailErr = await emailRes.json();
-        console.error("Resend gateway error:", emailErr);
+        console.error("Resend error:", emailErr);
         return new Response(
           JSON.stringify({ success: true, user_id: newUserId, warning: "Konto skapat men mejlet kunde inte skickas." }),
           { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
