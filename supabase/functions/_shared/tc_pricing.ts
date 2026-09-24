@@ -13,7 +13,7 @@
 
 import { rateToSek, type FxRate } from "./fx.ts";
 import { translateCategory } from "./translate.ts";
-import { planPublicUrl } from "./tc_venues.ts";
+import { planSignedUrl } from "./tc_venues.ts";
 import {
   TravelConnectionClient,
   type TcInventory,
@@ -55,7 +55,7 @@ export interface PricedEvent {
   fx: FxRate;
   league: string | null;
   guest_details_required: boolean;
-  /** Official seating plan (our copy), painted in the category colours. */
+  /** Official seating plan (signed URL to our copy), painted in the category colours. */
   plan_url: string | null;
   options: PricedOption[];
 }
@@ -319,7 +319,7 @@ export async function priceEvent(
     rateToSek(db, currency),
     loadContext(db, eventId, league),
     link.tc_venue_id != null
-      ? db.from("tc_venues").select("plan_path, copied_at").eq("tc_venue_id", link.tc_venue_id).maybeSingle()
+      ? db.from("tc_venues").select("plan_path").eq("tc_venue_id", link.tc_venue_id).maybeSingle()
       : Promise.resolve({ data: null }),
   ]);
   const options: TcTicketOption[] = inv && inv.status !== "Expired" ? inv.ticket_options : [];
@@ -329,7 +329,7 @@ export async function priceEvent(
     fx,
     league,
     guest_details_required: !!link.guest_details_required,
-    plan_url: venue?.plan_path ? planPublicUrl(venue.plan_path, venue.copied_at) : null,
+    plan_url: venue?.plan_path ? await planSignedUrl(db, venue.plan_path) : null,
   };
   if (!options.length) return { ...base, options: [] };
 

@@ -211,14 +211,19 @@ export default function AdminTravelConnection() {
   const runSync = async () => {
     setSyncing(true);
     try {
-      const res = await invoke<{ environment: string; stats: Record<string, number> }>(
-        "travelconnection-sync",
-        { trigger: "manual" },
-      );
+      const res = await invoke<{
+        environment: string;
+        stats: Record<string, number>;
+        plans?: { venues?: number; copied?: number; failed?: number; error?: string };
+      }>("travelconnection-sync", { trigger: "manual" });
       const s = res.stats;
       toast.success(
         `${s.matched + s.kept_manual} matcher kopplade · ${s.unmatched_in_scope} att granska · ${s.out_of_scope} utanför sortimentet`,
       );
+      const p = res.plans;
+      if (p?.error) toast.error(`Arenakartor: ${p.error}`);
+      else if (p?.failed) toast.error(`${p.failed} arenakartor kunde inte kopieras (${p.copied ?? 0} klara)`);
+      else if (p?.copied) toast.success(`${p.copied} nya arenakartor`);
       await load();
     } catch (e) {
       toast.error((e as Error).message);

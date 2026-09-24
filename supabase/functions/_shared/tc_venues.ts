@@ -2,8 +2,9 @@
 //
 // The match page reads the plan's pixels to light up the area a ticket
 // category covers (see src/components/StadiumPlan.tsx). Browsers only allow
-// that for images served with CORS headers, which our public Supabase bucket
-// sends and the supplier's storage doesn't — hence the copy. Each plan is
+// that for images served with CORS headers, which Supabase Storage sends
+// (also on signed URLs from our private bucket) and the supplier's storage
+// doesn't — hence the copy. Each plan is
 // copied once and again only when the supplier's URL changes.
 
 import type { TravelConnectionClient } from "./travelconnection.ts";
@@ -109,9 +110,25 @@ export async function syncVenuePlans(
   return result;
 }
 
-/** Public URL of a venue's copied plan, versioned so a new copy isn't cached stale. */
-export function planPublicUrl(path: string, copiedAt: string | null): string {
-  const base = Deno.env.get("SUPABASE_URL")!.replace(/\/+$/, "");
-  const v = copiedAt ? `?v=${new Date(copiedAt).getTime()}` : "";
-  return `${base}/storage/v1/object/public/${PLAN_BUCKET}/${path}${v}`;
+// Signed plan URLs, reused per warm instance so a browser can cache the
+// image between page views instead of getting a new URL (and a new
+// download) every time.
+const SIGNED_TTL_S = 7 * 24 * 3600;
+const signedCache = new Map<string, { url: string; until: number }>();
+
+/**
+ * Time-limited URL for a venue's copied plan (the bucket is private). Null
+ * if signing fails — the page then simply shows no plan.
+ */
+export async function planSignedUrl(db: Db, path: string): Promise<string | null> {
+  const hit = signedCache.get(path);
+  // Hand out a cached URL only while it has at least a day left.
+  if (hit && hit.until - 86_400_000 > Date.now()) return hit.url;
+  const { data, error } = await db.storage.from(PLAN_BUCKET).createSignedUrl(path, SIGNED_TTL_S);
+  if (error || !data?.signedUrl) {
+    console.warn("[tc_venues] sign failed", path, error?.message);
+    return null;
+  }
+  signedCache.set(path, { url: data.signedUrl, until: Date.now() + SIGNED_TTL_S * 1000 });
+  return data.signedUrl;
 }
