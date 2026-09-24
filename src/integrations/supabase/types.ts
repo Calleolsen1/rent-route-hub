@@ -2165,6 +2165,33 @@ export type Database = {
         }
         Relationships: []
       }
+      tc_tokens: {
+        Row: {
+          access_token: string
+          base: string
+          expires_at: string
+          id: string
+          refresh_token: string | null
+          updated_at: string
+        }
+        Insert: {
+          access_token: string
+          base: string
+          expires_at: string
+          id: string
+          refresh_token?: string | null
+          updated_at?: string
+        }
+        Update: {
+          access_token?: string
+          base?: string
+          expires_at?: string
+          id?: string
+          refresh_token?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       tc_venues: {
         Row: {
           city: string | null
