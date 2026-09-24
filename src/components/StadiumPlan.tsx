@@ -59,6 +59,7 @@ export default function StadiumPlan({
   onPick,
   onAreasFound,
   alt,
+  maxHeight = "44vh",
 }: {
   src: string;
   areas: PlanArea[];
@@ -70,6 +71,8 @@ export default function StadiumPlan({
   /** Which category colours have an area on this plan (others can't be shown). */
   onAreasFound?: (colors: Set<string>) => void;
   alt: string;
+  /** Tallest the plan may be (any CSS length); its width follows. */
+  maxHeight?: string;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [failed, setFailed] = useState(false);
@@ -192,15 +195,9 @@ export default function StadiumPlan({
   if (failed) return null;
 
   return (
-    // Width follows the height cap (40vh on phones, 62vh on desktop) so the
-    // canvas keeps its proportions and mouse positions map 1:1 to pixels.
-    <div
-      className="relative mx-auto w-full max-w-[var(--plan-max-sm)] lg:max-w-[var(--plan-max-lg)]"
-      style={{
-        ["--plan-max-sm" as string]: `calc(40vh * ${aspect})`,
-        ["--plan-max-lg" as string]: `calc(62vh * ${aspect})`,
-      }}
-    >
+    // Width follows the height cap so the canvas keeps its proportions and
+    // mouse positions map 1:1 to pixels.
+    <div className="relative mx-auto w-full" style={{ maxWidth: `calc(${maxHeight} * ${aspect})` }}>
       <canvas
         ref={canvasRef}
         role="img"

@@ -6,12 +6,15 @@ import { useTeamCrests } from "@/hooks/useTeamCrests";
 import { useSeatmap } from "@/hooks/useSeatmap";
 import EventImage from "@/components/EventImage";
 import InquiryForm from "@/components/InquiryForm";
-import TicketPicker from "@/components/TicketPicker";
+import TicketList, { TicketListSkeleton } from "@/components/tickets/TicketList";
+import TicketPlanCard from "@/components/tickets/TicketPlanCard";
+import BookingCard, { type PackageId } from "@/components/tickets/BookingCard";
+import { useEventTickets } from "@/hooks/useEventTickets";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, Calendar, Hotel, MapPin, Minus, Plane, Plus, Ticket, Users } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin } from "lucide-react";
 import Footer from "@/components/Footer";
 import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
@@ -52,10 +55,9 @@ export default function EventDetail() {
   const [pricesLoading, setPricesLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const [compareAtDefaultPct, setCompareAtDefaultPct] = useState<number>(0);
-  // True once the ticket picker has live, priced, buyable tickets.
-  const [canBuyOnline, setCanBuyOnline] = useState(false);
-  // The supplier's official plan replaces the uploaded seatmap when present.
-  const [hasSupplierPlan, setHasSupplierPlan] = useState(false);
+  // Live supplier tickets, the seating plan and the checkout, shared by the
+  // list (left) and the plan + booking card (right).
+  const t = useEventTickets(id);
   const teamPhotos = useTeamPhotos();
   const teamCrests = useTeamCrests();
   const { url: seatmapUrl, note: seatmapNote } = useSeatmap(
@@ -182,33 +184,19 @@ export default function EventDetail() {
         </div>
       </section>
 
-      {/* Tickets + official seating plan, first thing under the hero: the
-          tickets are the product, so they must be visible without scrolling.
-          Buyable when prices are public or an admin is previewing; otherwise
-          a guide to the categories for the enquiry. Renders nothing when the
-          supplier has no tickets for this match. */}
-      <section className="pt-6 md:pt-8 bg-background">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <TicketPicker
-            eventId={event.id}
-            venueName={event.venue_name}
-            onAvailability={setCanBuyOnline}
-            onPlan={setHasSupplierPlan}
-          />
-        </div>
-      </section>
-
-      {/* Body */}
+      {/* Body. Desktop: tickets on the left; on the right a sticky column
+          with the official seating plan above the booking card. Phones: plan,
+          then tickets, then the booking card (the aside becomes `contents`
+          so its two cards can be ordered around the list). */}
       <section className="py-6 md:py-8 bg-background">
-
-        <div className="container mx-auto px-4 grid lg:grid-cols-3 gap-10 max-w-6xl">
+        <div className="container mx-auto px-4 grid lg:grid-cols-3 gap-8 lg:gap-10 max-w-6xl">
           {/* Left */}
-          <div className="lg:col-span-2 space-y-10">
-            {/* Match facts + seating chart.
-                There is no ticket picker any more: fixtures come from a
-                schedule API with no inventory, and the site quotes on
-                request. The chart is a reference so a customer can name the
-                section they want in the enquiry. */}
+          <div className="lg:col-span-2 space-y-10 order-2 lg:order-none min-w-0">
+            {/* Live supplier tickets. Buyable when prices are public or an
+                admin is previewing; otherwise a guide to the categories for
+                the enquiry. Nothing when the supplier has no tickets. */}
+            {t.loading ? <TicketListSkeleton /> : t.hasTickets && <TicketList t={t} />}
+
             <div>
               <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">
                 Matchen
@@ -235,7 +223,7 @@ export default function EventDetail() {
               </div>
             </div>
 
-            {seatmapUrl && !hasSupplierPlan && (
+            {seatmapUrl && !t.hasPlan && (
               <div>
                 <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">
                   Läktarkarta
@@ -257,131 +245,31 @@ export default function EventDetail() {
             )}
           </div>
 
-          {/* Right - sticky summary */}
-          <aside className="lg:sticky lg:top-24 self-start">
-            <div className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
-              {/* Header */}
-              <div className="p-6 pb-4">
-                <div className="flex items-center justify-between gap-2 mb-4">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-foreground/70 font-sans">
-                    Din förfrågan
-                  </p>
-                  <span className="shrink-0 bg-muted text-muted-foreground text-[10px] font-semibold uppercase tracking-wide px-2 py-1 rounded">
-                    Offertbaserad
-                  </span>
-                </div>
-                <p className="font-display text-2xl leading-tight mb-1">{headline}</p>
-                <p className="text-sm text-muted-foreground font-medium mb-3">
-                  {formatEventDateTime(event.starts_at)}
-                </p>
-                <div className="flex items-start gap-2 text-sm text-muted-foreground">
-                  <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
-                  <span>
-                    {event.venue_name}
-                    {event.city ? `, ${event.city}` : ""}
-                  </span>
-                </div>
-              </div>
-
-              {canBuyOnline && (
-                <div className="px-6 pb-4">
-                  <a
-                    href="#biljetter"
-                    className="flex items-center justify-between gap-3 rounded-xl bg-primary text-primary-foreground px-4 py-3.5 text-sm font-semibold hover:bg-primary/90 transition-colors"
-                  >
-                    <span className="flex items-center gap-2">
-                      <Ticket className="h-4 w-4" /> Bara biljetter? Köp direkt
-                    </span>
-                    <ArrowRight className="h-4 w-4" />
-                  </a>
-                  <p className="mt-2 text-[11px] text-muted-foreground text-center">
-                    Paket med hotell och flyg offereras nedan.
-                  </p>
-                </div>
-              )}
-
-              {/* Package tiers - shown without prices since every trip is
-                  quoted individually. The selected tier drives the enquiry. */}
-              <div className="px-6 pb-6">
-                <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground mb-3 font-sans">
-                  Välj ditt paket
-                </p>
-                <div className="space-y-3">
-                  {[
-                    { id: "biljetter", icons: [Ticket], label: "Endast biljetter", parts: ["biljett"] },
-                    { id: "hotell", icons: [Ticket, Hotel], label: "Biljetter + hotell", parts: ["biljett", "hotell"] },
-                    {
-                      id: "komplett",
-                      icons: [Ticket, Plane, Hotel],
-                      label: "Biljetter + flyg + hotell",
-                      parts: ["biljett", "hotell", "flyg"],
-                    },
-                  ].map(({ id, icons, label, parts }) => {
-                    const selected = selectedPackage === id;
-                    return (
-                      <button
-                        key={id}
-                        type="button"
-                        onClick={() => {
-                          setSelectedPackage(id);
-                          setInquiryParts(parts);
-                        }}
-                        className={`w-full flex items-center justify-between gap-3 rounded-xl px-4 py-3.5 text-left transition-all ${
-                          selected
-                            ? "border-2 border-primary bg-primary/5"
-                            : "border border-border bg-background hover:border-primary/30 hover:bg-muted/50"
-                        }`}
-                      >
-                        <span className={`text-sm font-semibold ${selected ? "text-foreground" : "text-foreground/80"}`}>
-                          {label}
-                        </span>
-                        <span
-                          className={`flex items-center gap-1.5 ${
-                            selected ? "text-primary" : "text-muted-foreground"
-                          }`}
-                        >
-                          {icons.map((Icon, i) => (
-                            <span key={i} className="flex items-center gap-1.5">
-                              {i > 0 && <Plus className="h-3 w-3 opacity-60" />}
-                              <Icon className="h-4 w-4" />
-                            </span>
-                          ))}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Inquiry action */}
-              <div className="px-6 pb-6 pt-4 border-t border-border">
-                <p className="text-center text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-4 font-sans">
-                  Pris ges vid förfrågan
-                </p>
-                <Button
-                  onClick={() => setInquiryOpen(true)}
-                  className="w-full rounded-xl bg-primary hover:bg-primary/90 tracking-wider text-sm h-12"
-                >
-                  Efterfråga paket
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-                <p className="mt-5 text-xs text-muted-foreground leading-relaxed text-center italic">
-                  Pris på förfrågan - vi återkommer med biljetter, hotell och flyg
-                  efter era önskemål.{" "}
-                  <span className="not-italic font-semibold text-foreground">
-                    Vi återkommer inom 24h.
-                  </span>
-                </p>
-              </div>
+          {/* Right */}
+          <aside className="contents lg:block lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto lg:space-y-4 lg:pb-1">
+            <div className="order-1 lg:order-none">
+              <TicketPlanCard t={t} venueName={event.venue_name} />
             </div>
-
-
-            <Link
-              to="/services/sportresor"
-              className="mt-4 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
-            >
-              <ArrowLeft className="h-3 w-3" /> Tillbaka till Sportresor
-            </Link>
+            <div className="order-3 lg:order-none">
+              <BookingCard
+                t={t}
+                headline={headline ?? event.tournament_name}
+                when={formatEventDateTime(event.starts_at)}
+                venue={event.venue_name ? `${event.venue_name}${event.city ? `, ${event.city}` : ""}` : null}
+                selectedPackage={selectedPackage as PackageId}
+                onSelectPackage={(id, parts) => {
+                  setSelectedPackage(id);
+                  setInquiryParts(parts);
+                }}
+                onEnquire={() => setInquiryOpen(true)}
+              />
+              <Link
+                to="/services/sportresor"
+                className="mt-4 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+              >
+                <ArrowLeft className="h-3 w-3" /> Tillbaka till Sportresor
+              </Link>
+            </div>
           </aside>
         </div>
       </section>
