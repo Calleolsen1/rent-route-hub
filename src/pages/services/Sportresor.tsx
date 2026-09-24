@@ -62,9 +62,16 @@ export default function Sportresor() {
  <h1 className="font-display text-3xl md:text-5xl text-white mb-2">
  Resor för <em className="italic font-light text-white">Sportälskare</em>
  </h1>
- <p className="text-white/80 text-sm max-w-xl">
+ <p className="text-white/80 text-sm max-w-xl mb-5">
  Vi skräddarsyr din resa till F1 och fotboll - med hotell, transfer och allt det praktiska ordnat.
  </p>
+ <Link
+ to="/contact"
+ className="inline-flex items-center rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 text-sm font-medium tracking-wide shadow-lg shadow-navy/30 transition-all hover:scale-105"
+ >
+ Kontakta oss
+ <ArrowRight className="ml-2 h-4 w-4" />
+ </Link>
  </div>
  </div>
  </section>

@@ -116,8 +116,15 @@ export default function SportEntryPage() {
           </p>
           <h1 className="font-display text-2xl md:text-4xl text-white mb-1">{info.name}</h1>
           {info.tagline && (
-            <p className="font-display italic font-light text-white text-sm sm:text-base md:text-lg">{info.tagline}</p>
+            <p className="font-display italic font-light text-white text-sm sm:text-base md:text-lg mb-3">{info.tagline}</p>
           )}
+          <Link
+            to="/contact"
+            className="inline-flex items-center rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-7 py-2.5 text-sm font-medium tracking-wide shadow-lg shadow-navy/30 transition-all hover:scale-105"
+          >
+            Kontakta oss
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Link>
         </div>
       </section>
 

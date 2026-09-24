@@ -60,9 +60,16 @@ export default function LeaguePage() {
             {sport.label}sresor - Liga
           </p>
           <h1 className="font-display text-2xl md:text-5xl text-white mb-1">{leagueName}</h1>
-          <p className="text-white/80 text-sm max-w-xl">
+          <p className="text-white/80 text-sm max-w-xl mb-4">
             Välj ett lag så tar vi fram en komplett resa med biljetter, hotell, flyg och transfer.
           </p>
+          <Link
+            to="/contact"
+            className="inline-flex items-center rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-7 py-2.5 text-sm font-medium tracking-wide shadow-lg shadow-navy/30 transition-all hover:scale-105"
+          >
+            Kontakta oss
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Link>
         </div>
       </section>
 
