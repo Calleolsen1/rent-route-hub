@@ -14,6 +14,7 @@ import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
 import {
   Carousel,
+  type CarouselApi,
   CarouselContent,
   CarouselItem,
   CarouselNext,
@@ -32,6 +33,9 @@ import offerLisbon from "@/assets/offer-lisbon.jpg";
 
 import offerLiverpool from "@/assets/offer-liverpool.jpg";
 import offerMallorca from "@/assets/offer-mallorca.jpg";
+
+/** Time each hero slide stays before the next one slides in. */
+const HERO_AUTOPLAY_MS = 3000;
 
 // Lookup so DB-driven slides can reference bundled assets by name without
 // shipping their URLs in the DB. Uploaded images use full https URLs instead.
@@ -259,6 +263,8 @@ const whyUs = [
 
 const Home = () => {
   const [activeHero, setActiveHero] = useState(0);
+  const [heroApi, setHeroApi] = useState<CarouselApi>();
+  const [heroPaused, setHeroPaused] = useState(false);
   const [heroQuery, setHeroQuery] = useState("");
   const [offerTab, setOfferTab] = useState<"alla" | "nya" | "populara">("alla");
   const navigate = useNavigate();
@@ -276,6 +282,29 @@ const Home = () => {
     }> | null
   >(null);
   const [heroSlides, setHeroSlides] = useState<HeroSlide[]>(fallbackHeroSlides);
+
+  // Hero autoplay: next slide every HERO_AUTOPLAY_MS. Paused while the
+  // pointer is on the hero or the tab is hidden, and the clock restarts on
+  // every slide change — so a manual click never gets a slide yanked away a
+  // moment later. Off for visitors who ask for reduced motion.
+  useEffect(() => {
+    if (!heroApi || heroPaused || heroSlides.length < 2) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let timer = 0;
+    const restart = () => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(function tick() {
+        if (document.visibilityState === "visible") heroApi.scrollNext();
+        timer = window.setTimeout(tick, HERO_AUTOPLAY_MS);
+      }, HERO_AUTOPLAY_MS);
+    };
+    restart();
+    heroApi.on("select", restart);
+    return () => {
+      window.clearTimeout(timer);
+      heroApi.off("select", restart);
+    };
+  }, [heroApi, heroPaused, heroSlides.length]);
   const [compareAtDefaultPct, setCompareAtDefaultPct] = useState<number>(0);
   const { enabled: showPrices } = usePublicPricesEnabled();
 
@@ -483,13 +512,18 @@ const Home = () => {
       {/* Hero carousel - contained rounded card, Intrepid-style */}
       <section className="relative bg-background pb-4 md:pb-6">
         <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-4 sm:px-6 md:px-10">
-          <div className="relative rounded-2xl md:rounded-3xl overflow-hidden">
+          <div
+            className="relative rounded-2xl md:rounded-3xl overflow-hidden"
+            onMouseEnter={() => setHeroPaused(true)}
+            onMouseLeave={() => setHeroPaused(false)}
+          >
             <Carousel
               opts={{ loop: true }}
               className="w-full"
               setApi={(api) => {
                 if (!api) return;
                 api.on("select", () => setActiveHero(api.selectedScrollSnap()));
+                setHeroApi(api);
               }}
             >
               <CarouselContent>
@@ -503,7 +537,8 @@ const Home = () => {
                         loading={idx === 0 ? "eager" : "lazy"}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/40 to-transparent" />
-                      <div className="relative h-full flex items-end p-5 pb-12 sm:p-8 md:p-14">
+                      {/* Side padding clears the prev/next arrows (shown from sm). */}
+                      <div className="relative h-full flex items-end p-5 pb-12 sm:p-8 sm:pl-20 md:p-14 md:pl-24">
                         <div className="max-w-xl">
                           <p className="text-[11px] eyebrow text-white uppercase mb-2 sm:mb-4 font-sans">
                             {slide.eyebrow}
