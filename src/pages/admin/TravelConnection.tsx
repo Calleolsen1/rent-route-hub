@@ -214,7 +214,7 @@ export default function AdminTravelConnection() {
       const res = await invoke<{
         environment: string;
         stats: Record<string, number>;
-        plans?: { venues?: number; copied?: number; failed?: number; error?: string };
+        plans?: { venues?: number; copied?: number; failed?: number; errors?: string[]; error?: string };
       }>("travelconnection-sync", { trigger: "manual" });
       const s = res.stats;
       toast.success(
@@ -222,7 +222,12 @@ export default function AdminTravelConnection() {
       );
       const p = res.plans;
       if (p?.error) toast.error(`Arenakartor: ${p.error}`);
-      else if (p?.failed) toast.error(`${p.failed} arenakartor kunde inte kopieras (${p.copied ?? 0} klara)`);
+      else if (p?.failed) {
+        toast.error(`${p.failed} arenakartor kunde inte kopieras (${p.copied ?? 0} klara)`, {
+          description: p.errors?.join(" · "),
+          duration: 15000,
+        });
+      }
       else if (p?.copied) toast.success(`${p.copied} nya arenakartor`);
       await load();
     } catch (e) {

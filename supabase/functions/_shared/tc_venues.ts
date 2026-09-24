@@ -38,13 +38,30 @@ async function download(url: string): Promise<{ bytes: Uint8Array; type: string 
     }
     await res.body?.cancel();
   }
-  throw new Error("plan image could not be downloaded");
+  throw new Error(`bilden kunde inte hämtas från leverantören (${url})`);
 }
 
 export interface VenueSyncResult {
   venues: number;
   copied: number;
   failed: number;
+  /** Distinct failure reasons, so admin sees why rather than just a count. */
+  errors: string[];
+}
+
+/**
+ * The bucket is normally created by migration 20260924140000, but a sync can
+ * run before that migration has been applied (Lovable applies migrations by
+ * hand). Creating it here makes the order not matter. Private: this Lovable
+ * workspace refuses public buckets.
+ */
+async function ensureBucket(db: Db): Promise<void> {
+  const { data } = await db.storage.getBucket(PLAN_BUCKET);
+  if (data) return;
+  const { error } = await db.storage.createBucket(PLAN_BUCKET, { public: false });
+  if (error && !/already exists/i.test(error.message)) {
+    throw new Error(`kunde inte skapa bildmappen ${PLAN_BUCKET}: ${error.message}`);
+  }
 }
 
 /**
@@ -56,7 +73,7 @@ export async function syncVenuePlans(
   tc: TravelConnectionClient,
   venueIds: Set<number>,
 ): Promise<VenueSyncResult> {
-  const result: VenueSyncResult = { venues: 0, copied: 0, failed: 0 };
+  const result: VenueSyncResult = { venues: 0, copied: 0, failed: 0, errors: [] };
   if (!venueIds.size) return result;
 
   const venues = (await tc.listVenues()).filter((v) => venueIds.has(v.id));
@@ -82,6 +99,7 @@ export async function syncVenuePlans(
     const k = known.get(v.id);
     return !k?.plan_path || k.source_url !== url;
   }).slice(0, MAX_COPIES_PER_RUN);
+  if (toCopy.length) await ensureBucket(db);
 
   for (const v of toCopy) {
     const url = v.images!.seating!;
@@ -103,8 +121,10 @@ export async function syncVenuePlans(
       }).eq("tc_venue_id", v.id);
       result.copied++;
     } catch (e) {
-      await db.from("tc_venues").update({ source_url: url, plan_error: (e as Error).message }).eq("tc_venue_id", v.id);
+      const message = (e as Error).message;
+      await db.from("tc_venues").update({ source_url: url, plan_error: message }).eq("tc_venue_id", v.id);
       result.failed++;
+      if (!result.errors.includes(message)) result.errors.push(message);
     }
   }
   return result;
