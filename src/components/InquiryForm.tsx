@@ -39,6 +39,8 @@ type Props = {
   showTripParts?: boolean;
   /** Trip parts ticked on open, e.g. ["biljett"] from an event page. */
   defaultTripParts?: readonly string[];
+  /** Pre-filled message the visitor can edit, e.g. the tickets they picked. */
+  defaultMessage?: string;
   /** Tighter layout that fits a dialog without scrolling. */
   compact?: boolean;
 };
@@ -89,6 +91,7 @@ export default function InquiryForm({
   showBudget,
   showTripParts = false,
   defaultTripParts,
+  defaultMessage,
   compact = false,
 }: Props) {
   const [submitting, setSubmitting] = useState(false);
@@ -357,6 +360,7 @@ export default function InquiryForm({
           required
           rows={compact ? 3 : 5}
           maxLength={4000}
+          defaultValue={defaultMessage}
           className={`${inputCls} resize-none`}
           placeholder="Berätta gärna mer om er resa, era önskemål och vad ni vill uppleva."
         />
