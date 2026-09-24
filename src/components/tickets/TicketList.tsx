@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { ChevronDown, Eye, MapPin, Minus, Plus } from "lucide-react";
 import { formatSek } from "@/lib/formatSek";
 import { normColor } from "@/lib/planColor";
@@ -113,31 +112,13 @@ export default function TicketList({ t }: { t: EventTickets }) {
                       )}
                     </div>
                     {t.canBuy && g.available && (
-                      <div className="flex items-center gap-1.5 flex-shrink-0">
-                        <Button
-                          type="button"
-                          size="icon"
-                          variant="outline"
-                          className="h-8 w-8 rounded-full"
-                          onClick={() => t.step(g, -1)}
-                          disabled={n === 0}
-                          aria-label={`Färre biljetter ${g.name}`}
-                        >
-                          <Minus className="h-3 w-3" />
-                        </Button>
-                        <span className="w-6 text-center text-sm font-medium tabular-nums">{n}</span>
-                        <Button
-                          type="button"
-                          size="icon"
-                          variant="outline"
-                          className="h-8 w-8 rounded-full"
-                          onClick={() => t.step(g, 1)}
-                          disabled={n >= g.max_qty}
-                          aria-label={`Fler biljetter ${g.name}`}
-                        >
-                          <Plus className="h-3 w-3" />
-                        </Button>
-                      </div>
+                      <QtyStepper
+                        n={n}
+                        max={g.max_qty}
+                        name={g.name}
+                        onAdd={() => t.step(g, 1)}
+                        onRemove={() => t.step(g, -1)}
+                      />
                     )}
                   </div>
                 </div>
@@ -158,6 +139,62 @@ export default function TicketList({ t }: { t: EventTickets }) {
           "Skriv gärna vilken kategori ni vill ha i förfrågan, så återkommer vi med pris och tillgänglighet."
         )}
       </p>
+    </div>
+  );
+}
+
+/**
+ * Quantity control that can't be missed: a solid blue "Lägg till" until a
+ * ticket is picked, then a blue − n + stepper.
+ */
+function QtyStepper({
+  n,
+  max,
+  name,
+  onAdd,
+  onRemove,
+}: {
+  n: number;
+  max: number;
+  name: string;
+  onAdd: () => void;
+  onRemove: () => void;
+}) {
+  if (n === 0) {
+    return (
+      <button
+        type="button"
+        onClick={onAdd}
+        className="flex-shrink-0 inline-flex items-center gap-1.5 rounded-full bg-primary px-4 h-9 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 active:scale-[0.97] transition"
+        aria-label={`Lägg till en biljett ${name}`}
+      >
+        <Plus className="h-4 w-4" strokeWidth={2.5} />
+        Lägg till
+      </button>
+    );
+  }
+  return (
+    <div className="flex-shrink-0 inline-flex items-center rounded-full border-2 border-primary bg-background p-0.5 shadow-sm">
+      <button
+        type="button"
+        onClick={onRemove}
+        className="h-8 w-8 inline-flex items-center justify-center rounded-full text-primary hover:bg-primary/10 active:scale-95 transition"
+        aria-label={`Färre biljetter ${name}`}
+      >
+        <Minus className="h-4 w-4" strokeWidth={2.5} />
+      </button>
+      <span className="w-8 text-center text-base font-bold tabular-nums text-primary" aria-live="polite">
+        {n}
+      </span>
+      <button
+        type="button"
+        onClick={onAdd}
+        disabled={n >= max}
+        className="h-8 w-8 inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90 active:scale-95 transition disabled:opacity-40 disabled:cursor-not-allowed"
+        aria-label={`Fler biljetter ${name}`}
+      >
+        <Plus className="h-4 w-4" strokeWidth={2.5} />
+      </button>
     </div>
   );
 }

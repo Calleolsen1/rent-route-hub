@@ -9,6 +9,7 @@ import InquiryForm from "@/components/InquiryForm";
 import TicketList, { TicketListSkeleton } from "@/components/tickets/TicketList";
 import TicketPlanCard from "@/components/tickets/TicketPlanCard";
 import BookingCard, { type PackageId } from "@/components/tickets/BookingCard";
+import CheckoutBar from "@/components/tickets/CheckoutBar";
 import { useEventTickets } from "@/hooks/useEventTickets";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
@@ -299,6 +300,8 @@ export default function EventDetail() {
       </Dialog>
 
       <RequestCta />
+      {/* Slides up once a ticket is added; checkout from anywhere on the page. */}
+      <CheckoutBar t={t} />
       <Footer />
     </div>
   );
