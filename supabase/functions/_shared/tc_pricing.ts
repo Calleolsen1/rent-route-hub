@@ -13,6 +13,7 @@
 
 import { rateToSek, type FxRate } from "./fx.ts";
 import { translateCategory } from "./translate.ts";
+import { planPublicUrl } from "./tc_venues.ts";
 import {
   TravelConnectionClient,
   type TcInventory,
@@ -54,6 +55,8 @@ export interface PricedEvent {
   fx: FxRate;
   league: string | null;
   guest_details_required: boolean;
+  /** Official seating plan (our copy), painted in the category colours. */
+  plan_url: string | null;
   options: PricedOption[];
 }
 
@@ -293,7 +296,7 @@ export async function priceEvent(
   const [{ data: link, error: linkErr }, { data: event }] = await Promise.all([
     db
       .from("tc_product_links")
-      .select("tc_product_id, tc_currency, guest_details_required")
+      .select("tc_product_id, tc_currency, guest_details_required, tc_venue_id")
       .eq("event_id", eventId)
       .in("match_method", ["auto", "manual"])
       .maybeSingle(),
@@ -311,10 +314,13 @@ export async function priceEvent(
   }
 
   const league: string | null = event?.tournament_name ?? null;
-  const [inv, fx, ctx] = await Promise.all([
+  const [inv, fx, ctx, { data: venue }] = await Promise.all([
     inventoryFor(tc, link.tc_product_id, opts.fresh),
     rateToSek(db, currency),
     loadContext(db, eventId, league),
+    link.tc_venue_id != null
+      ? db.from("tc_venues").select("plan_path, copied_at").eq("tc_venue_id", link.tc_venue_id).maybeSingle()
+      : Promise.resolve({ data: null }),
   ]);
   const options: TcTicketOption[] = inv && inv.status !== "Expired" ? inv.ticket_options : [];
   const base = {
@@ -323,6 +329,7 @@ export async function priceEvent(
     fx,
     league,
     guest_details_required: !!link.guest_details_required,
+    plan_url: venue?.plan_path ? planPublicUrl(venue.plan_path, venue.copied_at) : null,
   };
   if (!options.length) return { ...base, options: [] };
 

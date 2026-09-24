@@ -81,6 +81,7 @@ Deno.serve(async (req) => {
       supplier: "travelconnection",
       environment: tc.environment,
       guest_details_required: priced.guest_details_required,
+      plan_url: priced.plan_url,
       prices_visible: showPrices,
       // Tells the page it is showing an admin-only preview of the shop.
       preview: isAdmin && pricesPublic !== true,

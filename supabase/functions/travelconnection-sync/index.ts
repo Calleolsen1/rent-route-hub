@@ -29,6 +29,7 @@ import {
   type MatchResult,
   type OurEvent,
 } from "../_shared/tc_match.ts";
+import { syncVenuePlans, type VenueSyncResult } from "../_shared/tc_venues.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -235,6 +236,21 @@ Deno.serve(async (req) => {
       upserted += count ?? batch.length;
     }
 
+    // Seating plans for the stadiums we actually sell. A failure here must
+    // not fail the sync: links are what matter, plans are a nicety.
+    let plans: VenueSyncResult | { error: string };
+    try {
+      const venueIds = new Set(
+        rows
+          .filter((r) => r.event_id && r.tc_venue_id != null)
+          .map((r) => r.tc_venue_id as number),
+      );
+      plans = await syncVenuePlans(admin, tc, venueIds);
+    } catch (e) {
+      console.error("[travelconnection-sync] venue plans:", (e as Error).message);
+      plans = { error: (e as Error).message };
+    }
+
     if (logId) {
       await admin.from("supplier_sync_log").update({
         finished_at: new Date().toISOString(),
@@ -248,7 +264,7 @@ Deno.serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ environment: tc.environment, upserted, stats }),
+      JSON.stringify({ environment: tc.environment, upserted, stats, plans }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e) {

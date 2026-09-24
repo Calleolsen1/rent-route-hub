@@ -90,6 +90,14 @@ export interface TcTicketOption {
   delivery_methods: number[];
 }
 
+export interface TcVenue {
+  id: number;
+  name: string;
+  city: string | null;
+  /** Seating plan painted in the category colours; null for most venues. */
+  images: { stadium?: string | null; seating?: string | null } | null;
+}
+
 export interface TcTicketCategory {
   id: number;
   product_type: string;
@@ -377,6 +385,11 @@ export class TravelConnectionClient {
   async competitionsById(): Promise<Map<number, string>> {
     const comps = await this.all<{ id: number; name: string }>("/competitions");
     return new Map(comps.map((c) => [c.id, c.name]));
+  }
+
+  /** Every venue, with its seating-plan image where the supplier has one. */
+  listVenues(): Promise<TcVenue[]> {
+    return this.all<TcVenue>("/venues");
   }
 
   /** What a ticket category is: stand, rules, colour on the seating plan. */

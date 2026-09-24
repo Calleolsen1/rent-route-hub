@@ -1,14 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { usePublicPricesEnabled } from "@/hooks/usePublicPrices";
 import { useTeamPhotos } from "@/hooks/useTeamPhotos";
 import { useTeamCrests } from "@/hooks/useTeamCrests";
 import { useSeatmap } from "@/hooks/useSeatmap";
 import EventImage from "@/components/EventImage";
 import InquiryForm from "@/components/InquiryForm";
 import TicketPicker from "@/components/TicketPicker";
-import { useUserRole } from "@/hooks/useUserRole";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
@@ -54,10 +52,10 @@ export default function EventDetail() {
   const [pricesLoading, setPricesLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const [compareAtDefaultPct, setCompareAtDefaultPct] = useState<number>(0);
-  const { enabled: showPrices } = usePublicPricesEnabled();
-  const { isAdmin } = useUserRole();
   // True once the ticket picker has live, priced, buyable tickets.
   const [canBuyOnline, setCanBuyOnline] = useState(false);
+  // The supplier's official plan replaces the uploaded seatmap when present.
+  const [hasSupplierPlan, setHasSupplierPlan] = useState(false);
   const teamPhotos = useTeamPhotos();
   const teamCrests = useTeamCrests();
   const { url: seatmapUrl, note: seatmapNote } = useSeatmap(
@@ -221,14 +219,18 @@ export default function EventDetail() {
               </div>
             </div>
 
-            {/* Buy tickets online. Only mounts when prices are public or an
-                admin is previewing; the picker itself renders nothing when the
-                supplier has no tickets for this match. */}
-            {(showPrices || isAdmin) && (
-              <TicketPicker eventId={event.id} onAvailability={setCanBuyOnline} />
-            )}
+            {/* Supplier tickets + official seating plan. Buyable when prices
+                are public or an admin is previewing; otherwise a guide to the
+                categories for the enquiry. Renders nothing when the supplier
+                has no tickets for this match. */}
+            <TicketPicker
+              eventId={event.id}
+              venueName={event.venue_name}
+              onAvailability={setCanBuyOnline}
+              onPlan={setHasSupplierPlan}
+            />
 
-            {seatmapUrl && (
+            {seatmapUrl && !hasSupplierPlan && (
               <div>
                 <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">
                   Läktarkarta
