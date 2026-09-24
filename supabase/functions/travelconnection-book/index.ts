@@ -27,6 +27,7 @@ import {
   TravelConnectionError,
   assertOrderingAllowed,
   type TcGuest,
+  dbTokenStore,
 } from "../_shared/travelconnection.ts";
 import { fulfilOrder } from "../_shared/tc_orders.ts";
 
@@ -278,7 +279,7 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
-    const tc = new TravelConnectionClient();
+    const tc = new TravelConnectionClient({ store: dbTokenStore(admin) });
 
     switch (body.action) {
       case "reserve":

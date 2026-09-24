@@ -20,6 +20,7 @@ import {
   TravelConnectionClient,
   productStart,
   type TcProduct,
+  dbTokenStore,
 } from "../_shared/travelconnection.ts";
 import {
   FootballMatcher,
@@ -117,7 +118,7 @@ Deno.serve(async (req) => {
       .single();
     logId = logRow?.id ?? null;
 
-    const tc = new TravelConnectionClient();
+    const tc = new TravelConnectionClient({ store: dbTokenStore(admin) });
     const [teams, competitions, products] = [
       await tc.teamsById(),
       await tc.competitionsById(),

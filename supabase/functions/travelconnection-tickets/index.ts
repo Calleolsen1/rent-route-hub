@@ -13,7 +13,7 @@
 // the checkout uses too, so the page and the order can't disagree.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-import { TravelConnectionClient } from "../_shared/travelconnection.ts";
+import { TravelConnectionClient, dbTokenStore } from "../_shared/travelconnection.ts";
 import { priceEvent } from "../_shared/tc_pricing.ts";
 import { callerIsAdmin } from "../_shared/auth.ts";
 
@@ -50,7 +50,7 @@ Deno.serve(async (req) => {
     ]);
     const showPrices = isAdmin || pricesPublic === true;
 
-    const tc = new TravelConnectionClient();
+    const tc = new TravelConnectionClient({ store: dbTokenStore(db) });
     // Admins always see a fresh lookup; the public may get a minute-old one.
     const priced = await priceEvent(db, tc, event_id, { fresh: isAdmin });
 

@@ -233,16 +233,63 @@ async function throttle(): Promise<void> {
   }
 }
 
-interface TokenState {
+export interface TokenState {
   access: string;
   refresh: string | null;
   expiresAt: number;
   base: string;
 }
 
+/**
+ * Where the current access token is shared between functions.
+ *
+ * Travel Connection INVALIDATES the previous token whenever the account logs
+ * in again (verified 2026-09-24: the old token then gets 403 "invalid
+ * token"). Every edge function — tickets, sync, booking, checkout, webhook —
+ * runs in its own instance, so if each logged in for itself they would keep
+ * knocking each other out, possibly mid-payment. They share one token
+ * instead (dbTokenStore) and only log in when the shared one is dead.
+ */
+export interface TokenStore {
+  load(): Promise<TokenState | null>;
+  save(t: TokenState): Promise<void>;
+}
+
+// deno-lint-ignore no-explicit-any
+export function dbTokenStore(db: any): TokenStore {
+  return {
+    async load() {
+      const { data } = await db
+        .from("tc_tokens")
+        .select("access_token, refresh_token, expires_at, base")
+        .eq("id", "current")
+        .maybeSingle();
+      return data
+        ? {
+          access: data.access_token,
+          refresh: data.refresh_token,
+          expiresAt: new Date(data.expires_at).getTime(),
+          base: data.base,
+        }
+        : null;
+    },
+    async save(t) {
+      await db.from("tc_tokens").upsert({
+        id: "current",
+        access_token: t.access,
+        refresh_token: t.refresh,
+        expires_at: new Date(t.expiresAt).toISOString(),
+        base: t.base,
+        updated_at: new Date().toISOString(),
+      }, { onConflict: "id" });
+    },
+  };
+}
+
 // Module scope survives between requests on a warm edge instance, which
-// saves a token call on most requests.
+// saves a token lookup on most requests.
 let token: TokenState | null = null;
+let loginInFlight: Promise<TokenState> | null = null;
 
 function errorMessage(body: unknown, fallback: string): string {
   if (Array.isArray(body)) {
@@ -257,8 +304,9 @@ export class TravelConnectionClient {
   private base = tcBaseUrl();
   private username: string;
   private password: string;
+  private store: TokenStore | null;
 
-  constructor() {
+  constructor(opts: { store?: TokenStore } = {}) {
     const u = Deno.env.get("TRAVELCONNECTION_USERNAME");
     const p = Deno.env.get("TRAVELCONNECTION_PASSWORD");
     if (!u || !p) {
@@ -269,48 +317,59 @@ export class TravelConnectionClient {
     }
     this.username = u;
     this.password = p;
+    this.store = opts.store ?? null;
   }
 
   get environment(): TcEnvironment {
     return tcEnvironment();
   }
 
-  private async authenticate(): Promise<string> {
-    const now = Date.now();
-    // Renew a minute early so a token can't expire mid-request.
-    if (token && token.base === this.base && token.expiresAt - 60_000 > now) return token.access;
+  /**
+   * A token that works: this instance's, else the shared one, else a fresh
+   * login (which then becomes the shared one). `stale` is a token the
+   * supplier just rejected, so it's never handed out again.
+   */
+  private async authenticate(stale?: string): Promise<string> {
+    const usable = (t: TokenState | null): t is TokenState =>
+      !!t && t.base === this.base && t.access !== stale && t.expiresAt - 60_000 > Date.now();
+    if (usable(token)) return token.access;
+    if (this.store) {
+      const shared = await this.store.load().catch(() => null);
+      if (usable(shared)) {
+        token = shared;
+        return shared.access;
+      }
+    }
+    // One login per instance at a time, however many requests are waiting.
+    loginInFlight ??= this.login().finally(() => {
+      loginInFlight = null;
+    });
+    return (await loginInFlight).access;
+  }
 
-    const grant = token?.refresh && token.base === this.base
-      ? { grant_type: "refresh_token", refresh_token: token.refresh }
-      : { grant_type: "password", username: this.username, password: this.password };
-
+  private async login(): Promise<TokenState> {
     await throttle();
     const res = await fetch(`${this.base}/oauthorize/token`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify(grant),
+      body: JSON.stringify({ grant_type: "password", username: this.username, password: this.password }),
     });
     const body = await res.json().catch(() => null);
-
     if (!res.ok || !body?.access_token) {
-      // A rejected refresh token falls back to a full login once.
-      if (grant.grant_type === "refresh_token") {
-        token = null;
-        return this.authenticate();
-      }
       throw new TravelConnectionError(
         `Inloggning mot Travel Connection misslyckades: ${errorMessage(body, `HTTP ${res.status}`)}`,
         res.status,
       );
     }
-
-    token = {
+    const fresh: TokenState = {
       access: body.access_token,
       refresh: body.refresh_token ?? null,
-      expiresAt: now + Number(body.expires_in ?? 3600) * 1000,
+      expiresAt: Date.now() + Number(body.expires_in ?? 3600) * 1000,
       base: this.base,
     };
-    return token.access;
+    token = fresh;
+    await this.store?.save(fresh).catch((e) => console.warn("[travelconnection] token save failed:", e?.message));
+    return fresh;
   }
 
   private async request<T>(
@@ -333,15 +392,6 @@ export class TravelConnectionClient {
 
     if (res.status === 204) return undefined as T;
 
-    if (!retried && res.status === 401) {
-      token = null;
-      return this.request<T>(method, path, body, true);
-    }
-    if (!retried && res.status === 429) {
-      await new Promise((r) => setTimeout(r, 5000));
-      return this.request<T>(method, path, body, true);
-    }
-
     const text = await res.text();
     let parsed: unknown;
     try {
@@ -351,6 +401,19 @@ export class TravelConnectionClient {
         `Travel Connection ${method} ${path}: svar var inte JSON (HTTP ${res.status})`,
         res.status,
       );
+    }
+
+    // A dead token comes back as 401, or as 403 {"message":"invalid token"}
+    // when another function has logged in since. Get a working one and retry.
+    const tokenRejected = res.status === 401 ||
+      (res.status === 403 && /token/i.test(errorMessage(parsed, "")));
+    if (!retried && tokenRejected) {
+      await this.authenticate(access);
+      return this.request<T>(method, path, body, true);
+    }
+    if (!retried && res.status === 429) {
+      await new Promise((r) => setTimeout(r, 5000));
+      return this.request<T>(method, path, body, true);
     }
     if (!res.ok) {
       throw new TravelConnectionError(

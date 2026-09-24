@@ -11,7 +11,7 @@
 // booking the supplier has already released.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-import { TravelConnectionClient } from "../_shared/travelconnection.ts";
+import { TravelConnectionClient, dbTokenStore } from "../_shared/travelconnection.ts";
 import { requireAdminOrCron } from "../_shared/auth.ts";
 import { escapeHtml, sendEmail } from "../_shared/email.ts";
 
@@ -91,7 +91,7 @@ Deno.serve(async (req) => {
       .limit(MAX_ORDERS_PER_RUN);
     if (error) throw new Error(`tc_bookings read: ${error.message}`);
 
-    const tc = new TravelConnectionClient();
+    const tc = new TravelConnectionClient({ store: dbTokenStore(db) });
     let refreshed = 0;
     let emailed = 0;
     const failures: string[] = [];

@@ -1,6 +1,6 @@
 import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2";
 import { type StripeEnv, verifyWebhook, createStripeClient } from "../_shared/stripe.ts";
-import { TravelConnectionClient } from "../_shared/travelconnection.ts";
+import { TravelConnectionClient, dbTokenStore } from "../_shared/travelconnection.ts";
 import { fulfilOrder } from "../_shared/tc_orders.ts";
 import { sendEmailOrError } from "../_shared/email.ts";
 
@@ -303,7 +303,7 @@ async function handleCheckoutCompleted(session: any, env: StripeEnv) {
     .maybeSingle();
   if (tcBooking) {
     try {
-      const r = await fulfilOrder(getSupabase(), new TravelConnectionClient(), orderId);
+      const r = await fulfilOrder(getSupabase(), new TravelConnectionClient({ store: dbTokenStore(getSupabase()) }), orderId);
       console.log("[payments-webhook] travelconnection fulfilment", { orderId, ...r });
     } catch (e) {
       await logSystemError("tc_fulfilment_threw", e instanceof Error ? e.message : String(e), { orderId, details: e });

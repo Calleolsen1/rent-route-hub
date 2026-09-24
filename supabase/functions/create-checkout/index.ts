@@ -1,7 +1,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { type StripeEnv, createStripeClient } from "../_shared/stripe.ts";
 import { callerIsAdmin } from "../_shared/auth.ts";
-import { TravelConnectionClient } from "../_shared/travelconnection.ts";
+import { TravelConnectionClient, dbTokenStore } from "../_shared/travelconnection.ts";
 import { PriceChangedError, SoldOutError, holdForPayment } from "../_shared/tc_orders.ts";
 
 const corsHeaders = {
@@ -89,7 +89,7 @@ Deno.serve(async (req) => {
       .maybeSingle();
     if (tcBooking) {
       try {
-        await holdForPayment(supabase, new TravelConnectionClient(), orderId);
+        await holdForPayment(supabase, new TravelConnectionClient({ store: dbTokenStore(supabase) }), orderId);
       } catch (e) {
         if (e instanceof SoldOutError || e instanceof PriceChangedError) {
           return new Response(

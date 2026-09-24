@@ -15,7 +15,7 @@
 // Stripe, so the supplier's 10-minute hold covers the payment itself.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-import { TravelConnectionClient, tcEnvironment } from "../_shared/travelconnection.ts";
+import { TravelConnectionClient, tcEnvironment, dbTokenStore } from "../_shared/travelconnection.ts";
 import { priceEvent } from "../_shared/tc_pricing.ts";
 import { callerIdentity } from "../_shared/auth.ts";
 import type { BookingLine } from "../_shared/tc_orders.ts";
@@ -73,7 +73,7 @@ Deno.serve(async (req) => {
       throw new Error(`Max ${MAX_TICKETS_PER_ORDER} biljetter per köp - skicka en gruppförfrågan för fler.`);
     }
 
-    const tc = new TravelConnectionClient();
+    const tc = new TravelConnectionClient({ store: dbTokenStore(db) });
     const priced = await priceEvent(db, tc, eventId, { fresh: true });
     if (!priced) throw new Error("Det finns inga biljetter att köpa till den här matchen.");
 
