@@ -1074,6 +1074,44 @@ export type Database = {
           },
         ]
       }
+      markup_rules: {
+        Row: {
+          event_id: string | null
+          id: string
+          league: string | null
+          markup_fixed_sek: number
+          markup_pct: number
+          scope: string
+          updated_at: string
+        }
+        Insert: {
+          event_id?: string | null
+          id?: string
+          league?: string | null
+          markup_fixed_sek?: number
+          markup_pct?: number
+          scope: string
+          updated_at?: string
+        }
+        Update: {
+          event_id?: string | null
+          id?: string
+          league?: string | null
+          markup_fixed_sek?: number
+          markup_pct?: number
+          scope?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "markup_rules_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: true
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       message_threads: {
         Row: {
           booking_id: string | null
@@ -1458,6 +1496,7 @@ export type Database = {
           total_sek: number
           updated_at: string
           user_id: string | null
+          voucher_urls: Json
           xs2_booking_id: string | null
           xs2_reservation_id: string | null
         }
@@ -1485,6 +1524,7 @@ export type Database = {
           total_sek?: number
           updated_at?: string
           user_id?: string | null
+          voucher_urls?: Json
           xs2_booking_id?: string | null
           xs2_reservation_id?: string | null
         }
@@ -1512,6 +1552,7 @@ export type Database = {
           total_sek?: number
           updated_at?: string
           user_id?: string | null
+          voucher_urls?: Json
           xs2_booking_id?: string | null
           xs2_reservation_id?: string | null
         }
@@ -2097,6 +2138,33 @@ export type Database = {
           },
         ]
       }
+      tc_ticket_category_info: {
+        Row: {
+          color: string | null
+          description: Json
+          fetched_at: string
+          guest_data_requirements: Json | null
+          name: string | null
+          tc_category_id: number
+        }
+        Insert: {
+          color?: string | null
+          description?: Json
+          fetched_at?: string
+          guest_data_requirements?: Json | null
+          name?: string | null
+          tc_category_id: number
+        }
+        Update: {
+          color?: string | null
+          description?: Json
+          fetched_at?: string
+          guest_data_requirements?: Json | null
+          name?: string | null
+          tc_category_id?: number
+        }
+        Relationships: []
+      }
       team_crests: {
         Row: {
           crest_url: string
@@ -2242,6 +2310,7 @@ export type Database = {
           id: string
           last_synced_at: string | null
           markup_fixed_sek: number
+          markup_override: boolean
           markup_pct: number
           max_purchase_qty: number | null
           name: string
@@ -2270,6 +2339,7 @@ export type Database = {
           id?: string
           last_synced_at?: string | null
           markup_fixed_sek?: number
+          markup_override?: boolean
           markup_pct?: number
           max_purchase_qty?: number | null
           name: string
@@ -2298,6 +2368,7 @@ export type Database = {
           id?: string
           last_synced_at?: string | null
           markup_fixed_sek?: number
+          markup_override?: boolean
           markup_pct?: number
           max_purchase_qty?: number | null
           name?: string
@@ -2639,6 +2710,7 @@ export type Database = {
         Returns: undefined
       }
       expire_old_quotes: { Args: never; Returns: number }
+      get_checkout_order: { Args: { p_order_id: string }; Returns: Json }
       get_demo_credentials: {
         Args: never
         Returns: {
@@ -2723,6 +2795,15 @@ export type Database = {
           thread_id: string
           unread_count: number
         }[]
+      }
+      set_checkout_contact: {
+        Args: {
+          p_email: string
+          p_name: string
+          p_order_id: string
+          p_phone: string
+        }
+        Returns: boolean
       }
       set_group_compare_at_pct: {
         Args: { p_pct: number; p_sport?: string; p_tournament_name?: string }
