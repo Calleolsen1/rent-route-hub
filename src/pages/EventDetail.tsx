@@ -184,8 +184,8 @@ export default function EventDetail() {
         </div>
       </section>
 
-      {/* Body. Desktop: tickets on the left; on the right a sticky column
-          with the official seating plan above the booking card. Phones: plan,
+      {/* Body. Desktop: tickets on the left; on the right the official
+          seating plan above the booking card. Phones: plan,
           then tickets, then the booking card (the aside becomes `contents`
           so its two cards can be ordered around the list). */}
       <section className="py-6 md:py-8 bg-background">
@@ -246,7 +246,9 @@ export default function EventDetail() {
           </div>
 
           {/* Right */}
-          <aside className="contents lg:block lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto lg:space-y-4 lg:pb-1">
+          {/* In the normal page flow, not sticky: sticky needed an inner
+              scrollbar whenever plan + card were taller than the window. */}
+          <aside className="contents lg:block lg:self-start lg:space-y-4">
             <div className="order-1 lg:order-none">
               <TicketPlanCard t={t} venueName={event.venue_name} />
             </div>

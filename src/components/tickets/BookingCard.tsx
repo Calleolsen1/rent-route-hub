@@ -5,9 +5,9 @@ import type { EventTickets } from "@/hooks/useEventTickets";
 
 // The right-hand booking card on the match page.
 //
-// Selling on (or admin preview): the tickets picked in the list, the total
-// and checkout first — then "the whole trip?" with the hotel/flight packages,
-// which are always quoted on request.
+// Selling on (or admin preview): "the whole trip?" with the hotel/flight
+// packages first — those are what Kaisen wants customers to choose, always
+// quoted on request — then the tickets picked in the list, total and checkout.
 // Selling off: the enquiry card as before — pick a package, send a request.
 
 export type PackageId = "biljetter" | "hotell" | "komplett";
@@ -66,45 +66,8 @@ export default function BookingCard({
         </p>
       </div>
 
-      {/* Tickets picked in the list */}
-      {selling && (
-        <div className="px-5 pb-5">
-          <div className="rounded-xl bg-muted/50 p-3.5">
-            {t.lines.length ? (
-              <ul className="space-y-1.5 text-sm">
-                {t.lines.map(({ g, n }) => (
-                  <li key={g.category_id} className="flex items-start justify-between gap-3">
-                    <span className="min-w-0">
-                      <span className="tabular-nums">{n} ×</span> {g.name}
-                    </span>
-                    <span className="whitespace-nowrap tabular-nums">{formatSek((g.final_sek ?? 0) * n)}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-muted-foreground flex items-center gap-2">
-                <Ticket className="h-4 w-4 shrink-0" /> Välj biljetter i listan.
-              </p>
-            )}
-            <div className="mt-3 pt-3 border-t border-border flex items-baseline justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Totalt</span>
-              <span className="font-display text-2xl tabular-nums">{t.count ? formatSek(t.total) : "-"}</span>
-            </div>
-          </div>
-          <Button
-            onClick={t.checkout}
-            disabled={!t.count || t.busy}
-            className="mt-3 w-full rounded-xl h-12 tracking-wider text-sm"
-          >
-            {t.busy ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-            Till kassan
-            {!t.busy && <ArrowRight className="ml-2 h-4 w-4" />}
-          </Button>
-        </div>
-      )}
-
       {/* Packages: always on request */}
-      <div className={`px-5 pb-5 ${selling ? "pt-4 border-t border-border" : ""}`}>
+      <div className="px-5 pb-5">
         <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground mb-2.5 font-sans">
           {selling ? "Hela resan?" : "Välj ditt paket"}
         </p>
@@ -139,7 +102,6 @@ export default function BookingCard({
         </div>
         <Button
           onClick={onEnquire}
-          variant={selling ? "outline" : "default"}
           className="mt-3 w-full rounded-xl h-11 tracking-wider text-sm"
         >
           Efterfråga paket
@@ -150,6 +112,46 @@ export default function BookingCard({
           <span className="font-semibold text-foreground">Vi återkommer inom 24h.</span>
         </p>
       </div>
+      {/* Tickets picked in the list */}
+      {selling && (
+        <div className="px-5 pt-4 pb-5 border-t border-border">
+          <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground mb-2.5 font-sans">
+            Bara biljetter
+          </p>
+          <div className="rounded-xl bg-muted/50 p-3.5">
+            {t.lines.length ? (
+              <ul className="space-y-1.5 text-sm">
+                {t.lines.map(({ g, n }) => (
+                  <li key={g.category_id} className="flex items-start justify-between gap-3">
+                    <span className="min-w-0">
+                      <span className="tabular-nums">{n} ×</span> {g.name}
+                    </span>
+                    <span className="whitespace-nowrap tabular-nums">{formatSek((g.final_sek ?? 0) * n)}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-muted-foreground flex items-center gap-2">
+                <Ticket className="h-4 w-4 shrink-0" /> Välj biljetter i listan.
+              </p>
+            )}
+            <div className="mt-3 pt-3 border-t border-border flex items-baseline justify-between">
+              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Totalt</span>
+              <span className="font-display text-2xl tabular-nums">{t.count ? formatSek(t.total) : "-"}</span>
+            </div>
+          </div>
+          <Button
+            onClick={t.checkout}
+            disabled={!t.count || t.busy}
+            className="mt-3 w-full rounded-xl h-12 tracking-wider text-sm"
+          >
+            {t.busy ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+            Till kassan
+            {!t.busy && <ArrowRight className="ml-2 h-4 w-4" />}
+          </Button>
+        </div>
+      )}
+
     </div>
   );
 }

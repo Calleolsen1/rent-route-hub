@@ -20,11 +20,13 @@ export type PlanArea = {
 /** Pixels are analysed at this width; plenty for stand-sized areas. */
 const WORK_WIDTH = 1400;
 /**
- * Everything outside the highlighted area fades this far towards a light
- * grey, so the lit stand stays in colour and the plan still reads as a plan.
+ * The plan itself is never dimmed or faded — it must stay fully legible.
+ * A highlighted area gets a bold outline drawn just outside its edge instead,
+ * so block numbers inside it stay untouched too.
  */
-const FADE = 0.72;
-const FADE_TO = 236;
+const OUTLINE_RGB: [number, number, number] = [11, 37, 69]; // brand navy
+/** Outline thickness as a share of the analysed width (~2px on screen). */
+const OUTLINE_SHARE = 1 / 170;
 /** Only single-block areas get a ring (Block 66 ≈ 0.0007); stands don't. */
 const RING_BELOW_SHARE = 0.0025;
 /** Near-white margin around the stadium that is cropped away. */
@@ -49,6 +51,88 @@ function contentBox(data: Uint8ClampedArray, w: number, h: number) {
   const x = Math.max(0, x0 - m);
   const y = Math.max(0, y0 - m);
   return { x, y, w: Math.min(w, x1 + m) - x, h: Math.min(h, y1 + m) - y };
+}
+
+/** Binary dilation with a (2r+1)² square, as two sliding-window passes. */
+function dilate(mask: Uint8Array, w: number, h: number, r: number): Uint8Array {
+  const tmp = new Uint8Array(mask.length);
+  for (let y = 0; y < h; y++) {
+    let count = 0;
+    const row = y * w;
+    for (let x = -r; x < w; x++) {
+      const add = x + r;
+      if (add < w && mask[row + add]) count++;
+      const drop = x - r - 1;
+      if (drop >= 0 && mask[row + drop]) count--;
+      if (x >= 0) tmp[row + x] = count > 0 ? 1 : 0;
+    }
+  }
+  const out = new Uint8Array(mask.length);
+  for (let x = 0; x < w; x++) {
+    let count = 0;
+    for (let y = -r; y < h; y++) {
+      const add = y + r;
+      if (add < h && tmp[add * w + x]) count++;
+      const drop = y - r - 1;
+      if (drop >= 0 && tmp[drop * w + x]) count--;
+      if (y >= 0) out[y * w + x] = count > 0 ? 1 : 0;
+    }
+  }
+  return out;
+}
+
+function invert(mask: Uint8Array): Uint8Array {
+  const out = new Uint8Array(mask.length);
+  for (let i = 0; i < mask.length; i++) out[i] = mask[i] ? 0 : 1;
+  return out;
+}
+
+/**
+ * Pixels to paint as the outline of region k: a band just OUTSIDE the area.
+ *
+ * The area has holes (block numbers) and seams (the thin lines between
+ * blocks B67, B68, …). Outlining those would scribble over the plan, so the
+ * area is first closed (dilate then erode) to bridge seams, then only pixels
+ * reachable from the image border count as outside.
+ */
+function outlineMask(index: Int16Array, k: number, w: number, h: number): Uint8Array {
+  const region = new Uint8Array(index.length);
+  for (let p = 0; p < index.length; p++) if (index[p] === k) region[p] = 1;
+  const close = Math.max(2, Math.round(w / 280)); // ~5px at 1400: wider than a seam
+  const closed = invert(dilate(invert(dilate(region, w, h, close)), w, h, close));
+
+  // Flood-fill the outside from the border, through pixels not in the shape.
+  const outside = new Uint8Array(index.length);
+  const queue = new Int32Array(index.length);
+  let head = 0;
+  let tail = 0;
+  const seed = (p: number) => {
+    if (!closed[p] && !outside[p]) {
+      outside[p] = 1;
+      queue[tail++] = p;
+    }
+  };
+  for (let x = 0; x < w; x++) {
+    seed(x);
+    seed((h - 1) * w + x);
+  }
+  for (let y = 0; y < h; y++) {
+    seed(y * w);
+    seed(y * w + w - 1);
+  }
+  while (head < tail) {
+    const p = queue[head++];
+    const x = p % w;
+    if (x > 0) seed(p - 1);
+    if (x < w - 1) seed(p + 1);
+    if (p >= w) seed(p - w);
+    if (p < index.length - w) seed(p + w);
+  }
+
+  const band = dilate(closed, w, h, Math.max(3, Math.round(w * OUTLINE_SHARE)));
+  const ring = new Uint8Array(index.length);
+  for (let p = 0; p < ring.length; p++) if (band[p] && outside[p]) ring[p] = 1;
+  return ring;
 }
 
 export default function StadiumPlan({
@@ -81,6 +165,8 @@ export default function StadiumPlan({
   const [aspect, setAspect] = useState(1.4);
   const [tip, setTip] = useState<{ x: number; y: number; labels: string[] } | null>(null);
   const analysis = useRef<{ plan: PlanAnalysis; pixels: ImageData } | null>(null);
+  // Outline pixels per region, computed on first highlight.
+  const outlines = useRef(new Map<number, Uint8Array>());
 
   const colors = useMemo(() => [...new Set(areas.map((a) => normColor(a.color)))], [areas]);
   const colorsKey = colors.join(",");
@@ -90,6 +176,7 @@ export default function StadiumPlan({
     setReady(false);
     setFailed(false);
     analysis.current = null;
+    outlines.current = new Map();
     const img = new Image();
     img.crossOrigin = "anonymous";
     img.onload = () => {
@@ -134,7 +221,7 @@ export default function StadiumPlan({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [src, colorsKey]);
 
-  // Draw: the plain plan, or everything outside the active area faded.
+  // Draw: the plain plan, or the plan with the active area outlined.
   useEffect(() => {
     const a = analysis.current;
     const canvas = canvasRef.current;
@@ -147,22 +234,20 @@ export default function StadiumPlan({
       ctx.putImageData(pixels, 0, 0);
       return;
     }
-    const out = ctx.createImageData(plan.w, plan.h);
-    const srcData = pixels.data;
+    // Start from the untouched plan and paint the area's outline on top.
+    let ring = outlines.current.get(k);
+    if (!ring) {
+      ring = outlineMask(plan.index, k, plan.w, plan.h);
+      outlines.current.set(k, ring);
+    }
+    const out = new ImageData(new Uint8ClampedArray(pixels.data), plan.w, plan.h);
     const dst = out.data;
-    const keep = 1 - FADE;
-    const toward = FADE_TO * FADE;
-    for (let i = 0, p = 0; p < plan.index.length; i += 4, p++) {
-      if (plan.index[p] === k) {
-        dst[i] = srcData[i];
-        dst[i + 1] = srcData[i + 1];
-        dst[i + 2] = srcData[i + 2];
-      } else {
-        dst[i] = srcData[i] * keep + toward;
-        dst[i + 1] = srcData[i + 1] * keep + toward;
-        dst[i + 2] = srcData[i + 2] * keep + toward;
-      }
-      dst[i + 3] = 255;
+    for (let p = 0; p < ring.length; p++) {
+      if (!ring[p]) continue;
+      const i = p * 4;
+      dst[i] = OUTLINE_RGB[0];
+      dst[i + 1] = OUTLINE_RGB[1];
+      dst[i + 2] = OUTLINE_RGB[2];
     }
     ctx.putImageData(out, 0, 0);
 
@@ -170,8 +255,8 @@ export default function StadiumPlan({
     const region = plan.regions[k];
     if (region.share < RING_BELOW_SHARE) {
       const { x0, x1, y0, y1 } = region.box;
-      ctx.lineWidth = Math.max(3, plan.w * 0.004);
-      ctx.strokeStyle = normColor(active!);
+      ctx.lineWidth = Math.max(3, Math.round(plan.w * OUTLINE_SHARE));
+      ctx.strokeStyle = `rgb(${OUTLINE_RGB.join(",")})`;
       ctx.beginPath();
       ctx.arc((x0 + x1) / 2, (y0 + y1) / 2, Math.max(x1 - x0, y1 - y0) / 2 + plan.w * 0.02, 0, Math.PI * 2);
       ctx.stroke();
