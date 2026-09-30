@@ -477,6 +477,24 @@ export type Database = {
         }
         Relationships: []
       }
+      dpa_search_cache: {
+        Row: {
+          fetched_at: string
+          hotels: Json
+          key: string
+        }
+        Insert: {
+          fetched_at?: string
+          hotels: Json
+          key: string
+        }
+        Update: {
+          fetched_at?: string
+          hotels?: Json
+          key?: string
+        }
+        Relationships: []
+      }
       events: {
         Row: {
           away_team: string | null
