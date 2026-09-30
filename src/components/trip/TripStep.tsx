@@ -18,7 +18,7 @@ export function StepHeader({
   return (
     <div className="flex items-start gap-3 mb-4">
       <span
-        className="mt-0.5 h-8 w-8 flex-shrink-0 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-display text-base"
+        className="mt-0.5 h-8 w-8 flex-shrink-0 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-sans text-sm font-bold tabular-nums"
         aria-hidden
       >
         {n}

@@ -89,9 +89,12 @@ export function useEventTickets(eventId: string | undefined, sport: string | nul
     let cancelled = false;
     setLoading(true);
     (async () => {
-      const { data: res, error } = await supabase.functions.invoke("travelconnection-tickets", {
-        body: { event_id: eventId },
-      });
+      const load = () =>
+        supabase.functions.invoke("travelconnection-tickets", { body: { event_id: eventId } });
+      // One retry: a supplier hiccup (slow answer, token just rotated)
+      // shouldn't swap the real tickets and plan for the generic tiers.
+      let { data: res, error } = await load();
+      if (error && !cancelled) ({ data: res, error } = await load());
       if (cancelled) return;
       // A failed lookup just means no tickets here; the enquiry path stays.
       setData(error ? null : (res as TicketsResponse));
