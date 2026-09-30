@@ -44,7 +44,8 @@ export function OnOffChoice({
   with: onOpt,
   name,
 }: {
-  on: boolean;
+  /** null = not answered yet: neither card is picked. */
+  on: boolean | null;
   onChange: (on: boolean) => void;
   off: ChoiceOption;
   with: ChoiceOption;
@@ -84,6 +85,17 @@ export function OnOffChoice({
       })}
     </div>
   );
+}
+
+/**
+ * The first of steps 2–3 the visitor hasn't answered yet, or null when both
+ * are. Until then the page's buttons lead there instead of sending, so
+ * nobody takes the ticket list for the whole booking.
+ */
+export function nextStep(e: { hotel: boolean | null; flight: boolean | null }): { id: string; n: number; label: string } | null {
+  if (e.hotel === null) return { id: "hotell", n: 2, label: "Hotell" };
+  if (e.flight === null) return { id: "flyg", n: 3, label: "Flyg" };
+  return null;
 }
 
 /** Scroll to a step on the page. */

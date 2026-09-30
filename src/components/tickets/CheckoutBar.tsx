@@ -1,7 +1,8 @@
-import { ArrowRight, Loader2, Ticket } from "lucide-react";
+import { ArrowDown, ArrowRight, Loader2, Ticket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatSek } from "@/lib/formatSek";
 import type { EventTickets } from "@/hooks/useEventTickets";
+import { goToStep, nextStep } from "@/components/trip/TripStep";
 
 // Fixed bar that slides up from the bottom as soon as something is picked
 // (tickets, hotel or flight), so the next step is always one click away
@@ -9,10 +10,12 @@ import type { EventTickets } from "@/hooks/useEventTickets";
 // "Skicka en förfrågan" bar (z-40) and covers it while it shows.
 //
 // What's in the trip is chosen in the steps on the page; the bar only sums
-// it up. "Till kassan" when selling is on and it's tickets only, otherwise
-// "Skicka förfrågan" — nothing is booked or charged.
+// it up. Until hotel and flight are both answered (yes or no) the button
+// leads to the next step; then "Till kassan" when selling is on and it's
+// tickets only, otherwise "Skicka förfrågan" — nothing is booked or charged.
 
-export type Extras = { hotel: boolean; flight: boolean };
+/** Hotel / flight on top of the tickets. null = the step isn't answered yet. */
+export type Extras = { hotel: boolean | null; flight: boolean | null };
 
 export default function CheckoutBar({
   t,
@@ -25,7 +28,8 @@ export default function CheckoutBar({
 }) {
   const trip = extras.hotel || extras.flight;
   const visible = t.count > 0 || trip;
-  const checkout = t.canBuy && t.hasTickets && !trip;
+  const next = nextStep(extras);
+  const checkout = t.canBuy && t.hasTickets && !trip && !next;
   const parts = [
     t.count ? `${t.count} biljett${t.count === 1 ? "" : "er"}` : null,
     extras.hotel ? "Hotell" : null,
@@ -49,13 +53,28 @@ export default function CheckoutBar({
               <div className="min-w-0">
                 <p className="text-xs text-muted-foreground truncate">{parts.join(" · ")}</p>
                 <p className="font-display text-xl sm:text-2xl leading-tight tabular-nums">
-                  {checkout ? formatSek(t.total) : "Din resa"}
+                  {checkout ? formatSek(t.total) : next ? `Steg ${next.n} av 3` : "Din resa"}
                 </p>
               </div>
             </div>
 
             <div className="flex-shrink-0 text-right">
-              {checkout ? (
+              {next ? (
+                <>
+                  <Button
+                    key={`next-${next.id}`}
+                    onClick={() => goToStep(next.id)}
+                    tabIndex={visible ? 0 : -1}
+                    className="h-12 rounded-xl px-5 sm:px-8 text-sm tracking-wider animate-in fade-in zoom-in-95 duration-200"
+                  >
+                    Nästa: {next.label}
+                    <ArrowDown className="ml-2 h-4 w-4" />
+                  </Button>
+                  <p className="mt-1 text-[11px] text-muted-foreground hidden sm:block">
+                    {next.id === "hotell" ? "Med eller utan hotell?" : "Med eller utan flyg?"}
+                  </p>
+                </>
+              ) : checkout ? (
                 <Button
                   key="checkout"
                   onClick={t.checkout}

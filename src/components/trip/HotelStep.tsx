@@ -27,8 +27,8 @@ export default function HotelStep({
   onPick,
 }: {
   h: EventHotels;
-  /** Hotel is part of the trip. */
-  on: boolean;
+  /** Hotel is part of the trip; null = not answered yet. */
+  on: boolean | null;
   onToggle: (on: boolean) => void;
   /** Called with the hotel picked, or null when the pick is cleared. */
   onPick: (hotel: HotelOption | null) => void;

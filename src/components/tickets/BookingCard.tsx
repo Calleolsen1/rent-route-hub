@@ -1,11 +1,11 @@
 import type { ReactNode } from "react";
-import { ArrowRight, Hotel, Loader2, MapPin, Plane, Ticket, type LucideIcon } from "lucide-react";
+import { ArrowDown, ArrowRight, Hotel, Loader2, MapPin, Plane, Ticket, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatSek } from "@/lib/formatSek";
 import type { EventTickets } from "@/hooks/useEventTickets";
 import type { EventHotels } from "@/hooks/useEventHotels";
 import type { Extras } from "@/components/tickets/CheckoutBar";
-import { goToStep } from "@/components/trip/TripStep";
+import { goToStep, nextStep } from "@/components/trip/TripStep";
 
 // "Din resa" — the right-hand card on the match page. A summary of the three
 // steps on the left (tickets, hotel, flight), each with a link back to its
@@ -39,7 +39,8 @@ export default function BookingCard({
   onEnquire: () => void;
 }) {
   const trip = extras.hotel || extras.flight;
-  const checkout = t.canBuy && t.hasTickets && !trip;
+  const next = nextStep(extras);
+  const checkout = t.canBuy && t.hasTickets && !trip && !next;
   const add = (key: keyof Extras, step: string) => {
     onExtras({ ...extras, [key]: true });
     // Let the step open before scrolling to it.
@@ -101,6 +102,8 @@ export default function BookingCard({
                 </button>
               )}
             </div>
+          ) : extras.hotel === null ? (
+            <Empty text="Ej valt än" link="Välj" onClick={() => goToStep("hotell")} />
           ) : (
             <Empty text="Inget hotell" link="Lägg till" onClick={() => add("hotel", "hotell")} />
           )}
@@ -109,6 +112,8 @@ export default function BookingCard({
         <Row icon={Plane} label="Flyg" action={extras.flight ? { text: "Ändra", onClick: () => goToStep("flyg") } : null}>
           {extras.flight ? (
             <p className="font-medium">{flightFrom ? `Från ${flightFrom}` : "Tur och retur"}</p>
+          ) : extras.flight === null ? (
+            <Empty text="Ej valt än" link="Välj" onClick={() => goToStep("flyg")} />
           ) : (
             <Empty text="Inget flyg" link="Lägg till" onClick={() => add("flight", "flyg")} />
           )}
@@ -116,7 +121,17 @@ export default function BookingCard({
       </div>
 
       <div className="px-5 pt-4 pb-5 border-t border-border">
-        {checkout ? (
+        {next ? (
+          <>
+            <Button onClick={() => goToStep(next.id)} className="w-full rounded-xl h-12 tracking-wider text-sm">
+              Nästa: {next.label}
+              <ArrowDown className="ml-2 h-4 w-4" />
+            </Button>
+            <p className="mt-3 text-[11px] text-muted-foreground leading-relaxed text-center">
+              Steg {next.n} av 3 - välj {next.id === "hotell" ? "med eller utan hotell" : "med eller utan flyg"}, sedan skickar ni förfrågan.
+            </p>
+          </>
+        ) : checkout ? (
           <>
             <div className="flex items-baseline justify-between mb-3">
               <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Totalt</span>

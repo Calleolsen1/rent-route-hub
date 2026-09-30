@@ -14,7 +14,8 @@ export default function FlightStep({
   onFrom,
   stayText,
 }: {
-  on: boolean;
+  /** null = not answered yet. */
+  on: boolean | null;
   onToggle: (on: boolean) => void;
   from: string | null;
   onFrom: (from: string) => void;

@@ -10,6 +10,7 @@ import TicketList, { TicketListSkeleton } from "@/components/tickets/TicketList"
 import TicketPlanCard from "@/components/tickets/TicketPlanCard";
 import BookingCard from "@/components/tickets/BookingCard";
 import CheckoutBar, { type Extras } from "@/components/tickets/CheckoutBar";
+import { goToStep } from "@/components/trip/TripStep";
 import { useEventTickets } from "@/hooks/useEventTickets";
 import { useEventHotels } from "@/hooks/useEventHotels";
 import HotelStep from "@/components/trip/HotelStep";
@@ -18,7 +19,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Calendar, MapPin } from "lucide-react";
+import { ArrowDown, ArrowLeft, Calendar, MapPin } from "lucide-react";
 import Footer from "@/components/Footer";
 import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
@@ -73,7 +74,9 @@ export default function EventDetail() {
   const [inquiryOpen, setInquiryOpen] = useState(false);
   // Hotel/flight on top of the tickets — one choice shared by the package
   // buttons in the booking card and the toggles in the bottom bar.
-  const [extras, setExtras] = useState<Extras>({ hotel: false, flight: false });
+  // Both start unanswered, so the page walks the visitor through steps 2
+  // and 3 before the request can be sent.
+  const [extras, setExtras] = useState<Extras>({ hotel: null, flight: null });
   const [flightFrom, setFlightFrom] = useState<string | null>(null);
   // Picking a hotel turns the hotel part on; turning it off drops the pick.
   const { select: selectHotel, selected: pickedHotel } = hotels;
@@ -222,13 +225,27 @@ export default function EventDetail() {
                 admin is previewing; otherwise a guide to the categories for
                 the enquiry. Nothing when the supplier has no tickets. */}
             {t.loading ? <TicketListSkeleton /> : t.hasTickets && <TicketList t={t} />}
+            {t.count > 0 && extras.hotel === null && (
+              <Button
+                variant="outline"
+                onClick={() => goToStep("hotell")}
+                className="-mt-6 w-full rounded-xl h-12 border-primary text-primary hover:bg-primary/5 tracking-wider text-sm"
+              >
+                Fortsätt till hotell
+                <ArrowDown className="ml-2 h-4 w-4" />
+              </Button>
+            )}
 
             {/* Steps 2 and 3: what goes with the tickets. The summary on the
                 right and the bottom bar only reflect these choices. */}
             <HotelStep
               h={hotels}
               on={extras.hotel}
-              onToggle={(on) => setExtras((e) => ({ ...e, hotel: on }))}
+              onToggle={(on) => {
+                setExtras((e) => ({ ...e, hotel: on }));
+                // No hotel: straight on to the flight question.
+                if (!on && extras.flight === null) setTimeout(() => goToStep("flyg"), 150);
+              }}
               onPick={(hotel) => hotel && setExtras((e) => ({ ...e, hotel: true }))}
             />
             <FlightStep
