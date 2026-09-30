@@ -38,7 +38,7 @@ export default function HotelStep({
   const [showAll, setShowAll] = useState(false);
   const shown = showAll
     ? h.hotels
-    : h.hotels.filter((o, i) => i < INITIAL_HOTELS || o.hotel_id === h.selected?.hotel_id);
+    : h.hotels.filter((o, i) => i < INITIAL_HOTELS || h.isSelected(o.hotel_id));
 
   const arrivals: string[] = [];
   if (h.earliestArrival && h.matchDay) {
@@ -51,7 +51,9 @@ export default function HotelStep({
   return (
     <div id="hotell" className="scroll-mt-24">
       <StepHeader n={2} eyebrow="Hotell" title="Vill ni bo nära arenan?">
-        {h.covered && h.city ? `Välj bland våra hotellpartners i ${h.city}.` : "Vi ordnar hotell efter era önskemål."}
+        {h.covered && h.city
+          ? `Välj ett eller flera hotell i ${h.city} - vi återkommer med pris på alla ni valt.`
+          : "Vi ordnar hotell efter era önskemål."}
       </StepHeader>
 
       <OnOffChoice
@@ -148,7 +150,7 @@ export default function HotelStep({
               aria-busy={h.loading}
             >
               {shown.map((o) => {
-                const picked = h.selected?.hotel_id === o.hotel_id;
+                const picked = h.isSelected(o.hotel_id);
                 const open = expanded[o.hotel_id];
                 return (
                   <div key={o.hotel_id} className={`p-3 sm:p-4 transition-colors ${picked ? "bg-primary/5" : ""}`}>
@@ -223,7 +225,7 @@ export default function HotelStep({
                           <button
                             type="button"
                             onClick={() => {
-                              h.select(picked ? null : o.hotel_id);
+                              h.toggle(o.hotel_id);
                               onPick(picked ? null : o);
                             }}
                             aria-pressed={picked}

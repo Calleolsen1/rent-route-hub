@@ -93,10 +93,21 @@ export default function BookingCard({
         <Row icon={Hotel} label="Hotell" action={extras.hotel ? { text: "Ändra", onClick: () => goToStep("hotell") } : null}>
           {extras.hotel ? (
             <div className="space-y-0.5">
-              <p className="font-medium">{hotels.hotelName ?? "Förslag från Kaisen"}</p>
+              {hotels.hotelNames.length > 1 ? (
+                <>
+                  <p className="text-xs text-muted-foreground">Pris på {hotels.hotelNames.length} alternativ:</p>
+                  <ul className="font-medium space-y-0.5">
+                    {hotels.hotelNames.map((n) => (
+                      <li key={n}>{n}</li>
+                    ))}
+                  </ul>
+                </>
+              ) : (
+                <p className="font-medium">{hotels.hotelNames[0] ?? "Förslag från Kaisen"}</p>
+              )}
               <p className="text-xs text-muted-foreground">{hotels.datesText}</p>
               <p className="text-xs text-muted-foreground">{hotels.roomsText}</p>
-              {!hotels.selected && hotels.covered && hotels.hotels.length > 0 && (
+              {!hotels.selected.length && hotels.covered && hotels.hotels.length > 0 && (
                 <button type="button" onClick={() => goToStep("hotell")} className="text-xs text-primary hover:underline">
                   Välj hotell i listan
                 </button>

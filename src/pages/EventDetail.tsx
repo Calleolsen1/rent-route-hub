@@ -78,11 +78,11 @@ export default function EventDetail() {
   // and 3 before the request can be sent.
   const [extras, setExtras] = useState<Extras>({ hotel: null, flight: null });
   const [flightFrom, setFlightFrom] = useState<string | null>(null);
-  // Picking a hotel turns the hotel part on; turning it off drops the pick.
-  const { select: selectHotel, selected: pickedHotel } = hotels;
+  // Picking a hotel turns the hotel part on; turning it off drops the picks.
+  const { clear: clearHotels, selected: pickedHotels } = hotels;
   useEffect(() => {
-    if (!extras.hotel && pickedHotel) selectHotel(null);
-  }, [extras.hotel, pickedHotel, selectHotel]);
+    if (!extras.hotel && pickedHotels.length) clearHotels();
+  }, [extras.hotel, pickedHotels.length, clearHotels]);
   // What the enquiry dialog was opened with, frozen so it doesn't shift
   // under the visitor while they fill it in.
   const [enquiry, setEnquiry] = useState<{ parts: string[]; selection: string[] }>({ parts: ["biljett"], selection: [] });

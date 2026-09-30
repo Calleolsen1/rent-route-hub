@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 // Hotels near the ground for a match, from DPA Sports Travel via the
@@ -83,7 +83,8 @@ export function useEventHotels(eventId: string | undefined, startsAt: string | n
   const [arrival, setArrival] = useState<string | null>(null);
   const [nights, setNights] = useState(2);
   const [rooms, setRooms] = useState<Rooms>({ double: 1 });
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  // Several hotels can be picked: Kaisen quotes each, the visitor chooses.
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   useEffect(() => {
     if (!eventId) return;
@@ -107,10 +108,18 @@ export function useEventHotels(eventId: string | undefined, startsAt: string | n
   const covered = !!data?.covered && !failed;
   const hotels = useMemo(() => (covered ? data?.hotels ?? [] : []), [covered, data]);
   // A pick that isn't free for the new stay is dropped.
-  const selected = hotels.find((h) => h.hotel_id === selectedId) ?? null;
+  // Picks keep the order they were made in.
+  const selected = useMemo(
+    () => selectedIds.map((id) => hotels.find((h) => h.hotel_id === id)).filter((h): h is HotelOption => !!h),
+    [hotels, selectedIds],
+  );
   useEffect(() => {
-    if (!loading && selectedId != null && !selected) setSelectedId(null);
-  }, [loading, selectedId, selected]);
+    if (!loading && selected.length < selectedIds.length) setSelectedIds(selected.map((h) => h.hotel_id));
+  }, [loading, selected, selectedIds.length]);
+  const isSelected = (id: number) => selectedIds.includes(id);
+  const toggle = (id: number) =>
+    setSelectedIds((ids) => (ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id]));
+  const clear = useCallback(() => setSelectedIds([]), []);
 
   // Dates from the server when it answered for this match, else worked out
   // here the same way (arrival from three days before to the match day).
@@ -130,13 +139,16 @@ export function useEventHotels(eventId: string | undefined, startsAt: string | n
       return total === 0 || total > 8 ? r : next;
     });
 
-  const hotelName = selected ? `${selected.name}${selected.stars ? ` (${selected.stars}★)` : ""}` : null;
+  const hotelNames = selected.map((h) => `${h.name}${h.stars ? ` (${h.stars}★)` : ""}`);
   /** "fre 30 okt–sön 1 nov (2 nätter)" */
   const datesText = stayArrival
     ? `${shortDate(stayArrival)}–${shortDate(addDays(stayArrival, stayNights))} (${stayNights} nätter)`
     : `${stayNights} nätter`;
   /** One line for the request: hotel (or Kaisen's suggestion), dates, rooms. */
-  const selectionLine = `Hotell: ${hotelName ?? "förslag från Kaisen"}, ${datesText}, ${roomsText(rooms)}`;
+  const selectionLine =
+    hotelNames.length > 1
+      ? `Hotell - pris på ${hotelNames.length} alternativ: ${hotelNames.join("; ")}. ${datesText}, ${roomsText(rooms)}`
+      : `Hotell: ${hotelNames[0] ?? "förslag från Kaisen"}, ${datesText}, ${roomsText(rooms)}`;
 
   return {
     covered,
@@ -156,8 +168,10 @@ export function useEventHotels(eventId: string | undefined, startsAt: string | n
     stale: !!data?.stale,
     environment: data?.environment ?? null,
     selected,
-    select: setSelectedId,
-    hotelName,
+    isSelected,
+    toggle,
+    clear,
+    hotelNames,
     datesText,
     roomsText: roomsText(rooms),
     selectionLine,
