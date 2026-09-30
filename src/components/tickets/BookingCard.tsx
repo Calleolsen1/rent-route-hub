@@ -1,136 +1,58 @@
-import { ArrowRight, Hotel, Loader2, MapPin, Plane, Plus, Ticket } from "lucide-react";
+import type { ReactNode } from "react";
+import { ArrowRight, Hotel, Loader2, MapPin, Plane, Ticket, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatSek } from "@/lib/formatSek";
 import type { EventTickets } from "@/hooks/useEventTickets";
+import type { EventHotels } from "@/hooks/useEventHotels";
 import type { Extras } from "@/components/tickets/CheckoutBar";
+import { goToStep } from "@/components/trip/TripStep";
 
-// The right-hand card on the match page.
+// "Din resa" — the right-hand card on the match page. A summary of the three
+// steps on the left (tickets, hotel, flight), each with a link back to its
+// step, and the one button that sends it.
 //
-// Request mode (prices hidden — the normal public flow): the tickets picked
-// in the list (no prices), the trip packages, and "Skicka förfrågan". Nothing
-// is booked or charged; Kaisen gets the request by email and books by hand.
-//
-// Buy mode (prices public, or an admin previewing): the trip packages on
-// request first, then the picked tickets with prices, total and checkout.
-//
-// The package buttons and the hotel/flight toggles in the bottom bar are the
-// same choice (`extras`), so the two can never disagree.
-
-type PackageId = "biljetter" | "hotell" | "komplett";
-
-const PACKAGES: { id: PackageId; icons: typeof Ticket[]; label: string; extras: Extras }[] = [
-  { id: "biljetter", icons: [Ticket], label: "Endast biljetter", extras: { hotel: false, flight: false } },
-  { id: "hotell", icons: [Ticket, Hotel], label: "Biljetter + hotell", extras: { hotel: true, flight: false } },
-  { id: "komplett", icons: [Ticket, Plane, Hotel], label: "Biljetter + flyg + hotell", extras: { hotel: true, flight: true } },
-];
-
-const same = (a: Extras, b: Extras) => a.hotel === b.hotel && a.flight === b.flight;
+// Request mode (prices hidden — the normal public flow) and any trip with a
+// hotel or flight: "Skicka förfrågan". Nothing is booked or charged; Kaisen
+// gets the request by email and books by hand.
+// Buy mode (prices public, or an admin previewing) with tickets only: the
+// ticket total and "Till kassan".
 
 export default function BookingCard({
   t,
+  hotels,
   headline,
   when,
   venue,
   extras,
   onExtras,
+  flightFrom,
   onEnquire,
-  hotelLine = null,
-  canPickHotel = false,
 }: {
   t: EventTickets;
+  hotels: EventHotels;
   headline: string;
   when: string;
   venue: string | null;
   extras: Extras;
   onExtras: (e: Extras) => void;
+  flightFrom: string | null;
   onEnquire: () => void;
-  /** The hotel picked in "Hotell nära arenan", as it goes into the request. */
-  hotelLine?: string | null;
-  /** DPA has hotels for this match, so there is a list to pick from. */
-  canPickHotel?: boolean;
 }) {
-  const selling = t.canBuy && t.hasTickets;
-  // Buying tickets alone happens in the list, so in buy mode the packages
-  // offer only trips.
-  const packages = selling ? PACKAGES.filter((p) => p.id !== "biljetter") : PACKAGES;
-
-  const packageList = (
-    <div className="space-y-2">
-      {packages.map(({ id, icons, label, extras: pe }) => {
-        const selected = same(extras, pe);
-        return (
-          <button
-            key={id}
-            type="button"
-            onClick={() => onExtras(selling && selected ? { hotel: false, flight: false } : pe)}
-            aria-pressed={selected}
-            className={`w-full flex items-center justify-between gap-3 rounded-xl px-3.5 py-2.5 text-left transition-all ${
-              selected
-                ? "border-2 border-primary bg-primary/5"
-                : "border border-border bg-background hover:border-primary/30 hover:bg-muted/50"
-            }`}
-          >
-            <span className={`text-sm font-semibold ${selected ? "text-foreground" : "text-foreground/80"}`}>{label}</span>
-            <span className={`flex items-center gap-1 ${selected ? "text-primary" : "text-muted-foreground"}`}>
-              {icons.map((Icon, i) => (
-                <span key={i} className="flex items-center gap-1">
-                  {i > 0 && <Plus className="h-2.5 w-2.5 opacity-60" />}
-                  <Icon className="h-3.5 w-3.5" />
-                </span>
-              ))}
-            </span>
-          </button>
-        );
-      })}
-    </div>
-  );
-
-  // The picked hotel, or a nudge to the list when hotel is on but none picked.
-  const hotel = hotelLine ? (
-    <div className="mt-2.5 rounded-xl bg-muted/50 p-3.5 text-sm flex items-start gap-2">
-      <Hotel className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-      <span className="min-w-0">{hotelLine.replace(/^Hotell: /, "")}</span>
-    </div>
-  ) : extras.hotel && canPickHotel ? (
-    <a
-      href="#hotell"
-      onClick={(e) => {
-        e.preventDefault();
-        document.getElementById("hotell")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }}
-      className="mt-2.5 flex items-center gap-1.5 text-sm text-primary hover:underline"
-    >
-      <Hotel className="h-4 w-4" /> Välj hotell nära arenan
-      <ArrowRight className="h-3.5 w-3.5" />
-    </a>
-  ) : null;
-
-  const picked = t.lines.length ? (
-    <ul className="space-y-1.5 text-sm">
-      {t.lines.map(({ g, n }) => (
-        <li key={g.category_id} className="flex items-start justify-between gap-3">
-          <span className="min-w-0">
-            <span className="tabular-nums font-semibold">{n} ×</span> {g.name}
-          </span>
-          {selling && <span className="whitespace-nowrap tabular-nums">{formatSek((g.final_sek ?? 0) * n)}</span>}
-        </li>
-      ))}
-    </ul>
-  ) : (
-    <p className="text-sm text-muted-foreground flex items-center gap-2">
-      <Ticket className="h-4 w-4 shrink-0" /> Välj antal biljetter i listan.
-    </p>
-  );
+  const trip = extras.hotel || extras.flight;
+  const checkout = t.canBuy && t.hasTickets && !trip;
+  const add = (key: keyof Extras, step: string) => {
+    onExtras({ ...extras, [key]: true });
+    // Let the step open before scrolling to it.
+    setTimeout(() => goToStep(step), 50);
+  };
 
   return (
     <div className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
       {/* Match */}
-      <div className="px-5 pt-5 pb-4">
+      <div className="px-5 pt-5 pb-4 border-b border-border">
         <div className="flex items-center justify-between gap-2 mb-2">
-          <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-foreground/70 font-sans">
-            {selling ? "Din bokning" : "Din förfrågan"}
-          </p>
-          {!selling && (
+          <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-foreground/70 font-sans">Din resa</p>
+          {!checkout && (
             <span className="shrink-0 bg-muted text-muted-foreground text-[10px] font-semibold uppercase tracking-wide px-2 py-1 rounded">
               Offertbaserad
             </span>
@@ -149,62 +71,116 @@ export default function BookingCard({
         </p>
       </div>
 
-      {selling ? (
-        <>
-          {/* Buy mode: trip packages on request, then pay for tickets */}
-          <div className="px-5 pb-5">
-            <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground mb-2.5 font-sans">Hela resan?</p>
-            {packageList}
-            {hotel}
-            <Button onClick={onEnquire} className="mt-3 w-full rounded-xl h-11 tracking-wider text-sm">
-              Efterfråga paket
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-            <p className="mt-3 text-[11px] text-muted-foreground leading-relaxed text-center">
-              Hotell och flyg offereras efter era önskemål. <span className="font-semibold text-foreground">Vi återkommer inom 24h.</span>
-            </p>
-          </div>
-          <div className="px-5 pt-4 pb-5 border-t border-border">
-            <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground mb-2.5 font-sans">Bara biljetter</p>
-            <div className="rounded-xl bg-muted/50 p-3.5">
-              {picked}
-              <div className="mt-3 pt-3 border-t border-border flex items-baseline justify-between">
-                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Totalt</span>
-                <span className="font-display text-2xl tabular-nums">{t.count ? formatSek(t.total) : "-"}</span>
-              </div>
+      <div className="divide-y divide-border">
+        <Row icon={Ticket} label="Biljetter" action={t.lines.length ? { text: "Ändra", onClick: () => goToStep("biljetter") } : null}>
+          {t.lines.length ? (
+            <ul className="space-y-1">
+              {t.lines.map(({ g, n }) => (
+                <li key={g.category_id} className="flex items-start justify-between gap-3">
+                  <span className="min-w-0">
+                    <span className="tabular-nums font-semibold">{n} ×</span> {g.name}
+                  </span>
+                  {t.canBuy && <span className="whitespace-nowrap tabular-nums">{formatSek((g.final_sek ?? 0) * n)}</span>}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <Empty text="Inga valda ännu" link="Välj biljetter" onClick={() => goToStep("biljetter")} />
+          )}
+        </Row>
+
+        <Row icon={Hotel} label="Hotell" action={extras.hotel ? { text: "Ändra", onClick: () => goToStep("hotell") } : null}>
+          {extras.hotel ? (
+            <div className="space-y-0.5">
+              <p className="font-medium">{hotels.hotelName ?? "Förslag från Kaisen"}</p>
+              <p className="text-xs text-muted-foreground">{hotels.datesText}</p>
+              <p className="text-xs text-muted-foreground">{hotels.roomsText}</p>
+              {!hotels.selected && hotels.covered && hotels.hotels.length > 0 && (
+                <button type="button" onClick={() => goToStep("hotell")} className="text-xs text-primary hover:underline">
+                  Välj hotell i listan
+                </button>
+              )}
             </div>
-            <Button onClick={t.checkout} disabled={!t.count || t.busy} className="mt-3 w-full rounded-xl h-12 tracking-wider text-sm">
+          ) : (
+            <Empty text="Inget hotell" link="Lägg till" onClick={() => add("hotel", "hotell")} />
+          )}
+        </Row>
+
+        <Row icon={Plane} label="Flyg" action={extras.flight ? { text: "Ändra", onClick: () => goToStep("flyg") } : null}>
+          {extras.flight ? (
+            <p className="font-medium">{flightFrom ? `Från ${flightFrom}` : "Tur och retur"}</p>
+          ) : (
+            <Empty text="Inget flyg" link="Lägg till" onClick={() => add("flight", "flyg")} />
+          )}
+        </Row>
+      </div>
+
+      <div className="px-5 pt-4 pb-5 border-t border-border">
+        {checkout ? (
+          <>
+            <div className="flex items-baseline justify-between mb-3">
+              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Totalt</span>
+              <span className="font-display text-2xl tabular-nums">{t.count ? formatSek(t.total) : "-"}</span>
+            </div>
+            <Button onClick={t.checkout} disabled={!t.count || t.busy} className="w-full rounded-xl h-12 tracking-wider text-sm">
               {t.busy ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
               Till kassan
               {!t.busy && <ArrowRight className="ml-2 h-4 w-4" />}
             </Button>
-          </div>
-        </>
-      ) : (
-        /* Request mode: what they picked, the package, send */
-        <div className="px-5 pb-5 space-y-4">
-          {t.hasTickets && (
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground mb-2 font-sans">Dina biljetter</p>
-              <div className="rounded-xl bg-muted/50 p-3.5">{picked}</div>
-            </div>
-          )}
-          <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground mb-2 font-sans">Välj ditt paket</p>
-            {packageList}
-            {hotel}
-          </div>
-          <div>
+          </>
+        ) : (
+          <>
             <Button onClick={onEnquire} className="w-full rounded-xl h-12 tracking-wider text-sm">
               Skicka förfrågan
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
             <p className="mt-3 text-[11px] text-muted-foreground leading-relaxed text-center">
-              Pris på förfrågan - vi återkommer med pris och tillgänglighet. <span className="font-semibold text-foreground">Vi återkommer inom 24h.</span>
+              {trip ? "Vi återkommer med pris på hela resan" : "Vi återkommer med pris och tillgänglighet"}{" "}
+              <span className="font-semibold text-foreground">inom 24h.</span> Inget bokas förrän ni har bekräftat.
             </p>
-          </div>
-        </div>
-      )}
+          </>
+        )}
+      </div>
     </div>
+  );
+}
+
+function Row({
+  icon: Icon,
+  label,
+  action,
+  children,
+}: {
+  icon: LucideIcon;
+  label: string;
+  action: { text: string; onClick: () => void } | null;
+  children: ReactNode;
+}) {
+  return (
+    <div className="px-5 py-3.5 flex gap-3 text-sm">
+      <Icon className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center justify-between gap-2 mb-1">
+          <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground font-sans">{label}</p>
+          {action && (
+            <button type="button" onClick={action.onClick} className="text-xs text-primary hover:underline">
+              {action.text}
+            </button>
+          )}
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function Empty({ text, link, onClick }: { text: string; link: string; onClick: () => void }) {
+  return (
+    <p className="flex items-center justify-between gap-2 text-muted-foreground">
+      <span>{text}</span>
+      <button type="button" onClick={onClick} className="text-xs font-semibold text-primary hover:underline">
+        + {link}
+      </button>
+    </p>
   );
 }

@@ -12,7 +12,8 @@ import BookingCard from "@/components/tickets/BookingCard";
 import CheckoutBar, { type Extras } from "@/components/tickets/CheckoutBar";
 import { useEventTickets } from "@/hooks/useEventTickets";
 import { useEventHotels } from "@/hooks/useEventHotels";
-import HotelPicker from "@/components/hotels/HotelPicker";
+import HotelStep from "@/components/trip/HotelStep";
+import FlightStep from "@/components/trip/FlightStep";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
@@ -62,7 +63,7 @@ export default function EventDetail() {
   // list (left) and the plan + booking card (right).
   const t = useEventTickets(id, event?.sport ?? null);
   // Hotels near the ground from DPA — only in the cities DPA covers.
-  const hotels = useEventHotels(id);
+  const hotels = useEventHotels(id, event?.starts_at ?? null);
   const teamPhotos = useTeamPhotos();
   const teamCrests = useTeamCrests();
   const { url: seatmapUrl, note: seatmapNote } = useSeatmap(
@@ -73,6 +74,7 @@ export default function EventDetail() {
   // Hotel/flight on top of the tickets — one choice shared by the package
   // buttons in the booking card and the toggles in the bottom bar.
   const [extras, setExtras] = useState<Extras>({ hotel: false, flight: false });
+  const [flightFrom, setFlightFrom] = useState<string | null>(null);
   // Picking a hotel turns the hotel part on; turning it off drops the pick.
   const { select: selectHotel, selected: pickedHotel } = hotels;
   useEffect(() => {
@@ -85,10 +87,10 @@ export default function EventDetail() {
     const parts = ["biljett", ...(extras.hotel ? ["hotell"] : []), ...(extras.flight ? ["flyg"] : [])];
     const selection = [
       ...t.lines.map(({ g, n }) => `${n} × ${g.name}`),
-      ...(extras.hotel ? [hotels.selectionLine ?? "+ Hotell"] : []),
-      ...(extras.flight ? ["+ Flyg"] : []),
+      ...(extras.hotel ? [hotels.selectionLine] : []),
+      ...(extras.flight ? [`Flyg: ${flightFrom ? `från ${flightFrom}` : "avreseort ej vald"}`] : []),
     ];
-    setEnquiry({ parts, selection: t.lines.length ? selection : [] });
+    setEnquiry({ parts, selection });
     setInquiryOpen(true);
   };
 
@@ -221,7 +223,21 @@ export default function EventDetail() {
                 the enquiry. Nothing when the supplier has no tickets. */}
             {t.loading ? <TicketListSkeleton /> : t.hasTickets && <TicketList t={t} />}
 
-            <HotelPicker h={hotels} onPick={(hotel) => hotel && setExtras((e) => ({ ...e, hotel: true }))} />
+            {/* Steps 2 and 3: what goes with the tickets. The summary on the
+                right and the bottom bar only reflect these choices. */}
+            <HotelStep
+              h={hotels}
+              on={extras.hotel}
+              onToggle={(on) => setExtras((e) => ({ ...e, hotel: on }))}
+              onPick={(hotel) => hotel && setExtras((e) => ({ ...e, hotel: true }))}
+            />
+            <FlightStep
+              on={extras.flight}
+              onToggle={(on) => setExtras((e) => ({ ...e, flight: on }))}
+              from={flightFrom}
+              onFrom={setFlightFrom}
+              stayText={extras.hotel ? hotels.datesText : null}
+            />
 
             <div>
               <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">
@@ -288,11 +304,11 @@ export default function EventDetail() {
                 headline={headline ?? event.tournament_name}
                 when={formatEventDateTime(event.starts_at)}
                 venue={event.venue_name ? `${event.venue_name}${event.city ? `, ${event.city}` : ""}` : null}
+                hotels={hotels}
                 extras={extras}
                 onExtras={setExtras}
+                flightFrom={extras.flight ? flightFrom : null}
                 onEnquire={openEnquiry}
-                hotelLine={extras.hotel ? hotels.selectionLine : null}
-                canPickHotel={hotels.covered && hotels.hotels.length > 0}
               />
               <Link
                 to="/services/sportresor"
@@ -320,7 +336,8 @@ export default function EventDetail() {
               `event:${event.id}`,
             ].filter(Boolean).join(" · ")}
             showDates={false}
-            showTripParts
+            // Hotel and flight are chosen in steps 2 and 3; the parts still
+            // go into the topic line ("Önskar: …") without asking again.
             defaultTripParts={enquiry.parts}
             // Picked tickets are shown in the form and appended to the
             // message Kaisen receives (the topic line is capped at 160).
@@ -336,7 +353,6 @@ export default function EventDetail() {
       <CheckoutBar
         t={t}
         extras={extras}
-        onToggleExtra={(key) => setExtras((e) => ({ ...e, [key]: !e[key] }))}
         onEnquire={openEnquiry}
       />
       <Footer />

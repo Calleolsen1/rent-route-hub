@@ -66,11 +66,20 @@ export function roomsText(rooms: Rooms): string {
     .join(", ");
 }
 
-export function useEventHotels(eventId: string | undefined) {
+/** Calendar date of an instant in Sweden, as the server counts match days. */
+const localDate = (iso: string) =>
+  new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Stockholm" }).format(new Date(iso));
+
+/**
+ * `startsAt` lets the stay (dates, rooms) work on every match, also where DPA
+ * has no hotels: the visitor still says when and how they want to stay, and
+ * Kaisen finds the hotel.
+ */
+export function useEventHotels(eventId: string | undefined, startsAt: string | null = null) {
   const [data, setData] = useState<HotelsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
-  // The stay. Arrival null = let the server pick (the day before the match).
+  // The stay. Arrival null = the day before the match.
   const [arrival, setArrival] = useState<string | null>(null);
   const [nights, setNights] = useState(2);
   const [rooms, setRooms] = useState<Rooms>({ double: 1 });
@@ -95,15 +104,22 @@ export function useEventHotels(eventId: string | undefined) {
     };
   }, [eventId, arrival, nights, rooms]);
 
-  const hotels = useMemo(() => data?.hotels ?? [], [data]);
+  const covered = !!data?.covered && !failed;
+  const hotels = useMemo(() => (covered ? data?.hotels ?? [] : []), [covered, data]);
   // A pick that isn't free for the new stay is dropped.
   const selected = hotels.find((h) => h.hotel_id === selectedId) ?? null;
   useEffect(() => {
     if (!loading && selectedId != null && !selected) setSelectedId(null);
   }, [loading, selectedId, selected]);
 
-  const stayArrival = data?.arrival ?? arrival;
-  const stayNights = data?.nights ?? nights;
+  // Dates from the server when it answered for this match, else worked out
+  // here the same way (arrival from three days before to the match day).
+  const matchDay = data?.match_day ?? (startsAt ? localDate(startsAt) : null);
+  const today = localDate(new Date().toISOString());
+  const earliestArrival =
+    data?.earliest_arrival ?? (matchDay ? [addDays(matchDay, -3), today].sort()[1] : null);
+  const stayArrival = (covered ? data?.arrival : null) ?? arrival ?? (matchDay ? addDays(matchDay, -1) : null);
+  const stayNights = (covered ? data?.nights : null) ?? nights;
   const roomCount = Object.values(rooms).reduce((s, n) => s + (n ?? 0), 0);
 
   const setRoom = (key: RoomKey, delta: number) =>
@@ -114,20 +130,20 @@ export function useEventHotels(eventId: string | undefined) {
       return total === 0 || total > 8 ? r : next;
     });
 
-  /** One line for the request: hotel, dates, rooms. */
-  const selectionLine =
-    selected && stayArrival
-      ? `Hotell: ${selected.name}${selected.stars ? ` (${selected.stars}★)` : ""}, ${shortDate(stayArrival)}–${shortDate(
-          addDays(stayArrival, stayNights),
-        )} (${stayNights} nätter), ${roomsText(rooms)}`
-      : null;
+  const hotelName = selected ? `${selected.name}${selected.stars ? ` (${selected.stars}★)` : ""}` : null;
+  /** "fre 30 okt–sön 1 nov (2 nätter)" */
+  const datesText = stayArrival
+    ? `${shortDate(stayArrival)}–${shortDate(addDays(stayArrival, stayNights))} (${stayNights} nätter)`
+    : `${stayNights} nätter`;
+  /** One line for the request: hotel (or Kaisen's suggestion), dates, rooms. */
+  const selectionLine = `Hotell: ${hotelName ?? "förslag från Kaisen"}, ${datesText}, ${roomsText(rooms)}`;
 
   return {
-    covered: !!data?.covered && !failed,
+    covered,
     loading,
     city: data?.city ?? null,
-    matchDay: data?.match_day ?? null,
-    earliestArrival: data?.earliest_arrival ?? null,
+    matchDay,
+    earliestArrival,
     arrival: stayArrival,
     setArrival,
     nights: stayNights,
@@ -141,6 +157,9 @@ export function useEventHotels(eventId: string | undefined) {
     environment: data?.environment ?? null,
     selected,
     select: setSelectedId,
+    hotelName,
+    datesText,
+    roomsText: roomsText(rooms),
     selectionLine,
   };
 }

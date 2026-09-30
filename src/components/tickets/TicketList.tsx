@@ -3,6 +3,7 @@ import { ChevronDown, Eye, MapPin, Minus, Plus, Ticket } from "lucide-react";
 import { formatSek } from "@/lib/formatSek";
 import { normColor } from "@/lib/planColor";
 import { rowKey, type EventTickets } from "@/hooks/useEventTickets";
+import { StepHeader } from "@/components/trip/TripStep";
 
 // The ticket categories for a match: name, what the seat is, availability,
 // a quantity stepper — and the price when selling is on. With prices hidden
@@ -14,23 +15,17 @@ export default function TicketList({ t }: { t: EventTickets }) {
 
   return (
     <div id="biljetter" className="scroll-mt-24">
-      <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-1 font-sans">
-        {t.canBuy ? "Biljetter" : "Biljettkategorier"}
-      </p>
-      <h2 className="font-display text-2xl md:text-3xl leading-tight mb-1">
-        {t.canBuy && t.fromPrice != null ? `Biljetter från ${formatSek(t.fromPrice)}` : "Välj dina biljetter"}
-      </h2>
-      {t.isGeneric && (
-        <p className="text-xs text-muted-foreground mb-4">
-          Vi ordnar biljetter till den här matchen på förfrågan - välj nivå och antal.
-        </p>
-      )}
-      {!t.isGeneric && t.hasPlan && t.onPlanColors && t.onPlanColors.size > 0 && (
-        <p className="text-xs text-muted-foreground mb-4 hidden lg:block">
-          Håll muspekaren över en biljett för att se var den ligger på arenan.
-        </p>
-      )}
-      {!t.isGeneric && !t.hasPlan && <div className="mb-4" />}
+      <StepHeader
+        n={1}
+        eyebrow="Biljetter"
+        title={t.canBuy && t.fromPrice != null ? `Biljetter från ${formatSek(t.fromPrice)}` : "Välj dina biljetter"}
+      >
+        {t.isGeneric ? (
+          "Vi ordnar biljetter till den här matchen på förfrågan - välj nivå och antal."
+        ) : t.hasPlan && t.onPlanColors && t.onPlanColors.size > 0 ? (
+          <span className="hidden lg:inline">Håll muspekaren över en biljett för att se var den ligger på arenan.</span>
+        ) : null}
+      </StepHeader>
 
       {t.preview && (
         <div className="mb-4 rounded-lg border border-amber-300 bg-amber-50 px-4 py-2.5 text-xs text-amber-900 flex items-center gap-2">
