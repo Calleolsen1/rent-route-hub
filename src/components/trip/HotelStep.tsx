@@ -44,11 +44,9 @@ export default function HotelStep({
   if (h.earliestArrival && h.matchDay) {
     for (let d = h.earliestArrival; d <= h.matchDay; d = addDays(d, 1)) arrivals.push(d);
   }
-  const dayLabel = (d: string) => {
-    if (d === h.matchDay) return `${shortDate(d)} (matchdagen)`;
-    if (h.matchDay && d === addDays(h.matchDay, -1)) return `${shortDate(d)} (dagen före)`;
-    return shortDate(d);
-  };
+  // Short enough for two selects side by side on a phone; the match day and
+  // check-out are spelled out on the line below.
+  const dayLabel = (d: string) => (d === h.matchDay ? `${shortDate(d)} (match)` : shortDate(d));
 
   return (
     <div id="hotell" className="scroll-mt-24">
@@ -78,13 +76,13 @@ export default function HotelStep({
           )}
 
           {/* The stay */}
-          <div className="rounded-xl border border-border bg-card p-4 mb-3 flex flex-wrap gap-x-4 gap-y-3">
-            <label className="block">
+          <div className="rounded-xl border border-border bg-card p-4 mb-3 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:gap-x-4">
+            <label className="block min-w-0">
               <span className="block text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Ankomst</span>
               <select
                 value={h.arrival ?? ""}
                 onChange={(e) => h.setArrival(e.target.value)}
-                className="h-9 rounded-lg border border-border bg-background px-2.5 text-sm"
+                className="h-10 sm:h-9 w-full sm:w-auto rounded-lg border border-border bg-background px-2.5 text-sm"
               >
                 {arrivals.map((d) => (
                   <option key={d} value={d}>
@@ -93,23 +91,28 @@ export default function HotelStep({
                 ))}
               </select>
             </label>
-            <label className="block">
+            <label className="block min-w-0">
               <span className="block text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Nätter</span>
               <select
                 value={h.nights}
                 onChange={(e) => h.setNights(Number(e.target.value))}
-                className="h-9 rounded-lg border border-border bg-background px-2.5 text-sm"
+                className="h-10 sm:h-9 w-full sm:w-auto rounded-lg border border-border bg-background px-2.5 text-sm"
               >
                 {[2, 3, 4, 5].map((n) => (
                   <option key={n} value={n}>
-                    {n} nätter{h.arrival ? ` - ut ${shortDate(addDays(h.arrival, n))}` : ""}
+                    {n} nätter
                   </option>
                 ))}
               </select>
             </label>
-            <div className="basis-full">
+            {h.arrival && h.matchDay && (
+              <p className="col-span-2 sm:basis-full -mt-1 text-xs text-muted-foreground">
+                Match {shortDate(h.matchDay)} · utcheckning {shortDate(addDays(h.arrival, h.nights))}
+              </p>
+            )}
+            <div className="col-span-2 sm:basis-full">
               <span className="block text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Rum</span>
-              <div className="flex flex-wrap gap-2">
+              <div className="grid gap-2 sm:flex sm:flex-wrap">
                 {(Object.keys(ROOM_LABELS) as RoomKey[]).map((k) => (
                   <RoomStepper
                     key={k}
@@ -301,11 +304,11 @@ function RoomStepper({
 }) {
   return (
     <div
-      className={`inline-flex items-center gap-1 rounded-full border h-9 pl-3 pr-1 text-sm ${
+      className={`flex sm:inline-flex items-center justify-between gap-1 rounded-full border h-10 sm:h-9 pl-4 sm:pl-3 pr-1 text-sm ${
         n > 0 ? "border-primary bg-primary/5" : "border-border bg-background"
       }`}
     >
-      <span className={n > 0 ? "font-medium" : "text-foreground/80"}>{label}</span>
+      <span className={`mr-auto ${n > 0 ? "font-medium" : "text-foreground/80"}`}>{label}</span>
       <button
         type="button"
         onClick={() => onStep(-1)}

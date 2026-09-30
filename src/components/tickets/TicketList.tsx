@@ -4,6 +4,7 @@ import { formatSek } from "@/lib/formatSek";
 import { normColor } from "@/lib/planColor";
 import { rowKey, type EventTickets } from "@/hooks/useEventTickets";
 import { StepHeader } from "@/components/trip/TripStep";
+import StadiumPlan from "@/components/StadiumPlan";
 
 // The ticket categories for a match: name, what the seat is, availability,
 // a quantity stepper — and the price when selling is on. With prices hidden
@@ -23,7 +24,10 @@ export default function TicketList({ t }: { t: EventTickets }) {
         {t.isGeneric ? (
           "Vi ordnar biljetter till den här matchen på förfrågan - välj nivå och antal."
         ) : t.hasPlan && t.onPlanColors && t.onPlanColors.size > 0 ? (
-          <span className="hidden lg:inline">Håll muspekaren över en biljett för att se var den ligger på arenan.</span>
+          <>
+            <span className="hidden lg:inline">Håll muspekaren över en biljett för att se var den ligger på arenan.</span>
+            <span className="lg:hidden">Tryck på "Visa på kartan" för att se var biljetten ligger.</span>
+          </>
         ) : null}
       </StepHeader>
 
@@ -95,19 +99,21 @@ export default function TicketList({ t }: { t: EventTickets }) {
                         </button>
                       )}
                       {/* Touch screens have no hover: tap to show the area. */}
+                      {/* Touch screens have no hover: tap to open the plan
+                          right in the row, with this ticket's blocks lit. */}
                       {locatable && (
                         <button
                           type="button"
-                          onClick={() => {
-                            t.togglePin(g);
-                            if (window.matchMedia("(max-width: 1023px)").matches) {
-                              document.getElementById("arenakarta")?.scrollIntoView({ behavior: "smooth", block: "start" });
-                            }
-                          }}
-                          className="text-primary hover:underline inline-flex items-center gap-1 lg:hidden"
+                          onClick={() => t.togglePin(g)}
+                          aria-expanded={t.pinnedKey === key}
+                          className={`lg:hidden inline-flex items-center gap-1 rounded-full border h-7 px-2.5 font-medium transition-colors ${
+                            t.pinnedKey === key
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-primary/40 text-primary"
+                          }`}
                         >
                           <MapPin className="h-3 w-3" />
-                          {t.pinnedKey === key ? "Dölj på kartan" : "Visa på kartan"}
+                          {t.pinnedKey === key ? "Dölj karta" : "Visa på kartan"}
                         </button>
                       )}
                       {t.isGeneric ? (
@@ -131,6 +137,18 @@ export default function TicketList({ t }: { t: EventTickets }) {
                       />
                     )}
                   </div>
+                  {locatable && t.pinnedKey === key && t.planUrl && (
+                    <div className="lg:hidden mt-3 rounded-lg border border-border bg-background p-2 animate-in fade-in slide-in-from-top-1 duration-200">
+                      <StadiumPlan
+                        src={t.planUrl}
+                        areas={t.areas}
+                        active={normColor(g.color!)}
+                        activeLabels={[g.name]}
+                        alt={`Var ${g.name} ligger på arenan`}
+                        maxHeight="40vh"
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

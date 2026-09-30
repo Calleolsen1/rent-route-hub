@@ -62,7 +62,12 @@ export default function TicketPlanCard({
       />
       <p className="mt-1.5 text-[11px] text-muted-foreground text-center">
         Officiell läktarkarta{venueName ? ` · ${venueName}` : ""}
-        {interactive && " · klicka på ett färgat område"}
+        {interactive && (
+          <>
+            <span className="hidden lg:inline"> · klicka på ett färgat område</span>
+            <span className="lg:hidden"> · tryck på ett färgat område</span>
+          </>
+        )}
       </p>
 
       <Dialog open={big} onOpenChange={setBig}>
