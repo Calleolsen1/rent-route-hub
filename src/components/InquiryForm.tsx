@@ -186,7 +186,7 @@ export default function InquiryForm({
             : null,
         ].filter(Boolean).join(" · ") || undefined,
         message: hasSelection
-          ? `${parsed.data.message}\n\nValda biljetter:\n${selection!.map((l) => `- ${l}`).join("\n")}`
+          ? `${parsed.data.message}\n\nValt på matchsidan:\n${selection!.map((l) => `- ${l}`).join("\n")}`
           : parsed.data.message,
         source_page:
           typeof window !== "undefined" ? window.location.pathname : undefined,

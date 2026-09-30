@@ -62,6 +62,12 @@ Deno.serve(async (req) => {
         travelconnection_orders_enabled:
           Deno.env.get("TRAVELCONNECTION_ORDERS_ENABLED") === "true",
 
+        // DPA Sports Travel — hotels. Unset base URL = the test API (dummy hotels).
+        dpa_api_key: has("DPA_API_KEY"),
+        dpa_environment: /\/\/dev\./.test(Deno.env.get("DPA_BASE_URL") ?? "//dev.")
+          ? "test"
+          : "live",
+
         // stripe
         stripe_sandbox: has("STRIPE_SANDBOX_API_KEY"),
         stripe_live: has("STRIPE_LIVE_API_KEY"),

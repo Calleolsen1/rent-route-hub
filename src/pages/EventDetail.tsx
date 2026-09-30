@@ -11,6 +11,8 @@ import TicketPlanCard from "@/components/tickets/TicketPlanCard";
 import BookingCard from "@/components/tickets/BookingCard";
 import CheckoutBar, { type Extras } from "@/components/tickets/CheckoutBar";
 import { useEventTickets } from "@/hooks/useEventTickets";
+import { useEventHotels } from "@/hooks/useEventHotels";
+import HotelPicker from "@/components/hotels/HotelPicker";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
@@ -59,6 +61,8 @@ export default function EventDetail() {
   // Live supplier tickets, the seating plan and the checkout, shared by the
   // list (left) and the plan + booking card (right).
   const t = useEventTickets(id, event?.sport ?? null);
+  // Hotels near the ground from DPA — only in the cities DPA covers.
+  const hotels = useEventHotels(id);
   const teamPhotos = useTeamPhotos();
   const teamCrests = useTeamCrests();
   const { url: seatmapUrl, note: seatmapNote } = useSeatmap(
@@ -69,6 +73,11 @@ export default function EventDetail() {
   // Hotel/flight on top of the tickets — one choice shared by the package
   // buttons in the booking card and the toggles in the bottom bar.
   const [extras, setExtras] = useState<Extras>({ hotel: false, flight: false });
+  // Picking a hotel turns the hotel part on; turning it off drops the pick.
+  const { select: selectHotel, selected: pickedHotel } = hotels;
+  useEffect(() => {
+    if (!extras.hotel && pickedHotel) selectHotel(null);
+  }, [extras.hotel, pickedHotel, selectHotel]);
   // What the enquiry dialog was opened with, frozen so it doesn't shift
   // under the visitor while they fill it in.
   const [enquiry, setEnquiry] = useState<{ parts: string[]; selection: string[] }>({ parts: ["biljett"], selection: [] });
@@ -76,7 +85,7 @@ export default function EventDetail() {
     const parts = ["biljett", ...(extras.hotel ? ["hotell"] : []), ...(extras.flight ? ["flyg"] : [])];
     const selection = [
       ...t.lines.map(({ g, n }) => `${n} × ${g.name}`),
-      ...(extras.hotel ? ["+ Hotell"] : []),
+      ...(extras.hotel ? [hotels.selectionLine ?? "+ Hotell"] : []),
       ...(extras.flight ? ["+ Flyg"] : []),
     ];
     setEnquiry({ parts, selection: t.lines.length ? selection : [] });
@@ -212,6 +221,8 @@ export default function EventDetail() {
                 the enquiry. Nothing when the supplier has no tickets. */}
             {t.loading ? <TicketListSkeleton /> : t.hasTickets && <TicketList t={t} />}
 
+            <HotelPicker h={hotels} onPick={(hotel) => hotel && setExtras((e) => ({ ...e, hotel: true }))} />
+
             <div>
               <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">
                 Matchen
@@ -280,6 +291,8 @@ export default function EventDetail() {
                 extras={extras}
                 onExtras={setExtras}
                 onEnquire={openEnquiry}
+                hotelLine={extras.hotel ? hotels.selectionLine : null}
+                canPickHotel={hotels.covered && hotels.hotels.length > 0}
               />
               <Link
                 to="/services/sportresor"

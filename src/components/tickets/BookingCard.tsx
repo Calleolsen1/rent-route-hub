@@ -34,6 +34,8 @@ export default function BookingCard({
   extras,
   onExtras,
   onEnquire,
+  hotelLine = null,
+  canPickHotel = false,
 }: {
   t: EventTickets;
   headline: string;
@@ -42,6 +44,10 @@ export default function BookingCard({
   extras: Extras;
   onExtras: (e: Extras) => void;
   onEnquire: () => void;
+  /** The hotel picked in "Hotell nära arenan", as it goes into the request. */
+  hotelLine?: string | null;
+  /** DPA has hotels for this match, so there is a list to pick from. */
+  canPickHotel?: boolean;
 }) {
   const selling = t.canBuy && t.hasTickets;
   // Buying tickets alone happens in the list, so in buy mode the packages
@@ -78,6 +84,26 @@ export default function BookingCard({
       })}
     </div>
   );
+
+  // The picked hotel, or a nudge to the list when hotel is on but none picked.
+  const hotel = hotelLine ? (
+    <div className="mt-2.5 rounded-xl bg-muted/50 p-3.5 text-sm flex items-start gap-2">
+      <Hotel className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
+      <span className="min-w-0">{hotelLine.replace(/^Hotell: /, "")}</span>
+    </div>
+  ) : extras.hotel && canPickHotel ? (
+    <a
+      href="#hotell"
+      onClick={(e) => {
+        e.preventDefault();
+        document.getElementById("hotell")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }}
+      className="mt-2.5 flex items-center gap-1.5 text-sm text-primary hover:underline"
+    >
+      <Hotel className="h-4 w-4" /> Välj hotell nära arenan
+      <ArrowRight className="h-3.5 w-3.5" />
+    </a>
+  ) : null;
 
   const picked = t.lines.length ? (
     <ul className="space-y-1.5 text-sm">
@@ -129,6 +155,7 @@ export default function BookingCard({
           <div className="px-5 pb-5">
             <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground mb-2.5 font-sans">Hela resan?</p>
             {packageList}
+            {hotel}
             <Button onClick={onEnquire} className="mt-3 w-full rounded-xl h-11 tracking-wider text-sm">
               Efterfråga paket
               <ArrowRight className="ml-2 h-4 w-4" />
@@ -165,6 +192,7 @@ export default function BookingCard({
           <div>
             <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground mb-2 font-sans">Välj ditt paket</p>
             {packageList}
+            {hotel}
           </div>
           <div>
             <Button onClick={onEnquire} className="w-full rounded-xl h-12 tracking-wider text-sm">

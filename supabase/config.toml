@@ -68,6 +68,11 @@ verify_jwt = true
 [functions.travelconnection-tickets]
 verify_jwt = false
 
+# DPA Sports Travel hotels near the ground. Public like the tickets; prices
+# only when public_prices_enabled is on or the caller is admin.
+[functions.dpa-hotels]
+verify_jwt = false
+
 # Customer checkout: creates the order at server-computed prices. Public, but
 # refuses unless public_prices_enabled is on or the caller is admin.
 [functions.travelconnection-checkout]
