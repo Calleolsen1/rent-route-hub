@@ -209,7 +209,7 @@ async function confirm(admin: Admin, tc: TravelConnectionClient, body: any) {
     await admin.from("tc_bookings").update(update).eq("id", b.id);
     // Pull invoice number and vouchers straight away.
     const refreshed = await refresh(admin, tc, { tc_booking_id: b.id }).catch(() => null);
-    return { tc_booking_id: b.id, ...update, ...(refreshed ?? {}) };
+    return { ...update, ...(refreshed ?? {}), tc_booking_id: b.id };
   } catch (e) {
     await admin.from("tc_bookings").update({ error_message: (e as Error).message }).eq("id", b.id);
     throw e;
