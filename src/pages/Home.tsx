@@ -758,7 +758,7 @@ const Home = () => {
                 Resor designade kring dig
               </h3>
               <p className="text-foreground/70 text-base md:text-lg leading-relaxed mb-8">
-                I en värld av automatiserade bokningar och standardpaket sticker Kaisen Travel Group ut. Vi tror att de bästa reseupplevelserna börjar med en riktig mänsklig kontakt - ett samtal, en gemensam vision och ett åtagande att få varje detalj att stämma.
+                {"I en värld där allt fler resor bokas online går vi åt andra hållet. Vi tror på den personliga kontakten, den erfarna rådgivaren och värdet av att ha någon som verkligen bryr sig om hela resan.\n\n\nHos KAISEN möter du seniora Resespecialister med erfarenheten, kunskapen och nätverket att skapa resor utöver det vanliga. Vi lyssnar på dina önskemål, delar med oss av vår expertis och ser till att varje detalj hänger ihop.\n\n\nFör oss är personlig service inte ett tillval utan en självklar del av varje resa vi skapar.\u00a0"}
               </p>
               <Link
                 to="/about"
