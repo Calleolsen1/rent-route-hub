@@ -71,7 +71,7 @@ export default function Contact() {
                 {get("contact_section_title", "Vi startar med ett Samtal")}
               </h2>
               <div className="w-8 h-px bg-primary mb-8" />
-              <p className="text-muted-foreground leading-relaxed mb-10 text-sm">
+              <p className="text-muted-foreground leading-relaxed mb-10 text-sm whitespace-pre-line">
                 {get("contact_intro", "Föredrar du att ringa eller mejla direkt? Ingen mall - bara ett riktigt samtal. En dedikerad rådgivare återkommer normalt inom 24 timmar på vardagar.")}
               </p>
               <div className="space-y-6">
