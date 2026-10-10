@@ -14,18 +14,18 @@
 // The SDK and zod are loaded on first use, not at import: this module sits
 // in the ticket-lookup path, and translation only ever runs in the
 // background, so every cold start would otherwise pay for loading them.
-type AnthropicModule = typeof import("npm:@anthropic-ai/sdk@0.128.0");
+type AnthropicModule = typeof import("https://esm.sh/@anthropic-ai/sdk@0.128.0");
 let sdk: Promise<{
   Anthropic: AnthropicModule["default"];
-  zodOutputFormat: typeof import("npm:@anthropic-ai/sdk@0.128.0/helpers/zod")["zodOutputFormat"];
-  z: typeof import("npm:zod@4.6.5")["z"];
+  zodOutputFormat: typeof import("https://esm.sh/@anthropic-ai/sdk@0.128.0/helpers/zod")["zodOutputFormat"];
+  z: typeof import("https://esm.sh/zod@4.6.5")["z"];
 }> | null = null;
 
 function loadSdk() {
   sdk ??= Promise.all([
-    import("npm:@anthropic-ai/sdk@0.128.0"),
-    import("npm:@anthropic-ai/sdk@0.128.0/helpers/zod"),
-    import("npm:zod@4.6.5"),
+    import("https://esm.sh/@anthropic-ai/sdk@0.128.0"),
+    import("https://esm.sh/@anthropic-ai/sdk@0.128.0/helpers/zod"),
+    import("https://esm.sh/zod@4.6.5"),
   ]).then(([a, h, zod]) => ({ Anthropic: a.default, zodOutputFormat: h.zodOutputFormat, z: zod.z }));
   return sdk;
 }
