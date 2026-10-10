@@ -74,10 +74,12 @@ export async function translateCategory(
     }
     return { name: out.name.trim() || name, lines: out.lines.map((l) => l.trim()) };
   } catch (e) {
-    if (e instanceof (await loadSdk()).Anthropic.APIError) {
-      console.warn(`[translate] API error ${e.status}:`, e.message);
+    // API errors carry a numeric status; anything else is a load/network failure.
+    const err = e as { status?: number; message?: string };
+    if (typeof err?.status === "number") {
+      console.warn(`[translate] API error ${err.status}:`, err.message);
     } else {
-      console.warn("[translate] failed:", (e as Error).message);
+      console.warn("[translate] failed:", err?.message ?? String(e));
     }
     return null;
   }
