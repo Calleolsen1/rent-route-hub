@@ -266,7 +266,6 @@ const Home = () => {
   const [heroApi, setHeroApi] = useState<CarouselApi>();
   const [heroPaused, setHeroPaused] = useState(false);
   const [heroQuery, setHeroQuery] = useState("");
-  const [offerTab, setOfferTab] = useState<"alla" | "nya" | "populara">("alla");
   const navigate = useNavigate();
   const [featured, setFeatured] = useState<FeaturedOffer[]>([]);
   const [curatedTrips, setCuratedTrips] = useState<FeaturedOffer[]>([]);
@@ -465,11 +464,6 @@ const Home = () => {
     })();
   }, []);
 
-  const offerTabs = [
-    { id: "alla" as const, label: "Aktuella resor" },
-    { id: "nya" as const, label: "Nya resor" },
-    { id: "populara" as const, label: "Populära resor" },
-  ];
 
   // Admin-curated trips first, then ticket events. The static inquiry tiles
   // only top up the row when there are fewer than 3 cards, so the section is
@@ -478,20 +472,12 @@ const Home = () => {
   const combinedOffers: FeaturedOffer[] =
     baseOffers.length >= 3 ? baseOffers : [...baseOffers, ...inquiryOffers];
 
-  // Tabs always show something: fall back to the full row when nothing is
-  // flagged as new/popular.
-  const newOffers = combinedOffers.filter((o) => o.isNew);
+  // The section shows the trips the admin has flagged as popular. If none are
+  // flagged yet, fall back to the first five so the row is never empty.
   const popularOffers = combinedOffers.filter((o) => o.isPopular);
-  const filteredOffers =
-    offerTab === "nya"
-      ? newOffers.length
-        ? newOffers
-        : combinedOffers
-      : offerTab === "populara"
-      ? popularOffers.length
-        ? popularOffers
-        : combinedOffers.slice(0, 5)
-      : combinedOffers;
+  const filteredOffers = popularOffers.length
+    ? popularOffers
+    : combinedOffers.slice(0, 5);
 
 
 
@@ -602,25 +588,9 @@ const Home = () => {
       <section className="pt-4 pb-8 md:pb-10 bg-background">
         <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
-            <div className="flex flex-wrap items-end gap-x-8 gap-y-3">
-              {offerTabs.map((tab) => {
-                const active = tab.id === offerTab;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setOfferTab(tab.id)}
-                    className={`relative pb-3 font-sans font-semibold text-base md:text-lg transition-colors ${
-                      active ? "text-foreground" : "text-foreground/50 hover:text-foreground/80"
-                    }`}
-                  >
-                    {tab.label}
-                    {active && (
-                      <span className="absolute left-0 right-0 -bottom-px h-[3px] bg-primary rounded-full" />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+            <h2 className="font-sans font-semibold text-xl md:text-2xl text-foreground relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-16 after:h-[2px] after:bg-primary">
+              Populära resor
+            </h2>
             <Link
               to="/resor"
               className="self-start md:self-auto inline-flex items-center justify-center text-sm font-semibold text-foreground border border-border px-5 py-2.5 rounded-full hover:bg-foreground hover:text-background transition-colors"
