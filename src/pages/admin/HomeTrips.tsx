@@ -111,8 +111,9 @@ export default function AdminHomeTrips() {
         <div>
           <h1 className="text-3xl font-display mb-2">Resor på startsidan</h1>
           <p className="text-muted-foreground text-sm">
-            Korten under "Aktuella resor". Markera "Ny" och "Populär" för att styra flikarna. Sätt
-            "Visa till" så försvinner resan automatiskt när datumet passerat.
+            Korten under "Populära resor". Markera "Populär" för att visa resan i raden och "Ny"
+            för en "Ny"-bricka på kortet. Sätt "Visa till" så försvinner resan automatiskt när
+            datumet passerat.
           </p>
         </div>
         <Button onClick={addTrip} className="flex-shrink-0">
