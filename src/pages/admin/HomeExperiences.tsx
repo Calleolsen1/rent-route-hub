@@ -108,7 +108,7 @@ export default function AdminHomeExperiences() {
         <div>
           <h1 className="text-3xl font-display mb-2">Upplevelser på startsidan</h1>
           <p className="text-muted-foreground text-sm">
-            Korten under "Upplevelser som formar minnen". Välj bild, texter och vilken sida kortet
+            Korten under "Upplevelser. På riktigt.". Välj bild, texter och vilken sida kortet
             ska leda till.
           </p>
         </div>
