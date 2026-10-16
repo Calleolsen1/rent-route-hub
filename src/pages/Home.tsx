@@ -441,7 +441,7 @@ const Home = () => {
     })();
   }, []);
 
-  // Admin-curated experience cards ("Upplevelser som formar minnen").
+  // Admin-curated experience cards ("Upplevelser. På riktigt.").
   useEffect(() => {
     (async () => {
       const { data } = await (supabase as any)
