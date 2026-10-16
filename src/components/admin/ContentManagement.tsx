@@ -23,7 +23,7 @@ export default function ContentManagement() {
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="faqs">Vanliga frågor</TabsTrigger>
           <TabsTrigger value="testimonials">Citat</TabsTrigger>
-          <TabsTrigger value="whyus">Vad gör oss annorlunda</TabsTrigger>
+          <TabsTrigger value="whyus">Erfarenhet som gör skillnad</TabsTrigger>
           <TabsTrigger value="texts">Sidtexter</TabsTrigger>
         </TabsList>
 
