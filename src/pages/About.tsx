@@ -37,7 +37,7 @@ export default function About() {
   const { open: openInquiry } = useInquiryDialog();
   usePageMeta({
     title: "Om oss - KAISEN TRAVEL GROUP",
-    description: "KAISEN TRAVEL GROUP arrangerar skräddarsydda lyx- och sportresor. Personlig service från en dedikerad rådgivare - inga mallar, inga callcenter.",
+    description: "KAISEN TRAVEL GROUP arrangerar skräddarsydda sportresor, träningsläger och gruppresor. Personlig service från en dedikerad rådgivare - inga mallar, inga callcenter.",
   });
   return (
   <div className="min-h-screen">
@@ -194,7 +194,7 @@ export default function About() {
   <div className="text-center mb-14">
   <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Varför resa med KAISEN TRAVEL GROUP?</p>
   <h2 className="font-display text-3xl md:text-4xl text-foreground">
-  Våra Värderingar
+  Erfarenhet som märks. Engagemang som känns.
   </h2>
   </div>
   <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
