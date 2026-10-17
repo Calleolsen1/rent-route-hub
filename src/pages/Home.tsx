@@ -805,8 +805,9 @@ const Home = () => {
                 Ditt nästa äventyr börjar med ett <em className="italic font-light text-white">samtal</em>
               </h2>
               <p className="text-base text-white/70 leading-relaxed">
-                Prata med en Kaisen-konsult idag. Inga mallar, inga algoritmer - bara genuin expertis dedikerad till din perfekta resa.
+                Prata med en av våra resespecialister. Inga mallar, inga algoritmer – bara erfarenhet, expertis och personlig rådgivning för att skapa en resa utifrån just dina önskemål.
               </p>
+
             </div>
             <Link to="/contact" className="relative md:justify-self-end">
               <Button size="lg" className="rounded-full bg-white hover:bg-white/90 text-navy font-semibold px-10 py-7 text-base shadow-lg">
