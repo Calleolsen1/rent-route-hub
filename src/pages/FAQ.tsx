@@ -16,8 +16,8 @@ const faqs: FAQItem[] = [
  // Allmänt
  {
  category: "allmant",
- question: "Vad är Kaisen Travel Group?",
- answer: "Kaisen Travel Group är ett personligt reseföretag med stor erfarenhet. Vi arrangerar skräddarsydda resor för privatpersoner, grupper och företag - från sportevent och konferenser till weekendresor och VIP-service. Vi arbetar alltid med en dedikerad rådgivare per kund."
+ question: "Vad är KAISEN TRAVEL GROUP?",
+ answer: "KAISEN TRAVEL GROUP är ett personligt reseföretag med stor erfarenhet. Vi arrangerar skräddarsydda resor för privatpersoner, grupper och företag - från sportevent och konferenser till weekendresor och VIP-service. Vi arbetar alltid med en dedikerad rådgivare per kund."
  },
  {
  category: "allmant",
@@ -26,7 +26,7 @@ const faqs: FAQItem[] = [
  },
  {
  category: "allmant",
- question: "Hur kontaktar jag Kaisen Travel Group?",
+ question: "Hur kontaktar jag KAISEN TRAVEL GROUP?",
  answer: "Du kan nå oss via kontaktformuläret på hemsidan, telefon eller e-post. Vi svarar inom en timme under kontorstid (mån-fre 09-18, lör 10-16). För akuta ärenden under pågående resa finns vi tillgängliga dygnet runt."
  },
  {
@@ -106,8 +106,8 @@ import { usePageMeta } from "@/lib/usePageMeta";
 
 export default function FAQ() {
  usePageMeta({
-   title: "Vanliga frågor - Kaisen Travel Group",
-   description: "Svar på vanliga frågor om beställning, betalning, biljetter och avbokning hos Kaisen Travel Group.",
+   title: "Vanliga frågor - KAISEN TRAVEL GROUP",
+   description: "Svar på vanliga frågor om beställning, betalning, biljetter och avbokning hos KAISEN TRAVEL GROUP.",
  });
  const [activeCategory, setActiveCategory] = useState("alla");
  const [openIndex, setOpenIndex] = useState<number | null>(null);

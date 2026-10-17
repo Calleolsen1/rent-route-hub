@@ -129,13 +129,13 @@ export default function EventDetail() {
   // Build the page-meta title from whichever event data is available; the
   // hook re-runs when event loads and overwrites with the real title.
   const metaTitle = event
-    ? `${event.sport === "soccer" ? `${event.home_team} vs ${event.away_team}` : event.race_name ?? event.tournament_name} - Kaisen Travel Group`
-    : "Evenemang - Kaisen Travel Group";
+    ? `${event.sport === "soccer" ? `${event.home_team} vs ${event.away_team}` : event.race_name ?? event.tournament_name} - KAISEN TRAVEL GROUP`
+    : "Evenemang - KAISEN TRAVEL GROUP";
   usePageMeta({
     title: metaTitle,
     description: event?.description
       ? event.description.slice(0, 160)
-      : "Köp biljetter via Kaisen Travel Group - säker betalning, personlig service.",
+      : "Köp biljetter via KAISEN TRAVEL GROUP - säker betalning, personlig service.",
     image: event?.cover_image_url ?? undefined,
     type: "article",
   });
@@ -357,7 +357,7 @@ export default function EventDetail() {
             // go into the topic line ("Önskar: …") without asking again.
             defaultTripParts={enquiry.parts}
             // Picked tickets are shown in the form and appended to the
-            // message Kaisen receives (the topic line is capped at 160).
+            // message KAISEN receives (the topic line is capped at 160).
             selection={enquiry.selection}
             compact
           />

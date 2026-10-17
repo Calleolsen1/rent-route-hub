@@ -15,7 +15,7 @@
 //
 // `covered: false` when DPA sells no hotels in the match's city; the page
 // then keeps the plain "hotel on request" choice. Nothing is booked here —
-// the visitor's pick goes into their request and Kaisen books by hand.
+// the visitor's pick goes into their request and KAISEN books by hand.
 //
 // Searches are cached in dpa_search_cache for CACHE_MINUTES, and a cached
 // answer of any age stands in when DPA is down or slow.

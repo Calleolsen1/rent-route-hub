@@ -152,7 +152,7 @@ async function sendOrderConfirmationEmail(orderId: string) {
       </p>
     </div>
     <div style="background:#f8fafc;padding:20px;text-align:center;color:#64748b;font-size:12px;">
-      Kaisen Travel Group · info@kaisengroup.se
+      KAISEN TRAVEL GROUP · info@kaisengroup.se
     </div>
   </div>`;
 
@@ -208,13 +208,13 @@ async function ensureUserForGuestOrder(orderId: string) {
         const html = `<!DOCTYPE html><html><body style="font-family:Georgia,serif;background:#0f1929;padding:32px;color:#c9d6e8;">
           <div style="max-width:560px;margin:0 auto;background:#162035;padding:32px;border:1px solid #1e2d4a;">
             <h1 style="color:#c9d6e8;font-weight:400;">Tack för ditt köp, ${firstName || ""}!</h1>
-            <p>Vi har skapat ett konto på Mitt Kaisen så att du kan se din order, fakturor och biljetter.</p>
+            <p>Vi har skapat ett konto på Mitt KAISEN så att du kan se din order, fakturor och biljetter.</p>
             <p><a href="${actionLink}" style="display:inline-block;background:#1e3a5f;color:#fff;padding:14px 32px;text-decoration:none;letter-spacing:.15em;text-transform:uppercase;font-size:13px;">Sätt ditt lösenord</a></p>
             <p style="color:#4a5d75;font-size:12px;">Om knappen inte fungerar: <a href="${actionLink}" style="color:#c9d6e8;">${actionLink}</a></p>
           </div></body></html>`;
         const error = await sendEmailOrError({
           to: email,
-          subject: "Välkommen till Mitt Kaisen – sätt ditt lösenord",
+          subject: "Välkommen till Mitt KAISEN – sätt ditt lösenord",
           html,
         });
         if (error) await logSystemError("welcome_email_failed", error, { orderId });
@@ -280,7 +280,7 @@ async function handleCheckoutCompleted(session: any, env: StripeEnv) {
   //
   // The delivery rows are the queue in the admin Tickets page where the
   // actual e-tickets are uploaded. Travel Connection tickets are booked just
-  // below, but the club's e-tickets still reach Kaisen close to the match
+  // below, but the club's e-tickets still reach KAISEN close to the match
   // and are forwarded from that queue.
   for (const it of items ?? []) {
     await getSupabase().rpc("decrement_ticket_qty", {
@@ -310,7 +310,7 @@ async function handleCheckoutCompleted(session: any, env: StripeEnv) {
     }
   }
 
-  // Auto-create Mitt Kaisen account for guest checkouts and link to order
+  // Auto-create Mitt KAISEN account for guest checkouts and link to order
   await ensureUserForGuestOrder(orderId);
 
   await sendOrderConfirmationEmail(orderId);

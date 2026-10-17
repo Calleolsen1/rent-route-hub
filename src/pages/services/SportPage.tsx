@@ -55,11 +55,11 @@ export default function SportPage() {
 
   usePageMeta({
     title: sport
-      ? `${sport.label}resor - biljetter, hotell och transfer | Kaisen Travel Group`
-      : "Sportresor | Kaisen Travel Group",
+      ? `${sport.label}resor - biljetter, hotell och transfer | KAISEN TRAVEL GROUP`
+      : "Sportresor | KAISEN TRAVEL GROUP",
     description: sport
-      ? `Välj liga, lag eller race och få ett komplett reseupplägg med hotell, flyg och transfer från Kaisen Travel Group.`
-      : "Res till Europas största sportevenemang med Kaisen Travel Group.",
+      ? `Välj liga, lag eller race och få ett komplett reseupplägg med hotell, flyg och transfer från KAISEN TRAVEL GROUP.`
+      : "Res till Europas största sportevenemang med KAISEN TRAVEL GROUP.",
   });
 
   if (!sport || !entries.length) {

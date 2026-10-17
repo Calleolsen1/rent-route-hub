@@ -79,8 +79,8 @@ export default function OrderConfirmation() {
     //  - With session_id (right after Stripe redirect, possibly as a guest):
     //    use the public get_order_by_session RPC. SECURITY DEFINER bypasses
     //    RLS so guests can see their order before the auto-created Mitt
-    //    Kaisen account is activated.
-    //  - Without session_id (deep-link from Mitt Kaisen): authenticated user,
+    //    KAISEN account is activated.
+    //  - Without session_id (deep-link from Mitt KAISEN): authenticated user,
     //    standard RLS-gated table reads.
     const loadViaSession = async () => {
       const { data } = await (supabase as any).rpc("get_order_by_session", {
@@ -231,7 +231,7 @@ export default function OrderConfirmation() {
               ? "Betalningen är genomförd. Dina biljetter ligger på Mina biljetter."
               : justPaid
               ? "Betalningen behandlas. Statusen uppdateras automatiskt."
-              : "Vi återkommer med betalningslänk. Du kan följa statusen i Mitt Kaisen."}
+              : "Vi återkommer med betalningslänk. Du kan följa statusen i Mitt KAISEN."}
           </p>
         </div>
       </section>
@@ -264,9 +264,9 @@ export default function OrderConfirmation() {
               <div className="flex items-start gap-3">
                 <Mail className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-medium mb-1">Vi har skickat dig en länk för att aktivera ditt Mitt Kaisen-konto</p>
+                  <p className="font-medium mb-1">Vi har skickat dig en länk för att aktivera ditt Mitt KAISEN-konto</p>
                   <p className="text-muted-foreground text-xs leading-relaxed">
-                    Kolla din inkorg (även skräppost) på <span className="font-mono">{order.customer_email}</span>. När du har satt ditt lösenord hittar du dina biljetter på Mitt Kaisen.
+                    Kolla din inkorg (även skräppost) på <span className="font-mono">{order.customer_email}</span>. När du har satt ditt lösenord hittar du dina biljetter på Mitt KAISEN.
                   </p>
                 </div>
               </div>

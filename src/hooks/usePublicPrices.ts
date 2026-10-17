@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 /**
  * Whether ticket prices may be shown to the public.
  *
- * Backed by the `public_prices_enabled` platform setting so Kaisen can switch
+ * Backed by the `public_prices_enabled` platform setting so KAISEN can switch
  * selling on without a redeploy. Prices are still calculated and stored while
  * this is off — only the public surfaces hide them, and the event page offers
  * an enquiry instead of checkout.

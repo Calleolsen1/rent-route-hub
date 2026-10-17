@@ -128,7 +128,7 @@ export async function holdForPayment(db: Db, tc: TravelConnectionClient, orderId
 
 function splitName(full: string | null): { first: string; last: string } {
   const parts = (full ?? "").trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return { first: "Kaisen", last: "Kund" };
+  if (parts.length === 0) return { first: "KAISEN", last: "Kund" };
   if (parts.length === 1) return { first: parts[0], last: parts[0] };
   return { first: parts.slice(0, -1).join(" "), last: parts[parts.length - 1] };
 }

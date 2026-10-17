@@ -12,7 +12,7 @@ import { goToStep, nextStep } from "@/components/trip/TripStep";
 // step, and the one button that sends it.
 //
 // Request mode (prices hidden — the normal public flow) and any trip with a
-// hotel or flight: "Skicka förfrågan". Nothing is booked or charged; Kaisen
+// hotel or flight: "Skicka förfrågan". Nothing is booked or charged; KAISEN
 // gets the request by email and books by hand.
 // Buy mode (prices public, or an admin previewing) with tickets only: the
 // ticket total and "Till kassan".
@@ -103,7 +103,7 @@ export default function BookingCard({
                   </ul>
                 </>
               ) : (
-                <p className="font-medium">{hotels.hotelNames[0] ?? "Förslag från Kaisen"}</p>
+                <p className="font-medium">{hotels.hotelNames[0] ?? "Förslag från KAISEN"}</p>
               )}
               <p className="text-xs text-muted-foreground">{hotels.datesText}</p>
               <p className="text-xs text-muted-foreground">{hotels.roomsText}</p>

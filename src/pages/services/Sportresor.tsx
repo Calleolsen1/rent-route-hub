@@ -41,8 +41,8 @@ const sports = [
 
 export default function Sportresor() {
  usePageMeta({
-   title: "Sportresor - F1 & Fotboll | Kaisen Travel Group",
-   description: "Skräddarsydda sportresor med hotell, transfer och upplevelser till F1-race, Premier League, Champions League och fler sportevent. Personlig service från Kaisen Travel Group.",
+   title: "Sportresor - F1 & Fotboll | KAISEN TRAVEL GROUP",
+   description: "Skräddarsydda sportresor med hotell, transfer och upplevelser till F1-race, Premier League, Champions League och fler sportevent. Personlig service från KAISEN TRAVEL GROUP.",
  });
  return (
  <div className="min-h-screen">

@@ -161,7 +161,7 @@ export default function TicketList({ t }: { t: EventTickets }) {
           <>
             Platserna i kategorin tilldelas av arrangören - sällskap sitter normalt ihop parvis.
             {t.guestDetailsRequired && " Klubben kräver namn på alla besökare; vi hör av oss efter köpet."}
-            {" "}E-biljetterna släpps närmare matchen och skickas till din e-post och Mitt Kaisen.
+            {" "}E-biljetterna släpps närmare matchen och skickas till din e-post och Mitt KAISEN.
           </>
         ) : (
           "Välj antal och skicka en förfrågan - vi återkommer med pris och tillgänglighet inom 24h. Inget bokas eller debiteras förrän ni har bekräftat."

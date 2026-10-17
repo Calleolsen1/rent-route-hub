@@ -77,7 +77,7 @@ const Footer = () => {
               </button>
             </form>
             <p className="text-xs text-white/60 mt-3 leading-relaxed">
-              Genom att skicka in detta formulär godkänner jag att Kaisen Travel Group lagrar och behandlar mina personuppgifter enligt våra{" "}
+              Genom att skicka in detta formulär godkänner jag att KAISEN TRAVEL GROUP lagrar och behandlar mina personuppgifter enligt våra{" "}
               <Link to="/anvandarvillkor" className="underline hover:text-white">Användarvillkor</Link>{" "}
               &amp;{" "}
               <Link to="/integritetspolicy" className="underline hover:text-white">Integritetspolicy</Link>.
@@ -92,7 +92,7 @@ const Footer = () => {
           <div className="col-span-2 md:col-span-4">
             <Link to="/" className="inline-block">
               <div className="font-display text-3xl text-white tracking-[0.25em]">KAISEN</div>
-              <div className="text-[10px] tracking-[0.3em] text-white/60 font-sans uppercase mt-1.5">Travel Group</div>
+              <div className="text-[10px] tracking-[0.3em] text-white/60 font-sans uppercase mt-1.5">TRAVEL GROUP</div>
             </Link>
             <p className="text-sm text-white/60 leading-relaxed mt-6 max-w-xs">
               Vi skapar minnesvärda sportresor, träningsläger och gruppresor med gedigen erfarenhet, hög kompetens och personlig service.
@@ -125,8 +125,9 @@ const Footer = () => {
           <div className="md:col-span-3">
             <h3 className="text-[11px] eyebrow text-white/60 uppercase font-sans mb-5">Kontakt</h3>
             <ul className="space-y-3 text-sm text-white/85">
-              <li>Kaisen Travel Group AB</li>
+              <li>KAISEN TRAVEL GROUP AB</li>
               <li><a href="mailto:info@kaisengroup.se" className="hover:text-white transition-colors">info@kaisengroup.se</a></li>
+              <li><a href="tel:+46418350200" className="hover:text-white transition-colors">+46 418 350 200</a></li>
             </ul>
           </div>
         </div>
@@ -135,7 +136,7 @@ const Footer = () => {
 
         {/* Bottom row */}
         <div className="pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs text-white/60">
-          <p>© {new Date().getFullYear()} Kaisen Travel Group. Alla rättigheter förbehållna.</p>
+          <p>© {new Date().getFullYear()} KAISEN TRAVEL GROUP. Alla rättigheter förbehållna.</p>
           <div className="flex flex-wrap gap-x-5 gap-y-2">
             <Link to="/integritetspolicy" className="hover:text-white transition-colors">Integritetspolicy</Link>
             <span className="text-white/25">|</span>

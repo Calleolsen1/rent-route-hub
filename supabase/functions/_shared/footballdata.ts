@@ -1,10 +1,10 @@
 // football-data.org v4 client (Deno).
 //
-// Fixtures for display only — Kaisen sells trips on request, so there is no
+// Fixtures for display only — KAISEN sells trips on request, so there is no
 // ticket inventory or pricing here, just which games exist and where.
 //
 // Verified live 2026-09-19 on the FREE tier:
-//   - the free token unlocks 13 competitions including all six Kaisen sells:
+//   - the free token unlocks 13 competitions including all six KAISEN sells:
 //     PL, PD (La Liga), SA, BL1, FL1 and CL. Unlike API-Sports' free tier,
 //     the CURRENT season is included — that was the blocker that ruled the
 //     other provider out.
@@ -21,7 +21,7 @@
 
 const DEFAULT_BASE = "https://api.football-data.org/v4";
 
-/** Competitions Kaisen sells, in sync order. */
+/** Competitions KAISEN sells, in sync order. */
 export const COMPETITIONS = ["PL", "PD", "SA", "BL1", "FL1", "CL"] as const;
 export type CompetitionCode = (typeof COMPETITIONS)[number];
 

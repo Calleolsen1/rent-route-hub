@@ -15,7 +15,7 @@ import { OnOffChoice, StepHeader } from "@/components/trip/TripStep";
 // nights, rooms) and — where DPA Sports Travel has hotels — the hotels with
 // rooms free for it, nearest the ground first. Picking one puts it in the
 // request; nothing is booked. Where DPA has no hotels the stay still goes in
-// the request and Kaisen suggests one. Prices only when selling is on or an
+// the request and KAISEN suggests one. Prices only when selling is on or an
 // admin looks.
 
 const INITIAL_HOTELS = 4;

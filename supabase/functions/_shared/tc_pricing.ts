@@ -405,7 +405,7 @@ export async function priceEvent(
   const rowFields = (p: PricedOption) => ({
     name: p.name,
     // First line is the headline ("Long side LATERAL UPPER"); it travels
-    // with the order into emails and Mitt Kaisen.
+    // with the order into emails and Mitt KAISEN.
     description: p.description[0] ?? null,
     unit_price_sek: p.final_sek,
     currency: "SEK",

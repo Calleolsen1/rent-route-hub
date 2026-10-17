@@ -7,7 +7,7 @@
 // key, and every order confirmation sent that way failed silently (found
 // 2026-09-24 when a test purchase never got its email).
 
-const FROM = "Kaisen Travel Group <info@kaisengroup.se>";
+const FROM = "KAISEN TRAVEL GROUP <info@kaisengroup.se>";
 
 /** Where operational alerts go. */
 export const OPS_EMAIL = "info@kaisengroup.se";

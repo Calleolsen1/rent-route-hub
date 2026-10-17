@@ -44,7 +44,7 @@ export const rowKey = (g: TicketGroup) => g.category_id ?? g.name;
 /**
  * Shown when the supplier has no tickets for a fixture — most matches, and
  * every F1 race today. Same list, steppers and request flow, so the page looks
- * the same either way; Kaisen sources the tickets by hand. Never buyable.
+ * the same either way; KAISEN sources the tickets by hand. Never buyable.
  */
 const GENERIC_TIERS: Record<string, TicketGroup[]> = {
   soccer: [

@@ -3,7 +3,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const FROM_EMAIL = "Kaisen Travel Group <info@kaisengroup.se>";
+const FROM_EMAIL = "KAISEN TRAVEL GROUP <info@kaisengroup.se>";
 
 function invoiceTemplate(data: {
   invoiceNumber: string;
@@ -58,7 +58,7 @@ function invoiceTemplate(data: {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Faktura ${invoiceNumber} – Kaisen Travel Group</title>
+  <title>Faktura ${invoiceNumber} – KAISEN TRAVEL GROUP</title>
 </head>
 <body style="margin:0;padding:0;background:#0a1220;font-family:'Georgia',serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a1220;padding:48px 0;">
@@ -72,7 +72,7 @@ function invoiceTemplate(data: {
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td>
-                    <img src="https://itaefkyfuvwicvarnfke.supabase.co/storage/v1/object/public/email-assets/kaisen-logo.png" alt="Kaisen Travel Group" style="height:52px;display:block;" />
+                    <img src="https://itaefkyfuvwicvarnfke.supabase.co/storage/v1/object/public/email-assets/kaisen-logo.png" alt="KAISEN TRAVEL GROUP" style="height:52px;display:block;" />
                   </td>
                   <td align="right">
                     <div style="color:#4a5d75;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:4px;">Faktura</div>
@@ -169,11 +169,11 @@ function invoiceTemplate(data: {
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td>
-                    <p style="margin:0 0 4px;color:#4a5d75;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;">Kaisen Travel Group</p>
+                    <p style="margin:0 0 4px;color:#4a5d75;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;">KAISEN TRAVEL GROUP</p>
                     <p style="margin:0;color:#4a5d75;font-size:11px;">info@kaisengroup.se &nbsp;·&nbsp; kaisengroup.se</p>
                   </td>
                   <td align="right">
-                    <img src="https://itaefkyfuvwicvarnfke.supabase.co/storage/v1/object/public/email-assets/kaisen-logo.png" alt="Kaisen Travel Group" style="height:32px;display:block;" />
+                    <img src="https://itaefkyfuvwicvarnfke.supabase.co/storage/v1/object/public/email-assets/kaisen-logo.png" alt="KAISEN TRAVEL GROUP" style="height:32px;display:block;" />
                   </td>
                 </tr>
               </table>
@@ -229,7 +229,7 @@ Deno.serve(async (req) => {
       invoiceNotes,
     });
 
-    const subject = `Faktura ${invoiceNumber || ""} – ${tripTitle || "Kaisen Travel Group"}`;
+    const subject = `Faktura ${invoiceNumber || ""} – ${tripTitle || "KAISEN TRAVEL GROUP"}`;
 
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",

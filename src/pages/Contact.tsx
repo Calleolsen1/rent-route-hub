@@ -20,7 +20,7 @@ const CONTACT_KEYS = [
 
 export default function Contact() {
   usePageMeta({
-    title: "Kontakt - Kaisen Travel Group",
+    title: "Kontakt - KAISEN TRAVEL GROUP",
     description: "Skicka en förfrågan så återkommer en konsult inom 24 timmar med ett skräddarsytt förslag.",
   });
   const { get } = useSiteContent(CONTACT_KEYS);
@@ -39,7 +39,7 @@ export default function Contact() {
       {/* Hero */}
       <section className="relative h-[32vh] min-h-[220px] flex items-end">
         <div className="absolute inset-0">
-          <img src={heroImage} alt="Kontakta Kaisen" className="w-full h-full object-cover" />
+          <img src={heroImage} alt="Kontakta KAISEN" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-navy/70" />
         </div>
         <div className="relative container mx-auto px-4 pb-14">

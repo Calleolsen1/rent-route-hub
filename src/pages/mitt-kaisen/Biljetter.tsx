@@ -54,7 +54,7 @@ const STATUS_LABELS: Record<string, string> = {
   cancelled: "Avbruten",
 };
 
-// Mitt Kaisen colour tokens - preserved from the original layout.
+// Mitt KAISEN colour tokens - preserved from the original layout.
 const C = {
   text: "hsl(210 30% 92%)",
   textMuted: "hsl(210 20% 70%)",

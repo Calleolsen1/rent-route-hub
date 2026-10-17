@@ -61,7 +61,7 @@ export default function QuotePage() {
   }, [token]);
 
   usePageMeta({
-    title: quote ? `${quote.title} - Kaisen offert` : "Offert - Kaisen Travel Group",
+    title: quote ? `${quote.title} - KAISEN offert` : "Offert - KAISEN TRAVEL GROUP",
     description: quote?.intro_message?.slice(0, 160) ?? undefined,
   });
 
@@ -150,7 +150,7 @@ export default function QuotePage() {
       <section className="bg-cream py-12">
         <div className="container mx-auto px-4 max-w-2xl">
           <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans text-center">
-            Offert från Kaisen Travel Group
+            Offert från KAISEN TRAVEL GROUP
           </p>
           <h1 className="font-display text-4xl md:text-5xl text-center mb-4">{quote.title}</h1>
           {quote.intro_message && (
@@ -178,7 +178,7 @@ export default function QuotePage() {
                       Beställning {quote.order_id.slice(0, 8).toUpperCase()}
                     </Link>
                   ) : (
-                    "Mitt Kaisen"
+                    "Mitt KAISEN"
                   )}
                   .
                 </p>
@@ -243,7 +243,7 @@ export default function QuotePage() {
             <div className="rounded-xl border border-border bg-card p-6">
               <h2 className="font-display text-xl mb-2">Acceptera och betala</h2>
               <p className="text-xs text-muted-foreground mb-5">
-                Säker betalning hanteras av Stripe. Kaisen Travel Group är säljare och fakturautställare.
+                Säker betalning hanteras av Stripe. KAISEN TRAVEL GROUP är säljare och fakturautställare.
               </p>
               <div className="flex items-start gap-3 bg-accent/40 rounded-lg p-3 mb-5 text-[11px] text-muted-foreground">
                 <ShieldCheck className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />

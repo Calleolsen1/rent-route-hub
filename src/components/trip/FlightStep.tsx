@@ -2,7 +2,7 @@ import { Car, Plane } from "lucide-react";
 import { OnOffChoice, StepHeader } from "@/components/trip/TripStep";
 
 // Step 3 on the match page: flight or not, and from where. There is no flight
-// supplier — the choice goes into the request and Kaisen books by hand, with
+// supplier — the choice goes into the request and KAISEN books by hand, with
 // times fitted to the match and the hotel stay.
 
 export const DEPARTURES = ["Stockholm", "Göteborg", "Malmö / Köpenhamn", "Annan ort"] as const;

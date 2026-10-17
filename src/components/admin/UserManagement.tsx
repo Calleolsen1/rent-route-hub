@@ -83,7 +83,7 @@ const UserManagement = () => {
               <div className="flex items-center gap-2">
                 <Button onClick={() => setCreateClientOpen(true)} size="sm" className="gap-2">
                   <UserPlus className="h-4 w-4" />
-                  Skapa Mitt Kaisen-kund
+                  Skapa Mitt KAISEN-kund
                 </Button>
 
                 <UsersFiltersSheet

@@ -79,7 +79,7 @@ const TYPE_LABELS: Record<(typeof INQUIRY_TYPES)[number], string> = {
   contact: "Kontaktformulär",
 };
 
-const SENDER = "Kaisen Travel Group <info@kaisengroup.se>";
+const SENDER = "KAISEN TRAVEL GROUP <info@kaisengroup.se>";
 const ADMIN_INBOX = "info@kaisengroup.se";
 
 const escapeHtml = (s: string) =>
@@ -249,7 +249,7 @@ Deno.serve(async (req) => {
   <div style="max-width:560px;margin:0 auto;background:#ffffff;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
     <div style="background:#0f172a;color:#ffffff;padding:28px;text-align:center;">
       <div style="font-family:Georgia,serif;font-size:24px;letter-spacing:.05em;">KAISEN</div>
-      <div style="font-size:10px;letter-spacing:.3em;text-transform:uppercase;opacity:.7;margin-top:4px;">Travel Group</div>
+      <div style="font-size:10px;letter-spacing:.3em;text-transform:uppercase;opacity:.7;margin-top:4px;">TRAVEL GROUP</div>
     </div>
     <div style="padding:32px 28px;color:#0f172a;">
       <p style="margin:0 0 16px;font-size:16px;">Hej ${escapeHtml(data.name.split(" ")[0])},</p>
@@ -265,7 +265,7 @@ Deno.serve(async (req) => {
       </div>
       <p style="margin:24px 0 0;font-size:14px;line-height:1.6;">
         Vänliga hälsningar,<br />
-        <strong>Kaisen Travel Group</strong>
+        <strong>KAISEN TRAVEL GROUP</strong>
       </p>
     </div>
     <div style="background:#f1f5f9;padding:16px 28px;font-size:12px;color:#64748b;text-align:center;">
@@ -289,7 +289,7 @@ Deno.serve(async (req) => {
     try {
       await sendEmail({
         to: data.email,
-        subject: "Vi har tagit emot din förfrågan — Kaisen Travel Group",
+        subject: "Vi har tagit emot din förfrågan — KAISEN TRAVEL GROUP",
         html: customerHtml,
       });
     } catch (e) {

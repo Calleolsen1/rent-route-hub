@@ -5,7 +5,7 @@
 // Travel Connection has no webhook for dispatch, so this asks each confirmed
 // booking's order for its invoice and vouchers. When a website order's
 // voucher first appears it is copied onto orders.voucher_urls (which the
-// customer can read in Mitt Kaisen) and the customer is emailed once.
+// customer can read in Mitt KAISEN) and the customer is emailed once.
 //
 // Also marks lapsed holds as expired, so admin never shows a "reserved"
 // booking the supplier has already released.
@@ -53,7 +53,7 @@ function voucherEmail(name: string | null, match: string, urls: string[]): strin
             Hämta voucher${urls.length > 1 ? ` ${i + 1}` : ""}
           </a>
         </p>`).join("")}
-      <p style="color:#475569;font-size:13px;">Du hittar den också under Mina biljetter på <a href="${siteUrl}/mitt-kaisen/biljetter">Mitt Kaisen</a>.</p>
+      <p style="color:#475569;font-size:13px;">Du hittar den också under Mina biljetter på <a href="${siteUrl}/mitt-kaisen/biljetter">Mitt KAISEN</a>.</p>
     </div>
   </div>`;
 }

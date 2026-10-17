@@ -68,7 +68,7 @@ const Navbar = () => {
                   KAISEN
                 </span>
                 <span className="text-[9px] md:text-[10px] tracking-[0.25em] text-primary font-sans font-medium uppercase">
-                  Travel Group
+                  TRAVEL GROUP
                 </span>
               </div>
             </Link>
@@ -191,7 +191,7 @@ const Navbar = () => {
                     <DropdownMenuLabel>Mitt konto</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link to="/mitt-kaisen/dashboard">Mitt Kaisen</Link>
+                      <Link to="/mitt-kaisen/dashboard">Mitt KAISEN</Link>
                     </DropdownMenuItem>
                     {isAdmin && (
                       <DropdownMenuItem asChild>
@@ -330,7 +330,7 @@ const Navbar = () => {
               {user ? (
                 <>
                   <Link to="/mitt-kaisen/dashboard" onClick={() => setMobileOpen(false)} className="block">
-                    <Button variant="outline" className="w-full h-12 rounded-full">Mitt Kaisen</Button>
+                    <Button variant="outline" className="w-full h-12 rounded-full">Mitt KAISEN</Button>
                   </Link>
                   <Button variant="ghost" className="w-full h-12 rounded-full" onClick={signOut}>
                     <LogOut className="h-4 w-4 mr-2" /> Logga ut

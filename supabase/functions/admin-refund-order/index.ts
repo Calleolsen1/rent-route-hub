@@ -31,7 +31,7 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-const SENDER = "Kaisen Travel Group <info@kaisengroup.se>";
+const SENDER = "KAISEN TRAVEL GROUP <info@kaisengroup.se>";
 
 async function requireAdmin(req: Request): Promise<string> {
   const auth = req.headers.get("Authorization");
@@ -70,7 +70,7 @@ async function emailRefundNotice(
   <div style="max-width:560px;margin:0 auto;background:#ffffff;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
     <div style="background:#0f172a;color:#ffffff;padding:28px;text-align:center;">
       <div style="font-family:Georgia,serif;font-size:24px;letter-spacing:.05em;">KAISEN</div>
-      <div style="font-size:10px;letter-spacing:.3em;text-transform:uppercase;opacity:.7;margin-top:4px;">Travel Group</div>
+      <div style="font-size:10px;letter-spacing:.3em;text-transform:uppercase;opacity:.7;margin-top:4px;">TRAVEL GROUP</div>
     </div>
     <div style="padding:28px;color:#0f172a;">
       <p style="margin:0 0 16px;font-size:15px;">Hej ${firstName},</p>

@@ -41,7 +41,7 @@ type Props = {
   defaultTripParts?: readonly string[];
   /**
    * Tickets the visitor picked on a match page. Shown read-only at the top of
-   * the form and appended to the message sent to Kaisen, so ops can book
+   * the form and appended to the message sent to KAISEN, so ops can book
    * exactly that; the visitor's own message then becomes optional.
    */
   selection?: string[];
@@ -49,7 +49,7 @@ type Props = {
   compact?: boolean;
 };
 
-/** The three things a Kaisen trip is assembled from. */
+/** The three things a KAISEN trip is assembled from. */
 const TRIP_PARTS = [
   { id: "hotell", label: "Hotell" },
   { id: "biljett", label: "Biljett" },

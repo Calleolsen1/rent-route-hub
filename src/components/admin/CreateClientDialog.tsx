@@ -133,7 +133,7 @@ export function CreateClientDialog({ open, onOpenChange, onSuccess }: Props) {
                 <DialogTitle>Skapa kundkonto</DialogTitle>
               </div>
               <DialogDescription>
-                Skapar ett Mitt Kaisen-konto och skickar ett välkomstmejl automatiskt.
+                Skapar ett Mitt KAISEN-konto och skickar ett välkomstmejl automatiskt.
               </DialogDescription>
             </DialogHeader>
 

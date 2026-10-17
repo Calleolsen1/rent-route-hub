@@ -1,10 +1,7 @@
 # Roadmap
 
-## Active
-- [x] Support "Vårt löfte": siffrorna 24h / 24/7 / 100% är osynliga (samma färg som bakgrunden) — åtgärdat, vit text på navy.
-
-## Väntar på svar från Joakim
-- Platshållarnumret +46 8 000 00 00 står kvar i två FAQ-svar på Hjälpsidan.
-- Stavning i E-post-texten: "så länge" och "öppettider".
-- "lyxresor"-texten på Om-oss-sidan är ej ändrad.
-- Samma färgfel kan finnas i andra mörka block (primary = navy) — säg till om jag ska gå igenom alla sidor.
+- [x] Byt "Kaisen" → "KAISEN" överallt på hemsidan (kod, metadata, e-postmallar, databas)
+- [x] Byt "Travel Group" → "TRAVEL GROUP" överallt på hemsidan (samma ställen)
+- [x] Driftsätt om ändrade serverfunktioner så e-post och fakturor använder ny skrivning
+- [x] Lägg till telefonnummer +46 418 350 200 under KONTAKT längst ner på sidan
+- [x] Kontrollera bygget och verifiera i preview

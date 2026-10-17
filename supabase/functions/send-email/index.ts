@@ -3,7 +3,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const FROM_EMAIL = "Kaisen Travel Group <info@kaisengroup.se>";
+const FROM_EMAIL = "KAISEN TRAVEL GROUP <info@kaisengroup.se>";
 
 function inviteTemplate(actionUrl: string, firstName?: string) {
   return `<!DOCTYPE html>
@@ -11,7 +11,7 @@ function inviteTemplate(actionUrl: string, firstName?: string) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Välkommen till Mitt Kaisen</title>
+  <title>Välkommen till Mitt KAISEN</title>
 </head>
 <body style="margin:0;padding:0;background:#0f1929;font-family:'Georgia',serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#0f1929;padding:40px 0;">
@@ -21,7 +21,7 @@ function inviteTemplate(actionUrl: string, firstName?: string) {
           <!-- Header -->
           <tr>
             <td style="padding:36px 48px 28px;border-bottom:1px solid #1e2d4a;">
-              <img src="https://itaefkyfuvwicvarnfke.supabase.co/storage/v1/object/public/email-assets/kaisen-logo.png" alt="Kaisen Travel Group" style="height:48px;display:block;" />
+              <img src="https://itaefkyfuvwicvarnfke.supabase.co/storage/v1/object/public/email-assets/kaisen-logo.png" alt="KAISEN TRAVEL GROUP" style="height:48px;display:block;" />
              </td>
            </tr>
            <!-- Body -->
@@ -29,10 +29,10 @@ function inviteTemplate(actionUrl: string, firstName?: string) {
              <td style="padding:40px 48px;">
                <p style="margin:0 0 8px;color:#8a9bb5;font-size:11px;letter-spacing:0.25em;text-transform:uppercase;">Välkommen</p>
               <h1 style="margin:0 0 20px;color:#d4a84b;font-size:28px;font-weight:400;font-family:'Georgia',serif;line-height:1.3;">
-                ${firstName ? `Hej ${firstName},` : "Välkommen till Mitt Kaisen"}
+                ${firstName ? `Hej ${firstName},` : "Välkommen till Mitt KAISEN"}
               </h1>
               <p style="margin:0 0 28px;color:#8a9bb5;font-size:15px;line-height:1.7;">
-                Ditt konto på <strong style="color:#c9d6e8;">Mitt Kaisen</strong> är nu skapat. Klicka på knappen nedan för att sätta ditt lösenord och komma igång.
+                Ditt konto på <strong style="color:#c9d6e8;">Mitt KAISEN</strong> är nu skapat. Klicka på knappen nedan för att sätta ditt lösenord och komma igång.
               </p>
               <table cellpadding="0" cellspacing="0">
                 <tr>
@@ -71,7 +71,7 @@ function recoveryTemplate(actionUrl: string) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Återställ lösenord – Mitt Kaisen</title>
+  <title>Återställ lösenord – Mitt KAISEN</title>
 </head>
 <body style="margin:0;padding:0;background:#0f1929;font-family:'Georgia',serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#0f1929;padding:40px 0;">
@@ -80,7 +80,7 @@ function recoveryTemplate(actionUrl: string) {
         <table width="560" cellpadding="0" cellspacing="0" style="background:#162035;border:1px solid #1e2d4a;max-width:560px;width:100%;">
           <tr>
             <td style="padding:36px 48px 28px;border-bottom:1px solid #1e2d4a;">
-              <img src="https://itaefkyfuvwicvarnfke.supabase.co/storage/v1/object/public/email-assets/kaisen-logo.png" alt="Kaisen Travel Group" style="height:48px;display:block;" />
+              <img src="https://itaefkyfuvwicvarnfke.supabase.co/storage/v1/object/public/email-assets/kaisen-logo.png" alt="KAISEN TRAVEL GROUP" style="height:48px;display:block;" />
              </td>
            </tr>
            <tr>
@@ -90,7 +90,7 @@ function recoveryTemplate(actionUrl: string) {
                 Återställ ditt lösenord
               </h1>
               <p style="margin:0 0 28px;color:#8a9bb5;font-size:15px;line-height:1.7;">
-                Vi mottog en förfrågan om att återställa lösenordet för ditt Mitt Kaisen-konto. Klicka på knappen nedan för att fortsätta.
+                Vi mottog en förfrågan om att återställa lösenordet för ditt Mitt KAISEN-konto. Klicka på knappen nedan för att fortsätta.
               </p>
               <table cellpadding="0" cellspacing="0">
                 <tr>
@@ -149,14 +149,14 @@ Deno.serve(async (req) => {
       });
     }
 
-    let subject = "Välkommen till Mitt Kaisen";
+    let subject = "Välkommen till Mitt KAISEN";
     let html = inviteTemplate(actionUrl, firstName);
 
     if (emailType === "recovery") {
-      subject = "Återställ ditt lösenord – Mitt Kaisen";
+      subject = "Återställ ditt lösenord – Mitt KAISEN";
       html = recoveryTemplate(actionUrl);
     } else if (emailType === "invite") {
-      subject = "Välkommen till Mitt Kaisen – sätt ditt lösenord";
+      subject = "Välkommen till Mitt KAISEN – sätt ditt lösenord";
       html = inviteTemplate(actionUrl, firstName);
     }
 
