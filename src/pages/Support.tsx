@@ -163,7 +163,7 @@ export default function Support() {
  { value: "100%", label: "PERSONLIG KONTAKT" },
  ].map((s) => (
  <div key={s.label}>
- <div className="font-display text-2xl text-primary mb-1">{s.value}</div>
+ <div className="font-display text-2xl text-white mb-1">{s.value}</div>
  <div className="text-xs tracking-wider text-white/40 uppercase font-sans">{s.label}</div>
  </div>
  ))}
