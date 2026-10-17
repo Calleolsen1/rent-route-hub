@@ -16,7 +16,7 @@ const channels = [
  {
  icon: Mail,
  title: "E-post",
- desc: "Skicka ditt ärende så återkommer vi inom en timme.",
+ desc: "Vi svarar alltid samma dag sålänge e-post inkommer under ordinarie öppetider.",
  detail: "info@kaisengroup.se",
  href: "mailto:info@kaisengroup.se",
  cta: "Skicka mejl",
@@ -24,7 +24,7 @@ const channels = [
  {
  icon: MessageSquare,
  title: "Kontaktformulär",
- desc: "Beskriv ditt ärende i detalj - vi tar hand om resten.",
+ desc: "Fyll i vårt formulär för Reseförfrågan så återkopplar vi snarast möjligt med ett skräddarsytt förslag på reseupplägg.",
  detail: "Svar inom 1 timme",
  href: "/contact",
  cta: "Öppna formulär",
