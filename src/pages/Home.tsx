@@ -753,11 +753,11 @@ const Home = () => {
 
 
 
-      {/* Referenser - testimonials carousel */}
+      {/* Våra kunder - testimonials carousel */}
       <section className="py-10 md:py-14 bg-cream">
         <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
           <div className="text-center mb-14">
-            <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Referenser</p>
+            <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Våra kunder</p>
             <h2 className="font-display text-4xl md:text-5xl text-foreground">
               Berättelser från<br />
               <em className="italic font-light">resan</em>
