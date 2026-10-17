@@ -85,7 +85,7 @@ export default function Support() {
  <div className="container mx-auto px-4 flex items-center justify-center gap-2 text-sm">
  <Clock className="h-4 w-4 text-primary" />
  <span className="text-foreground font-medium">Kontorstid:</span>
- <span className="text-muted-foreground">Mån-Fre 09:00-18:00 · Lör 10:00-16:00 · Akutlinje dygnet runt för aktiva kunder</span>
+ <span className="text-muted-foreground">Mån-Fre 09:00-17:00</span>
  </div>
  </div>
 
@@ -93,8 +93,8 @@ export default function Support() {
  <section className="py-10 md:py-14 bg-background">
  <div className="container mx-auto px-4">
  <div className="text-center mb-12">
- <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Kontakta oss</p>
- <h2 className="font-display text-3xl text-foreground">Välj ditt sätt att nå oss</h2>
+              <h2 className="font-display text-3xl text-foreground">Kontakta oss</h2>
+
  </div>
  <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
  {channels.map((ch) => (
