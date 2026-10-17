@@ -172,17 +172,15 @@ export default function About() {
   <section className="bg-navy py-16 border-t border-primary/20">
   <div className="container mx-auto px-4">
   <p className="text-center text-[11px] sm:text-xs eyebrow text-primary uppercase mb-10 font-sans">Tidigare uppdrag & kunder</p>
-  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-  {/* TODO: ersätt med riktiga kundreferenser när tillstånd finns */}
+  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 text-center">
   {[
-  { label: "Sportresor", detail: "VM, EM & ligamatcher" },
-  { label: "Företag", detail: "Incentive & konferenser" },
-  { label: "Organisationer", detail: "Storskaliga event" },
-  { label: "Privata Sällskap", detail: "Skräddarsydda resor" }].
+  { label: "OFFICIELLA BILJETTER", detail: "Genom utvalda, officiella biljettleverantörer" },
+  { label: "RESEGARANTI", detail: "Resegaranti ställd hos Kammarkollegiet" },
+  { label: "IATA & AMADEUS", detail: "IATA-certifierade med Amadeus-licens och tillgång till flygbolag världen över" }].
   map((ref) =>
   <div key={ref.label} className="border-t border-white/10 pt-6">
   <h3 className="font-display text-lg text-white mb-2">{ref.label}</h3>
-  <p className="text-white/40 text-xs tracking-[0.15em] uppercase font-sans">{ref.detail}</p>
+  <p className="text-white/50 text-xs leading-relaxed font-sans">{ref.detail}</p>
   </div>
   )}
   </div>
