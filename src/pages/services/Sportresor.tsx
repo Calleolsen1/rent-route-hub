@@ -140,10 +140,10 @@ export default function Sportresor() {
     <div className="relative container mx-auto px-4 py-10 sm:py-16 md:py-20 text-center">
       <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Boka din sportresa</p>
       <h2 className="font-display text-3xl md:text-5xl text-white mb-5">
-        Vilken sport vill du uppleva live?
+        Vilken sportupplevelse drömmer du om?
       </h2>
       <p className="text-white/70 max-w-lg mx-auto mb-8 leading-relaxed">
-        Hör av dig till oss och berätta vilken match eller tävling du vill se - så fixar vi resten.
+        Berätta vilken match eller tävling du vill uppleva på plats. Vi hjälper dig att skapa en sportresa anpassad efter dina önskemål.
       </p>
       <Link to="/contact">
         <Button
