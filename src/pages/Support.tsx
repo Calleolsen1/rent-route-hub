@@ -8,9 +8,9 @@ const channels = [
  {
  icon: Phone,
  title: "Ring oss",
- desc: "För akuta ärenden - vi svarar direkt under kontorstid.",
- detail: "+46 8 000 00 00",
- href: "tel:+4680000000",
+ desc: "Du når oss vardagar 09:00-17:00. Vid brådskande ärende finner du vårt journummer på er bokningsbekräftelse.",
+ detail: "+46 418 350 200",
+ href: "tel:+46418350200",
  cta: "Ring nu",
  },
  {
