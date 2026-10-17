@@ -16,7 +16,7 @@ const sports = [
  title: "Formel 1",
  image: f1Image,
  description:
- "Upplev Formel 1 på plats – från nervkittlande kval till dramatiken i racet. Vi hjälper dig att skapa din F1-resa till världens ikoniska racingbanor, med möjlighet att boka biljetter, hotell och transfer var för sig eller som en komplett resa.",
+ "Upplev Formel 1 på plats – från nervkittlande kval till dramatiken i racet. Vi hjälper dig att skapa din F1-resa till världens ikoniska racingbanor, med möjlighet att boka biljetter, hotell, flyg och transfer var för sig eller som en komplett resa.",
  features: [
  "Biljetter till träningar, kval och race",
  "Flygresa från samtliga Sveriges flygplatser",
