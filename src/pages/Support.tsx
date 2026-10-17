@@ -43,8 +43,8 @@ const supportTypes = [
  icon: HelpCircle,
  color: "text-primary",
  bg: "bg-primary/10",
- title: "Frågor om bokning",
- desc: "Har du frågor om en pågående eller kommande bokning? Kontakta oss via e-post eller formulär med ditt bokningsnummer så hjälper vi dig snabbt.",
+ title: "Frågor om er bokning",
+ desc: "Har du frågor om en pågående eller kommande bokning går det bra att ringa oss eller skicka e-post. Ange gärna ditt bokningsnummer så återkommer vi snarast möjligt.",
  },
  {
  icon: CheckCircle,
