@@ -129,7 +129,7 @@ export default function Support() {
  <section className="py-10 md:py-14 bg-cream">
  <div className="container mx-auto px-4">
  <div className="text-center mb-12">
- <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Typer av ärenden</p>
+ <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Typ av ärende</p>
  <h2 className="font-display text-3xl text-foreground">Hur kan vi hjälpa?</h2>
  </div>
  <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
