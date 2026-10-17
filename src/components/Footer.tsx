@@ -103,12 +103,11 @@ const Footer = () => {
           <div className="md:col-span-3">
             <h3 className="text-[11px] eyebrow text-white/60 uppercase font-sans mb-5">Tjänster</h3>
             <ul className="space-y-3 text-sm text-white/85">
-              <li><Link to="/services/sportresor" className="hover:text-white transition-colors">Sportresor</Link></li>
-              <li><Link to="/group-travel" className="hover:text-white transition-colors">Gruppresor</Link></li>
-              <li><Link to="/services/weekend-getaway" className="hover:text-white transition-colors">Weekendresor</Link></li>
-              <li><Link to="/services/konferens" className="hover:text-white transition-colors">Konferens</Link></li>
-              <li><Link to="/services/vip-service" className="hover:text-white transition-colors">VIP-service</Link></li>
-              <li><Link to="/services/affarsresor" className="hover:text-white transition-colors">Affärsresor</Link></li>
+              <li><Link to="/services/sportresor/fotboll" className="hover:text-white transition-colors">Fotbollsresor</Link></li>
+              <li><Link to="/services/sportresor/f1" className="hover:text-white transition-colors">Formel 1-resor</Link></li>
+              <li><Link to="/group-travel" className="hover:text-white transition-colors">Grupp- och konferensresor</Link></li>
+              <li><Link to="/services/traningslager" className="hover:text-white transition-colors">Träningsläger</Link></li>
+
             </ul>
           </div>
 
