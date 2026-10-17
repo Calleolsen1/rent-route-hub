@@ -16,12 +16,13 @@ const sports = [
  title: "Formel 1",
  image: f1Image,
  description:
- "Känn adrenalinet när racerna dundrar förbi. Vi arrangerar F1-resor till Monaco, Silverstone, Spa och fler ikoniska banor - med bra platser, boende och all logistik ordnad.",
+ "Upplev Formel 1 på plats – från nervkittlande kval till dramatiken i racet. Vi hjälper dig att skapa din F1-resa till världens ikoniska racingbanor, med möjlighet att boka biljetter, hotell och transfer var för sig eller som en komplett resa.",
  features: [
  "Biljetter till träningar, kval och race",
- "Hotell nära banan med bra läge",
- "Transferer & praktisk logistik",
- "Paket för enskilda och grupper",
+ "Flygresa från samtliga Sveriges flygplatser",
+ "Hotell med centralt läge",
+ "Transfer och praktisk reseplanering",
+ "Flexibla upplägg för enskilda resenärer och grupper",
  ],
  },
  {
