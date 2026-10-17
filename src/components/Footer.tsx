@@ -127,6 +127,7 @@ const Footer = () => {
             <ul className="space-y-3 text-sm text-white/85">
               <li>KAISEN TRAVEL GROUP AB</li>
               <li><a href="mailto:info@kaisengroup.se" className="hover:text-white transition-colors">info@kaisengroup.se</a></li>
+              <li><a href="tel:+46418350200" className="hover:text-white transition-colors">+46 418 350 200</a></li>
             </ul>
           </div>
         </div>
