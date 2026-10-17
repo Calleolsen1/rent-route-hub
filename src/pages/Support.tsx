@@ -25,7 +25,6 @@ const channels = [
  icon: MessageSquare,
  title: "Kontaktformulär",
  desc: "Fyll i vårt formulär för Reseförfrågan så återkopplar vi snarast möjligt med ett skräddarsytt förslag på reseupplägg.",
- detail: "Svar inom 1 timme",
  href: "/contact",
  cta: "Öppna formulär",
  internal: true,
@@ -104,7 +103,9 @@ export default function Support() {
  </div>
  <h3 className="font-display text-xl text-foreground mb-2">{ch.title}</h3>
  <p className="text-sm text-muted-foreground leading-relaxed mb-3">{ch.desc}</p>
+ {ch.detail && (
  <p className="text-sm font-medium text-primary mb-5">{ch.detail}</p>
+ )}
  {ch.internal ? (
  <Link to={ch.href}>
  <Button variant="outline" className="rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground text-xs tracking-wider w-full">
