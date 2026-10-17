@@ -30,12 +30,12 @@ const sports = [
  title: "Fotboll",
  image: fotbollImage,
  description:
- "Från Premier League-derbyn till Champions League - vi paketerar resor till de matcher du drömt om att se live. Enkelt, smidigt och med bra service.",
+ "Upplev Europas bästa fotbollsmatcher på plats – från klassiska derbyn i Premier League, Serie A och La Liga - till Champions League. Vi hjälper dig att skapa just din fotbollsresa, med möjlighet att boka matchbiljetter, hotell, flyg och transfer var för sig eller som en komplett resa.",
  features: [
- "Premier League, La Liga & Bundesliga",
- "Champions League & Europa League",
- "Hotelarrangemang nära arenan",
- "Paket för kompisgäng och familjer",
+ "Premier League, La Liga, Bundesliga, Serie A och fler ligor",
+ "Champions League, Europa League och inhemska cuper",
+ "Endast officiella matchbiljetter från utvalda leverantörer",
+ "Flexibla upplägg för kompisgäng, familjer och grupper",
  ],
  },
 ];
