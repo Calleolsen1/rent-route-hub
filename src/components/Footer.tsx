@@ -95,8 +95,9 @@ const Footer = () => {
               <div className="text-[10px] tracking-[0.3em] text-white/60 font-sans uppercase mt-1.5">Travel Group</div>
             </Link>
             <p className="text-sm text-white/60 leading-relaxed mt-6 max-w-xs">
-              Skräddarsydda upplevelser för sport, gruppresor och affärsresor - med personlig service hela vägen.
+              Vi skapar minnesvärda sportresor, träningsläger och gruppresor med gedigen erfarenhet, hög kompetens och personlig service.
             </p>
+
           </div>
 
           <div className="md:col-span-3">
