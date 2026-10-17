@@ -35,8 +35,8 @@ import { usePageMeta } from "@/lib/usePageMeta";
 export default function About() {
   const { open: openInquiry } = useInquiryDialog();
   usePageMeta({
-    title: "Om oss - KAISEN Travel Group",
-    description: "KAISEN Travel Group arrangerar skräddarsydda lyx- och sportresor. Personlig service från en dedikerad rådgivare - inga mallar, inga callcenter.",
+    title: "Om oss - KAISEN TRAVEL GROUP",
+    description: "KAISEN TRAVEL GROUP arrangerar skräddarsydda lyx- och sportresor. Personlig service från en dedikerad rådgivare - inga mallar, inga callcenter.",
   });
   return (
   <div className="min-h-screen">
@@ -45,7 +45,7 @@ export default function About() {
   {/* Hero */}
   <section className="relative h-[38vh] min-h-[280px] flex items-end">
   <div className="absolute inset-0">
-  <img src={heroImage} alt="Om KAISEN Travel Group" className="w-full h-full object-cover" />
+  <img src={heroImage} alt="Om KAISEN TRAVEL GROUP" className="w-full h-full object-cover" />
   <div className="absolute inset-0 bg-navy/70" />
   </div>
   <div className="relative container mx-auto px-4 pb-14">
@@ -71,13 +71,13 @@ export default function About() {
   </p>
   <div className="space-y-5 text-muted-foreground leading-relaxed">
   <p>
-  KAISEN Travel Group är en resebyrå för dig som uppskattar personlig service, gedigen erfarenhet och någon som verkligen bryr sig om hela resan. Vi är ett mindre team av seniora resespecialister med över 50 års samlad erfarenhet från resebranschen.
+  KAISEN TRAVEL GROUP är en resebyrå för dig som uppskattar personlig service, gedigen erfarenhet och någon som verkligen bryr sig om hela resan. Vi är ett mindre team av seniora resespecialister med över 50 års samlad erfarenhet från resebranschen.
   </p>
   </div>
   </div>
   <div className="relative">
   <div className="aspect-[4/5] overflow-hidden">
-  <img src={founderImage} alt="Grundare KAISEN Travel Group" className="w-full h-full object-cover" />
+  <img src={founderImage} alt="Grundare KAISEN TRAVEL GROUP" className="w-full h-full object-cover" />
   </div>
   {/* TODO: Avkommentera och fyll i riktig siffra när data finns.
   <div className="absolute -bottom-4 -right-4 bg-navy p-6 max-w-[200px]">

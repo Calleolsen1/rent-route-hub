@@ -104,7 +104,7 @@ Deno.serve(async (req) => {
         ${vatRate > 0 ? `<p style="text-align:right;font-size:14px;margin:12px 0 0;color:#64748b">Delsumma: ${sek(subtotal)}<br/>Moms (${vatRate} %): ${sek(vatAmount)}</p>` : ""}
         <p style="text-align:right;font-size:16px;margin-top:8px;color:#0f172a"><strong>Totalt: ${sek(total)}</strong></p>
         ${booking.notes ? `<p style="color:#334155;white-space:pre-wrap">${booking.notes}</p>` : ""}
-        <p style="color:#64748b;font-size:13px;margin-top:24px">KAISEN Travel Group · info@kaisengroup.se</p>
+        <p style="color:#64748b;font-size:13px;margin-top:24px">KAISEN TRAVEL GROUP · info@kaisengroup.se</p>
       </div></body></html>`;
 
     const subject = `Bokningsbekräftelse ${booking.booking_number ?? ""} – ${booking.title}`;
@@ -126,7 +126,7 @@ Deno.serve(async (req) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: "KAISEN Travel Group <info@kaisengroup.se>",
+          from: "KAISEN TRAVEL GROUP <info@kaisengroup.se>",
           to: [to],
           subject,
           html,

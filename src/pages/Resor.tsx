@@ -50,7 +50,7 @@ const choices = [
 
 const Resor = () => {
   usePageMeta({
-    title: "Utforska alla resor - KAISEN Travel Group",
+    title: "Utforska alla resor - KAISEN TRAVEL GROUP",
     description:
       "Välj mellan fotbollsresor, Formel 1, träningsläger och grupp- och konferensresor - vi paketerar hela resan.",
   });

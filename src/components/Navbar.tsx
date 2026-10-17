@@ -68,7 +68,7 @@ const Navbar = () => {
                   KAISEN
                 </span>
                 <span className="text-[9px] md:text-[10px] tracking-[0.25em] text-primary font-sans font-medium uppercase">
-                  Travel Group
+                  TRAVEL GROUP
                 </span>
               </div>
             </Link>

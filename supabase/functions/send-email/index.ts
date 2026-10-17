@@ -3,7 +3,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const FROM_EMAIL = "KAISEN Travel Group <info@kaisengroup.se>";
+const FROM_EMAIL = "KAISEN TRAVEL GROUP <info@kaisengroup.se>";
 
 function inviteTemplate(actionUrl: string, firstName?: string) {
   return `<!DOCTYPE html>
@@ -21,7 +21,7 @@ function inviteTemplate(actionUrl: string, firstName?: string) {
           <!-- Header -->
           <tr>
             <td style="padding:36px 48px 28px;border-bottom:1px solid #1e2d4a;">
-              <img src="https://itaefkyfuvwicvarnfke.supabase.co/storage/v1/object/public/email-assets/kaisen-logo.png" alt="KAISEN Travel Group" style="height:48px;display:block;" />
+              <img src="https://itaefkyfuvwicvarnfke.supabase.co/storage/v1/object/public/email-assets/kaisen-logo.png" alt="KAISEN TRAVEL GROUP" style="height:48px;display:block;" />
              </td>
            </tr>
            <!-- Body -->
@@ -80,7 +80,7 @@ function recoveryTemplate(actionUrl: string) {
         <table width="560" cellpadding="0" cellspacing="0" style="background:#162035;border:1px solid #1e2d4a;max-width:560px;width:100%;">
           <tr>
             <td style="padding:36px 48px 28px;border-bottom:1px solid #1e2d4a;">
-              <img src="https://itaefkyfuvwicvarnfke.supabase.co/storage/v1/object/public/email-assets/kaisen-logo.png" alt="KAISEN Travel Group" style="height:48px;display:block;" />
+              <img src="https://itaefkyfuvwicvarnfke.supabase.co/storage/v1/object/public/email-assets/kaisen-logo.png" alt="KAISEN TRAVEL GROUP" style="height:48px;display:block;" />
              </td>
            </tr>
            <tr>

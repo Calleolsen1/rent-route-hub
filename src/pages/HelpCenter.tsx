@@ -187,7 +187,7 @@ import { usePageMeta } from "@/lib/usePageMeta";
 
 export default function HelpCenter() {
  usePageMeta({
-   title: "Hjälpcenter - KAISEN Travel Group",
+   title: "Hjälpcenter - KAISEN TRAVEL GROUP",
    description: "Hjälpcenter med vanliga frågor om bokning, betalning, biljettleverans och kundsupport.",
  });
  const [openTopic, setOpenTopic] = useState<string | null>(null);

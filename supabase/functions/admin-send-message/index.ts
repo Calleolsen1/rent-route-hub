@@ -5,7 +5,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const FROM_EMAIL = "KAISEN Travel Group <info@kaisengroup.se>";
+const FROM_EMAIL = "KAISEN TRAVEL GROUP <info@kaisengroup.se>";
 
 /**
  * Verify the caller has the admin role. Throws on missing/invalid token or
@@ -50,7 +50,7 @@ function messageTemplate(toName: string, subject: string, body: string): string 
           <!-- Header -->
           <tr>
             <td style="padding:28px 48px;border-bottom:1px solid #1e2d4a;">
-              <img src="${LOGO_URL}" alt="KAISEN Travel Group" style="height:48px;display:block;" />
+              <img src="${LOGO_URL}" alt="KAISEN TRAVEL GROUP" style="height:48px;display:block;" />
             </td>
           </tr>
           <!-- Body -->

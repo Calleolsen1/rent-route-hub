@@ -20,7 +20,7 @@ export default function Anvandarvillkor() {
         <div className="container mx-auto px-4 max-w-3xl space-y-10">
           <Section title="1. Tjänsten">
             <p>
-              KAISEN Travel Group AB ("KAISEN") tillhandahåller försäljning av biljetter till sportevenemang samt skräddarsydda resepaket via webbplatsen <code>kaisengroup.se</code> och Mitt KAISEN. Dessa villkor reglerar din användning av tjänsten.
+              KAISEN TRAVEL GROUP AB ("KAISEN") tillhandahåller försäljning av biljetter till sportevenemang samt skräddarsydda resepaket via webbplatsen <code>kaisengroup.se</code> och Mitt KAISEN. Dessa villkor reglerar din användning av tjänsten.
             </p>
             <p>
               Genom att lägga en beställning eller skicka en förfrågan godkänner du dessa villkor i sin helhet.
@@ -99,7 +99,7 @@ export default function Anvandarvillkor() {
 
           <Section title="10. Kontakt">
             <p>
-              KAISEN Travel Group AB<br/>
+              KAISEN TRAVEL GROUP AB<br/>
               <a href="mailto:info@kaisengroup.se" className="underline">info@kaisengroup.se</a>
             </p>
           </Section>

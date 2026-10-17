@@ -240,7 +240,7 @@ export default function Checkout() {
                   </p>
                   <div className="flex items-start gap-3 bg-accent/40 rounded-lg p-4 text-xs text-muted-foreground">
                     <ShieldCheck className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Säljare och fakturautställare: KAISEN Travel Group.</span>
+                    <span>Säljare och fakturautställare: KAISEN TRAVEL GROUP.</span>
                   </div>
                   <Button
                     type="submit"

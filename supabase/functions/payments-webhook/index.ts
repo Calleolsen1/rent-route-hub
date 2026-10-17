@@ -152,7 +152,7 @@ async function sendOrderConfirmationEmail(orderId: string) {
       </p>
     </div>
     <div style="background:#f8fafc;padding:20px;text-align:center;color:#64748b;font-size:12px;">
-      KAISEN Travel Group · info@kaisengroup.se
+      KAISEN TRAVEL GROUP · info@kaisengroup.se
     </div>
   </div>`;
 

@@ -20,7 +20,7 @@ const CONTACT_KEYS = [
 
 export default function Contact() {
   usePageMeta({
-    title: "Kontakt - KAISEN Travel Group",
+    title: "Kontakt - KAISEN TRAVEL GROUP",
     description: "Skicka en förfrågan så återkommer en konsult inom 24 timmar med ett skräddarsytt förslag.",
   });
   const { get } = useSiteContent(CONTACT_KEYS);

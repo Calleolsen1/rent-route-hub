@@ -70,7 +70,7 @@ export default function Services() {
   {/* Hero */}
   <section className="relative h-[38vh] min-h-[280px] flex items-end">
   <div className="absolute inset-0">
-   <img src={heroImage} alt="KAISEN Travel Group" className="w-full h-full object-cover" />
+   <img src={heroImage} alt="KAISEN TRAVEL GROUP" className="w-full h-full object-cover" />
    <div className="absolute inset-0 bg-navy/70" />
   </div>
   <div className="relative container mx-auto px-4 pb-14">

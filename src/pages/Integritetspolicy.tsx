@@ -20,7 +20,7 @@ export default function Integritetspolicy() {
         <div className="container mx-auto px-4 max-w-3xl space-y-10">
           <Section title="1. Personuppgiftsansvarig">
             <p>
-              KAISEN Travel Group AB ("KAISEN", "vi") är personuppgiftsansvarig för behandlingen av personuppgifter på{" "}
+              KAISEN TRAVEL GROUP AB ("KAISEN", "vi") är personuppgiftsansvarig för behandlingen av personuppgifter på{" "}
               <code>kaisengroup.se</code>. Kontakta oss på{" "}
               <a href="mailto:info@kaisengroup.se" className="underline">info@kaisengroup.se</a> för frågor om denna policy eller dina rättigheter.
             </p>

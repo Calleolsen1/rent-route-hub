@@ -79,10 +79,10 @@ Deno.serve(async (req) => {
           <tr><td><strong>Att betala</strong></td><td style="text-align:right"><strong>${sek(invoice.total_sek)}</strong></td></tr>
         </table>
         ${invoice.notes ? `<p style="color:#334155;white-space:pre-wrap">${invoice.notes}</p>` : ""}
-        <p style="color:#64748b;font-size:13px;margin-top:24px">KAISEN Travel Group · info@kaisengroup.se</p>
+        <p style="color:#64748b;font-size:13px;margin-top:24px">KAISEN TRAVEL GROUP · info@kaisengroup.se</p>
       </div></body></html>`;
 
-    const subject = `Faktura ${invoice.invoice_number ?? ""} från KAISEN Travel Group`;
+    const subject = `Faktura ${invoice.invoice_number ?? ""} från KAISEN TRAVEL GROUP`;
 
     if (preview) return json({ html, subject, to: to ?? null });
 
@@ -98,7 +98,7 @@ Deno.serve(async (req) => {
         method: "POST",
         headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({
-          from: "KAISEN Travel Group <info@kaisengroup.se>",
+          from: "KAISEN TRAVEL GROUP <info@kaisengroup.se>",
           to: [to],
           subject,
           html,
