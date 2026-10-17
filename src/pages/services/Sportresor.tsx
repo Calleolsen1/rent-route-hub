@@ -60,10 +60,13 @@ export default function Sportresor() {
  Tjänster - Sportresor
  </p>
  <h1 className="font-display text-3xl md:text-5xl text-white mb-2">
- Resor för <em className="italic font-light text-white">Sportälskare</em>
+ Sportresor
  </h1>
+ <p className="font-display text-xl md:text-2xl italic font-light text-white mb-3">
+ Sport upplevs bäst LIVE
+ </p>
  <p className="text-white/80 text-sm max-w-xl mb-5">
- Vi skräddarsyr din resa till F1 och fotboll - med hotell, transfer och allt det praktiska ordnat.
+ Upplev Formel 1 och Europas bästa fotbollsmatcher på plats. Vi skräddarsyr din sportresa efter dina önskemål – boka allt från matchbiljett och hotell till flyg och transfer, eller välj bara de delar du behöver.
  </p>
  <Link
  to="/contact"
