@@ -32,7 +32,7 @@ const sports = [
  heading: "Fotbollsresor",
  image: fotbollImage,
  description:
- "Upplev Europas bästa fotbollsmatcher på plats – från klassiska derbyn i Premier League, Serie A och La Liga - till Champions League. Vi hjälper dig att skapa just din fotbollsresa, med möjlighet att boka matchbiljetter, hotell, flyg och transfer var för sig eller som en komplett resa.",
+ "Upplev Europas bästa fotbollsmatcher på plats – från klassiska derbyn i Premier League, Serie A och La Liga - till Champions League. Vi hjälper dig att skapa just din fotbollsresa - med möjlighet att boka matchbiljetter, hotell, flyg och transfer var för sig eller som en komplett resa.",
  features: [
  "Premier League, La Liga, Bundesliga, Serie A och fler ligor",
  "Champions League, Europa League och inhemska cuper",
