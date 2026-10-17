@@ -154,13 +154,13 @@ export default function Support() {
  Vi svarar alltid - <em className="italic font-light text-white">på riktigt</em>
  </h2>
  <p className="text-white/60 leading-relaxed mb-8">
- Hos Kaisen Travel Group pratar du alltid med en riktig människa. Inga automatiserade svar, ingen kö. En dedikerad rådgivare tar hand om ditt ärende från start till mål.
+ Hos KAISEN möter du människor med erfarenhet och kunskap. Ingen automatiserad kundservice eller opersonliga standardsvar – bara personlig kontakt med en resespecialist som hjälper dig hela vägen.
  </p>
  <div className="grid grid-cols-3 gap-3 sm:gap-6 border-t border-white/10 pt-8">
  {[
- { value: "1 tim", label: "Svarstid på mejl" },
- { value: "24/7", label: "Akutlinje under resa" },
- { value: "100%", label: "Personlig kontakt" },
+ { value: "24h", label: "SNABB ÅTERKOPPLING" },
+ { value: "24/7", label: "TRYGGHET UNDER RESAN" },
+ { value: "100%", label: "PERSONLIG KONTAKT" },
  ].map((s) => (
  <div key={s.label}>
  <div className="font-display text-2xl text-primary mb-1">{s.value}</div>
