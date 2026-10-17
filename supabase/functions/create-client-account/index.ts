@@ -6,7 +6,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const FROM_EMAIL = "Kaisen Travel Group <info@kaisengroup.se>";
+const FROM_EMAIL = "KAISEN Travel Group <info@kaisengroup.se>";
 
 function inviteEmailHtml(actionUrl: string, firstName: string) {
   return `<!DOCTYPE html>
@@ -14,7 +14,7 @@ function inviteEmailHtml(actionUrl: string, firstName: string) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Välkommen till Mitt Kaisen</title>
+  <title>Välkommen till Mitt KAISEN</title>
 </head>
 <body style="margin:0;padding:0;background:#0f1929;font-family:'Georgia',serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#0f1929;padding:40px 0;">
@@ -42,7 +42,7 @@ function inviteEmailHtml(actionUrl: string, firstName: string) {
                 Hej ${firstName},
               </h1>
               <p style="margin:0 0 28px;color:#8a9bb5;font-size:15px;line-height:1.7;">
-                Ditt konto på <strong style="color:#c9d6e8;">Mitt Kaisen</strong> är nu skapat. Klicka på knappen nedan för att sätta ditt lösenord och komma igång med din personliga reseportal.
+                Ditt konto på <strong style="color:#c9d6e8;">Mitt KAISEN</strong> är nu skapat. Klicka på knappen nedan för att sätta ditt lösenord och komma igång med din personliga reseportal.
               </p>
               <table cellpadding="0" cellspacing="0">
                 <tr>
@@ -172,7 +172,7 @@ Deno.serve(async (req) => {
           body: JSON.stringify({
             from: FROM_EMAIL,
             to: [userEmail],
-            subject: "Välkommen till Mitt Kaisen – sätt ditt lösenord",
+            subject: "Välkommen till Mitt KAISEN – sätt ditt lösenord",
             html: inviteEmailHtml(actionLink, firstName),
           }),
         });
@@ -256,7 +256,7 @@ Deno.serve(async (req) => {
         body: JSON.stringify({
           from: FROM_EMAIL,
           to: [email.toLowerCase().trim()],
-          subject: "Välkommen till Mitt Kaisen – sätt ditt lösenord",
+          subject: "Välkommen till Mitt KAISEN – sätt ditt lösenord",
           html: inviteEmailHtml(actionLink, first_name.trim()),
         }),
       });

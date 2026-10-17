@@ -79,7 +79,7 @@ const TYPE_LABELS: Record<(typeof INQUIRY_TYPES)[number], string> = {
   contact: "Kontaktformulär",
 };
 
-const SENDER = "Kaisen Travel Group <info@kaisengroup.se>";
+const SENDER = "KAISEN Travel Group <info@kaisengroup.se>";
 const ADMIN_INBOX = "info@kaisengroup.se";
 
 const escapeHtml = (s: string) =>
@@ -265,7 +265,7 @@ Deno.serve(async (req) => {
       </div>
       <p style="margin:24px 0 0;font-size:14px;line-height:1.6;">
         Vänliga hälsningar,<br />
-        <strong>Kaisen Travel Group</strong>
+        <strong>KAISEN Travel Group</strong>
       </p>
     </div>
     <div style="background:#f1f5f9;padding:16px 28px;font-size:12px;color:#64748b;text-align:center;">
@@ -289,7 +289,7 @@ Deno.serve(async (req) => {
     try {
       await sendEmail({
         to: data.email,
-        subject: "Vi har tagit emot din förfrågan — Kaisen Travel Group",
+        subject: "Vi har tagit emot din förfrågan — KAISEN Travel Group",
         html: customerHtml,
       });
     } catch (e) {

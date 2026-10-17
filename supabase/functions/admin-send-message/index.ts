@@ -5,7 +5,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const FROM_EMAIL = "Kaisen Travel Group <info@kaisengroup.se>";
+const FROM_EMAIL = "KAISEN Travel Group <info@kaisengroup.se>";
 
 /**
  * Verify the caller has the admin role. Throws on missing/invalid token or
@@ -50,13 +50,13 @@ function messageTemplate(toName: string, subject: string, body: string): string 
           <!-- Header -->
           <tr>
             <td style="padding:28px 48px;border-bottom:1px solid #1e2d4a;">
-              <img src="${LOGO_URL}" alt="Kaisen Travel Group" style="height:48px;display:block;" />
+              <img src="${LOGO_URL}" alt="KAISEN Travel Group" style="height:48px;display:block;" />
             </td>
           </tr>
           <!-- Body -->
           <tr>
             <td style="padding:36px 48px;">
-              <p style="margin:0 0 6px;color:#8a9bb5;font-size:11px;letter-spacing:0.25em;text-transform:uppercase;">Meddelande från Kaisen</p>
+              <p style="margin:0 0 6px;color:#8a9bb5;font-size:11px;letter-spacing:0.25em;text-transform:uppercase;">Meddelande från KAISEN</p>
               <h1 style="margin:0 0 20px;color:#d4a84b;font-size:22px;font-weight:400;font-family:'Georgia',serif;line-height:1.3;">
                 ${subject}
               </h1>
@@ -66,7 +66,7 @@ function messageTemplate(toName: string, subject: string, body: string): string 
               </div>
               <div style="margin-top:32px;padding-top:20px;border-top:1px solid #1e2d4a;">
                 <p style="margin:0;color:#4a5d75;font-size:12px;line-height:1.6;">
-                  Du kan svara på detta meddelande direkt i din Kaisen-portal under <strong style="color:#8a9bb5;">Meddelanden</strong>.
+                  Du kan svara på detta meddelande direkt i din KAISEN-portal under <strong style="color:#8a9bb5;">Meddelanden</strong>.
                 </p>
               </div>
             </td>

@@ -50,7 +50,7 @@ Deno.serve(async (req) => {
     const ev: any = (cat as any).events;
     const eventTitle = ev?.home_team
       ? `${ev.home_team} vs ${ev.away_team}`
-      : ev?.race_name ?? ev?.tournament_name ?? "Kaisen event";
+      : ev?.race_name ?? ev?.tournament_name ?? "KAISEN event";
     const productName = `${eventTitle} – ${(cat as any).name}`;
     const lookupKey = `cat_${categoryId.replace(/-/g, "").slice(0, 20)}`;
     const env: StripeEnv = environment;

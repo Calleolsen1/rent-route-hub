@@ -77,7 +77,7 @@ const Footer = () => {
               </button>
             </form>
             <p className="text-xs text-white/60 mt-3 leading-relaxed">
-              Genom att skicka in detta formulär godkänner jag att Kaisen Travel Group lagrar och behandlar mina personuppgifter enligt våra{" "}
+              Genom att skicka in detta formulär godkänner jag att KAISEN Travel Group lagrar och behandlar mina personuppgifter enligt våra{" "}
               <Link to="/anvandarvillkor" className="underline hover:text-white">Användarvillkor</Link>{" "}
               &amp;{" "}
               <Link to="/integritetspolicy" className="underline hover:text-white">Integritetspolicy</Link>.
@@ -125,7 +125,7 @@ const Footer = () => {
           <div className="md:col-span-3">
             <h3 className="text-[11px] eyebrow text-white/60 uppercase font-sans mb-5">Kontakt</h3>
             <ul className="space-y-3 text-sm text-white/85">
-              <li>Kaisen Travel Group AB</li>
+              <li>KAISEN Travel Group AB</li>
               <li><a href="mailto:info@kaisengroup.se" className="hover:text-white transition-colors">info@kaisengroup.se</a></li>
             </ul>
           </div>
@@ -135,7 +135,7 @@ const Footer = () => {
 
         {/* Bottom row */}
         <div className="pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs text-white/60">
-          <p>© {new Date().getFullYear()} Kaisen Travel Group. Alla rättigheter förbehållna.</p>
+          <p>© {new Date().getFullYear()} KAISEN Travel Group. Alla rättigheter förbehållna.</p>
           <div className="flex flex-wrap gap-x-5 gap-y-2">
             <Link to="/integritetspolicy" className="hover:text-white transition-colors">Integritetspolicy</Link>
             <span className="text-white/25">|</span>

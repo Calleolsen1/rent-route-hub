@@ -85,7 +85,7 @@ export default function MittKaisenLogin() {
 
  <div>
  <p className="text-sm" style={{ color: "hsl(215 15% 45%)" }}>
- © 2025 Kaisen Travel Group
+ © 2025 KAISEN Travel Group
  </p>
  </div>
  </div>

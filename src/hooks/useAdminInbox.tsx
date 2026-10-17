@@ -212,7 +212,7 @@ export const useAdminInbox = (adminUserId: string | undefined) => {
             body: JSON.stringify({
               toEmail: recipientProfile.email,
               toName: recipientName,
-              subject: "Nytt meddelande från Kaisen",
+              subject: "Nytt meddelande från KAISEN",
               body,
             }),
           }

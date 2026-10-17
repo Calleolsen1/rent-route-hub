@@ -152,10 +152,10 @@ const App = () => (
                 <Route path="backoffice/rapporter" element={<BackofficeReports />} />
               </Route>
 
-              {/* Mitt Kaisen - public routes */}
+              {/* Mitt KAISEN - public routes */}
               <Route path="/mitt-kaisen" element={<MittKaisenLogin />} />
               <Route path="/mitt-kaisen/aterstall-losenord" element={<MittKaisenResetPassword />} />
-              {/* Mitt Kaisen - protected routes */}
+              {/* Mitt KAISEN - protected routes */}
               <Route path="/mitt-kaisen" element={<MittKaisenLayout />}>
                 <Route path="dashboard" element={<MittKaisenDashboard />} />
                 <Route path="biljetter" element={<MittKaisenBiljetter />} />

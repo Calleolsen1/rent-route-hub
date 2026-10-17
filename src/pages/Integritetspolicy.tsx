@@ -20,7 +20,7 @@ export default function Integritetspolicy() {
         <div className="container mx-auto px-4 max-w-3xl space-y-10">
           <Section title="1. Personuppgiftsansvarig">
             <p>
-              Kaisen Travel Group AB ("Kaisen", "vi") är personuppgiftsansvarig för behandlingen av personuppgifter på{" "}
+              KAISEN Travel Group AB ("KAISEN", "vi") är personuppgiftsansvarig för behandlingen av personuppgifter på{" "}
               <code>kaisengroup.se</code>. Kontakta oss på{" "}
               <a href="mailto:info@kaisengroup.se" className="underline">info@kaisengroup.se</a> för frågor om denna policy eller dina rättigheter.
             </p>
@@ -31,7 +31,7 @@ export default function Integritetspolicy() {
             <ul>
               <li><strong>Kontaktuppgifter</strong> - namn, e-postadress, telefonnummer som du anger i förfrågningsformulär eller vid beställning.</li>
               <li><strong>Beställningsuppgifter</strong> - vilka biljetter, paket eller resor du har bokat, fakturahistorik och betalningsstatus (men inte kortuppgifter, som hanteras av Stripe).</li>
-              <li><strong>Kontoinformation</strong> - om du skapar ett konto i Mitt Kaisen: lösenord (hashad), profilbild och inställningar.</li>
+              <li><strong>Kontoinformation</strong> - om du skapar ett konto i Mitt KAISEN: lösenord (hashad), profilbild och inställningar.</li>
               <li><strong>Tekniska uppgifter</strong> - IP-adress, webbläsartyp och cookies (se avsnitt 5).</li>
             </ul>
           </Section>
@@ -70,13 +70,13 @@ export default function Integritetspolicy() {
               Vi använder cookies som är nödvändiga för att webbplatsen ska fungera (inloggning, kundvagn, betalsession). Vid första besöket frågar vi om ditt samtycke till valfria cookies via vår cookie-banner. Du kan när som helst ändra ditt val via länken längst ner på sidan.
             </p>
             <p>
-              Nödvändiga cookies omfattar bland annat session-cookies för Mitt Kaisen-inloggning, Stripe-betalsessions-cookies och vårt eget cookie-samtyckes-val (sparat i localStorage). Vi använder för närvarande inga marknadsförings- eller analyscookies.
+              Nödvändiga cookies omfattar bland annat session-cookies för Mitt KAISEN-inloggning, Stripe-betalsessions-cookies och vårt eget cookie-samtyckes-val (sparat i localStorage). Vi använder för närvarande inga marknadsförings- eller analyscookies.
             </p>
           </Section>
 
           <Section title="6. Lagringstid">
             <p>
-              Beställningsuppgifter sparas i sju (7) år enligt bokföringslagen. Förfrågningar som inte leder till köp sparas i 24 månader. Konton i Mitt Kaisen sparas så länge kontot är aktivt. Du kan när som helst begära radering enligt avsnitt 7.
+              Beställningsuppgifter sparas i sju (7) år enligt bokföringslagen. Förfrågningar som inte leder till köp sparas i 24 månader. Konton i Mitt KAISEN sparas så länge kontot är aktivt. Du kan när som helst begära radering enligt avsnitt 7.
             </p>
           </Section>
 
@@ -98,7 +98,7 @@ export default function Integritetspolicy() {
 
           <Section title="8. Säkerhet">
             <p>
-              Vi använder TLS för all dataöverföring, krypterar lösenord och har strikt åtkomstkontroll till produktionsdatabasen. Du som kund är ansvarig för att hålla ditt lösenord till Mitt Kaisen säkert.
+              Vi använder TLS för all dataöverföring, krypterar lösenord och har strikt åtkomstkontroll till produktionsdatabasen. Du som kund är ansvarig för att hålla ditt lösenord till Mitt KAISEN säkert.
             </p>
           </Section>
 

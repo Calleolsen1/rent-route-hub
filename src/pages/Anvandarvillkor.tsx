@@ -20,7 +20,7 @@ export default function Anvandarvillkor() {
         <div className="container mx-auto px-4 max-w-3xl space-y-10">
           <Section title="1. Tjänsten">
             <p>
-              Kaisen Travel Group AB ("Kaisen") tillhandahåller försäljning av biljetter till sportevenemang samt skräddarsydda resepaket via webbplatsen <code>kaisengroup.se</code> och Mitt Kaisen. Dessa villkor reglerar din användning av tjänsten.
+              KAISEN Travel Group AB ("KAISEN") tillhandahåller försäljning av biljetter till sportevenemang samt skräddarsydda resepaket via webbplatsen <code>kaisengroup.se</code> och Mitt KAISEN. Dessa villkor reglerar din användning av tjänsten.
             </p>
             <p>
               Genom att lägga en beställning eller skicka en förfrågan godkänner du dessa villkor i sin helhet.
@@ -59,7 +59,7 @@ export default function Anvandarvillkor() {
 
           <Section title="5. Leverans av biljetter">
             <p>
-              E-biljetter levereras digitalt via e-post och i Mitt Kaisen senast 24 timmar före evenemanget, ofta tidigare. Vid leverans efter evenemangsdatum (sällsynt teknisk fördröjning) återbetalas hela köpet.
+              E-biljetter levereras digitalt via e-post och i Mitt KAISEN senast 24 timmar före evenemanget, ofta tidigare. Vid leverans efter evenemangsdatum (sällsynt teknisk fördröjning) återbetalas hela köpet.
             </p>
             <p>
               Du ansvarar för att kontrollera att korrekt e-postadress angetts vid beställning. Vi ansvarar inte för biljetter som hamnar i skräppost.
@@ -77,7 +77,7 @@ export default function Anvandarvillkor() {
 
           <Section title="7. Immateriella rättigheter">
             <p>
-              Allt innehåll på webbplatsen - texter, bilder, varumärken - tillhör Kaisen eller våra licensgivare och är skyddat enligt upphovsrättslagen. Du får inte kopiera, distribuera eller på annat sätt nyttja innehållet kommersiellt utan vårt skriftliga medgivande.
+              Allt innehåll på webbplatsen - texter, bilder, varumärken - tillhör KAISEN eller våra licensgivare och är skyddat enligt upphovsrättslagen. Du får inte kopiera, distribuera eller på annat sätt nyttja innehållet kommersiellt utan vårt skriftliga medgivande.
             </p>
           </Section>
 
@@ -99,7 +99,7 @@ export default function Anvandarvillkor() {
 
           <Section title="10. Kontakt">
             <p>
-              Kaisen Travel Group AB<br/>
+              KAISEN Travel Group AB<br/>
               <a href="mailto:info@kaisengroup.se" className="underline">info@kaisengroup.se</a>
             </p>
           </Section>

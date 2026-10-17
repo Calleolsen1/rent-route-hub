@@ -68,7 +68,7 @@ Deno.serve(async (req) => {
           Har du redan betalat hör av dig så återbetalar vi beloppet.
         </p>
         ${extra ? `<p style="color:#334155;white-space:pre-wrap">${extra}</p>` : ""}
-        <p style="color:#64748b;font-size:13px;margin-top:24px">Kaisen Travel Group · info@kaisengroup.se</p>
+        <p style="color:#64748b;font-size:13px;margin-top:24px">KAISEN Travel Group · info@kaisengroup.se</p>
       </div></body></html>`;
 
     const subject = `Faktura ${invoice.invoice_number ?? ""} är makulerad`;
@@ -87,7 +87,7 @@ Deno.serve(async (req) => {
         method: "POST",
         headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({
-          from: "Kaisen Travel Group <info@kaisengroup.se>",
+          from: "KAISEN Travel Group <info@kaisengroup.se>",
           to: [to],
           subject,
           html,

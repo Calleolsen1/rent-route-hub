@@ -89,7 +89,7 @@ export default function MittKaisenResetPassword() {
  Sätt ditt lösenord
  </h2>
  <p className="text-sm mb-10" style={{ color: "hsl(215 15% 55%)" }}>
- Välj ett säkert lösenord för ditt Mitt Kaisen-konto.
+ Välj ett säkert lösenord för ditt Mitt KAISEN-konto.
  </p>
 
  {!sessionReady && (

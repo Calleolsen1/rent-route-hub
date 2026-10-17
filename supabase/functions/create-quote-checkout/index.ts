@@ -161,7 +161,7 @@ Deno.serve(async (req) => {
         customer_update: { address: "auto", name: "auto" },
       }),
       payment_intent_data: {
-        description: `Kaisen offert ${quote.id.slice(0, 8).toUpperCase()}`,
+        description: `KAISEN offert ${quote.id.slice(0, 8).toUpperCase()}`,
       },
       metadata: {
         quoteId: quote.id,

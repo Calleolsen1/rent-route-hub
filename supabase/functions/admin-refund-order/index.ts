@@ -31,7 +31,7 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-const SENDER = "Kaisen Travel Group <info@kaisengroup.se>";
+const SENDER = "KAISEN Travel Group <info@kaisengroup.se>";
 
 async function requireAdmin(req: Request): Promise<string> {
   const auth = req.headers.get("Authorization");

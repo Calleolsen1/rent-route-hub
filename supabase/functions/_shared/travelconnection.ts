@@ -196,7 +196,7 @@ export function tcEnvironment(): TcEnvironment {
  *
  * The sandbox is always allowed. Production additionally needs
  * TRAVELCONNECTION_ORDERS_ENABLED=true, so pointing the base URL at the live
- * API can never, on its own, start creating real invoices for Kaisen to pay.
+ * API can never, on its own, start creating real invoices for KAISEN to pay.
  */
 export function assertOrderingAllowed(): TcEnvironment {
   const env = tcEnvironment();

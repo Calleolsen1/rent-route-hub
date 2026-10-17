@@ -15,7 +15,7 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-const SENDER = "Kaisen Travel Group <info@kaisengroup.se>";
+const SENDER = "KAISEN Travel Group <info@kaisengroup.se>";
 const SITE_URL = Deno.env.get("SITE_URL") ?? "https://rent-route-hub.lovable.app";
 
 const escapeHtml = (s: string) =>
@@ -136,7 +136,7 @@ Deno.serve(async (req) => {
   </div>
 </div>`.trim();
 
-    const subject = `Din offert från Kaisen Travel Group — ${quote.title}`;
+    const subject = `Din offert från KAISEN Travel Group — ${quote.title}`;
 
     if (preview) {
       return new Response(

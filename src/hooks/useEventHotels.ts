@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 // dpa-hotels function: the stay (arrival, nights, rooms) the visitor sets,
 // what's free for it, and the one they picked. Prices come back only when
 // selling is on or an admin is looking — otherwise the pick simply goes into
-// the request and Kaisen books it by hand.
+// the request and KAISEN books it by hand.
 
 export type RoomKey = "double" | "twin" | "single";
 export type Rooms = Partial<Record<RoomKey, number>>;
@@ -73,7 +73,7 @@ const localDate = (iso: string) =>
 /**
  * `startsAt` lets the stay (dates, rooms) work on every match, also where DPA
  * has no hotels: the visitor still says when and how they want to stay, and
- * Kaisen finds the hotel.
+ * KAISEN finds the hotel.
  */
 export function useEventHotels(eventId: string | undefined, startsAt: string | null = null) {
   const [data, setData] = useState<HotelsResponse | null>(null);
@@ -83,7 +83,7 @@ export function useEventHotels(eventId: string | undefined, startsAt: string | n
   const [arrival, setArrival] = useState<string | null>(null);
   const [nights, setNights] = useState(2);
   const [rooms, setRooms] = useState<Rooms>({ double: 1 });
-  // Several hotels can be picked: Kaisen quotes each, the visitor chooses.
+  // Several hotels can be picked: KAISEN quotes each, the visitor chooses.
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   useEffect(() => {
@@ -144,11 +144,11 @@ export function useEventHotels(eventId: string | undefined, startsAt: string | n
   const datesText = stayArrival
     ? `${shortDate(stayArrival)}–${shortDate(addDays(stayArrival, stayNights))} (${stayNights} nätter)`
     : `${stayNights} nätter`;
-  /** One line for the request: hotel (or Kaisen's suggestion), dates, rooms. */
+  /** One line for the request: hotel (or KAISEN's suggestion), dates, rooms. */
   const selectionLine =
     hotelNames.length > 1
       ? `Hotell - pris på ${hotelNames.length} alternativ: ${hotelNames.join("; ")}. ${datesText}, ${roomsText(rooms)}`
-      : `Hotell: ${hotelNames[0] ?? "förslag från Kaisen"}, ${datesText}, ${roomsText(rooms)}`;
+      : `Hotell: ${hotelNames[0] ?? "förslag från KAISEN"}, ${datesText}, ${roomsText(rooms)}`;
 
   return {
     covered,

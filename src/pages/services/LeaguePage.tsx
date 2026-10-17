@@ -23,11 +23,11 @@ export default function LeaguePage() {
 
   usePageMeta({
     title: leagueName
-      ? `${leagueName}-resor - biljetter, hotell och transfer | Kaisen Travel Group`
-      : "Ligaresor | Kaisen Travel Group",
+      ? `${leagueName}-resor - biljetter, hotell och transfer | KAISEN Travel Group`
+      : "Ligaresor | KAISEN Travel Group",
     description: leagueName
-      ? `Res till ${leagueName} med Kaisen Travel Group. Välj lag och få ett komplett resupplägg med hotell, flyg och transfer.`
-      : "Res till Europas största ligor med Kaisen Travel Group.",
+      ? `Res till ${leagueName} med KAISEN Travel Group. Välj lag och få ett komplett resupplägg med hotell, flyg och transfer.`
+      : "Res till Europas största ligor med KAISEN Travel Group.",
   });
 
   if (!sport || !teams.length) {

@@ -29,7 +29,7 @@ const topics: Topic[] = [
  articles: [
  {
  question: "Hur skapar jag ett konto?",
- answer: "Vi håller på att bygga vår kundportal 'Mitt Kaisen'. Snart kan du skapa ett konto och följa din resa, fakturor och uppdateringar i realtid. Tills dess hanterar vi allt via e-post och telefon.",
+ answer: "Vi håller på att bygga vår kundportal 'Mitt KAISEN'. Snart kan du skapa ett konto och följa din resa, fakturor och uppdateringar i realtid. Tills dess hanterar vi allt via e-post och telefon.",
  },
  {
  question: "Jag har glömt mitt lösenord",
@@ -37,7 +37,7 @@ const topics: Topic[] = [
  },
  {
  question: "Hur håller jag koll på min resa?",
- answer: "Just nu skickar vi all information om din resa via e-post - bekräftelser, fakturor och uppdateringar. Vår kommande portal 'Mitt Kaisen' kommer samla allt på ett ställe.",
+ answer: "Just nu skickar vi all information om din resa via e-post - bekräftelser, fakturor och uppdateringar. Vår kommande portal 'Mitt KAISEN' kommer samla allt på ett ställe.",
  },
  {
  question: "Uppdatera mina kontaktuppgifter",
@@ -187,7 +187,7 @@ import { usePageMeta } from "@/lib/usePageMeta";
 
 export default function HelpCenter() {
  usePageMeta({
-   title: "Hjälpcenter - Kaisen Travel Group",
+   title: "Hjälpcenter - KAISEN Travel Group",
    description: "Hjälpcenter med vanliga frågor om bokning, betalning, biljettleverans och kundsupport.",
  });
  const [openTopic, setOpenTopic] = useState<string | null>(null);
@@ -241,7 +241,7 @@ export default function HelpCenter() {
  <LogIn className="h-4 w-4 text-primary" />
  </div>
  <div>
- <p className="text-sm font-medium text-foreground">Mitt Kaisen - Lanseras snart</p>
+ <p className="text-sm font-medium text-foreground">Mitt KAISEN - Lanseras snart</p>
  <p className="text-xs text-muted-foreground">Logga in och håll koll på din resa, fakturor och uppdateringar i realtid.</p>
  </div>
  </div>
@@ -356,7 +356,7 @@ export default function HelpCenter() {
  {
  icon: LogIn,
  title: "Reseportal (kommer snart)",
- desc: "Snart lanserar vi 'Mitt Kaisen' - en inloggningssida där du ser alla dina resor, fakturor och uppdateringar på ett ställe.",
+ desc: "Snart lanserar vi 'Mitt KAISEN' - en inloggningssida där du ser alla dina resor, fakturor och uppdateringar på ett ställe.",
  },
  ].map((item) => (
  <div key={item.title} className="text-center">

@@ -210,21 +210,21 @@ const services = [
 const testimonials = [
   {
     quote:
-      "Kaisen ordnade vår F1-resa till Monaco ner i minsta detalj. VIP-paddock, hotell med utsikt över banan och middag på Michelin-restaurang - helt magiskt.",
+      "KAISEN ordnade vår F1-resa till Monaco ner i minsta detalj. VIP-paddock, hotell med utsikt över banan och middag på Michelin-restaurang - helt magiskt.",
     author: "Erik Lindström",
     role: "VD, Nordic Ventures",
     rating: 5,
   },
   {
     quote:
-      "Vi var 45 personer på företagsresa till Barcelona. Kaisen skötte allt och alla var begeistrade. Absolut bästa företagsresan vi haft.",
+      "Vi var 45 personer på företagsresa till Barcelona. KAISEN skötte allt och alla var begeistrade. Absolut bästa företagsresan vi haft.",
     author: "Anna Bergström",
     role: "HR-chef, Scandic Industries",
     rating: 5,
   },
   {
     quote:
-      "Som affärsresenär värdesätter jag att allt bara fungerar. Med Kaisens VIP-service är varje resa smidig och stressfri.",
+      "Som affärsresenär värdesätter jag att allt bara fungerar. Med KAISENs VIP-service är varje resa smidig och stressfri.",
     author: "Marcus Johansson",
     role: "Konsult, internationell verksamhet",
     rating: 5,

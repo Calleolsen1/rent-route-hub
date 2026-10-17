@@ -13,7 +13,7 @@
 //                                          tickets could not be booked
 //
 // A reservation holds the tickets for 10 minutes. Confirming turns it into a
-// supplier order and an invoice Kaisen must pay within 14 days (immediately
+// supplier order and an invoice KAISEN must pay within 14 days (immediately
 // if the match is sooner), so every call that holds or buys goes through
 // assertOrderingAllowed(): the sandbox is always allowed, production only with
 // TRAVELCONNECTION_ORDERS_ENABLED=true.

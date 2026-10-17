@@ -237,7 +237,7 @@ Deno.serve(async (req) => {
       ...(customerId && {
         customer_update: { address: "auto", name: "auto" },
       }),
-      payment_intent_data: { description: `Kaisen biljetter – order ${orderId.slice(0, 8)}` },
+      payment_intent_data: { description: `KAISEN biljetter – order ${orderId.slice(0, 8)}` },
       metadata: { orderId, ...(order.user_id && { userId: order.user_id }) },
     });
 
