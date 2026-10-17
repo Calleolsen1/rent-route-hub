@@ -10,22 +10,23 @@ import heroImage from "@/assets/about-hero.jpg";
 import founderImage from "@/assets/about-founder.jpg";
 
 const values = [
-{
- title: "Personlig Service",
- desc: "Vi tror att den bästa reseupplevelsen börjar med ett genuint samtal. Ingen mall, ingen automatisering - bara människor som bryr sig om din resa."
-},
-{
- title: "Expertis i Världsklass",
- desc: "Vårt team har djup erfarenhet inom alla resekategorier - från sportevent och konferenser till lyxresor och gruppresor i alla storlekar."
-},
-{
- title: "Pålitlighet",
- desc: "Vi vet vad som krävs vet vi vad som krävs för att leverera - varje gång, utan undantag."
-},
-{
- title: "Diskretion",
- desc: "Vi hanterar alla kundrelationer med fullständig konfidentialitet och professionell integritet - oavsett uppdragets storlek."
-}];
+  {
+    title: "Personlig service",
+    desc: "Du möter erfarna resespecialister som lyssnar, förstår dina önskemål och hjälper dig att skapa en resa som passar just dig.",
+  },
+  {
+    title: "Kompetens byggd på erfarenhet",
+    desc: "Sedan 1990 har vi samlat kunskap och erfarenhet inom sportresor, gruppresor och konferenser. Vi vet vad som krävs för att planera och genomföra resor där detaljerna gör skillnaden.",
+  },
+  {
+    title: "Trygghet hela vägen",
+    desc: "Med noggrann planering, etablerade utvalda leverantörer och resegaranti skapar vi trygghet före, under och efter resan.",
+  },
+  {
+    title: "Förtroende och diskretion",
+    desc: "Vi värnar om våra kundrelationer och hanterar varje uppdrag med integritet, respekt och diskretion. Oavsett om det gäller en privat resa, en företagsgrupp eller ett större evenemang kan du lita på vårt professionella omdöme.",
+  },
+];
 
 
 
@@ -191,7 +192,7 @@ export default function About() {
   <section className="py-12 md:py-16 bg-background">
   <div className="container mx-auto px-4">
   <div className="text-center mb-14">
-  <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Vad vi står för</p>
+  <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Varför resa med KAISEN TRAVEL GROUP?</p>
   <h2 className="font-display text-3xl md:text-4xl text-foreground">
   Våra Värderingar
   </h2>
