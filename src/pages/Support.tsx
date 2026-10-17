@@ -72,10 +72,10 @@ export default function Support() {
  <div className="container mx-auto px-4 text-center">
  <p className="text-[11px] sm:text-xs eyebrow text-white/75 uppercase mb-4 font-sans">Support</p>
  <h1 className="font-display text-4xl md:text-6xl text-white mb-4">
- Vi är här för <em className="italic font-light text-white">dig</em>
+ Vi finns här för <em className="italic font-light text-white">dig</em>
  </h1>
  <p className="text-white/60 max-w-xl mx-auto leading-relaxed">
- Personlig och snabb hjälp - oavsett om du planerar, packar eller redan är på plats.
+ Personlig och snabb service - oavsett om du planerar, packar eller redan är på plats.
  </p>
  </div>
  </section>
