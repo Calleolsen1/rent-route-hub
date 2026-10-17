@@ -168,10 +168,10 @@ export default function About() {
   </div>
   </section>
 
-  {/* References strip */}
+  {/* Trygg partner strip */}
   <section className="bg-navy py-16 border-t border-primary/20">
   <div className="container mx-auto px-4">
-  <p className="text-center text-[11px] sm:text-xs eyebrow text-primary uppercase mb-10 font-sans">Tidigare uppdrag & kunder</p>
+  <p className="text-center text-[11px] sm:text-xs eyebrow text-white uppercase mb-10 font-sans">En trygg partner för din resa.</p>
   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 text-center">
   {[
   { label: "OFFICIELLA BILJETTER", detail: "Genom utvalda, officiella biljettleverantörer" },
