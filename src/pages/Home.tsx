@@ -724,7 +724,11 @@ const Home = () => {
 
           <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div className="max-w-xl">
+              <h3 className="font-sans font-bold text-2xl md:text-4xl text-foreground mb-6 leading-tight whitespace-pre-line">
+                {"Personlig service\nSenior kompetens"}
+              </h3>
               <p className="text-foreground/70 text-base md:text-lg leading-relaxed mb-8 whitespace-pre-line">
+
                 {"I en värld där allt fler resor bokas online går vi åt andra hållet. Vi tror på den personliga kontakten, den erfarna rådgivaren och värdet av att ha någon som verkligen bryr sig om hela resan.\n\nHos KAISEN möter du seniora Resespecialister med erfarenheten, kunskapen och nätverket att skapa resor utöver det vanliga. Vi lyssnar på dina önskemål, delar med oss av vår expertis och ser till att varje detalj hänger ihop.\n\nFör oss är personlig service inte ett tillval utan en självklar del av varje resa vi skapar."}
               </p>
               <Link
