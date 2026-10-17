@@ -14,6 +14,7 @@ const sports = [
  {
  id: "f1",
  title: "Formel 1",
+ heading: "Formel 1-resor",
  image: f1Image,
  description:
  "Upplev Formel 1 på plats – från nervkittlande kval till dramatiken i racet. Vi hjälper dig att skapa din F1-resa till världens ikoniska racingbanor, med möjlighet att boka biljetter, hotell, flyg och transfer var för sig eller som en komplett resa.",
@@ -28,6 +29,7 @@ const sports = [
  {
  id: "fotboll",
  title: "Fotboll",
+ heading: "Fotbollsresor",
  image: fotbollImage,
  description:
  "Upplev Europas bästa fotbollsmatcher på plats – från klassiska derbyn i Premier League, Serie A och La Liga - till Champions League. Vi hjälper dig att skapa just din fotbollsresa, med möjlighet att boka matchbiljetter, hotell, flyg och transfer var för sig eller som en komplett resa.",
@@ -106,7 +108,7 @@ export default function Sportresor() {
  {sport.title}
  </span>
  <h2 className="font-display text-3xl md:text-4xl text-foreground mt-4 mb-2">
- {sport.title}-resor
+ {sport.heading}
  </h2>
  <div className="w-10 h-px bg-primary mb-6" />
  <p className="text-muted-foreground leading-relaxed mb-8 text-base">
