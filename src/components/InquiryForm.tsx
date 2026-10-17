@@ -339,9 +339,9 @@ export default function InquiryForm({
 
       {showTripParts && (
         <div>
-          <Label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Vad vill ni ha offert på? *</Label>
+          <Label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Vi önskar reseförslag med följande innehåll *</Label>
           <p className="text-[11px] text-muted-foreground mt-1 mb-2">
-            Välj en, två eller alla tre - vi sätter ihop paketet och återkommer med pris.
+            Välj tjänster som ni vill ska ingå så återkommer vi med reseförslag.
           </p>
           <div className="grid grid-cols-3 gap-3">
             {TRIP_PARTS.map((part) => {
