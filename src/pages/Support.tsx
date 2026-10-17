@@ -36,8 +36,8 @@ const supportTypes = [
  icon: AlertCircle,
  color: "text-red-500",
  bg: "bg-red-50",
- title: "Akuta ärenden under resa",
- desc: "Befinner du dig på resa och har ett akut problem? Ring oss direkt på +46 8 000 00 00. Vi har jour för aktiva kunder och svarar även utanför kontorstid.",
+ title: "Akuta ärende under resa",
+ desc: "Befinner du dig på resa och behöver kontakta oss utanför ordinarie öppettider finner du vårt journummer på er bokningsbekräftelse. Det går även bra att skicka e-post till info@kaisengroup.se",
  },
  {
  icon: HelpCircle,
@@ -130,7 +130,7 @@ export default function Support() {
  <div className="container mx-auto px-4">
  <div className="text-center mb-12">
  <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Typ av ärende</p>
- <h2 className="font-display text-3xl text-foreground">Hur kan vi hjälpa?</h2>
+ <h2 className="font-display text-3xl text-foreground">Hur kan vi hjälpa till?</h2>
  </div>
  <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
  {supportTypes.map((st) => (
