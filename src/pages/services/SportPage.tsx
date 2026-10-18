@@ -22,6 +22,10 @@ export default function SportPage() {
   const isRace = sport?.entry_kind === "race";
   const heroImage = isRace ? f1Image : fotbollImage;
 
+  // Headline sells the trip, not the sport - the menu keeps the short name.
+  const heroTitle = sport?.slug === "fotboll" ? "Fotbollsresor" : sport?.label;
+
+
   // Map race name -> event id so cards can link straight to the event page.
   const [raceEventIds, setRaceEventIds] = useState<Record<string, string>>({});
   useEffect(() => {
