@@ -60,12 +60,10 @@ const DEFAULT_FEATURES_BY_KIND: Record<string, string[]> = {
     "Svensk reseledare på plats",
   ],
   race: [
-    "Tribunbiljetter med bra utsikt",
-    "Hotell nära banan",
+    "Biljetter – weekend eller söndag i olika kategorier",
+    "Hotell centralt",
     "Flyg från valfri svensk flygplats",
-    "Transfer till och från race-dagar",
-    "Pit-walk eller VIP-uppgradering (optionellt)",
-    "Svensk reseledare på plats",
+    "Transfer från/till flygplats",
   ],
 };
 
