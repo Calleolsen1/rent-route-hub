@@ -58,8 +58,7 @@ export default function About() {
 
   {/* Intro */}
   <section className="py-12 md:py-16 bg-cream">
-  <div className="container mx-auto px-4">
-  <div className="max-w-3xl">
+  <div className="container mx-auto px-4 max-w-3xl">
   <div>
   <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Vilka vi är</p>
   <h2 className="font-display text-3xl md:text-4xl text-foreground mb-2 leading-tight">
@@ -73,7 +72,6 @@ export default function About() {
   <p>
   KAISEN TRAVEL GROUP är en resebyrå för dig som uppskattar personlig service, gedigen erfarenhet och någon som verkligen bryr sig om hela resan. Vi är ett mindre team av seniora resespecialister med över 50 års samlad erfarenhet från resebranschen.
   </p>
-  </div>
   </div>
   </div>
   </div>
