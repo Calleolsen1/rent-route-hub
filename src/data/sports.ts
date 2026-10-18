@@ -1,5 +1,6 @@
 // Central source of truth for sports data (teams, leagues, F1 races).
 // These constants drive the landing pages; names must match synced event data.
+import { ADDITIONAL_TEAMS } from "./additionalTeams";
 
 export type TeamFixture = {
   opponent: string;
@@ -43,6 +44,7 @@ export const slugify = (s: string) =>
     .replace(/(^-|-$)/g, "");
 
 export const TEAMS: Record<string, TeamInfo> = {
+  ...Object.fromEntries(ADDITIONAL_TEAMS.map((team) => [team.slug, team])),
   "bayern-munchen": { slug: "bayern-munchen", name: "Bayern München", league: "Bundesliga", city: "München, Tyskland", stadium: "Allianz Arena", tagline: "Tysk fotbollskungadynasti", description: "Upplev Bayern München LIVE på Allianz Arena – en av Europas mest ikoniska fotbollsarenor. Se de tyska mästarna bjuda på fotboll i världsklass och känn den mäktiga stämningen bland tiotusentals passionerade supportrar i München.", fixtures: [{ opponent: "Borussia Dortmund", date: "12 oktober 2026", competition: "Bundesliga" }, { opponent: "Real Madrid", date: "5 november 2026", competition: "Champions League" }, { opponent: "RB Leipzig", date: "23 november 2026", competition: "Bundesliga" }] },
   "borussia-dortmund": { slug: "borussia-dortmund", name: "Borussia Dortmund", league: "Bundesliga", city: "Dortmund, Tyskland", stadium: "Signal Iduna Park", tagline: "Den gula väggen", description: "Upplev Borussia Dortmund LIVE på Signal Iduna Park, där den ikoniska Gula väggen skapar en av Europas mäktigaste fotbollsatmosfärer. Tusentals passionerade supportrar och gulsvarta färger gör matchdagen i Dortmund till en oförglömlig fotbollsupplevelse.", fixtures: [{ opponent: "Bayern München", date: "12 oktober 2026", competition: "Bundesliga" }, { opponent: "Schalke 04", date: "26 oktober 2026", competition: "Bundesliga" }, { opponent: "Manchester City", date: "12 november 2026", competition: "Champions League" }] },
   "atletico-madrid": { slug: "atletico-madrid", name: "Atlético Madrid", league: "La Liga", city: "Madrid, Spanien", stadium: "Metropolitano", tagline: "Cholismo & passion", description: "Känn passionen på Riyadh Air Metropolitano när Atlético Madrids hängivna supportrar lyfter stämningen till nya nivåer. Här väntar intensiv fotboll, rödvita färger och en matchupplevelse där varje minut räknas – mitt i pulserande Madrid.", fixtures: [{ opponent: "Real Madrid", date: "28 september 2026", competition: "La Liga" }, { opponent: "FC Barcelona", date: "18 oktober 2026", competition: "La Liga" }, { opponent: "Sevilla", date: "8 november 2026", competition: "La Liga" }] },
@@ -66,6 +68,11 @@ export const FOOTBALL_LEAGUES: LeagueInfo[] = [
   { league: "Premier League", teams: ["Arsenal", "Chelsea", "Liverpool", "Manchester City", "Manchester United", "Tottenham Hotspur"] },
   { league: "Serie A", teams: ["Milan", "Inter", "Juventus", "Roma"] },
 ];
+for (const team of ADDITIONAL_TEAMS) {
+  const league = FOOTBALL_LEAGUES.find((item) => item.league === team.league);
+  if (league) league.teams.push(team.name);
+  else FOOTBALL_LEAGUES.push({ league: team.league, teams: [team.name] });
+}
 
 export const RACES: Record<string, RaceInfo> = {
   "ungern": { slug: "ungern", name: "Ungerns Grand Prix", circuit: "Hungaroring", city: "Budapest, Ungern", date: "26 juli 2026", shortDate: "26 juli", tagline: "Monaco utan barriärerna", description: "Hungaroring är en av kalenderns mest tekniska banor - en kurvig utmaning där föraren räknas mer än bilen." },

@@ -35,6 +35,7 @@ import {
 import { syncVenuePlans, type VenueSyncResult } from "../_shared/tc_venues.ts";
 import { cupCompetition, canSeedCupFixture } from "../_shared/tc_cups.ts";
 import { canonicalTeam } from "../_shared/footballdata.ts";
+import { isOfferedScottishFixture, scottishTeam } from "../_shared/tc_scotland.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -158,7 +159,9 @@ Deno.serve(async (req) => {
       const compId = p.match?.competition ?? null;
       const competitionName = compId != null ? competitions.get(compId) ?? null : null;
       const cup = cupCompetition(competitionName);
-      const competitionCode = cup?.code ?? (compId != null ? TC_COMPETITION_CODES[compId] : undefined);
+      const scottish = isOfferedScottishFixture(compId, home);
+      const seededCompetition = cup ?? (scottish ? { code: "SPL", name: "Scottish Premiership" } : undefined);
+      const competitionCode = seededCompetition?.code ?? (compId != null ? TC_COMPETITION_CODES[compId] : undefined);
       const f1 = p.type === "event" && isF1Product(p.name);
       const inScope = f1 || (p.type === "football_match" && !!competitionCode);
 
@@ -185,13 +188,13 @@ Deno.serve(async (req) => {
           : football.match(home ?? "", away ?? "", starts, taken, competitionCode);
         // Do not create a duplicate when another product already claimed
         // this game. Unknown teams are allowed only for advertised cups.
-        if (!r.eventId && cup && canSeedCupFixture(competitionName, home, away, starts, p.match?.status, new Date(now))
+        if (!r.eventId && seededCompetition && canSeedCupFixture(scottish ? "FA Cup" : competitionName, home, away, starts, p.match?.status, new Date(now))
           && !football.match(home ?? "", away ?? "", starts, new Set(), competitionCode).eventId) {
           const eventRow = {
             source: "travelconnection-cup", external_event_id: `tc_cup_${p.id}`,
-            external_tournament_id: cup.code, tournament_name: cup.name,
-            sport: "soccer", home_team: football.team(home ?? "") ?? canonicalTeam(home),
-            away_team: football.team(away ?? "") ?? canonicalTeam(away),
+            external_tournament_id: seededCompetition.code, tournament_name: seededCompetition.name,
+            sport: "soccer", home_team: scottishTeam(home) ?? football.team(home ?? "") ?? canonicalTeam(home),
+            away_team: scottishTeam(away) ?? football.team(away ?? "") ?? canonicalTeam(away),
             starts_at: starts.toISOString(), status: "upcoming", last_synced_at: now,
           };
           const { data: created, error } = await admin.from("events")

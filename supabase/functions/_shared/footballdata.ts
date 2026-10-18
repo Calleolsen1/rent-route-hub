@@ -84,6 +84,9 @@ export interface FdMatch {
  * "Atleti", "Barça" and "Man United", none of which match the nav entries.
  */
 const TEAM_CANONICAL: Record<string, string> = {
+  "Athletic Club": "Athletic Bilbao",
+  "Bayer 04 Leverkusen": "Bayer Leverkusen",
+  "Real Sociedad de Fútbol": "Real Sociedad",
   "Arsenal FC": "Arsenal",
   "Chelsea FC": "Chelsea",
   "Liverpool FC": "Liverpool",
