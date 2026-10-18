@@ -136,6 +136,12 @@ const Footer = () => {
 
         <div className="border-t border-white/15" />
 
+        {/* Trust logos — Amadeus & Kammarkollegiet */}
+        <div className="pt-6 flex flex-wrap items-center gap-x-10 gap-y-4">
+          <img src={amadeusLogo} alt="Amadeus" title="IATA-certifierade med Amadeus-licens" className="h-5 md:h-6 w-auto opacity-70" loading="lazy" />
+          <img src={kammarkollegietLogo} alt="Kammarkollegiet" title="Resegaranti ställd hos Kammarkollegiet" className="h-7 md:h-8 w-auto opacity-70" loading="lazy" />
+        </div>
+
         {/* Bottom row */}
         <div className="pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs text-white/60">
           <p>© {new Date().getFullYear()} KAISEN TRAVEL GROUP. Alla rättigheter förbehållna.</p>
