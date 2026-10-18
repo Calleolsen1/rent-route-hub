@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1792349989059,
+      "tag": "0000_league_intro_bundesliga",
+      "breakpoints": true
+    }
+  ]
+}

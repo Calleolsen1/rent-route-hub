@@ -39,6 +39,7 @@ const PAGE_GROUPS: PageGroup[] = [
   { id: "contact", label: "Kontakt", href: "/contact", matchPrefix: "contact_" },
   { id: "group", label: "Gruppresor", href: "/group-travel", matchPrefix: "group_" },
   { id: "training", label: "Träningsläger", href: "/services/traningslager", matchPrefix: "training_" },
+  { id: "league", label: "Ligasidor", href: "/services/sportresor", matchPrefix: "league_" },
 ];
 
 const OTHER_GROUP: PageGroup = { id: "other", label: "Övrigt", href: "/", matchPrefix: "" };
