@@ -7,7 +7,6 @@ import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
 import TeamSection from "@/components/TeamSection";
 import heroImage from "@/assets/about-hero.jpg";
-import founderImage from "@/assets/about-founder.jpg";
 
 const values = [
   {
@@ -57,10 +56,9 @@ export default function About() {
   </div>
   </section>
 
-  {/* Intro + founder image */}
+  {/* Intro */}
   <section className="py-12 md:py-16 bg-cream">
-  <div className="container mx-auto px-4">
-  <div className="grid md:grid-cols-2 gap-16 items-center">
+  <div className="container mx-auto px-4 max-w-3xl">
   <div>
   <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Vilka vi är</p>
   <h2 className="font-display text-3xl md:text-4xl text-foreground mb-2 leading-tight">
@@ -74,18 +72,6 @@ export default function About() {
   <p>
   KAISEN TRAVEL GROUP är en resebyrå för dig som uppskattar personlig service, gedigen erfarenhet och någon som verkligen bryr sig om hela resan. Vi är ett mindre team av seniora resespecialister med över 50 års samlad erfarenhet från resebranschen.
   </p>
-  </div>
-  </div>
-  <div className="relative">
-  <div className="aspect-[4/5] overflow-hidden">
-  <img src={founderImage} alt="Grundare KAISEN TRAVEL GROUP" className="w-full h-full object-cover" />
-  </div>
-  {/* TODO: Avkommentera och fyll i riktig siffra när data finns.
-  <div className="absolute -bottom-4 -right-4 bg-navy p-6 max-w-[200px]">
-  <div className="font-display text-3xl text-white mb-1">...</div>
-  <div className="text-[10px] tracking-[0.2em] uppercase text-primary font-sans">År i branschen</div>
-  </div>
-  */}
   </div>
   </div>
   </div>
