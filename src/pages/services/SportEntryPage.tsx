@@ -31,7 +31,7 @@ const KIND_LABELS = {
     venueLabel: "Arena",
     venueIcon: Trophy,
     groupLabel: "Liga",
-    upcomingTitle: (name: string) => `Biljetter till ${name}`,
+    upcomingTitle: (name: string) => `Fotbollsresor till ${name}`,
     queryField: "team" as const,
   },
   race: {
@@ -138,7 +138,7 @@ export default function SportEntryPage() {
           <UpcomingEventsList
             {...{ [labels.queryField]: info.name }}
             showFilters
-            eyebrow="Köp biljett direkt"
+            eyebrow={sport.entry_kind === "race" ? "Köp biljett direkt" : ""}
             title={labels.upcomingTitle(info.name)}
             compact
             onEmptyChange={setEventsEmpty}
