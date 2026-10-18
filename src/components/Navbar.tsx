@@ -47,7 +47,7 @@ const Navbar = () => {
     for (const e of list) {
       const key = e.group_label ?? "Övrigt";
       if (!map.has(key)) map.set(key, []);
-      map.get(key)!.push(e);
+      map.get(key)?.push(e);
     }
     return Array.from(map.entries());
   };
@@ -62,7 +62,7 @@ const Navbar = () => {
             {/* Logo */}
             <Link
               to="/"
-              className="col-start-2 row-start-1 justify-self-center flex items-center gap-3 flex-shrink-0 lg:col-start-1 lg:justify-self-start"
+              className="col-start-2 row-start-1 justify-self-center flex items-center gap-3 flex-shrink-0 xl:col-start-1 xl:justify-self-start"
             >
               <div className="flex flex-col leading-none">
                 <span className="font-display text-xl md:text-2xl font-semibold tracking-wide text-foreground">
@@ -75,7 +75,7 @@ const Navbar = () => {
             </Link>
 
             {/* Desktop nav */}
-            <div className="hidden lg:flex items-center gap-7">
+            <div className="hidden xl:flex h-full items-center gap-4">
               {sports.map((sport) => {
                 const isOpen = openMenu === sport.slug;
                 const sportEntries = entriesFor(sport.id);
@@ -83,29 +83,27 @@ const Navbar = () => {
                 return (
                   <div
                     key={sport.id}
-                    className="relative"
+                    className={`flex h-full items-center ${sport.menu_style === "grouped" ? "static" : "relative"}`}
                     onMouseEnter={() => setOpenMenu(sport.slug)}
                     onMouseLeave={() => setOpenMenu(null)}
                   >
                     <Link
                       to={`/services/sportresor/${sport.slug}`}
-                      className="flex items-center gap-1 text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors py-2"
+                      className="flex items-center gap-1 whitespace-nowrap text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors py-2"
                     >
                       {sport.label}
                       <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
                     </Link>
                     {isOpen && sport.menu_style === "grouped" && (
                       <div
-                        className="absolute top-full left-0 bg-card border border-border shadow-xl z-50 p-6 gap-6 grid"
+                        aria-label={`${sport.label} – ligor och cuper`}
+                        className="absolute top-full left-6 right-6 mx-auto max-w-[1520px] max-h-[calc(100dvh-6rem)] overflow-y-auto overscroll-contain bg-card border border-border shadow-xl z-50 p-6 gap-5 grid"
                         style={{
-                          // Size to actual league count so 3-league sports don't render an empty column
-                          // and 5+ league sports don't get clipped. Cap at viewport width minus margin.
-                          width: `min(${Math.max(groupedFor(sport.id).length, 1) * 190}px, calc(100vw - 3rem))`,
                           gridTemplateColumns: `repeat(${Math.max(groupedFor(sport.id).length, 1)}, minmax(0, 1fr))`,
                         }}
                       >
                         {groupedFor(sport.id).map(([groupLabel, items]) => (
-                          <div key={groupLabel}>
+                          <div key={groupLabel} className="min-w-0">
                             {groupLabel === CUP_GROUP_LABEL ? (
                               <span className="block text-[11px] tracking-[0.2em] uppercase text-primary font-semibold mb-3">
                                 {groupLabel}
@@ -119,13 +117,13 @@ const Navbar = () => {
                                 {groupLabel}
                               </Link>
                             )}
-                            <ul className="space-y-1.5">
+                            <ul className="space-y-0.5">
                               {items.map((entry) => (
                                 <li key={entry.id}>
                                   <Link
                                     to={CUP_SLUGS.has(entry.slug) ? cupHref(sport.slug, entry.slug) : `/services/sportresor/${sport.slug}/${entry.slug}`}
                                     onClick={() => setOpenMenu(null)}
-                                    className="text-sm text-foreground/80 hover:text-primary transition-colors"
+                                    className="block rounded-sm px-2 -mx-2 py-1.5 text-sm leading-5 break-words text-foreground/80 hover:bg-accent hover:text-primary focus-visible:bg-accent focus-visible:outline-none transition-colors"
                                   >
                                     {entry.name}
                                   </Link>
@@ -137,7 +135,7 @@ const Navbar = () => {
                       </div>
                     )}
                     {isOpen && sport.menu_style === "list" && (
-                      <div className="absolute top-full left-0 bg-card border border-border shadow-xl z-50 min-w-[300px] py-2">
+                      <div className="absolute top-full left-0 bg-card border border-border shadow-xl z-50 min-w-[300px] max-h-[calc(100dvh-6rem)] overflow-y-auto overscroll-contain py-2">
                         {sportEntries.map((entry) => (
                           <Link
                             key={entry.id}
@@ -163,7 +161,7 @@ const Navbar = () => {
                 <Link
                   key={item.id}
                   to={item.href}
-                  className="text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors"
+                  className="whitespace-nowrap text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors"
                 >
                   {item.label}
                 </Link>
@@ -171,9 +169,9 @@ const Navbar = () => {
             </div>
 
             {/* Right side */}
-            <div className="col-start-1 row-start-1 justify-self-start flex items-center gap-3 flex-shrink-0 lg:col-start-3 lg:justify-self-end">
+            <div className="col-start-1 row-start-1 justify-self-start flex items-center gap-3 flex-shrink-0 xl:col-start-3 xl:justify-self-end">
               {/* Language - Swedish only */}
-              <span className="hidden lg:flex items-center gap-1 text-sm text-foreground/70 py-2" aria-label="Språk: svenska">
+              <span className="hidden xl:flex items-center gap-1 text-sm text-foreground/70 py-2" aria-label="Språk: svenska">
                 <Globe className="h-4 w-4" />
                 <span className="text-xs uppercase tracking-wider">SV</span>
               </span>
@@ -181,7 +179,7 @@ const Navbar = () => {
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="hidden lg:flex items-center gap-2">
+                    <Button variant="ghost" size="sm" className="hidden xl:flex items-center gap-2">
                       <User className="h-4 w-4" />
                       <span>Mitt konto</span>
                     </Button>
@@ -208,38 +206,40 @@ const Navbar = () => {
                 <Button
                   size="sm"
                   variant="outline"
-                  className="hidden lg:flex border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-none px-6 tracking-wider text-xs"
+                  className="hidden xl:flex border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-none px-4 tracking-wider text-xs"
                   onClick={() => setAuthDialogOpen(true)}
                 >
                   Logga in
                 </Button>
               )}
 
-              <Link to="/contact" className="hidden lg:block">
+              <Link to="/contact" className="hidden xl:block">
                 <Button
                   size="sm"
-                  className="rounded-none px-6 tracking-wider text-xs bg-primary hover:bg-primary/90"
+                  className="rounded-none px-4 tracking-wider text-xs bg-primary hover:bg-primary/90"
                 >
                   Planera din resa
                 </Button>
               </Link>
 
               {/* Mobile menu toggle */}
-              <button
-                className="lg:hidden -ml-2 p-3 rounded-md active:bg-accent"
+              <Button
+                variant="ghost"
+                size="icon"
+                className="xl:hidden -ml-2 h-12 w-12 rounded-md active:bg-accent"
                 onClick={() => setMobileOpen(!mobileOpen)}
                 aria-label="Växla meny"
                 aria-expanded={mobileOpen}
               >
                 {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
 
         {/* Mobile menu */}
         {mobileOpen && (
-          <div className="lg:hidden border-t bg-card px-4 py-4 space-y-1 max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain">
+          <div className="xl:hidden border-t bg-card px-4 py-4 space-y-1 max-h-[calc(100dvh-5rem)] overflow-y-auto overscroll-contain">
             {sports.map((sport) => {
               const sportEntries = entriesFor(sport.id);
               if (!sportEntries.length) return null;
