@@ -22,6 +22,7 @@ import { CUP_GROUP_LABEL, cupHref } from "@/data/cups";
 import { usePageMeta } from "@/lib/usePageMeta";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { Input } from "@/components/ui/input";
 
 const leagueLogos: Record<string, string> = {
   bundesliga: bundesligaLogo.url,
@@ -44,6 +45,7 @@ export default function SportPage() {
   const sport = useSport(sportSlug);
   const entries = useEntriesForSport(sportSlug);
   const venuePhotos = useVenuePhotos();
+  const [raceSearch, setRaceSearch] = useState("");
 
   const isRace = sport?.entry_kind === "race";
   const heroImage = isRace ? f1Image : fotbollImage;
@@ -154,15 +156,18 @@ export default function SportPage() {
             <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans text-center">
               Kalendern
             </p>
-            <h2 className="font-display text-3xl md:text-4xl text-center mb-12">Vilket race vill du uppleva?</h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <h2 className="font-display text-3xl md:text-4xl text-center mb-6 sm:mb-12">Vilket race vill du uppleva?</h2>
+            <div className="sm:hidden mb-4">
+              <Input type="search" aria-label="Sök lopp" placeholder="Sök lopp, stad eller bana" value={raceSearch} onChange={(event) => setRaceSearch(event.target.value)} className="h-12 bg-card" />
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 max-w-5xl mx-auto">
               {entries.map((race) => (
                 <Link
                   key={race.id}
                   to={raceEventIds[race.name] ? `/sport/event/${raceEventIds[race.name]}` : `/services/sportresor/${sport.slug}/${race.slug}`}
-                  className="group bg-card border border-border overflow-hidden hover:shadow-xl transition-shadow"
+                  className={`group bg-card border border-border overflow-hidden hover:shadow-xl transition-shadow grid grid-cols-[6rem_minmax(0,1fr)] sm:block ${raceSearch.trim() && ![race.name, race.city, race.venue, race.date_text].join(" ").toLocaleLowerCase("sv").includes(raceSearch.trim().toLocaleLowerCase("sv")) ? "hidden sm:block" : ""}`}
                 >
-                  <div className="aspect-[4/3] overflow-hidden">
+                  <div className="h-full min-h-40 sm:min-h-0 sm:aspect-[4/3] overflow-hidden">
                     <img
                       src={
                         venuePhotoFor(venuePhotos, race.venue, race.name) ??
@@ -170,13 +175,14 @@ export default function SportPage() {
                         f1Image
                       }
                       alt={race.name}
+                      loading="lazy"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                     />
                   </div>
-                  <div className="p-5">
-                    <h3 className="font-display text-xl text-foreground mb-1">{race.name}</h3>
+                  <div className="min-w-0 p-3 sm:p-5">
+                    <h3 className="font-display text-lg sm:text-xl text-foreground mb-1">{race.name}</h3>
                     {race.tagline && (
-                      <p className="text-sm text-muted-foreground italic mb-3">{race.tagline}</p>
+                      <p className="text-sm text-muted-foreground italic mb-2 sm:mb-3">{race.tagline}</p>
                     )}
                     <div className="space-y-1.5 text-xs text-muted-foreground">
                       {race.date_text && (
@@ -198,7 +204,7 @@ export default function SportPage() {
                         </p>
                       )}
                     </div>
-                    <span className="mt-4 inline-flex items-center text-sm text-primary font-medium">
+                    <span className="mt-2 sm:mt-4 inline-flex min-h-8 items-center text-sm text-primary font-medium">
                       Se resan
                       <ArrowRight className="ml-1.5 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                     </span>
@@ -206,6 +212,7 @@ export default function SportPage() {
                 </Link>
               ))}
             </div>
+            {raceSearch.trim() && !entries.some((race) => [race.name, race.city, race.venue, race.date_text].join(" ").toLocaleLowerCase("sv").includes(raceSearch.trim().toLocaleLowerCase("sv"))) && <p className="sm:hidden text-center text-muted-foreground py-6" role="status">Inga lopp matchar sökningen.</p>}
           </div>
         </section>
       ) : (

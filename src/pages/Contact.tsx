@@ -53,8 +53,8 @@ export default function Contact() {
       <section className="py-12 md:py-16 bg-cream">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-3 gap-12 lg:gap-16">
-            {/* Form - first on mobile so it is seen directly */}
-            <div className="lg:col-span-2 order-1 lg:order-2">
+            {/* Contact details precede the form on phones and desktop. */}
+            <div id="contact-inquiry" className="lg:col-span-2 order-2 scroll-mt-24">
               <InquiryForm
                 type="contact"
                 eyebrow="Reseförfrågan"
@@ -65,16 +65,16 @@ export default function Contact() {
             </div>
 
             {/* Contact Info */}
-            <div className="lg:col-span-1 order-2 lg:order-1">
+            <div className="lg:col-span-1 order-1">
               <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">{get("contact_section_eyebrow", "Tala med oss")}</p>
               <h2 className="font-display text-3xl text-foreground mb-2">
                 {get("contact_section_title", "Vi startar med ett Samtal")}
               </h2>
-              <div className="w-8 h-px bg-primary mb-8" />
-              <p className="text-muted-foreground leading-relaxed mb-10 text-sm whitespace-pre-line">
+              <div className="w-8 h-px bg-primary mb-4 lg:mb-8" />
+              <p className="text-muted-foreground leading-relaxed mb-5 lg:mb-10 text-sm whitespace-pre-line">
                 {get("contact_intro", "Föredrar du att ringa eller mejla direkt? Ingen mall - bara ett riktigt samtal. En dedikerad rådgivare återkommer normalt inom 24 timmar på vardagar.")}
               </p>
-              <div className="space-y-6">
+              <div className="space-y-4 lg:space-y-6">
                 {contactInfo.map((info) => (
                   <div key={info.label} className="flex items-start gap-4">
                     <div className="w-9 h-9 flex-shrink-0 bg-primary/10 rounded-full flex items-center justify-center">

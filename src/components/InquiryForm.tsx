@@ -233,7 +233,7 @@ export default function InquiryForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className={`bg-background ${compact ? "p-6 md:p-8 space-y-5" : "p-6 md:p-10 space-y-6"}`}
+      className={`bg-background ${compact ? "p-5 sm:p-6 md:p-8 space-y-5" : "p-4 sm:p-6 md:p-10 space-y-6"}`}
     >
       <div className="mb-1">
         {eyebrow && (
@@ -261,17 +261,17 @@ export default function InquiryForm({
       <div className={`grid md:grid-cols-2 ${compact ? "gap-x-6 gap-y-4" : "gap-x-6 gap-y-5"}`}>
         <div>
           <Label htmlFor="name" className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Namn *</Label>
-          <Input id="name" name="name" required maxLength={120} className={inputCls} />
+          <Input id="name" name="name" autoComplete="name" required maxLength={120} className={inputCls} />
           {errors.name && <p className="text-xs text-destructive mt-1">{errors.name}</p>}
         </div>
         <div>
           <Label htmlFor="email" className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">E-post *</Label>
-          <Input id="email" name="email" type="email" required maxLength={255} className={inputCls} />
+          <Input id="email" name="email" type="email" autoComplete="email" required maxLength={255} className={inputCls} />
           {errors.email && <p className="text-xs text-destructive mt-1">{errors.email}</p>}
         </div>
         <div>
           <Label htmlFor="phone" className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Telefon *</Label>
-          <Input id="phone" name="phone" type="tel" required maxLength={40} className={inputCls} />
+          <Input id="phone" name="phone" type="tel" autoComplete="tel" required maxLength={40} className={inputCls} />
           {errors.phone && <p className="text-xs text-destructive mt-1">{errors.phone}</p>}
         </div>
         <div>
@@ -382,7 +382,7 @@ export default function InquiryForm({
           required={!selection?.length}
           rows={compact ? 3 : 5}
           maxLength={3500}
-          className={`${inputCls} resize-none`}
+          className={`${inputCls} min-h-32 text-base md:text-sm resize-y md:min-h-20`}
           placeholder="Berätta gärna mer om er resa, era önskemål och vad ni vill uppleva."
         />
         {errors.message && <p className="text-xs text-destructive mt-1">{errors.message}</p>}
