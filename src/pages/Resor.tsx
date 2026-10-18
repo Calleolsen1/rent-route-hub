@@ -6,7 +6,8 @@ import RequestCta from "@/components/RequestCta";
 import { usePageMeta } from "@/lib/usePageMeta";
 import fotbollImage from "@/assets/sport-fotboll.jpg";
 import f1Image from "@/assets/sport-f1.jpg";
-import groupImage from "@/assets/kaisen-group.jpg";
+import groupImageAsset from "@/assets/kaisen-group-rooftop.jpg.asset.json";
+const groupImage = groupImageAsset.url;
 import valenciaImage from "@/assets/camp-valencia-pitch.jpg.asset.json";
 
 const choices = [

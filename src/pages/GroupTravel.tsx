@@ -5,7 +5,8 @@ import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
 import FloatingInquiryButton from "@/components/FloatingInquiryButton";
 import { useInquiryDialog } from "@/components/InquiryDialog";
-import groupImage from "@/assets/kaisen-group.jpg";
+import groupImageAsset from "@/assets/kaisen-group-rooftop.jpg.asset.json";
+const groupImage = groupImageAsset.url;
 import groupCorporate from "@/assets/group-corporate.jpg";
 import groupAdventure from "@/assets/group-adventure.jpg";
 
