@@ -10,6 +10,11 @@ import bundesligaLogo from "@/assets/league-bundesliga.png.asset.json";
 import laLigaLogo from "@/assets/league-la-liga.png.asset.json";
 import premierLeagueLogo from "@/assets/league-premier-league.png.asset.json";
 import serieALogo from "@/assets/league-serie-a.png.asset.json";
+import scottishPremiershipLogo from "@/assets/league-scottish-premiership.png.asset.json";
+import championsLeagueLogo from "@/assets/cup-champions-league.png.asset.json";
+import europaLeagueLogo from "@/assets/cup-europa-league.png.asset.json";
+import faCupLogo from "@/assets/cup-fa-cup.png.asset.json";
+import carabaoCupLogo from "@/assets/cup-carabao-cup.png.asset.json";
 import { useSport, useEntriesForSport } from "@/hooks/useNavigation";
 import { useVenuePhotos, venuePhotoFor } from "@/hooks/useVenuePhotos";
 import { slugify } from "@/data/sports";
@@ -23,6 +28,15 @@ const leagueLogos: Record<string, string> = {
   "la-liga": laLigaLogo.url,
   "premier-league": premierLeagueLogo.url,
   "serie-a": serieALogo.url,
+  "scottish-premiership": scottishPremiershipLogo.url,
+};
+
+/** Cup logos shown in the "Cuper" chips, keyed by cup slug (src/data/cups.ts). */
+const cupLogos: Record<string, string> = {
+  "champions-league": championsLeagueLogo.url,
+  "europa-league": europaLeagueLogo.url,
+  "fa-cup": faCupLogo.url,
+  "carabao-cup": carabaoCupLogo.url,
 };
 
 export default function SportPage() {
@@ -240,15 +254,26 @@ export default function SportPage() {
                     )}
                   </div>
                   <div className="flex flex-wrap gap-2 border-t border-border pt-4">
-                    {teams.map((team) => (
+                    {teams.map((team) => {
+                      const cupLogo = isCupGroup ? cupLogos[team.slug] : undefined;
+                      return (
                       <Link
                         key={team.id}
                         to={isCupGroup ? cupHref(sport.slug, team.slug) : `/services/sportresor/${sport.slug}/${team.slug}`}
-                        className="text-sm border border-border rounded-md px-3 py-1.5 text-foreground/80 hover:border-primary hover:text-primary hover:bg-primary/5 transition-colors"
+                        className="inline-flex items-center gap-2 text-sm border border-border rounded-md px-3 py-1.5 text-foreground/80 hover:border-primary hover:text-primary hover:bg-primary/5 transition-colors"
                       >
+                        {cupLogo && (
+                          <img
+                            src={cupLogo}
+                            alt=""
+                            aria-hidden
+                            className="h-5 w-5 shrink-0 object-contain"
+                          />
+                        )}
                         {team.name}
                       </Link>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
                 );
