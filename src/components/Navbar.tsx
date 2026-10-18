@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { slugify as slug } from "@/data/sports";
+import { CUP_SLUGS, CUP_GROUP_LABEL, cupHref } from "@/data/cups";
 import { useSports, useEntries, useTopMenu, type NavSport, type NavEntry } from "@/hooks/useNavigation";
 
 const Navbar = () => {
