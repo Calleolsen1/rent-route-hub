@@ -58,7 +58,7 @@ export default function LeaguePage() {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative h-[20vh] min-h-[160px] md:h-[26vh] md:min-h-[200px] flex items-end">
+      <section className="relative min-h-[160px] md:min-h-[200px] flex items-end py-6 md:py-8">
         <div className="absolute inset-0">
           <img src={fotbollImage} alt={leagueName} className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-navy/75" />
