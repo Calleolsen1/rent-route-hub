@@ -33,7 +33,7 @@ import {
   type OurEvent,
 } from "../_shared/tc_match.ts";
 import { syncVenuePlans, type VenueSyncResult } from "../_shared/tc_venues.ts";
-import { cupCompetition, canSeedCupFixture } from "../_shared/tc_cups.ts";
+import { cupCompetition, canSeedFootballFixture } from "../_shared/tc_cups.ts";
 import { canonicalTeam } from "../_shared/footballdata.ts";
 import { isOfferedScottishFixture, scottishTeam } from "../_shared/tc_scotland.ts";
 
@@ -188,7 +188,7 @@ Deno.serve(async (req) => {
           : football.match(home ?? "", away ?? "", starts, taken, competitionCode);
         // Do not create a duplicate when another product already claimed
         // this game. Unknown teams are allowed only for advertised cups.
-        if (!r.eventId && seededCompetition && canSeedCupFixture(scottish ? "FA Cup" : competitionName, home, away, starts, p.match?.status, new Date(now))
+        if (!r.eventId && seededCompetition && canSeedFootballFixture(home, away, starts, p.match?.status, new Date(now))
           && !football.match(home ?? "", away ?? "", starts, new Set(), competitionCode).eventId) {
           const eventRow = {
             source: "travelconnection-cup", external_event_id: `tc_cup_${p.id}`,
