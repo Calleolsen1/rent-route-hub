@@ -262,7 +262,7 @@ const Navbar = () => {
                       aria-label={`Visa ${sport.label}`}
                       aria-expanded={isOpen}
                       className="h-11 w-11 -mr-1 rounded-md active:bg-accent"
-                      onClick={() => setMobileSubmenu(isOpen ? null : sport.slug)}
+                      onClick={() => { setMobileSubmenu(isOpen ? null : sport.slug); setMobileGroup(null); }}
                     >
                       <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? "rotate-180" : ""}`} />
                     </Button>
