@@ -154,6 +154,13 @@ export default function UpcomingEventsList({
       if (team) q = q.eq("home_team", team);
       if (race) q = q.eq("race_name", race);
       if (tournament) q = q.ilike("tournament_name", `%${tournament}%`);
+      if (tournaments?.length) {
+        const or = tournaments
+          .filter(Boolean)
+          .map((t) => `tournament_name.ilike.%${t}%`)
+          .join(",");
+        if (or) q = q.or(or);
+      }
       if (dateTo) q = q.lte("starts_at", dateTo);
       if (query && query.trim()) {
         const term = query.trim().replace(/[,]/g, " ");
