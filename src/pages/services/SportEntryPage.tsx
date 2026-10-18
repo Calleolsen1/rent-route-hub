@@ -171,7 +171,7 @@ export default function SportEntryPage() {
       {/* Intro */}
       <section className="bg-cream py-16">
         <div className="container mx-auto px-4 max-w-3xl">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {info.city && (
               <div className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-primary mt-1" />
@@ -200,11 +200,6 @@ export default function SportEntryPage() {
               </div>
             )}
           </div>
-          {info.description && (
-            <p className="font-display text-xl md:text-2xl text-foreground italic font-light leading-relaxed text-center">
-              "{info.description}"
-            </p>
-          )}
         </div>
       </section>
 
