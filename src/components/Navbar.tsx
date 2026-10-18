@@ -75,7 +75,7 @@ const Navbar = () => {
             </Link>
 
             {/* Desktop nav */}
-            <div className="hidden xl:flex items-center gap-4">
+            <div className="hidden xl:flex h-full items-center gap-4">
               {sports.map((sport) => {
                 const isOpen = openMenu === sport.slug;
                 const sportEntries = entriesFor(sport.id);
@@ -83,7 +83,7 @@ const Navbar = () => {
                 return (
                   <div
                     key={sport.id}
-                    className={sport.menu_style === "grouped" ? "static" : "relative"}
+                    className={`flex h-full items-center ${sport.menu_style === "grouped" ? "static" : "relative"}`}
                     onMouseEnter={() => setOpenMenu(sport.slug)}
                     onMouseLeave={() => setOpenMenu(null)}
                   >
