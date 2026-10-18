@@ -43,9 +43,9 @@ const KIND_LABELS = {
     venueIcon: Flag,
     groupLabel: "Datum",
     upcomingTitle: (name: string) => `Biljetter till ${name}`,
-    whatsIncluded: "Vad som kan ingår",
-    packageTitle: (_sportLabel: string, venue?: string | null) =>
-      venue ? `Kompletta paket till ${venue}` : "Kompletta paket",
+    whatsIncluded: "Vad som kan ingå",
+    packageTitle: (sportLabel: string, venue?: string | null) =>
+      venue ? `${sportLabel}-resa till ${venue}` : `${sportLabel}-resa`,
     queryField: "race" as const,
   },
 };
