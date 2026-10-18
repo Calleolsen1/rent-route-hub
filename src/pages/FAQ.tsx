@@ -106,7 +106,7 @@ import { usePageMeta } from "@/lib/usePageMeta";
 
 export default function FAQ() {
  usePageMeta({
-   title: "Vanliga frågor - KAISEN TRAVEL GROUP",
+   title: "Vanliga frågor - Kaisen Travel Group",
    description: "Svar på vanliga frågor om beställning, betalning, biljetter och avbokning hos KAISEN TRAVEL GROUP.",
  });
  const [activeCategory, setActiveCategory] = useState("alla");

@@ -61,7 +61,7 @@ export default function QuotePage() {
   }, [token]);
 
   usePageMeta({
-    title: quote ? `${quote.title} - KAISEN offert` : "Offert - KAISEN TRAVEL GROUP",
+    title: quote ? `${quote.title} - KAISEN offert` : "Offert - Kaisen Travel Group",
     description: quote?.intro_message?.slice(0, 160) ?? undefined,
   });
 

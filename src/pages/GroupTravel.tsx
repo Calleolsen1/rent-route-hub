@@ -17,7 +17,7 @@ const GROUP_KEYS = ["group_hero_eyebrow", "group_hero_title", "group_hero_taglin
 
 export default function GroupTravel() {
   usePageMeta({
-    title: "Grupp- & konferensresor | KAISEN TRAVEL GROUP",
+    title: "Grupp- & konferensresor | Kaisen Travel Group",
     description: "Vi producerar och genomför grupp- och konferensresor i Europa - med över 50 års samlad erfarenhet från resebranschen. Vi tar ansvar för helheten så att ni kan fokusera på upplevelsen.",
   });
   const { get } = useSiteContent(GROUP_KEYS);
