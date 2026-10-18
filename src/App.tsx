@@ -62,6 +62,7 @@ import VIPService from "./pages/services/VIPService";
 import Traningslager from "./pages/services/Traningslager";
 import SportPage from "./pages/services/SportPage";
 import LeaguePage from "./pages/services/LeaguePage";
+import CupPage from "./pages/services/CupPage";
 import SportEntryPage from "./pages/services/SportEntryPage";
 import EventDetail from "./pages/EventDetail";
 import Checkout from "./pages/Checkout";
@@ -93,6 +94,7 @@ const App = () => (
               {/* Generic sport entry page - drives /:sport/:entry for any sport in nav_sports */}
               <Route path="/services/sportresor/:sport" element={<SportPage />} />
               <Route path="/services/sportresor/:sport/liga/:league" element={<LeaguePage />} />
+              <Route path="/services/sportresor/:sport/cup/:cup" element={<CupPage />} />
               <Route path="/services/sportresor/:sport/:entry" element={<SportEntryPage />} />
               <Route path="/services/traningslager" element={<Traningslager />} />
               <Route path="/services/affarsresor" element={<Affarsresor />} />

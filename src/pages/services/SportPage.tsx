@@ -13,6 +13,7 @@ import serieALogo from "@/assets/league-serie-a.png.asset.json";
 import { useSport, useEntriesForSport } from "@/hooks/useNavigation";
 import { useVenuePhotos, venuePhotoFor } from "@/hooks/useVenuePhotos";
 import { slugify } from "@/data/sports";
+import { CUP_GROUP_LABEL, cupHref } from "@/data/cups";
 import { usePageMeta } from "@/lib/usePageMeta";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -202,12 +203,19 @@ export default function SportPage() {
             </p>
             <h2 className="font-display text-3xl md:text-4xl text-center mb-12">Välj liga och lag</h2>
             <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-              {leagues.map(([league, teams]) => (
+              {leagues.map(([league, teams]) => {
+                // "Cuper" lists cups instead of clubs - chips link to the cup
+                // pages (matches), so there is no league page or logo for it.
+                const isCupGroup = league === CUP_GROUP_LABEL;
+                return (
                 <div key={league} className="bg-card border border-border rounded-lg p-5 sm:p-6 hover:border-primary/40 hover:shadow-lg transition-all motion-reduce:transition-none">
                   <div className="flex items-start justify-between gap-4 mb-5 min-h-[80px]">
                     <div className="min-w-0">
                       <h3 className="font-display text-2xl text-foreground">{league}</h3>
-                      <p className="text-xs text-muted-foreground mt-1">{teams.length} lag</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {teams.length} {isCupGroup ? "cuper" : "lag"}
+                      </p>
+                      {!isCupGroup && (
                       <Link
                       to={`/services/sportresor/${sport.slug}/liga/${slugify(league)}`}
                       className="mt-3 text-sm text-primary font-medium inline-flex items-center whitespace-nowrap hover:underline"
@@ -215,8 +223,9 @@ export default function SportPage() {
                       Se ligan
                       <ArrowRight className="ml-1.5 h-4 w-4" />
                     </Link>
+                      )}
                     </div>
-                    {leagueLogos[slugify(league)] && (
+                    {!isCupGroup && leagueLogos[slugify(league)] && (
                       <Link
                         to={`/services/sportresor/${sport.slug}/liga/${slugify(league)}`}
                         aria-label={`Se ${league}`}
@@ -234,7 +243,7 @@ export default function SportPage() {
                     {teams.map((team) => (
                       <Link
                         key={team.id}
-                        to={`/services/sportresor/${sport.slug}/${team.slug}`}
+                        to={isCupGroup ? cupHref(sport.slug, team.slug) : `/services/sportresor/${sport.slug}/${team.slug}`}
                         className="text-sm border border-border rounded-md px-3 py-1.5 text-foreground/80 hover:border-primary hover:text-primary hover:bg-primary/5 transition-colors"
                       >
                         {team.name}
@@ -242,7 +251,8 @@ export default function SportPage() {
                     ))}
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>
