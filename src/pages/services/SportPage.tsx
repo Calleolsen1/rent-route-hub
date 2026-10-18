@@ -225,7 +225,7 @@ export default function SportPage() {
                         <img
                           src={leagueLogos[slugify(league)]}
                           alt={`${league} logotyp`}
-                          className="h-full w-full object-contain grayscale opacity-80 hover:opacity-100 transition-opacity motion-reduce:transition-none"
+                          className="h-full w-full object-contain"
                         />
                       </Link>
                     )}

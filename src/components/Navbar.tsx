@@ -165,19 +165,11 @@ const Navbar = () => {
 
             {/* Right side */}
             <div className="col-start-1 row-start-1 justify-self-start flex items-center gap-3 flex-shrink-0 lg:col-start-3 lg:justify-self-end">
-              {/* Language */}
-              <div className="hidden lg:block relative" onMouseEnter={() => setOpenMenu("sprak")} onMouseLeave={() => setOpenMenu(null)}>
-                <button className="flex items-center gap-1 text-sm text-foreground/70 hover:text-primary transition-colors py-2" aria-label="Språk">
-                  <Globe className="h-4 w-4" />
-                  <span className="text-xs uppercase tracking-wider">SV</span>
-                </button>
-                {openMenu === "sprak" && (
-                  <div className="absolute top-full right-0 bg-card border border-border shadow-lg z-50 min-w-[140px] py-2">
-                    <button className="w-full text-left px-4 py-2 text-sm hover:bg-accent transition-colors">Svenska</button>
-                    <button className="w-full text-left px-4 py-2 text-sm hover:bg-accent transition-colors">Engelska</button>
-                  </div>
-                )}
-              </div>
+              {/* Language - Swedish only */}
+              <span className="hidden lg:flex items-center gap-1 text-sm text-foreground/70 py-2" aria-label="Språk: svenska">
+                <Globe className="h-4 w-4" />
+                <span className="text-xs uppercase tracking-wider">SV</span>
+              </span>
 
               {user ? (
                 <DropdownMenu>
