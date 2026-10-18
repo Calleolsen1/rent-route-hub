@@ -106,18 +106,24 @@ const Navbar = () => {
                       >
                         {groupedFor(sport.id).map(([groupLabel, items]) => (
                           <div key={groupLabel}>
-                            <Link
-                              to={`/services/sportresor/${sport.slug}/liga/${slug(groupLabel)}`}
-                              onClick={() => setOpenMenu(null)}
-                              className="block text-[11px] tracking-[0.2em] uppercase text-primary font-semibold mb-3 hover:underline"
-                            >
-                              {groupLabel}
-                            </Link>
+                            {groupLabel === CUP_GROUP_LABEL ? (
+                              <span className="block text-[11px] tracking-[0.2em] uppercase text-primary font-semibold mb-3">
+                                {groupLabel}
+                              </span>
+                            ) : (
+                              <Link
+                                to={`/services/sportresor/${sport.slug}/liga/${slug(groupLabel)}`}
+                                onClick={() => setOpenMenu(null)}
+                                className="block text-[11px] tracking-[0.2em] uppercase text-primary font-semibold mb-3 hover:underline"
+                              >
+                                {groupLabel}
+                              </Link>
+                            )}
                             <ul className="space-y-1.5">
                               {items.map((entry) => (
                                 <li key={entry.id}>
                                   <Link
-                                    to={`/services/sportresor/${sport.slug}/${entry.slug}`}
+                                    to={CUP_SLUGS.has(entry.slug) ? cupHref(sport.slug, entry.slug) : `/services/sportresor/${sport.slug}/${entry.slug}`}
                                     onClick={() => setOpenMenu(null)}
                                     className="text-sm text-foreground/80 hover:text-primary transition-colors"
                                   >
