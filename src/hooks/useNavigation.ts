@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { TEAMS as STATIC_TEAMS, RACES as STATIC_RACES } from "@/data/sports";
+import { CUPS, CUP_GROUP_LABEL } from "@/data/cups";
 
 export type TopMenuItem = {
   id: string;
@@ -100,6 +101,25 @@ const STATIC_ENTRIES: NavEntry[] = [
     hero_image_url: null,
     features_json: null,
     sort_order: (i + 1) * 10,
+    is_active: true,
+    show_in_menu: true,
+  })),
+  // Cups get their own "Cuper" group in the menu, mirroring the DB rows.
+  ...CUPS.map((c, i) => ({
+    id: `static-cup-${c.slug}`,
+    sport_id: "static-fotboll",
+    slug: c.slug,
+    name: c.name,
+    group_label: CUP_GROUP_LABEL,
+    city: null,
+    venue: null,
+    date_text: null,
+    short_date: null,
+    tagline: null,
+    description: c.description,
+    hero_image_url: null,
+    features_json: null,
+    sort_order: 900 + (i + 1) * 10,
     is_active: true,
     show_in_menu: true,
   })),
