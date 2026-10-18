@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Fotbollssidan: lägg ligornas loggor i rutornas hörn och kontrollera länkar och layout
+- [x] Fotbollssidan: lägg ligornas loggor i rutornas hörn och kontrollera länkar och layout
 
 - [x] Byt "Kaisen" → "KAISEN" överallt på hemsidan (kod, metadata, e-postmallar, databas)
 - [x] Byt "Travel Group" → "TRAVEL GROUP" överallt på hemsidan (samma ställen)
