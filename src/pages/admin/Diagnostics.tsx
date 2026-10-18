@@ -140,7 +140,7 @@ export default function AdminDiagnostics() {
         }));
       } else if (key === "football-sync") {
         const { data, error } = await supabase.functions.invoke("football-sync", {
-          body: { competitions: ["PL"], trigger: "manual" },
+          body: { trigger: "manual" },
         });
         if (error) throw error;
         const t = (data as any)?.totals;
