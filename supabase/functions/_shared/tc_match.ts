@@ -170,7 +170,7 @@ export class FootballMatcher {
 
   constructor(events: readonly OurEvent[]) {
     const soccer = events.filter((e) => e.sport === "soccer" && e.home_team && e.away_team);
-    this.names = [...new Set(soccer.flatMap((e) => [e.home_team!, e.away_team!]))];
+    this.names = [...new Set(soccer.flatMap((e) => [e.home_team, e.away_team].filter((name): name is string => !!name)))];
     for (const e of soccer) {
       const k = `${e.home_team}|${e.away_team}`;
       const list = this.byPair.get(k) ?? [];
@@ -183,21 +183,22 @@ export class FootballMatcher {
     if (!this.resolved.has(supplierName)) {
       this.resolved.set(supplierName, resolveTeam(supplierName, this.names));
     }
-    return this.resolved.get(supplierName)!;
+    return this.resolved.get(supplierName) ?? null;
   }
 
-  match(home: string, away: string, startsAt: Date, taken: ReadonlySet<string>): MatchResult {
+  match(home: string, away: string, startsAt: Date, taken: ReadonlySet<string>, competitionCode?: string): MatchResult {
     const h = this.team(home);
     const a = this.team(away);
     if (!h || !a) {
       const missing = [!h && home, !a && away].filter(Boolean).join(" och ");
       return { eventId: null, note: `Känner inte igen laget: ${missing}` };
     }
-    const candidates = (this.byPair.get(`${h}|${a}`) ?? []).filter((e) => !taken.has(e.id));
+    const candidates = (this.byPair.get(`${h}|${a}`) ?? []).filter((e) => !taken.has(e.id) && (!competitionCode || e.external_tournament_id === competitionCode));
     if (!candidates.length) {
       return { eventId: null, note: `Ingen match ${h} – ${a} i vår spelschema` };
     }
-    const best = nearest(candidates, startsAt)!;
+    const best = nearest(candidates, startsAt);
+    if (!best) return { eventId: null, note: "Ingen match i vårt spelschema" };
     if (best.days > FOOTBALL_WINDOW_DAYS) {
       return {
         eventId: null,

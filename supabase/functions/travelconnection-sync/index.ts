@@ -3,8 +3,10 @@
 // Body: none. A run is logged as "cron" when the nightly job made it.
 // Auth: authenticated admin, or the nightly pg_cron job (see _shared/auth.ts).
 //
-// Never creates events. Fixtures come from football-data.org and Jolpica;
-// this only records, per supplier product, which of those fixtures it sells
+// League/F1 fixtures come from football-data.org and Jolpica. The four
+// advertised cups may seed missing fixtures from the supplier catalogue;
+// existing schedule fixtures are always preferred to avoid duplicates.
+// This records, per supplier product, which of those fixtures it sells
 // tickets for (public.tc_product_links). Prices and stock are NOT stored here
 // — they move too fast and are fetched live by travelconnection-tickets.
 //
@@ -31,6 +33,8 @@ import {
   type OurEvent,
 } from "../_shared/tc_match.ts";
 import { syncVenuePlans, type VenueSyncResult } from "../_shared/tc_venues.ts";
+import { cupCompetition, canSeedCupFixture } from "../_shared/tc_cups.ts";
+import { canonicalTeam } from "../_shared/footballdata.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -60,7 +64,7 @@ async function loadFixtures(admin: Admin): Promise<OurEvent[]> {
     const { data, error } = await admin
       .from("events")
       .select("id, sport, home_team, away_team, race_name, starts_at, external_tournament_id")
-      .in("source", ["football-data", "jolpica"])
+      .in("source", ["football-data", "jolpica", "travelconnection-cup"])
       .eq("status", "upcoming")
       .order("starts_at")
       .range(from, from + 999);
@@ -126,7 +130,7 @@ Deno.serve(async (req) => {
     ];
     const [fixtures, existing] = await Promise.all([loadFixtures(admin), loadLinks(admin)]);
 
-    const football = new FootballMatcher(fixtures);
+    let football = new FootballMatcher(fixtures);
     const now = new Date().toISOString();
 
     // Admin decisions first, so the matcher can't hand their fixture to
@@ -137,7 +141,7 @@ Deno.serve(async (req) => {
     }
 
     const rows: Record<string, unknown>[] = [];
-    const stats = { products: products.length, matched: 0, unmatched_in_scope: 0, out_of_scope: 0, kept_manual: 0, ignored: 0 };
+    const stats = { products: products.length, matched: 0, created_cup_events: 0, unmatched_in_scope: 0, out_of_scope: 0, kept_manual: 0, ignored: 0 };
 
     // Earliest games first: if two supplier products ever claim the same
     // fixture, the one closest in date should win, and this makes ties
@@ -152,8 +156,11 @@ Deno.serve(async (req) => {
       const home = p.match ? teams.get(p.match.home) ?? null : null;
       const away = p.match ? teams.get(p.match.away) ?? null : null;
       const compId = p.match?.competition ?? null;
+      const competitionName = compId != null ? competitions.get(compId) ?? null : null;
+      const cup = cupCompetition(competitionName);
+      const competitionCode = cup?.code ?? (compId != null ? TC_COMPETITION_CODES[compId] : undefined);
       const f1 = p.type === "event" && isF1Product(p.name);
-      const inScope = f1 || (p.type === "football_match" && compId != null && compId in TC_COMPETITION_CODES);
+      const inScope = f1 || (p.type === "football_match" && !!competitionCode);
 
       let eventId: string | null = null;
       let method: ExistingLink["match_method"] = "none";
@@ -173,9 +180,31 @@ Deno.serve(async (req) => {
         note = "Leverantören saknar datum";
         stats.unmatched_in_scope++;
       } else {
-        const r: MatchResult = f1
+        let r: MatchResult = f1
           ? matchF1(fixtures, starts, taken)
-          : football.match(home ?? "", away ?? "", starts, taken);
+          : football.match(home ?? "", away ?? "", starts, taken, competitionCode);
+        // Do not create a duplicate when another product already claimed
+        // this game. Unknown teams are allowed only for advertised cups.
+        if (!r.eventId && cup && canSeedCupFixture(competitionName, home, away, starts, p.match?.status, new Date(now))
+          && !football.match(home ?? "", away ?? "", starts, new Set(), competitionCode).eventId) {
+          const eventRow = {
+            source: "travelconnection-cup", external_event_id: `tc_cup_${p.id}`,
+            external_tournament_id: cup.code, tournament_name: cup.name,
+            sport: "soccer", home_team: football.team(home ?? "") ?? canonicalTeam(home),
+            away_team: football.team(away ?? "") ?? canonicalTeam(away),
+            starts_at: starts.toISOString(), status: "upcoming", last_synced_at: now,
+          };
+          const { data: created, error } = await admin.from("events")
+            .upsert(eventRow, { onConflict: "external_event_id" })
+            .select("id, sport, home_team, away_team, race_name, starts_at, external_tournament_id").single();
+          if (error) throw new Error(`cup fixture upsert: ${error.message}`);
+          if (created) {
+            fixtures.push(created as OurEvent);
+            football = new FootballMatcher(fixtures);
+            r = { eventId: created.id, note: null };
+            stats.created_cup_events++;
+          }
+        }
         if (r.eventId) {
           eventId = r.eventId;
           method = "auto";
@@ -194,7 +223,7 @@ Deno.serve(async (req) => {
         inScope,
         home,
         away,
-        competition: compId != null ? competitions.get(compId) ?? null : null,
+        competition: competitionName,
         currency: prev?.tc_currency ?? null,
         now,
       }));
@@ -217,6 +246,15 @@ Deno.serve(async (req) => {
       })
       .map((r) => r.tc_product_id as number);
     for (const batch of chunked(gone)) {
+      const vanishedEventIds = batch.flatMap((id) => {
+        const eventId = existing.get(id)?.event_id;
+        return eventId && !rows.some((row) => row.event_id === eventId) ? [eventId] : [];
+      });
+      if (vanishedEventIds.length) {
+        const { error } = await admin.from("events").update({ status: "cancelled" })
+          .eq("source", "travelconnection-cup").in("id", vanishedEventIds);
+        if (error) throw new Error(`retire cup fixtures: ${error.message}`);
+      }
       const { error } = await admin
         .from("tc_product_links")
         .update({ event_id: null, match_method: "none", match_note: "Finns inte längre hos leverantören" })
