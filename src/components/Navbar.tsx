@@ -267,18 +267,24 @@ const Navbar = () => {
                     <div className="pl-3 py-2 space-y-4 bg-accent/30 rounded-lg mb-2">
                       {groupedFor(sport.id).map(([groupLabel, items]) => (
                         <div key={groupLabel}>
-                          <Link
-                            to={`/services/sportresor/${sport.slug}/liga/${slug(groupLabel)}`}
-                            onClick={() => setMobileOpen(false)}
-                            className="block text-[11px] tracking-[0.16em] uppercase text-primary font-semibold px-2 py-2"
-                          >
-                            {groupLabel}
-                          </Link>
+                          {groupLabel === CUP_GROUP_LABEL ? (
+                            <span className="block text-[11px] tracking-[0.16em] uppercase text-primary font-semibold px-2 py-2">
+                              {groupLabel}
+                            </span>
+                          ) : (
+                            <Link
+                              to={`/services/sportresor/${sport.slug}/liga/${slug(groupLabel)}`}
+                              onClick={() => setMobileOpen(false)}
+                              className="block text-[11px] tracking-[0.16em] uppercase text-primary font-semibold px-2 py-2"
+                            >
+                              {groupLabel}
+                            </Link>
+                          )}
                           <div className="grid grid-cols-2 gap-x-2">
                             {items.map((entry) => (
                               <Link
                                 key={entry.id}
-                                to={`/services/sportresor/${sport.slug}/${entry.slug}`}
+                                to={CUP_SLUGS.has(entry.slug) ? cupHref(sport.slug, entry.slug) : `/services/sportresor/${sport.slug}/${entry.slug}`}
                                 className="block py-2.5 px-2 text-sm text-foreground/80"
                                 onClick={() => setMobileOpen(false)}
                               >
