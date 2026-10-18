@@ -8,6 +8,13 @@
       "when": 1792349989059,
       "tag": "0000_league_intro_bundesliga",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792363901905,
+      "tag": "0001_migration",
+      "breakpoints": true
     }
   ]
 }
