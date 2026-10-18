@@ -24,6 +24,7 @@ const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [mobileSubmenu, setMobileSubmenu] = useState<string | null>(null);
+  const [mobileFootballGroup, setMobileFootballGroup] = useState<string | null>(null);
   const sports = useSports();
   const entries = useEntries();
   const topMenu = useTopMenu();
@@ -228,7 +229,7 @@ const Navbar = () => {
                 variant="ghost"
                 size="icon"
                 className="xl:hidden -ml-2 h-12 w-12 rounded-md active:bg-accent"
-                onClick={() => setMobileOpen(!mobileOpen)}
+                onClick={() => { setMobileOpen(!mobileOpen); setMobileFootballGroup(null); }}
                 aria-label="Växla meny"
                 aria-expanded={mobileOpen}
               >
@@ -261,12 +262,56 @@ const Navbar = () => {
                       aria-label={`Visa ${sport.label}`}
                       aria-expanded={isOpen}
                       className="h-11 w-11 -mr-1 rounded-md active:bg-accent"
-                      onClick={() => setMobileSubmenu(isOpen ? null : sport.slug)}
+                      onClick={() => { setMobileSubmenu(isOpen ? null : sport.slug); setMobileFootballGroup(null); }}
                     >
                       <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? "rotate-180" : ""}`} />
                     </Button>
                   </div>
-                  {isOpen && sport.menu_style === "grouped" && (
+                  {isOpen && sport.slug === "fotboll" && (
+                    <div className="px-2 py-2 bg-accent/30 mb-2">
+                      {groupedFor(sport.id).map(([groupLabel, items]) => {
+                        const expanded = mobileFootballGroup === groupLabel;
+                        return (
+                          <div key={groupLabel} className="border-b border-border/40 last:border-b-0">
+                            <Button
+                              variant="ghost"
+                              aria-expanded={expanded}
+                              aria-controls={`mobile-football-${slug(groupLabel)}`}
+                              className="w-full h-auto min-h-12 justify-between gap-3 rounded-sm px-3 py-3 text-left text-sm font-semibold text-primary whitespace-normal"
+                              onClick={() => setMobileFootballGroup(expanded ? null : groupLabel)}
+                            >
+                              <span>{groupLabel}</span>
+                              <ChevronDown className={`h-4 w-4 shrink-0 transition-transform ${expanded ? "rotate-180" : ""}`} />
+                            </Button>
+                            {expanded && (
+                              <div id={`mobile-football-${slug(groupLabel)}`} className="pl-3 pb-2">
+                                {groupLabel !== CUP_GROUP_LABEL && (
+                                  <Link
+                                    to={`/services/sportresor/${sport.slug}/liga/${slug(groupLabel)}`}
+                                    onClick={() => setMobileOpen(false)}
+                                    className="flex min-h-11 items-center px-3 py-2 text-sm font-medium text-primary hover:bg-accent"
+                                  >
+                                    Se alla matcher
+                                  </Link>
+                                )}
+                                {items.map((entry) => (
+                                  <Link
+                                    key={entry.id}
+                                    to={CUP_SLUGS.has(entry.slug) ? cupHref(sport.slug, entry.slug) : `/services/sportresor/${sport.slug}/${entry.slug}`}
+                                    onClick={() => setMobileOpen(false)}
+                                    className="flex min-h-11 items-center rounded-sm px-3 py-2 text-sm leading-5 text-foreground/80 hover:bg-accent hover:text-primary break-words"
+                                  >
+                                    {entry.name}
+                                  </Link>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                  {isOpen && sport.slug !== "fotboll" && sport.menu_style === "grouped" && (
                     <div className="px-3 py-3 bg-accent/30 mb-2">
                       <div className="flex gap-x-3 overflow-x-auto pb-1">
                         {groupedFor(sport.id).map(([groupLabel, items]) => (
