@@ -1,5 +1,8 @@
 # Roadmap
 
+- [x] Aktivera matchsynchronisering för Champions League, Europa League, FA Cup och Carabao Cup; testa cupavgränsning och driftsätt.
+- [ ] Kör den uppdaterade cupsynken och kontrollera importerade matcher — kräver administratör; nuvarande konto saknar behörighet. Befintlig katalog innehåller inga cupmatcher.
+
 - [x] Fotbollssidan: lägg ligornas loggor i rutornas hörn och kontrollera länkar och layout
 
 - [x] Byt "Kaisen" → "KAISEN" överallt på hemsidan (kod, metadata, e-postmallar, databas)
