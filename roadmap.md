@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Godkända mobilförbättringar: kompaktare lopp- och matchkort med sökfilter, nyhetsbrevsbredd, kontaktuppgifter först och större skrivfält; kontrollera telefon och dator utan att publicera.
+- [x] Godkända mobilförbättringar: kompaktare lopp- och matchkort med sökfilter, nyhetsbrevsbredd, kontaktuppgifter först och större skrivfält; verifierat på telefon och dator utan att publicera.
 
 - [x] Lägg till önskade lag i Premier League, La Liga och Bundesliga samt Scottish Premiership med endast Celtic och Glasgow Rangers; alla 14 lagsidor visar verkliga matcher, 12 var för de skotska lagen.
 
