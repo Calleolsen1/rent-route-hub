@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import amadeusLogo from "@/assets/amadeus-logo.svg";
 import kammarkollegietLogo from "@/assets/kammarkollegiet-logo.svg";
 import { Button } from "@/components/ui/button";
+import brandLogo from "@/assets/kaisen-brand-logo.png.asset.json";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
@@ -97,8 +98,7 @@ const Footer = () => {
         <div className="grid grid-cols-2 md:grid-cols-12 gap-8 md:gap-12 py-10 md:py-16">
           <div className="col-span-2 md:col-span-4">
             <Link to="/" className="inline-block">
-              <div className="font-display text-3xl text-white tracking-[0.25em]">KAISEN</div>
-              <div className="text-[10px] tracking-[0.3em] text-white/60 font-sans uppercase mt-1.5">TRAVEL GROUP</div>
+              <img src={brandLogo.url} alt="KAISEN TRAVEL GROUP" width={238} height={90} className="block w-[190px] h-auto object-contain" loading="lazy" />
             </Link>
             <p className="text-sm text-white/60 leading-relaxed mt-6 max-w-xs">
               Vi skapar minnesvärda sportresor, träningsläger och gruppresor med gedigen erfarenhet, hög kompetens och personlig service.

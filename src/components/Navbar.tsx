@@ -5,6 +5,7 @@ import { User, LogOut, Menu, X, ChevronDown, Globe } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { AuthDialog } from "@/components/AuthDialog";
+import brandLogo from "@/assets/kaisen-brand-logo.png.asset.json";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -65,14 +66,7 @@ const Navbar = () => {
               to="/"
               className="col-start-2 row-start-1 justify-self-center flex items-center gap-3 flex-shrink-0 xl:col-start-1 xl:justify-self-start"
             >
-              <div className="flex flex-col leading-none">
-                <span className="font-display text-xl md:text-2xl font-semibold tracking-wide text-foreground">
-                  KAISEN
-                </span>
-                <span className="text-[9px] md:text-[10px] tracking-[0.25em] text-primary font-sans font-medium uppercase">
-                  TRAVEL GROUP
-                </span>
-              </div>
+              <img src={brandLogo.url} alt="KAISEN TRAVEL GROUP" width={238} height={90} className="block w-[140px] md:w-[172px] h-auto object-contain" />
             </Link>
 
             {/* Desktop nav */}
