@@ -16,3 +16,4 @@
 - [x] Milan-sidan: ta bort första raden "AC Milan LIVE på ikoniska San Siro!"
 - [x] Juventus-sidan: ersätt undertexten med ny text om Bergamo och Serie A
 - [x] Roma-sidan: ersätt undertexten med ny text om supportrar, Rom och italiensk livskvalitet
+- [x] Premier League-sidan: ersätt undertexten med ny text om engelska arenor och weekend i England
