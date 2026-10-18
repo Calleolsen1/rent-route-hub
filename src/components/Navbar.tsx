@@ -270,7 +270,7 @@ const Navbar = () => {
                     <div className="px-3 py-3 bg-accent/30 mb-2">
                       <div className="flex gap-x-3 overflow-x-auto pb-1">
                         {groupedFor(sport.id).map(([groupLabel, items]) => (
-                          <div key={groupLabel} className="w-40 flex-shrink-0 sm:w-44">
+                          <div key={groupLabel} className="w-[9.5rem] flex-shrink-0 sm:w-40">
                             {groupLabel === CUP_GROUP_LABEL ? (
                               <span className="flex min-h-9 items-center border-b border-border text-xs tracking-normal uppercase text-primary font-semibold px-2 pb-2 mb-1 whitespace-nowrap">
                                 {groupLabel}
