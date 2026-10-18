@@ -174,7 +174,7 @@ export default function UpcomingEventsList({
       setEvents(dedupeEvents((data as EventRow[]) ?? []));
       setLoading(false);
     })();
-  }, [sport, team, race, tournament, query, dateFrom, dateTo, sort, effectiveLimit]);
+  }, [sport, team, race, tournament, tournaments, query, dateFrom, dateTo, sort, effectiveLimit]);
 
   // Months present in the result, in fixture order — only months that
   // actually have games become buttons, so a chip can never yield nothing.
