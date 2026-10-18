@@ -25,3 +25,4 @@
 - [x] Chelsea-sidan: ersätt undertexten med ny text om Stamford Bridge och en weekend i London
 - [x] Liverpool-sidan: ersätt undertexten med ny text om Anfield, You'll Never Walk Alone och en weekend i Liverpool
 - [x] Manchester City-sidan: ersätt undertexten med ny text om Etihad Stadium och en weekend i Manchester
+- [ ] Tottenham Hotspur-sidan: ersätt undertexten med ny text om Tottenham Hotspur Stadium och en weekend i London
