@@ -105,7 +105,7 @@ export default function SportEntryPage() {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative h-[18vh] min-h-[140px] md:h-[22vh] md:min-h-[170px] flex items-end">
+      <section className="relative min-h-[24vh] md:min-h-[28vh] flex items-end py-6 md:py-8">
         <div className="absolute inset-0">
           <img src={heroSrc} alt={info.name} className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-navy/75" />
@@ -115,8 +115,12 @@ export default function SportEntryPage() {
             {labels.eyebrow(sport.label, info.group_label)}
           </p>
           <h1 className="font-display text-2xl md:text-4xl text-white mb-1">{info.name}</h1>
-          {info.tagline && (
-            <p className="font-display italic font-light text-white text-sm sm:text-base md:text-lg mb-3">{info.tagline}</p>
+          {/* Texten under namnet är introtexten (description); tagline används
+              bara som reserv när ingen introtext finns sparad. */}
+          {(info.description || info.tagline) && (
+            <p className="font-display italic font-light text-white/90 text-sm sm:text-base md:text-lg mb-4 max-w-2xl leading-relaxed whitespace-pre-line">
+              {info.description || info.tagline}
+            </p>
           )}
           <Link
             to="/contact"
@@ -167,7 +171,7 @@ export default function SportEntryPage() {
       {/* Intro */}
       <section className="bg-cream py-16">
         <div className="container mx-auto px-4 max-w-3xl">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {info.city && (
               <div className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-primary mt-1" />
@@ -196,11 +200,6 @@ export default function SportEntryPage() {
               </div>
             )}
           </div>
-          {info.description && (
-            <p className="font-display text-xl md:text-2xl text-foreground italic font-light leading-relaxed text-center">
-              "{info.description}"
-            </p>
-          )}
         </div>
       </section>
 
