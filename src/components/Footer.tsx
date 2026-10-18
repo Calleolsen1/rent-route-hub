@@ -4,6 +4,8 @@ import { Instagram, Facebook, Linkedin, Twitter } from "lucide-react";
 import { clearCookieConsent } from "@/components/CookieConsent";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import amadeusLogo from "@/assets/amadeus-logo.svg";
+import kammarkollegietLogo from "@/assets/kammarkollegiet-logo.svg";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
@@ -133,6 +135,12 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-white/15" />
+
+        {/* Trust logos — Amadeus & Kammarkollegiet */}
+        <div className="pt-6 flex flex-wrap items-center gap-x-10 gap-y-4">
+          <img src={amadeusLogo} alt="Amadeus" title="IATA-certifierade med Amadeus-licens" className="h-6 md:h-7 w-auto opacity-70" loading="lazy" />
+          <img src={kammarkollegietLogo} alt="Kammarkollegiet" title="Resegaranti ställd hos Kammarkollegiet" className="h-9 md:h-11 w-auto opacity-70" loading="lazy" />
+        </div>
 
         {/* Bottom row */}
         <div className="pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs text-white/60">
