@@ -26,7 +26,7 @@ export default function GroupTravel() {
       type: "group",
       eyebrow: "Skicka förfrågan",
       heading: "Berätta om er gruppresa",
-      intro: "Antal personer, ungefärliga datum, destination och budget - vi återkommer med ett skräddarsytt förslag inom 24 timmar på vardagar.",
+      intro: "Antal personer, ungefärliga datum, destination och budget - vi återkommer med ett skräddarsytt förslag.",
     });
 
   return (
@@ -166,7 +166,7 @@ export default function GroupTravel() {
           type: "group",
           eyebrow: "Skicka förfrågan",
           heading: "Berätta om er gruppresa",
-          intro: "Antal personer, ungefärliga datum, destination och budget - vi återkommer med ett skräddarsytt förslag inom 24 timmar på vardagar.",
+          intro: "Antal personer, ungefärliga datum, destination och budget - vi återkommer med ett skräddarsytt förslag.",
         }}
       />
       <RequestCta />

@@ -17,3 +17,4 @@
 - [x] Juventus-sidan: ersätt undertexten med ny text om Bergamo och Serie A
 - [x] Roma-sidan: ersätt undertexten med ny text om supportrar, Rom och italiensk livskvalitet
 - [x] Premier League-sidan: ersätt undertexten med ny text om engelska arenor och weekend i England
+- [x] Gruppreseförfrågan: ta bort "inom 24 timmar på vardagar." ur inledningen
