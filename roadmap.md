@@ -8,3 +8,4 @@
 - [x] La Liga-sidan: egen introtext under rubriken (site_content nyckel league_intro_la-liga)
 - [x] Ligasidor: heron växer med texten så rubriken inte klipps i telefon
 - [x] Atlético Madrid-sidan: ersätt undertexten med ny text om Riyadh Air Metropolitano
+- [x] Real Madrid-sidan: ersätt undertexten med ny text om Santiago Bernabéu och en weekend i Madrid
