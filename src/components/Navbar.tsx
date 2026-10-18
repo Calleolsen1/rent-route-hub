@@ -99,38 +99,40 @@ const Navbar = () => {
                     {isOpen && sport.menu_style === "grouped" && (
                       <div
                         aria-label={`${sport.label} – ligor och cuper`}
-                        className="absolute top-full left-6 right-6 mx-auto max-w-[1440px] max-h-[calc(100dvh-6rem)] overflow-y-auto overscroll-contain bg-card border border-border shadow-xl z-50 p-6 grid grid-cols-3 gap-x-8 gap-y-6"
+                        className="absolute top-full left-6 right-6 mx-auto max-w-[1440px] max-h-[calc(100dvh-6rem)] overflow-y-auto overscroll-contain bg-card border border-border shadow-xl z-50 p-6"
                       >
-                        {groupedFor(sport.id).map(([groupLabel, items]) => (
-                          <div key={groupLabel} className="min-w-0">
-                            {groupLabel === CUP_GROUP_LABEL ? (
-                              <span className="flex min-h-9 items-center border-b border-border pb-2 mb-2 text-xs tracking-normal uppercase text-primary font-semibold">
-                                {groupLabel}
-                              </span>
-                            ) : (
-                              <Link
-                                to={`/services/sportresor/${sport.slug}/liga/${slug(groupLabel)}`}
-                                onClick={() => setOpenMenu(null)}
-                                className="flex min-h-9 items-center border-b border-border pb-2 mb-2 text-xs tracking-normal uppercase text-primary font-semibold hover:underline underline-offset-4"
-                              >
-                                {groupLabel}
-                              </Link>
-                            )}
-                            <ul className="grid grid-cols-2 gap-x-3 gap-y-0.5">
-                              {items.map((entry) => (
-                                <li key={entry.id}>
-                                  <Link
-                                    to={CUP_SLUGS.has(entry.slug) ? cupHref(sport.slug, entry.slug) : `/services/sportresor/${sport.slug}/${entry.slug}`}
-                                    onClick={() => setOpenMenu(null)}
-                                    className="flex min-h-10 items-center rounded-sm px-2 py-2 text-sm leading-5 break-words text-foreground/80 hover:bg-accent hover:text-primary focus-visible:bg-accent focus-visible:outline-none transition-colors"
-                                  >
-                                    {entry.name}
-                                  </Link>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        ))}
+                        <div className="flex gap-x-6 overflow-x-auto pb-1">
+                          {groupedFor(sport.id).map(([groupLabel, items]) => (
+                            <div key={groupLabel} className="flex-1 min-w-[10rem] max-w-[15rem]">
+                              {groupLabel === CUP_GROUP_LABEL ? (
+                                <span className="flex min-h-9 items-center border-b border-border pb-2 mb-2 text-xs tracking-normal uppercase text-primary font-semibold whitespace-nowrap">
+                                  {groupLabel}
+                                </span>
+                              ) : (
+                                <Link
+                                  to={`/services/sportresor/${sport.slug}/liga/${slug(groupLabel)}`}
+                                  onClick={() => setOpenMenu(null)}
+                                  className="flex min-h-9 items-center border-b border-border pb-2 mb-2 text-xs tracking-normal uppercase text-primary font-semibold hover:underline underline-offset-4 whitespace-nowrap"
+                                >
+                                  {groupLabel}
+                                </Link>
+                              )}
+                              <ul className="space-y-0.5">
+                                {items.map((entry) => (
+                                  <li key={entry.id}>
+                                    <Link
+                                      to={CUP_SLUGS.has(entry.slug) ? cupHref(sport.slug, entry.slug) : `/services/sportresor/${sport.slug}/${entry.slug}`}
+                                      onClick={() => setOpenMenu(null)}
+                                      className="flex min-h-10 items-center rounded-sm px-2 py-2 text-sm leading-5 text-foreground/80 hover:bg-accent hover:text-primary focus-visible:bg-accent focus-visible:outline-none transition-colors whitespace-nowrap"
+                                    >
+                                      {entry.name}
+                                    </Link>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     )}
                     {isOpen && sport.menu_style === "list" && (
