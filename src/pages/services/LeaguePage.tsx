@@ -87,8 +87,8 @@ export default function LeaguePage() {
           <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans text-center">
             Klubbar i {leagueName}
           </p>
-          <h2 className="font-display text-3xl md:text-4xl text-center mb-12">Vilket lag vill du se live?</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-center mb-5 sm:mb-12">Vilket lag vill du se live?</h2>
+          <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3 max-w-5xl mx-auto">
             {teams.map((team) => {
               const venueImage =
                 venuePhotoFor(venuePhotos, team.venue, team.name) || team.hero_image_url || null;
@@ -109,20 +109,20 @@ export default function LeaguePage() {
                     <img
                       src={crests[team.name]}
                       alt={`${team.name} klubbmärke`}
-                      className="w-full h-full object-contain drop-shadow-lg p-10 group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-contain drop-shadow-lg p-3 sm:p-10 group-hover:scale-105 transition-transform duration-500"
                     />
                   ) : (
-                    <span className="font-display text-2xl text-primary-foreground text-center">
+                    <span className="font-display text-sm sm:text-2xl text-primary-foreground text-center">
                       {team.name}
                     </span>
                   )}
                 </div>
-                <div className="p-5">
-                  <h3 className="font-display text-xl text-foreground mb-1">{team.name}</h3>
+                <div className="p-2.5 sm:p-5">
+                  <h3 className="font-display text-sm sm:text-xl leading-snug text-foreground mb-0.5 sm:mb-1">{team.name}</h3>
                   {team.tagline && (
-                    <p className="text-sm text-muted-foreground italic mb-3">{team.tagline}</p>
+                    <p className="hidden sm:block text-sm text-muted-foreground italic mb-3">{team.tagline}</p>
                   )}
-                  <div className="space-y-1.5 text-xs text-muted-foreground">
+                  <div className="space-y-0.5 text-[11px] sm:space-y-1.5 sm:text-xs text-muted-foreground">
                     {team.city && (
                       <p className="flex items-center gap-2">
                         <MapPin className="h-3.5 w-3.5 text-primary" />
@@ -130,13 +130,13 @@ export default function LeaguePage() {
                       </p>
                     )}
                     {team.venue && (
-                      <p className="flex items-center gap-2">
+                      <p className="hidden sm:flex items-center gap-2">
                         <Trophy className="h-3.5 w-3.5 text-primary" />
                         {team.venue}
                       </p>
                     )}
                   </div>
-                  <span className="mt-4 inline-flex items-center text-sm text-primary font-medium">
+                  <span className="mt-2 sm:mt-4 inline-flex items-center text-xs sm:text-sm text-primary font-medium">
                     Se resor
                     <ArrowRight className="ml-1.5 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </span>
