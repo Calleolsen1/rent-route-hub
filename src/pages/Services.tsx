@@ -6,7 +6,7 @@ import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
 import sportsImage from "@/assets/kaisen-sports.jpg";
 import luxuryImage from "@/assets/kaisen-luxury.jpg";
-import groupImageAsset from "@/assets/kaisen-group-rooftop.jpg.asset.json";
+import groupImageAsset from "@/assets/kaisen-group-europe-skyline.jpg.asset.json";
 const groupImage = groupImageAsset.url;
 import heroImage from "@/assets/kaisen-hero.jpg";
 
