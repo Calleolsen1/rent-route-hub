@@ -54,7 +54,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="border-b border-border/40 bg-card/95 backdrop-blur-sm sticky top-0 z-50">
+      <nav className="border-b border-border/40 bg-card/95 backdrop-blur-sm sticky top-0 z-50" onKeyDown={(event) => { if (event.key === "Escape") { setOpenMenu(null); setMobileOpen(false); } }}>
         <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
           {/* 3-col grid keeps the menu group dead-centered regardless of how wide
               the logo or right-side controls become */}
@@ -89,6 +89,8 @@ const Navbar = () => {
                   >
                     <Link
                       to={`/services/sportresor/${sport.slug}`}
+                      onFocus={() => setOpenMenu(sport.slug)}
+                      aria-expanded={isOpen}
                       className="flex items-center gap-1 whitespace-nowrap text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors py-2"
                     >
                       {sport.label}
@@ -97,33 +99,30 @@ const Navbar = () => {
                     {isOpen && sport.menu_style === "grouped" && (
                       <div
                         aria-label={`${sport.label} – ligor och cuper`}
-                        className="absolute top-full left-6 right-6 mx-auto max-w-[1520px] max-h-[calc(100dvh-6rem)] overflow-y-auto overscroll-contain bg-card border border-border shadow-xl z-50 p-6 gap-5 grid"
-                        style={{
-                          gridTemplateColumns: `repeat(${Math.max(groupedFor(sport.id).length, 1)}, minmax(0, 1fr))`,
-                        }}
+                        className="absolute top-full left-6 right-6 mx-auto max-w-[1440px] max-h-[calc(100dvh-6rem)] overflow-y-auto overscroll-contain bg-card border border-border shadow-xl z-50 p-6 grid grid-cols-3 gap-x-8 gap-y-6"
                       >
                         {groupedFor(sport.id).map(([groupLabel, items]) => (
                           <div key={groupLabel} className="min-w-0">
                             {groupLabel === CUP_GROUP_LABEL ? (
-                              <span className="block text-[11px] tracking-[0.2em] uppercase text-primary font-semibold mb-3">
+                              <span className="flex min-h-9 items-center border-b border-border pb-2 mb-2 text-xs tracking-normal uppercase text-primary font-semibold">
                                 {groupLabel}
                               </span>
                             ) : (
                               <Link
                                 to={`/services/sportresor/${sport.slug}/liga/${slug(groupLabel)}`}
                                 onClick={() => setOpenMenu(null)}
-                                className="block text-[11px] tracking-[0.2em] uppercase text-primary font-semibold mb-3 hover:underline"
+                                className="flex min-h-9 items-center border-b border-border pb-2 mb-2 text-xs tracking-normal uppercase text-primary font-semibold hover:underline underline-offset-4"
                               >
                                 {groupLabel}
                               </Link>
                             )}
-                            <ul className="space-y-0.5">
+                            <ul className="grid grid-cols-2 gap-x-3 gap-y-0.5">
                               {items.map((entry) => (
                                 <li key={entry.id}>
                                   <Link
                                     to={CUP_SLUGS.has(entry.slug) ? cupHref(sport.slug, entry.slug) : `/services/sportresor/${sport.slug}/${entry.slug}`}
                                     onClick={() => setOpenMenu(null)}
-                                    className="block rounded-sm px-2 -mx-2 py-1.5 text-sm leading-5 break-words text-foreground/80 hover:bg-accent hover:text-primary focus-visible:bg-accent focus-visible:outline-none transition-colors"
+                                    className="flex min-h-10 items-center rounded-sm px-2 py-2 text-sm leading-5 break-words text-foreground/80 hover:bg-accent hover:text-primary focus-visible:bg-accent focus-visible:outline-none transition-colors"
                                   >
                                     {entry.name}
                                   </Link>
@@ -254,38 +253,40 @@ const Navbar = () => {
                     >
                       {sport.label}
                     </Link>
-                    <button
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       aria-label={`Visa ${sport.label}`}
                       aria-expanded={isOpen}
-                      className="p-3 -mr-1 rounded-md active:bg-accent"
+                      className="h-11 w-11 -mr-1 rounded-md active:bg-accent"
                       onClick={() => setMobileSubmenu(isOpen ? null : sport.slug)}
                     >
                       <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? "rotate-180" : ""}`} />
-                    </button>
+                    </Button>
                   </div>
                   {isOpen && sport.menu_style === "grouped" && (
-                    <div className="pl-3 py-2 space-y-4 bg-accent/30 rounded-lg mb-2">
+                    <div className="px-3 py-3 space-y-4 bg-accent/30 mb-2">
                       {groupedFor(sport.id).map(([groupLabel, items]) => (
                         <div key={groupLabel}>
                           {groupLabel === CUP_GROUP_LABEL ? (
-                            <span className="block text-[11px] tracking-[0.16em] uppercase text-primary font-semibold px-2 py-2">
+                            <span className="flex min-h-9 items-center border-b border-border text-xs tracking-normal uppercase text-primary font-semibold px-2 pb-2 mb-1">
                               {groupLabel}
                             </span>
                           ) : (
                             <Link
                               to={`/services/sportresor/${sport.slug}/liga/${slug(groupLabel)}`}
                               onClick={() => setMobileOpen(false)}
-                              className="block text-[11px] tracking-[0.16em] uppercase text-primary font-semibold px-2 py-2"
+                              className="flex min-h-9 items-center border-b border-border text-xs tracking-normal uppercase text-primary font-semibold px-2 pb-2 mb-1"
                             >
                               {groupLabel}
                             </Link>
                           )}
-                          <div className="grid grid-cols-2 gap-x-2">
+                          <div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-x-3 gap-y-0.5">
                             {items.map((entry) => (
                               <Link
                                 key={entry.id}
                                 to={CUP_SLUGS.has(entry.slug) ? cupHref(sport.slug, entry.slug) : `/services/sportresor/${sport.slug}/${entry.slug}`}
-                                className="block py-2.5 px-2 text-sm text-foreground/80"
+                                className="flex min-h-11 items-center rounded-sm py-2 px-2 text-sm leading-5 break-words text-foreground/80 hover:bg-accent hover:text-primary focus-visible:bg-accent focus-visible:outline-none transition-colors"
                                 onClick={() => setMobileOpen(false)}
                               >
                                 {entry.name}
