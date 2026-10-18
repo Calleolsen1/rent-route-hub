@@ -67,6 +67,9 @@ type Props = {
   race?: string;
   /** Filter to events whose tournament_name contains this string (case-insensitive). */
   tournament?: string;
+  /** Several tournament-name patterns matched case-insensitively (e.g. a cup
+      known under multiple supplier names). Overrides `tournament` when set. */
+  tournaments?: string[];
   /** Free-text search across team/race/tournament names. */
   query?: string;
   /** Earliest start date (ISO). */
@@ -102,6 +105,7 @@ export default function UpcomingEventsList({
   team,
   race,
   tournament,
+  tournaments,
   query,
   dateFrom,
   dateTo,
