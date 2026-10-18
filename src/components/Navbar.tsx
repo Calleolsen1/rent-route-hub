@@ -267,36 +267,38 @@ const Navbar = () => {
                     </Button>
                   </div>
                   {isOpen && sport.menu_style === "grouped" && (
-                    <div className="px-3 py-3 space-y-4 bg-accent/30 mb-2">
-                      {groupedFor(sport.id).map(([groupLabel, items]) => (
-                        <div key={groupLabel}>
-                          {groupLabel === CUP_GROUP_LABEL ? (
-                            <span className="flex min-h-9 items-center border-b border-border text-xs tracking-normal uppercase text-primary font-semibold px-2 pb-2 mb-1">
-                              {groupLabel}
-                            </span>
-                          ) : (
-                            <Link
-                              to={`/services/sportresor/${sport.slug}/liga/${slug(groupLabel)}`}
-                              onClick={() => setMobileOpen(false)}
-                              className="flex min-h-9 items-center border-b border-border text-xs tracking-normal uppercase text-primary font-semibold px-2 pb-2 mb-1"
-                            >
-                              {groupLabel}
-                            </Link>
-                          )}
-                          <div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-x-3 gap-y-0.5">
-                            {items.map((entry) => (
+                    <div className="px-3 py-3 bg-accent/30 mb-2">
+                      <div className="flex gap-x-3 overflow-x-auto pb-1">
+                        {groupedFor(sport.id).map(([groupLabel, items]) => (
+                          <div key={groupLabel} className="w-40 flex-shrink-0 sm:w-44">
+                            {groupLabel === CUP_GROUP_LABEL ? (
+                              <span className="flex min-h-9 items-center border-b border-border text-xs tracking-normal uppercase text-primary font-semibold px-2 pb-2 mb-1 whitespace-nowrap">
+                                {groupLabel}
+                              </span>
+                            ) : (
                               <Link
-                                key={entry.id}
-                                to={CUP_SLUGS.has(entry.slug) ? cupHref(sport.slug, entry.slug) : `/services/sportresor/${sport.slug}/${entry.slug}`}
-                                className="flex min-h-11 items-center rounded-sm py-2 px-2 text-sm leading-5 break-words text-foreground/80 hover:bg-accent hover:text-primary focus-visible:bg-accent focus-visible:outline-none transition-colors"
+                                to={`/services/sportresor/${sport.slug}/liga/${slug(groupLabel)}`}
                                 onClick={() => setMobileOpen(false)}
+                                className="flex min-h-9 items-center border-b border-border text-xs tracking-normal uppercase text-primary font-semibold px-2 pb-2 mb-1 whitespace-nowrap"
                               >
-                                {entry.name}
+                                {groupLabel}
                               </Link>
-                            ))}
+                            )}
+                            <div className="space-y-0.5">
+                              {items.map((entry) => (
+                                <Link
+                                  key={entry.id}
+                                  to={CUP_SLUGS.has(entry.slug) ? cupHref(sport.slug, entry.slug) : `/services/sportresor/${sport.slug}/${entry.slug}`}
+                                  className="flex min-h-11 items-center rounded-sm py-2 px-2 text-sm leading-5 text-foreground/80 hover:bg-accent hover:text-primary focus-visible:bg-accent focus-visible:outline-none transition-colors whitespace-nowrap"
+                                  onClick={() => setMobileOpen(false)}
+                                >
+                                  {entry.name}
+                                </Link>
+                              ))}
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
                   )}
                   {isOpen && sport.menu_style === "list" && (
