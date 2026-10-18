@@ -28,5 +28,5 @@
 - [x] Liverpool-sidan: ersätt undertexten med ny text om Anfield, You'll Never Walk Alone och en weekend i Liverpool
 - [x] Manchester City-sidan: ersätt undertexten med ny text om Etihad Stadium och en weekend i Manchester
 - [x] Tottenham Hotspur-sidan: ersätt undertexten med ny text om Tottenham Hotspur Stadium och en weekend i London
-- [ ] Fotbollssidan: ligloggor i färg (gråskala borttagen) - verifiera att loggorna syns i förhandsvisningen
-- [ ] Navigeringen: ta bort "Engelska" ur språkvalet så att bara SV visas högst upp
+- [x] Fotbollssidan: ligloggor i färg (gråskala borttagen) - alla fyra loggor laddas och visas i färg i både dator och telefon
+- [x] Navigeringen: ta bort "Engelska" ur språkvalet så att bara SV visas högst upp
