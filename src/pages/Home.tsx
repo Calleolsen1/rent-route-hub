@@ -21,7 +21,8 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import heroImage from "@/assets/kaisen-hero.jpg";
-import groupImage from "@/assets/kaisen-group.jpg";
+import groupImageAsset from "@/assets/kaisen-group-rooftop.jpg.asset.json";
+const groupImage = groupImageAsset.url;
 import sportsImage from "@/assets/kaisen-sports.jpg";
 import incomingImage from "@/assets/kaisen-incoming.jpg";
 import f1Image from "@/assets/sport-f1.jpg";
