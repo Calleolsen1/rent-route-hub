@@ -12,4 +12,5 @@
 - [x] Barcelona-sidan: ersätt undertexten med ny text om Spotify Camp Nou och en weekend i Barcelona
 - [x] Serie A-sidan: ersätt undertexten med ny text om Milano, Rom och Turin
 - [x] Inter-sidan: ersätt undertexten med ny text om San Siro, Milano och Derby della Madonnina
-- [ ] Milan-sidan: ersätt undertexten med ny tvådelad text om San Siro och Derby della Madonnina
+- [x] Milan-sidan: ersätt undertexten med ny tvådelad text om San Siro och Derby della Madonnina
+- [ ] Milan-sidan: ta bort första raden "AC Milan LIVE på ikoniska San Siro!"
