@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Aktivera matchsynchronisering för Champions League, Europa League, FA Cup och Carabao Cup och kontrollera tillgängliga matcher.
+
 - [x] Fotbollssidan: lägg ligornas loggor i rutornas hörn och kontrollera länkar och layout
 
 - [x] Byt "Kaisen" → "KAISEN" överallt på hemsidan (kod, metadata, e-postmallar, databas)
