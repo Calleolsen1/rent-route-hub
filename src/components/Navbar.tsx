@@ -5,7 +5,7 @@ import { User, LogOut, Menu, X, ChevronDown, Globe } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { AuthDialog } from "@/components/AuthDialog";
-import brandLogo from "@/assets/kaisen-brand-logo.png.asset.json";
+import brandLogo from "@/assets/kaisen-brand-logo-transparent.png.asset.json";
 import {
   DropdownMenu,
   DropdownMenuContent,

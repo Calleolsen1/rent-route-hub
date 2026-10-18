@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import amadeusLogo from "@/assets/amadeus-logo.svg";
 import kammarkollegietLogo from "@/assets/kammarkollegiet-logo.svg";
 import { Button } from "@/components/ui/button";
-import brandLogo from "@/assets/kaisen-brand-logo.png.asset.json";
+import brandLogo from "@/assets/kaisen-brand-logo-white.png.asset.json";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
