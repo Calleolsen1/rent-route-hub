@@ -7,7 +7,7 @@ import Navbar from "@/components/Navbar";
 import fotbollImage from "@/assets/sport-fotboll.jpg";
 import f1Image from "@/assets/sport-f1.jpg";
 import bundesligaLogo from "@/assets/league-bundesliga.png.asset.json";
-import laLigaLogo from "@/assets/league-la-liga.svg.asset.json";
+import laLigaLogo from "@/assets/league-la-liga.png.asset.json";
 import premierLeagueLogo from "@/assets/league-premier-league.png.asset.json";
 import serieALogo from "@/assets/league-serie-a.png.asset.json";
 import { useSport, useEntriesForSport } from "@/hooks/useNavigation";
