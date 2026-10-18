@@ -12,6 +12,9 @@ import { usePageMeta } from "@/lib/usePageMeta";
 import { useTeamCrests } from "@/hooks/useTeamCrests";
 import { useVenuePhotos, venuePhotoFor } from "@/hooks/useVenuePhotos";
 
+const DEFAULT_LEAGUE_INTRO =
+  "Välj ett lag så tar vi fram en komplett resa med biljetter, hotell, flyg och transfer.";
+
 export default function LeaguePage() {
   const { sport: sportSlug, league: leagueSlug } = useParams<{ sport: string; league: string }>();
   const sport = useSport(sportSlug);
