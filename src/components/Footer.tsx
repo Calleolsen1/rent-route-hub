@@ -101,7 +101,7 @@ const Footer = () => {
           </div>
 
           <div className="md:col-span-3">
-            <h3 className="text-[11px] eyebrow text-white/60 uppercase font-sans mb-5">Tjänster</h3>
+            <h3 className="text-[11px] eyebrow text-white/60 uppercase font-sans mb-5">Våra resor</h3>
             <ul className="space-y-3 text-sm text-white/85">
               <li><Link to="/services/sportresor/fotboll" className="hover:text-white transition-colors">Fotbollsresor</Link></li>
               <li><Link to="/services/sportresor/f1" className="hover:text-white transition-colors">Formel 1-resor</Link></li>
