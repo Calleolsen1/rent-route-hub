@@ -19,4 +19,4 @@
 - [x] Premier League-sidan: ersätt undertexten med ny text om engelska arenor och weekend i England
 - [x] Gruppreseförfrågan: ta bort "inom 24 timmar på vardagar." ur inledningen
 - [x] Arsenal-sidan: ersätt undertexten med ny text om Emirates Stadium och London
-- [ ] Manchester United-sidan: ersätt undertexten med ny text om Old Trafford och Manchester
+- [x] Manchester United-sidan: ersätt undertexten med ny text om Old Trafford och Manchester
