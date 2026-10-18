@@ -62,6 +62,7 @@ import VIPService from "./pages/services/VIPService";
 import Traningslager from "./pages/services/Traningslager";
 import SportPage from "./pages/services/SportPage";
 import LeaguePage from "./pages/services/LeaguePage";
+import CupPage from "./pages/services/CupPage";
 import SportEntryPage from "./pages/services/SportEntryPage";
 import EventDetail from "./pages/EventDetail";
 import Checkout from "./pages/Checkout";
