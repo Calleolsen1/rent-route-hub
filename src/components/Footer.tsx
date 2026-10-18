@@ -4,6 +4,8 @@ import { Instagram, Facebook, Linkedin, Twitter } from "lucide-react";
 import { clearCookieConsent } from "@/components/CookieConsent";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import amadeusLogo from "@/assets/amadeus-logo.svg";
+import kammarkollegietLogo from "@/assets/kammarkollegiet-logo.svg";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
