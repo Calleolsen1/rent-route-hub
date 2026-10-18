@@ -9,3 +9,4 @@
 - [x] Ligasidor: heron växer med texten så rubriken inte klipps i telefon
 - [x] Atlético Madrid-sidan: ersätt undertexten med ny text om Riyadh Air Metropolitano
 - [x] Real Madrid-sidan: ersätt undertexten med ny text om Santiago Bernabéu och en weekend i Madrid
+- [ ] Barcelona-sidan: ersätt undertexten med ny text om Spotify Camp Nou och en weekend i Barcelona
