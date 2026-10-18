@@ -21,3 +21,4 @@
 - [x] Arsenal-sidan: ersätt undertexten med ny text om Emirates Stadium och London
 - [x] Manchester United-sidan: ersätt undertexten med ny text om Old Trafford och Manchester
 - [x] Juventus-sidan: byt Bergamo mot Turin i introtexten
+- [ ] Blå fältknappen på gruppresesidan: raden "vi återkommer inom 24h" i formuläret som öppnas — inväntar besked om den ska tas bort
