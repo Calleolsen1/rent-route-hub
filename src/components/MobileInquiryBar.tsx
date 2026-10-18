@@ -17,7 +17,7 @@ export default function MobileInquiryBar() {
           type: "contact",
           eyebrow: "Prisförfrågan",
           heading: "Din förfrågan",
-          intro: "Berätta vad du är ute efter - vi återkommer inom 24h.",
+          intro: "Berätta vad du är ute efter.",
         })
       }
       className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-primary text-primary-foreground h-14 flex items-center justify-center gap-2 text-sm font-semibold tracking-wide shadow-[0_-6px_20px_rgba(0,0,0,0.45)] border-t-2 border-white/50 pb-[env(safe-area-inset-bottom)] active:bg-primary/90 transition-colors"
