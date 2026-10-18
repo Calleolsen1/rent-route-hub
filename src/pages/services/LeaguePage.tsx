@@ -145,10 +145,10 @@ export default function LeaguePage() {
         <div className="container mx-auto px-4 text-center">
           <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Boka din {leagueName}-resa</p>
           <h2 className="font-display text-3xl md:text-4xl text-white mb-6">
-            Hittar du inte ditt lag?
+            Hittar du inte laget eller matchen?
           </h2>
           <p className="text-white/70 max-w-lg mx-auto mb-8 leading-relaxed">
-            Berätta vilken match du vill se - vi ordnar resan oavsett arena.
+            Hör av dig till oss så undersöker vi möjligheterna via vårt nätverk av leverantörer.
           </p>
           <Link to="/contact">
             <Button size="lg" className="rounded-full bg-primary hover:bg-primary/90 px-10 tracking-wider text-sm">
