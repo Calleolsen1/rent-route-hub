@@ -22,3 +22,4 @@
 - [x] Manchester United-sidan: ersätt undertexten med ny text om Old Trafford och Manchester
 - [x] Juventus-sidan: byt Bergamo mot Turin i introtexten
 - [x] Blå fältknappen på gruppresesidan: ta bort "vi återkommer inom 24h" ur formuläret som öppnas
+- [x] Chelsea-sidan: ersätt undertexten med ny text om Stamford Bridge och en weekend i London
