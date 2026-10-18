@@ -6,12 +6,23 @@ import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
 import fotbollImage from "@/assets/sport-fotboll.jpg";
 import f1Image from "@/assets/sport-f1.jpg";
+import bundesligaLogo from "@/assets/league-bundesliga.png.asset.json";
+import laLigaLogo from "@/assets/league-la-liga.svg.asset.json";
+import premierLeagueLogo from "@/assets/league-premier-league.png.asset.json";
+import serieALogo from "@/assets/league-serie-a.png.asset.json";
 import { useSport, useEntriesForSport } from "@/hooks/useNavigation";
 import { useVenuePhotos, venuePhotoFor } from "@/hooks/useVenuePhotos";
 import { slugify } from "@/data/sports";
 import { usePageMeta } from "@/lib/usePageMeta";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+
+const leagueLogos: Record<string, string> = {
+  bundesliga: bundesligaLogo.url,
+  "la-liga": laLigaLogo.url,
+  "premier-league": premierLeagueLogo.url,
+  "serie-a": serieALogo.url,
+};
 
 export default function SportPage() {
   const { sport: sportSlug } = useParams<{ sport: string }>();
@@ -86,7 +97,7 @@ export default function SportPage() {
   for (const e of entries) {
     const key = e.group_label ?? "Övrigt";
     if (!leagueMap.has(key)) leagueMap.set(key, []);
-    leagueMap.get(key)!.push(e);
+    leagueMap.get(key)?.push(e);
   }
   const leagues = Array.from(leagueMap.entries());
 
@@ -192,26 +203,39 @@ export default function SportPage() {
             <h2 className="font-display text-3xl md:text-4xl text-center mb-12">Välj liga och lag</h2>
             <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
               {leagues.map(([league, teams]) => (
-                <div key={league} className="bg-card border border-border p-6">
-                  <div className="flex items-start justify-between gap-4 mb-4">
-                    <div>
+                <div key={league} className="bg-card border border-border rounded-lg p-5 sm:p-6 hover:border-primary/40 hover:shadow-lg transition-all motion-reduce:transition-none">
+                  <div className="flex items-start justify-between gap-4 mb-5 min-h-[80px]">
+                    <div className="min-w-0">
                       <h3 className="font-display text-2xl text-foreground">{league}</h3>
                       <p className="text-xs text-muted-foreground mt-1">{teams.length} lag</p>
-                    </div>
-                    <Link
+                      <Link
                       to={`/services/sportresor/${sport.slug}/liga/${slugify(league)}`}
-                      className="text-sm text-primary font-medium inline-flex items-center whitespace-nowrap hover:underline"
+                      className="mt-3 text-sm text-primary font-medium inline-flex items-center whitespace-nowrap hover:underline"
                     >
                       Se ligan
                       <ArrowRight className="ml-1.5 h-4 w-4" />
                     </Link>
+                    </div>
+                    {leagueLogos[slugify(league)] && (
+                      <Link
+                        to={`/services/sportresor/${sport.slug}/liga/${slugify(league)}`}
+                        aria-label={`Se ${league}`}
+                        className="flex h-20 w-24 sm:w-28 shrink-0 items-center justify-center"
+                      >
+                        <img
+                          src={leagueLogos[slugify(league)]}
+                          alt={`${league} logotyp`}
+                          className="h-full w-full object-contain grayscale opacity-80 hover:opacity-100 transition-opacity motion-reduce:transition-none"
+                        />
+                      </Link>
+                    )}
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2 border-t border-border pt-4">
                     {teams.map((team) => (
                       <Link
                         key={team.id}
                         to={`/services/sportresor/${sport.slug}/${team.slug}`}
-                        className="text-sm border border-border px-3 py-1.5 text-foreground/80 hover:border-primary hover:text-primary transition-colors"
+                        className="text-sm border border-border rounded-md px-3 py-1.5 text-foreground/80 hover:border-primary hover:text-primary hover:bg-primary/5 transition-colors"
                       >
                         {team.name}
                       </Link>
