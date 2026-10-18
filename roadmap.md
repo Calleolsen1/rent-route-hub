@@ -10,3 +10,4 @@
 - [x] Atlético Madrid-sidan: ersätt undertexten med ny text om Riyadh Air Metropolitano
 - [x] Real Madrid-sidan: ersätt undertexten med ny text om Santiago Bernabéu och en weekend i Madrid
 - [x] Barcelona-sidan: ersätt undertexten med ny text om Spotify Camp Nou och en weekend i Barcelona
+- [ ] Serie A-sidan: ersätt undertexten med ny text om Milano, Rom och Turin
