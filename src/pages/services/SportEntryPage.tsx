@@ -138,7 +138,7 @@ export default function SportEntryPage() {
           <UpcomingEventsList
             {...{ [labels.queryField]: info.name }}
             showFilters
-            eyebrow="Köp biljett direkt"
+            eyebrow={sport.entry_kind === "race" ? "Köp biljett direkt" : ""}
             title={labels.upcomingTitle(info.name)}
             compact
             onEmptyChange={setEventsEmpty}
