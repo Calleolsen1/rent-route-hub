@@ -226,10 +226,10 @@ export default function SportPage() {
             Boka din {sport.label.toLowerCase()}resa
           </p>
           <h2 className="font-display text-3xl md:text-4xl text-white mb-6">
-            {isRace ? "Hittar du inte ditt race?" : "Hittar du inte ditt lag?"}
+            Hittar du inte laget eller matchen?
           </h2>
           <p className="text-white/70 max-w-lg mx-auto mb-8 leading-relaxed">
-            Berätta vad du vill uppleva - vi ordnar resan oavsett arena.
+            Hör av dig till oss så undersöker vi möjligheterna via vårt nätverk av leverantörer.
           </p>
           <Link to="/contact">
             <Button size="lg" className="rounded-full bg-primary hover:bg-primary/90 px-10 tracking-wider text-sm">
