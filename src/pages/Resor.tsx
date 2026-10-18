@@ -6,7 +6,7 @@ import RequestCta from "@/components/RequestCta";
 import { usePageMeta } from "@/lib/usePageMeta";
 import fotbollImage from "@/assets/sport-fotboll.jpg";
 import f1Image from "@/assets/sport-f1.jpg";
-import groupImageAsset from "@/assets/kaisen-group-rooftop.jpg.asset.json";
+import groupImageAsset from "@/assets/kaisen-group-europe-skyline.jpg.asset.json";
 const groupImage = groupImageAsset.url;
 import valenciaImage from "@/assets/camp-valencia-pitch.jpg.asset.json";
 
