@@ -104,12 +104,13 @@ export default function SportPage() {
           <p className="text-[10px] tracking-[0.28em] text-primary uppercase mb-1.5 md:mb-2 font-sans">
             Sportresor
           </p>
-          <h1 className="font-display text-3xl md:text-6xl text-white mb-1.5 md:mb-3">{sport.label}</h1>
+          <h1 className="font-display text-3xl md:text-6xl text-white mb-1.5 md:mb-3">{heroTitle}</h1>
           <p className="text-white/80 max-w-xl leading-relaxed text-sm sm:text-base mb-5">
             {isRace
               ? "Välj ett race så bygger vi resan - bra platser vid banan, hotell nära action och all logistik ordnad."
-              : "Välj liga och lag så tar vi fram en komplett resa med platser på läktaren, hotell, flyg och transfer."}
+              : "Upplev världens bästa fotbollsmatcher LIVE. Välj liga, lag och vad din resa ska innehålla så tar vi fram bästa möjliga reseupplägg. Vi hjälper dig med officiella matchbiljetter eller en komplett resa med flyg och hotell."}
           </p>
+
           <Link
             to="/contact"
             className="inline-flex items-center rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 text-sm font-medium tracking-wide shadow-lg shadow-navy/30 transition-all hover:scale-105"
