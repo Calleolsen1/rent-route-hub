@@ -5,3 +5,6 @@
 - Football league logos use CDN asset pointers and a neutral display treatment in the sport overview, keeping brand imagery independent of navigation data and aligned with the site palette.
 
 - Desktop grouped navigation is anchored to the full navbar with viewport-bounded scrolling and side-by-side group columns; mobile football navigation uses expandable league/cup groups with teams hidden until selected, keeping long team lists usable without horizontal scrolling. Other sports keep their existing navigation.
+
+- Mobile race and fixture search filters only the rendered mobile cards; desktop lists retain all results and existing layouts so mobile browsing changes do not alter schedule data or desktop behavior.
+- On the contact page, the mobile inquiry action scrolls to the existing form instead of opening a second form, keeping one request workflow on that page.

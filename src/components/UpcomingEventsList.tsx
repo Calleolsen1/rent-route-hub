@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useInquiryDialog } from "@/components/InquiryDialog";
 import { formatEventDate } from "@/lib/formatSek";
 import { PriceTag } from "@/components/PriceTag";
+import { Input } from "@/components/ui/input";
 
 type EventRow = {
   id: string;
@@ -121,6 +122,7 @@ export default function UpcomingEventsList({
   // an unfiltered teaser keeps the old six-card default.
   const effectiveLimit = limit ?? (showFilters ? 300 : 6);
   const [month, setMonth] = useState<string | null>(null);
+  const [mobileSearch, setMobileSearch] = useState("");
   const [events, setEvents] = useState<EventRow[]>([]);
   const { open: openInquiry } = useInquiryDialog();
   const [loading, setLoading] = useState(true);
@@ -272,6 +274,12 @@ export default function UpcomingEventsList({
         </div>
       )}
 
+      {showFilters && (
+        <div className="md:hidden mb-4">
+          <Input type="search" aria-label="Sök matcher" placeholder="Sök lag, arena eller tävling" value={mobileSearch} onChange={(event) => setMobileSearch(event.target.value)} className="h-12 bg-card" />
+        </div>
+      )}
+
       <div className={`grid md:grid-cols-2 lg:grid-cols-3 ${compact ? "gap-4" : "gap-6"}`}>
         {visible.map((e) => {
           const headline =
@@ -292,12 +300,12 @@ export default function UpcomingEventsList({
             <Link
               key={e.id}
               to={`/sport/event/${e.id}`}
-              className="group bg-card border border-border rounded-xl overflow-hidden hover:shadow-xl hover:-translate-y-0.5 transition-all flex flex-col"
+              className={`group bg-card border border-border rounded-lg overflow-hidden hover:shadow-xl hover:-translate-y-0.5 transition-all flex flex-col ${showFilters && mobileSearch.trim() && ![e.home_team, e.away_team, e.race_name, e.venue_name, e.tournament_name].join(" ").toLocaleLowerCase("sv").includes(mobileSearch.trim().toLocaleLowerCase("sv")) ? "hidden md:flex" : ""}`}
             >
               {/* Always render an image block. Without a stadium photo the
                   card falls back to a generated plate, so listings look
                   consistent whether or not the team has been photographed. */}
-              <div className={`${compact ? "aspect-[16/8]" : "aspect-[16/10]"} overflow-hidden relative`}>
+              <div className={`aspect-[16/6] ${compact ? "md:aspect-[16/8]" : "md:aspect-[16/10]"} overflow-hidden relative`}>
                   <EventImage
                     sport={e.sport}
                     homeTeam={e.home_team}
@@ -326,11 +334,11 @@ export default function UpcomingEventsList({
                     </div>
                   )}
               </div>
-              <div className={`${compact ? "p-4" : "p-5"} flex flex-col flex-1`}>
+              <div className={`p-3 ${compact ? "md:p-4" : "md:p-5"} flex flex-col flex-1`}>
                 <p className="text-[10px] tracking-[0.25em] uppercase text-primary font-sans mb-2">
                   {e.tournament_name}
                 </p>
-                <h3 className={`font-display ${compact ? "text-lg mb-2" : "text-xl mb-3"}`}>{headline}</h3>
+                <h3 className={`font-display text-lg mb-2 ${compact ? "" : "md:text-xl md:mb-3"}`}>{headline}</h3>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
                   <Calendar className="h-3.5 w-3.5" />
                   <span>{formatEventDate(e.starts_at)}</span>
@@ -365,6 +373,7 @@ export default function UpcomingEventsList({
           );
         })}
       </div>
+      {showFilters && mobileSearch.trim() && !visible.some((e) => [e.home_team, e.away_team, e.race_name, e.venue_name, e.tournament_name].join(" ").toLocaleLowerCase("sv").includes(mobileSearch.trim().toLocaleLowerCase("sv"))) && <p className="md:hidden text-center py-6 text-muted-foreground" role="status">Inga matcher matchar sökningen.</p>}
     </div>
   );
 }

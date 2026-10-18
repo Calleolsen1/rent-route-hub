@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import amadeusLogo from "@/assets/amadeus-logo.svg";
 import kammarkollegietLogo from "@/assets/kammarkollegiet-logo.svg";
+import { Button } from "@/components/ui/button";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
@@ -67,16 +68,19 @@ const Footer = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Ange din e-postadress...*"
-                className="flex-1 bg-transparent text-white placeholder:text-white/50 text-base focus:outline-none py-2"
+                aria-label="E-postadress för nyhetsbrev"
+                autoComplete="email"
+                className="min-w-0 w-0 flex-1 bg-transparent text-primary-foreground placeholder:text-primary-foreground/50 text-base focus:outline-none py-2"
                 disabled={submitting}
               />
-              <button
+              <Button
                 type="submit"
                 disabled={submitting}
-                className="border border-white text-white text-xs tracking-[0.2em] uppercase font-sans px-6 py-2.5 rounded-full hover:bg-white hover:text-navy transition-colors disabled:opacity-50"
+                variant="outline"
+                className="shrink-0 h-11 border-primary-foreground bg-transparent text-primary-foreground text-xs uppercase font-sans px-4 sm:px-6 rounded-full hover:bg-primary-foreground hover:text-primary transition-colors disabled:opacity-50"
               >
                 {submitting ? "Skickar..." : "Anmäl"}
-              </button>
+              </Button>
             </form>
             <p className="text-xs text-white/60 mt-3 leading-relaxed">
               Genom att skicka in detta formulär godkänner jag att KAISEN TRAVEL GROUP lagrar och behandlar mina personuppgifter enligt våra{" "}
