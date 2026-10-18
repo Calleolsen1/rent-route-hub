@@ -11,3 +11,4 @@
 - [x] Real Madrid-sidan: ersätt undertexten med ny text om Santiago Bernabéu och en weekend i Madrid
 - [x] Barcelona-sidan: ersätt undertexten med ny text om Spotify Camp Nou och en weekend i Barcelona
 - [x] Serie A-sidan: ersätt undertexten med ny text om Milano, Rom och Turin
+- [ ] Inter-sidan: ersätt undertexten med ny text om San Siro, Milano och Derby della Madonnina
