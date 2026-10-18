@@ -12,7 +12,11 @@ export function cupCompetition(name: string | null | undefined) {
 }
 
 export function canSeedCupFixture(competition: string | null | undefined, home: string | null, away: string | null, starts: Date | null, status: string | undefined, now: Date): boolean {
-  return !!cupCompetition(competition) && !!home?.trim() && !!away?.trim()
+  return !!cupCompetition(competition) && canSeedFootballFixture(home, away, starts, status, now);
+}
+
+export function canSeedFootballFixture(home: string | null, away: string | null, starts: Date | null, status: string | undefined, now: Date): boolean {
+  return !!home?.trim() && !!away?.trim()
     && !!starts && Number.isFinite(starts.getTime()) && starts > now
     && !/cancel|postpon|finish|complete|played|abandon/i.test(status ?? "");
 }

@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Lägg till önskade lag i Premier League, La Liga och Bundesliga samt Scottish Premiership med endast Celtic och Glasgow Rangers; alla 14 lagsidor visar verkliga matcher, 12 var för de skotska lagen.
+
 - [x] Aktivera matchsynchronisering för Champions League, Europa League, FA Cup och Carabao Cup; testa cupavgränsning och driftsätt.
 - [ ] Kör den uppdaterade cupsynken och kontrollera importerade matcher — kräver administratör; nuvarande konto saknar behörighet. Befintlig katalog innehåller inga cupmatcher.
 
