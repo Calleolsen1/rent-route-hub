@@ -15,6 +15,13 @@ import { scottishTeam } from "./tc_scotland.ts";
 
 const BASE = "https://site.api.espn.com/apis/site/v2/sports/soccer";
 
+// ESPN answers 403 to Deno's default "Deno/x.y" User-Agent (verified 2026-10-18;
+// "Supabase Edge Runtime", curl and browsers all get 200), so send a browser one.
+const ESPN_HEADERS = {
+  "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36",
+  Accept: "application/json",
+};
+
 /** Codes match tc_cups.ts so Travel Connection links onto these instead of seeding duplicates. */
 export const ESPN_CUPS = [
   { code: "EL", league: "uefa.europa", name: "Europa League" },
@@ -105,7 +112,7 @@ export function toFixture(e: EspnEvent, now: Date): EspnFixture | null {
 export async function upcomingCupFixtures(league: string, now = new Date()): Promise<EspnFixture[]> {
   const byId = new Map<string, EspnFixture>();
   const months = await Promise.all(monthsFrom(now).map(async (m) => {
-    const res = await fetch(`${BASE}/${league}/scoreboard?dates=${m}&limit=500`);
+    const res = await fetch(`${BASE}/${league}/scoreboard?dates=${m}&limit=500`, { headers: ESPN_HEADERS });
     if (!res.ok) throw new Error(`ESPN ${league} ${m}: HTTP ${res.status}`);
     const body = await res.json() as { events?: EspnEvent[] };
     return body.events ?? [];
