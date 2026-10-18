@@ -31,7 +31,7 @@ const KIND_LABELS = {
     venueLabel: "Arena",
     venueIcon: Trophy,
     groupLabel: "Liga",
-    upcomingTitle: (name: string) => `Biljetter till ${name}`,
+    upcomingTitle: (name: string) => `Fotbollsresor till ${name}`,
     queryField: "team" as const,
   },
   race: {
