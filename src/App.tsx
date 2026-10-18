@@ -93,6 +93,7 @@ const App = () => (
               {/* Generic sport entry page - drives /:sport/:entry for any sport in nav_sports */}
               <Route path="/services/sportresor/:sport" element={<SportPage />} />
               <Route path="/services/sportresor/:sport/liga/:league" element={<LeaguePage />} />
+              <Route path="/services/sportresor/:sport/cup/:cup" element={<CupPage />} />
               <Route path="/services/sportresor/:sport/:entry" element={<SportEntryPage />} />
               <Route path="/services/traningslager" element={<Traningslager />} />
               <Route path="/services/affarsresor" element={<Affarsresor />} />
