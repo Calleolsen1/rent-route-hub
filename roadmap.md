@@ -24,3 +24,4 @@
 - [x] Blå fältknappen på gruppresesidan: ta bort "vi återkommer inom 24h" ur formuläret som öppnas
 - [x] Chelsea-sidan: ersätt undertexten med ny text om Stamford Bridge och en weekend i London
 - [x] Liverpool-sidan: ersätt undertexten med ny text om Anfield, You'll Never Walk Alone och en weekend i Liverpool
+- [ ] Manchester City-sidan: ersätt undertexten med ny text om Etihad Stadium och en weekend i Manchester
