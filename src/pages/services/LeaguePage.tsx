@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import fotbollImage from "@/assets/sport-fotboll.jpg";
 import { useSport, useEntriesForSport } from "@/hooks/useNavigation";
 import { slugify } from "@/data/sports";
+import { useSiteContent } from "@/hooks/useSiteContent";
 import { usePageMeta } from "@/lib/usePageMeta";
 import { useTeamCrests } from "@/hooks/useTeamCrests";
 import { useVenuePhotos, venuePhotoFor } from "@/hooks/useVenuePhotos";
@@ -17,6 +18,10 @@ export default function LeaguePage() {
   const entries = useEntriesForSport(sportSlug);
   const crests = useTeamCrests();
   const venuePhotos = useVenuePhotos();
+
+  // Per-league hero intro, editable in admin under site_content key league_intro_<slug>.
+  const introKey = leagueSlug ? `league_intro_${leagueSlug}` : "";
+  const { get } = useSiteContent(introKey ? [introKey] : []);
 
   const teams = entries.filter((e) => e.group_label && slugify(e.group_label) === leagueSlug);
   const leagueName = teams[0]?.group_label ?? "";
@@ -60,8 +65,8 @@ export default function LeaguePage() {
             {sport.label}sresor - Liga
           </p>
           <h1 className="font-display text-2xl md:text-5xl text-white mb-1">{leagueName}</h1>
-          <p className="text-white/80 text-sm max-w-xl mb-4">
-            Välj ett lag så tar vi fram en komplett resa med biljetter, hotell, flyg och transfer.
+          <p className="text-white/80 text-sm max-w-xl mb-4 whitespace-pre-line">
+            {get(introKey, DEFAULT_LEAGUE_INTRO)}
           </p>
           <Link
             to="/contact"
