@@ -7,4 +7,4 @@
 - [x] Kontrollera bygget och verifiera i preview
 - [x] La Liga-sidan: egen introtext under rubriken (site_content nyckel league_intro_la-liga)
 - [x] Ligasidor: heron växer med texten så rubriken inte klipps i telefon
-- [ ] Atlético Madrid-sidan: ersätt undertexten med ny text om Riyadh Air Metropolitano
+- [x] Atlético Madrid-sidan: ersätt undertexten med ny text om Riyadh Air Metropolitano
