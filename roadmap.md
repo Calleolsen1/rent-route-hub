@@ -30,3 +30,4 @@
 - [x] Tottenham Hotspur-sidan: ersätt undertexten med ny text om Tottenham Hotspur Stadium och en weekend i London
 - [x] Fotbollssidan: ligloggor i färg (gråskala borttagen) - alla fyra loggor laddas och visas i färg i både dator och telefon
 - [x] Navigeringen: ta bort "Engelska" ur språkvalet så att bara SV visas högst upp
+- [x] Formel 1-sidorna: "Vad ingår" → "Vad som kan ingår" och "Kompletta paket till X" → "Formel 1-resa till X"
