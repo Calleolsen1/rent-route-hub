@@ -14,3 +14,4 @@
 - [x] Inter-sidan: ersätt undertexten med ny text om San Siro, Milano och Derby della Madonnina
 - [x] Milan-sidan: ersätt undertexten med ny tvådelad text om San Siro och Derby della Madonnina
 - [x] Milan-sidan: ta bort första raden "AC Milan LIVE på ikoniska San Siro!"
+- [ ] Juventus-sidan: ersätt undertexten med ny text om Bergamo och Serie A
