@@ -529,8 +529,9 @@ export default function AdminTickets() {
           const filtered = events.filter((ev) => {
             if (sportFilter !== "all" && ev.sport !== sportFilter) return false;
             if (tournamentFilter !== "all" && ev.tournament_name !== tournamentFilter) return false;
-            if (sourceFilter === "football-data" && ev.source !== "football-data") return false;
-            if (sourceFilter === "manual" && ev.source === "football-data") return false;
+            const isFixtureFeed = ev.source === "football-data" || ev.source === "espn";
+            if (sourceFilter === "football-data" && !isFixtureFeed) return false;
+            if (sourceFilter === "manual" && isFixtureFeed) return false;
             if (featuredFilter === "featured" && !ev.is_featured) return false;
             if (featuredFilter === "not_featured" && ev.is_featured) return false;
             if (search.trim()) {
@@ -654,7 +655,7 @@ export default function AdminTickets() {
                         <div className="space-y-3 p-4">
                           {evs.map((ev) => {
           const headline = ev.sport === "soccer" ? `${ev.home_team} vs ${ev.away_team}` : ev.race_name;
-          const isSupplier = ev.source === "football-data" || ev.source === "jolpica";
+          const isSupplier = ev.source === "football-data" || ev.source === "espn" || ev.source === "jolpica";
           return (
             <div key={ev.id} className="rounded-xl border border-border bg-card p-5">
               <div className="flex items-start justify-between mb-4 gap-4">

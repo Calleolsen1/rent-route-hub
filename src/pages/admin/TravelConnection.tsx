@@ -514,7 +514,7 @@ function LinkDialog({
       const { data } = await db
         .from("events")
         .select("id, home_team, away_team, race_name, tournament_name, starts_at")
-        .in("source", ["football-data", "jolpica", "travelconnection-cup"])
+        .in("source", ["football-data", "espn", "jolpica", "travelconnection-cup"])
         .eq("status", "upcoming")
         .or(`home_team.ilike.%${safe}%,away_team.ilike.%${safe}%,race_name.ilike.%${safe}%`)
         .order("starts_at")

@@ -1,6 +1,7 @@
 // football-sync — pull fixtures from football-data.org into `events`.
 //
-// Body: { competitions?: string[] }. A run is logged as "cron" when the nightly job made it.
+// Body: { competitions?: string[] } — football-data codes and/or ESPN cup
+// codes (EL, FAC, EFL; see _shared/espn.ts). A run is logged as "cron" when the nightly job made it.
 // Auth: authenticated admin, or the nightly pg_cron job (see _shared/auth.ts).
 //
 // Games only: no ticket_categories, no prices. Every fixture is somebody's
@@ -21,6 +22,7 @@ import {
   type FdMatch,
   type FdTeam,
 } from "../_shared/footballdata.ts";
+import { ESPN_CUPS, espnTeam, upcomingCupFixtures } from "../_shared/espn.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -84,9 +86,14 @@ Deno.serve(async (req) => {
   try {
     const caller = await requireAdminOrCron(req, admin);
     const body = await req.json().catch(() => ({}));
-    const codes: string[] = Array.isArray(body.competitions) && body.competitions.length
+    const requested: string[] | null = Array.isArray(body.competitions) && body.competitions.length
       ? body.competitions.filter((c: unknown) => typeof c === "string")
+      : null;
+    const espnCodes = new Set<string>(ESPN_CUPS.map((c) => c.code));
+    const codes: string[] = requested
+      ? requested.filter((c) => !espnCodes.has(c))
       : [...COMPETITIONS];
+    const cups = ESPN_CUPS.filter((c) => !requested || requested.includes(c.code));
     const trigger = caller.kind === "cron" ? "cron" : "manual";
 
     const { data: logRow } = await admin
@@ -170,15 +177,93 @@ Deno.serve(async (req) => {
       retired = stale.length;
     }
 
+    // Cups football-data's plan doesn't cover come from ESPN instead. Same
+    // upsert/retire rules, scoped to source "espn" so neither feed can retire
+    // the other's games.
+    const espnLive = new Set<string>();
+    const espnCrests: { team_name: string; crest_url: string }[] = [];
+    for (const cup of cups) {
+      try {
+        const fixtures = await upcomingCupFixtures(cup.league);
+        const rows = fixtures.map((f) => {
+          for (const t of [f.home, f.away]) {
+            if (t.logo) espnCrests.push({ team_name: espnTeam(t.displayName), crest_url: t.logo });
+          }
+          return {
+            source: "espn",
+            external_event_id: `espn_${f.id}`,
+            external_tournament_id: cup.code,
+            sport: "soccer" as const,
+            tournament_name: cup.name,
+            home_team: espnTeam(f.home.displayName),
+            away_team: espnTeam(f.away.displayName),
+            race_name: null,
+            venue_name: f.venue,
+            city: f.city,
+            country: f.country,
+            starts_at: f.startsAt,
+            ends_at: null,
+            cover_image_url: null,
+            status: "upcoming" as const,
+            description: null,
+            last_synced_at: new Date().toISOString(),
+          };
+        });
+        for (const r of rows) espnLive.add(r.external_event_id);
+
+        let upserted = 0;
+        for (const batch of chunked(rows)) {
+          const { data, error } = await admin
+            .from("events")
+            .upsert(batch, { onConflict: "external_event_id", ignoreDuplicates: false })
+            .select("id");
+          if (error) throw new Error(error.message);
+          upserted += data?.length ?? 0;
+        }
+        summary[cup.code] = { fetched: fixtures.length, upserted };
+        totalFetched += fixtures.length;
+        totalUpserted += upserted;
+      } catch (e) {
+        const msg = (e as Error).message ?? "unknown";
+        console.error(`[football-sync] espn ${cup.code}:`, msg);
+        summary[cup.code] = { fetched: 0, upserted: 0, error: msg };
+      }
+    }
+
+    const espnOk = cups.map((c) => c.code).filter((c) => !summary[c]?.error);
+    if (espnOk.length) {
+      const { data: existing } = await admin
+        .from("events")
+        .select("id, external_event_id")
+        .eq("source", "espn")
+        .eq("status", "upcoming")
+        .in("external_tournament_id", espnOk);
+      const stale = (existing ?? [])
+        .filter((r: { external_event_id: string | null }) =>
+          r.external_event_id != null && !espnLive.has(r.external_event_id))
+        .map((r: { id: string }) => r.id);
+      for (const batch of chunked(stale)) {
+        await admin.from("events").update({ status: "cancelled" }).in("id", batch);
+      }
+      retired += stale.length;
+    }
+
+    // ESPN logos only fill gaps: a football-data crest already on file wins.
+    const espnUnique = [...new Map(espnCrests.map((c) => [c.team_name, c])).values()];
+    if (espnUnique.length) {
+      await admin.from("team_crests").upsert(espnUnique, { onConflict: "team_name", ignoreDuplicates: true });
+    }
+
+    const runCount = codes.length + cups.length;
     const failed = Object.values(summary).filter((s) => s.error).length;
     if (logId) {
       await admin.from("supplier_sync_log").update({
         finished_at: new Date().toISOString(),
-        status: failed === 0 ? "success" : failed === codes.length ? "failed" : "partial",
+        status: failed === 0 ? "success" : failed === runCount ? "failed" : "partial",
         records_fetched: totalFetched,
         records_upserted: totalUpserted,
         error_message: failed
-          ? `${failed} av ${codes.length} ligor misslyckades`
+          ? `${failed} av ${runCount} ligor/cuper misslyckades`
           : null,
       }).eq("id", logId);
     }

@@ -65,7 +65,7 @@ async function loadFixtures(admin: Admin): Promise<OurEvent[]> {
     const { data, error } = await admin
       .from("events")
       .select("id, sport, home_team, away_team, race_name, starts_at, external_tournament_id")
-      .in("source", ["football-data", "jolpica", "travelconnection-cup"])
+      .in("source", ["football-data", "espn", "jolpica", "travelconnection-cup"])
       .eq("status", "upcoming")
       .order("starts_at")
       .range(from, from + 999);
