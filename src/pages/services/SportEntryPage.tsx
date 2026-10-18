@@ -32,6 +32,9 @@ const KIND_LABELS = {
     venueIcon: Trophy,
     groupLabel: "Liga",
     upcomingTitle: (name: string) => `Fotbollsresor till ${name}`,
+    whatsIncluded: "Vad ingår",
+    packageTitle: (_sportLabel: string, venue?: string | null) =>
+      venue ? `Kompletta paket till ${venue}` : "Kompletta paket",
     queryField: "team" as const,
   },
   race: {
@@ -40,6 +43,9 @@ const KIND_LABELS = {
     venueIcon: Flag,
     groupLabel: "Datum",
     upcomingTitle: (name: string) => `Biljetter till ${name}`,
+    whatsIncluded: "Vad som kan ingår",
+    packageTitle: (sportLabel: string, venue?: string | null) =>
+      venue ? `${sportLabel}-resa till ${venue}` : `${sportLabel}-resa`,
     queryField: "race" as const,
   },
 };
@@ -206,9 +212,9 @@ export default function SportEntryPage() {
       {/* Package */}
       <section className="bg-cream py-12 md:py-16">
         <div className="container mx-auto px-4 max-w-4xl">
-          <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans text-center">Vad ingår</p>
+          <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans text-center">{labels.whatsIncluded}</p>
           <h2 className="font-display text-3xl md:text-4xl text-center mb-12">
-            Kompletta paket{info.venue ? ` till ${info.venue}` : ""}
+            {labels.packageTitle(sport.label, info.venue)}
           </h2>
           <ul className="grid md:grid-cols-2 gap-4 max-w-2xl mx-auto">
             {features.map((f, i) => (
