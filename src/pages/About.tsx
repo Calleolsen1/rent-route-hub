@@ -35,7 +35,7 @@ import { usePageMeta } from "@/lib/usePageMeta";
 export default function About() {
   const { open: openInquiry } = useInquiryDialog();
   usePageMeta({
-    title: "Om oss - KAISEN TRAVEL GROUP",
+    title: "Om oss - Kaisen Travel Group",
     description: "KAISEN TRAVEL GROUP arrangerar skräddarsydda sportresor, träningsläger och gruppresor. Personlig service från en dedikerad rådgivare - inga mallar, inga callcenter.",
   });
   return (

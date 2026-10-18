@@ -31,8 +31,8 @@ export default function LeaguePage() {
 
   usePageMeta({
     title: leagueName
-      ? `${leagueName}-resor - biljetter, hotell och transfer | KAISEN TRAVEL GROUP`
-      : "Ligaresor | KAISEN TRAVEL GROUP",
+      ? `${leagueName}-resor - biljetter, hotell och transfer | Kaisen Travel Group`
+      : "Ligaresor | Kaisen Travel Group",
     description: leagueName
       ? `Res till ${leagueName} med KAISEN TRAVEL GROUP. Välj lag och få ett komplett resupplägg med hotell, flyg och transfer.`
       : "Res till Europas största ligor med KAISEN TRAVEL GROUP.",

@@ -87,8 +87,8 @@ export default function SportPage() {
 
   usePageMeta({
     title: sport
-      ? `${sport.label}resor - biljetter, hotell och transfer | KAISEN TRAVEL GROUP`
-      : "Sportresor | KAISEN TRAVEL GROUP",
+      ? `${sport.label}resor - biljetter, hotell och transfer | Kaisen Travel Group`
+      : "Sportresor | Kaisen Travel Group",
     description: sport
       ? `Välj liga, lag eller race och få ett komplett reseupplägg med hotell, flyg och transfer från KAISEN TRAVEL GROUP.`
       : "Res till Europas största sportevenemang med KAISEN TRAVEL GROUP.",

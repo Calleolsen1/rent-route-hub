@@ -28,8 +28,8 @@ export default function CupPage() {
 
   usePageMeta({
     title: name
-      ? `${name} biljetter och fotbollsresor | KAISEN TRAVEL GROUP`
-      : "Cupresor | KAISEN TRAVEL GROUP",
+      ? `${name} biljetter och fotbollsresor | Kaisen Travel Group`
+      : "Cupresor | Kaisen Travel Group",
     description: name
       ? `Res till ${name} med KAISEN TRAVEL GROUP. Officiella matchbiljetter, hotell, flyg och transfer - välj match så tar vi fram reseupplägget.`
       : "Res till Europas stora cuper med KAISEN TRAVEL GROUP.",

@@ -129,8 +129,8 @@ export default function EventDetail() {
   // Build the page-meta title from whichever event data is available; the
   // hook re-runs when event loads and overwrites with the real title.
   const metaTitle = event
-    ? `${event.sport === "soccer" ? `${event.home_team} vs ${event.away_team}` : event.race_name ?? event.tournament_name} - KAISEN TRAVEL GROUP`
-    : "Evenemang - KAISEN TRAVEL GROUP";
+    ? `${event.sport === "soccer" ? `${event.home_team} vs ${event.away_team}` : event.race_name ?? event.tournament_name} - Kaisen Travel Group`
+    : "Evenemang - Kaisen Travel Group";
   usePageMeta({
     title: metaTitle,
     description: event?.description
