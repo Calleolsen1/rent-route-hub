@@ -56,7 +56,7 @@ export default function About() {
   </div>
   </section>
 
-  {/* Intro + founder image */}
+  {/* Intro */}
   <section className="py-12 md:py-16 bg-cream">
   <div className="container mx-auto px-4">
   <div className="max-w-3xl">
