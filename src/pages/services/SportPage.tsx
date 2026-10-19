@@ -167,7 +167,7 @@ export default function SportPage() {
                   to={raceEventIds[race.name] ? `/sport/event/${raceEventIds[race.name]}` : `/services/sportresor/${sport.slug}/${race.slug}`}
                   className={`group bg-card border border-border overflow-hidden hover:shadow-xl transition-shadow grid grid-cols-[6rem_minmax(0,1fr)] sm:block ${raceSearch.trim() && ![race.name, race.city, race.venue, race.date_text].join(" ").toLocaleLowerCase("sv").includes(raceSearch.trim().toLocaleLowerCase("sv")) ? "hidden sm:block" : ""}`}
                 >
-                  <div className="h-full min-h-40 sm:min-h-0 sm:aspect-[4/3] overflow-hidden">
+                  <div className="relative h-full min-h-40 sm:min-h-0 sm:aspect-[4/3] overflow-hidden">
                     <img
                       src={
                         venuePhotoFor(venuePhotos, race.venue, race.name) ??
@@ -178,6 +178,10 @@ export default function SportPage() {
                       loading="lazy"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                     />
+                    <div className="hidden sm:block absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy/90 via-navy/50 to-transparent px-4 pt-10 pb-3">
+                      <p className="font-display text-xl text-primary-foreground leading-tight">{race.name}</p>
+                      {race.date_text && <p className="text-xs text-primary-foreground/80 mt-0.5">{race.date_text}</p>}
+                    </div>
                   </div>
                   <div className="min-w-0 p-3 sm:p-5">
                     <h3 className="font-display text-lg sm:text-xl text-foreground mb-1">{race.name}</h3>
