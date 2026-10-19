@@ -522,13 +522,15 @@ const Home = () => {
               <CarouselContent>
                 {heroSlides.map((slide, idx) => (
                   <CarouselItem key={idx}>
-                    <div className="relative h-[54vh] min-h-[340px] max-h-[640px] md:h-[58vh] md:min-h-[420px] overflow-hidden">
-                      <img
-                        src={slide.image}
-                        alt={slide.title}
-                        className="absolute inset-0 w-full h-full object-cover"
-                        loading={idx === 0 ? "eager" : "lazy"}
-                      />
+                    <div className={`relative h-[54vh] min-h-[340px] max-h-[640px] md:h-[58vh] md:min-h-[420px] overflow-hidden bg-navy ${slidesLoaded ? "" : "[&>*]:invisible"}`}>
+                      {slidesLoaded && (
+                        <img
+                          src={slide.image}
+                          alt={slide.title}
+                          className="absolute inset-0 w-full h-full object-cover"
+                          loading={idx === 0 ? "eager" : "lazy"}
+                        />
+                      )}
                       <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/40 to-transparent" />
                       {/* Side padding clears the prev/next arrows (shown from sm). */}
                       <div className="relative h-full flex items-end p-5 pb-12 sm:p-8 sm:pl-20 md:p-14 md:pl-24">
@@ -686,7 +688,7 @@ const Home = () => {
           </div>
 
           <Carousel opts={{ align: "start" }}>
-            <CarouselContent className="-ml-4">
+            <CarouselContent className={`-ml-4 transition-opacity duration-300 ${experiencesLoaded ? "opacity-100" : "opacity-0"}`}>
               {(experienceRows ?? services).map((service: any) => (
                 <CarouselItem key={service.title} className="pl-4 basis-[62%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
                   <Link to={service.href} className="group block h-full">
