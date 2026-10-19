@@ -70,7 +70,7 @@ const Navbar = () => {
             </Link>
 
             {/* Desktop nav */}
-            <div className="hidden xl:flex h-full items-center gap-4">
+            <div className="hidden xl:flex h-full items-center gap-x-8 2xl:gap-x-10">
               {sports.map((sport) => {
                 const isOpen = openMenu === sport.slug;
                 const sportEntries = entriesFor(sport.id);
