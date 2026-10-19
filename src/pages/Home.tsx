@@ -282,6 +282,10 @@ const Home = () => {
     }> | null
   >(null);
   const [heroSlides, setHeroSlides] = useState<HeroSlide[]>(fallbackHeroSlides);
+  // Photos stay hidden until the admin-managed rows arrive, so visitors never
+  // see the bundled fallback images flash before the real ones.
+  const [slidesLoaded, setSlidesLoaded] = useState(false);
+  const [experiencesLoaded, setExperiencesLoaded] = useState(false);
 
   // Hero autoplay: next slide every HERO_AUTOPLAY_MS. Paused while the
   // pointer is on the hero or the tab is hidden, and the clock restarts on
@@ -373,7 +377,7 @@ const Home = () => {
         cta_label: string | null;
         cta_to: string | null;
       }>;
-      if (rows.length === 0) return; // keep fallback
+      if (rows.length === 0) { setSlidesLoaded(true); return; } // keep fallback
       setHeroSlides(
         rows.map((r) => ({
           image: resolveImageUrl(r.image_url, ASSET_LOOKUP, heroImage),
@@ -387,7 +391,8 @@ const Home = () => {
           },
         })),
       );
-    })();
+      setSlidesLoaded(true);
+    })().catch(() => setSlidesLoaded(true));
   }, []);
 
   useEffect(() => {
@@ -450,7 +455,7 @@ const Home = () => {
         .eq("is_active", true)
         .order("sort_order", { ascending: true });
       const rows = (data ?? []) as Array<any>;
-      if (!rows.length) return;
+      if (!rows.length) { setExperiencesLoaded(true); return; }
       setExperienceRows(
         rows.map((r, i) => ({
           title: r.title,
@@ -462,7 +467,8 @@ const Home = () => {
           ctaLabel: r.cta_label ?? "Läs mer",
         })),
       );
-    })();
+      setExperiencesLoaded(true);
+    })().catch(() => setExperiencesLoaded(true));
   }, []);
 
 
