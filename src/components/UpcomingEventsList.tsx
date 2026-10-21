@@ -91,6 +91,9 @@ type Props = {
   showFilters?: boolean;
   /** Meddelar föräldern när listan visar sitt "inga evenemang"-läge (eller inte). */
   onEmptyChange?: (isEmpty: boolean) => void;
+  /** Race pages offer an inquiry when their advertised season has no tickets. */
+  emptyMessage?: string;
+  inquiryDestination?: string;
 };
 
 /** Svenska månadsnamn för filterknapparna. */
@@ -117,6 +120,8 @@ export default function UpcomingEventsList({
   compact = false,
   showFilters = false,
   onEmptyChange,
+  emptyMessage,
+  inquiryDestination,
 }: Props) {
   // A filtered list needs the whole season in hand to build its month chips;
   // an unfiltered teaser keeps the old six-card default.
@@ -204,17 +209,18 @@ export default function UpcomingEventsList({
     return (
       <div className="text-center py-10">
         <p className="text-muted-foreground text-sm mb-2">
-          Inga evenemang matchade - testa att rensa filtren.
+          {emptyMessage ?? "Inga evenemang matchade - testa att rensa filtren."}
         </p>
-        <p className="text-foreground font-medium mb-5">
+        {!emptyMessage && <p className="text-foreground font-medium mb-5">
           Hittar du inte det du letar efter? Vi kan säkert fixa det ändå.
-        </p>
+        </p>}
         <Button
           className="gap-2"
           onClick={() =>
             openInquiry({
               type: "contact",
-              presetTopic: "Förfrågan: evenemang som inte listas",
+              presetTopic: inquiryDestination ? `Förfrågan: ${inquiryDestination}` : "Förfrågan: evenemang som inte listas",
+              defaultDestination: inquiryDestination,
               heading: "Skicka en förfrågan",
               intro: "Berätta vilket evenemang eller vilken resa du letar efter så återkommer vi med ett förslag.",
               showTripParts: true,
