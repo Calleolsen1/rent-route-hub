@@ -222,7 +222,7 @@ export default function UpcomingEventsList({
               presetTopic: inquiryDestination ? `Förfrågan: ${inquiryDestination}` : "Förfrågan: evenemang som inte listas",
               defaultDestination: inquiryDestination,
               heading: "Skicka en förfrågan",
-              intro: "Berätta vilket evenemang eller vilken resa du letar efter så återkommer vi med ett förslag.",
+              intro: inquiryDestination ? `Förfrågan gäller ${inquiryDestination}. Berätta vad du vill ska ingå i resan så återkommer vi med ett förslag.` : "Berätta vilket evenemang eller vilken resa du letar efter så återkommer vi med ett förslag.",
               showTripParts: true,
             })
           }
