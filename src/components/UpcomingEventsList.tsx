@@ -93,6 +93,8 @@ type Props = {
   onEmptyChange?: (isEmpty: boolean) => void;
   /** Race pages offer an inquiry when their advertised season has no tickets. */
   emptyMessage?: string;
+  /** Lopp-sidorna visar bara förfrågningsknappen, ingen förklarande rad. */
+  hideEmptyMessage?: boolean;
   inquiryDestination?: string;
 };
 
@@ -121,6 +123,7 @@ export default function UpcomingEventsList({
   showFilters = false,
   onEmptyChange,
   emptyMessage,
+  hideEmptyMessage,
   inquiryDestination,
 }: Props) {
   // A filtered list needs the whole season in hand to build its month chips;
@@ -208,9 +211,11 @@ export default function UpcomingEventsList({
   if (!events.length) {
     return (
       <div className="text-center py-10">
-        <p className="text-muted-foreground text-sm mb-2">
-          {emptyMessage ?? "Inga evenemang matchade - testa att rensa filtren."}
-        </p>
+        {!hideEmptyMessage && (
+          <p className="text-muted-foreground text-sm mb-2">
+            {emptyMessage ?? "Inga evenemang matchade - testa att rensa filtren."}
+          </p>
+        )}
         {!emptyMessage && <p className="text-foreground font-medium mb-5">
           Hittar du inte det du letar efter? Vi kan säkert fixa det ändå.
         </p>}
