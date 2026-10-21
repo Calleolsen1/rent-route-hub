@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Rätta tomläget på Formel 1-loppsidorna och avgränsa biljetter till annonserad säsong; kontrollera förfrågan och att äldre lopp inte visas.
+- [x] Rätta tomläget på Formel 1-loppsidorna och avgränsa biljetter till annonserad säsong; förfrågan med lopp och datum verifierad på dator och telefon, säsongstest godkänt. Inte publicerat.
 
 - [x] Godkända mobilförbättringar: kompaktare lopp- och matchkort med sökfilter, nyhetsbrevsbredd, kontaktuppgifter först och större skrivfält; verifierat på telefon och dator utan att publicera.
 
