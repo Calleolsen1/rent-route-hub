@@ -1096,7 +1096,7 @@ function EntryDialog({ open, onOpenChange, sport, initial, nextOrder, existingGr
           </div>
 
           <div>
-            <Label className="mb-1 block">"Vad ingår" på landningssidan</Label>
+            <Label className="mb-1 block">Rutor under "Skräddarsy din resa" på landningssidan</Label>
             <div className="space-y-1.5">
               {features.map((f, i) => (
                 <div key={i} className="flex gap-2">
