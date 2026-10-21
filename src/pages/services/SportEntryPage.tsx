@@ -33,7 +33,7 @@ const KIND_LABELS = {
     venueIcon: Trophy,
     groupLabel: "Liga",
     upcomingTitle: (name: string) => `Fotbollsresor till ${name}`,
-    whatsIncluded: "Vad ingår",
+    whatsIncluded: "Skräddarsy din resa",
     packageTitle: (_sportLabel: string, venue?: string | null) =>
       venue ? `Kompletta paket till ${venue}` : "Kompletta paket",
     queryField: "team" as const,
@@ -53,12 +53,10 @@ const KIND_LABELS = {
 
 const DEFAULT_FEATURES_BY_KIND: Record<string, string[]> = {
   team: [
-    "Matchbiljetter med bra sittplatser",
-    "Hotell nära arenan",
-    "Flyg från valfri svensk flygplats",
-    "Transfer till och från matchen",
-    "Stadstur och rekommendationer",
-    "Svensk reseledare på plats",
+    "Matchbiljetter - välj mellan olika biljettkategorier",
+    "Hotell - centralt i olika kategorier inklsuive frukost",
+    "Flyg - avresa från valfri flygplats",
+    "Transfer - möjlighet att förboka transport till hotell",
   ],
   race: [
     "Biljetter - weekend alt söndag i olika kategorier",
@@ -223,9 +221,9 @@ export default function SportEntryPage() {
           </h2>
           <ul className="grid md:grid-cols-2 gap-4 max-w-2xl mx-auto">
             {features.map((f, i) => {
-              // Fetstil på första ordet gäller bara racen (SKRÄDDARSY DIN RESA);
-              // fotbollssidornas "Vad ingår"-listor visas som tidigare.
-              const space = sport.entry_kind === "race" ? f.indexOf(" ") : -1;
+              // Första ordet är fetstilt i rutorna på både fotboll och racen
+              // (Matchbiljetter, Hotell, Flyg, Transfers ...).
+              const space = f.indexOf(" ");
               const lead = space > 0 ? f.slice(0, space) : f;
               const rest = space > 0 ? f.slice(space) : "";
               return (
