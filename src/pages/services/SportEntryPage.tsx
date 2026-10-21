@@ -146,6 +146,7 @@ export default function SportEntryPage() {
             {...raceSeason}
             sport={sport.entry_kind === "race" ? "formula1" : undefined}
             emptyMessage={sport.entry_kind === "race" ? "Biljetter för detta lopp finns ännu inte i listan. Skicka en förfrågan så undersöker vi möjligheterna." : undefined}
+            hideEmptyMessage={sport.entry_kind === "race"}
             inquiryDestination={sport.entry_kind === "race" ? `${info.name}${info.date_text ? ` – ${info.date_text}` : ""}` : undefined}
             showFilters
             eyebrow={sport.entry_kind === "race" ? "Köp biljett direkt" : ""}
