@@ -243,6 +243,9 @@ function sortByRaceDate(entries: NavEntry[]): NavEntry[] {
   return [...entries].sort((a, b) => raceDateKey(a.date_text) - raceDateKey(b.date_text));
 }
 
+/** Chronological race ordering, shared by the sport pages and the navbar. */
+export { sortByRaceDate };
+
 export function useEntriesForSport(sportSlug?: string): NavEntry[] {
   const sports = useSports();
   const entries = useEntries();
