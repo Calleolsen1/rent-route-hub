@@ -223,14 +223,16 @@ export default function SportEntryPage() {
           </h2>
           <ul className="grid md:grid-cols-2 gap-4 max-w-2xl mx-auto">
             {features.map((f, i) => {
-              const space = f.indexOf(" ");
+              // Fetstil på första ordet gäller bara racen (SKRÄDDARSY DIN RESA);
+              // fotbollssidornas "Vad ingår"-listor visas som tidigare.
+              const space = sport.entry_kind === "race" ? f.indexOf(" ") : -1;
               const lead = space > 0 ? f.slice(0, space) : f;
               const rest = space > 0 ? f.slice(space) : "";
               return (
                 <li key={i} className="flex items-start gap-3 bg-card p-4 rounded-lg">
                   <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                   <span className="text-sm">
-                    <span className="font-semibold">{lead}</span>
+                    <span className={space > 0 ? "font-semibold" : undefined}>{lead}</span>
                     {rest}
                   </span>
                 </li>
