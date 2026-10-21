@@ -221,12 +221,35 @@ export function useSport(slug?: string): NavSport | undefined {
   return slug ? sports.find((s) => s.slug === slug) : undefined;
 }
 
+/**
+ * Races are listed chronologically, regardless of the admin sort_order —
+ * parse the Swedish display date ("5 september 2027") into a timestamp.
+ * Undated or unparseable entries keep their relative order at the end.
+ */
+const MONTHS_SV: Record<string, number> = {
+  januari: 0, februari: 1, mars: 2, april: 3, maj: 4, juni: 5,
+  juli: 6, augusti: 7, september: 8, oktober: 9, november: 10, december: 11,
+};
+
+function raceDateKey(dateText?: string | null): number {
+  const m = (dateText ?? "").trim().match(/^(\d{1,2})\s+([A-Za-zåäö]+)\s+(\d{4})$/);
+  if (!m) return Infinity;
+  const month = MONTHS_SV[m[2].toLowerCase()];
+  if (month === undefined) return Infinity;
+  return Date.UTC(Number(m[3]), month, Number(m[1]));
+}
+
+function sortByRaceDate(entries: NavEntry[]): NavEntry[] {
+  return [...entries].sort((a, b) => raceDateKey(a.date_text) - raceDateKey(b.date_text));
+}
+
 export function useEntriesForSport(sportSlug?: string): NavEntry[] {
   const sports = useSports();
   const entries = useEntries();
   const sport = sportSlug ? sports.find((s) => s.slug === sportSlug) : undefined;
   if (!sport) return [];
-  return entries.filter((e) => e.sport_id === sport.id);
+  const list = entries.filter((e) => e.sport_id === sport.id);
+  return sport.entry_kind === "race" ? sortByRaceDate(list) : list;
 }
 
 export function useEntry(sportSlug?: string, entrySlug?: string): NavEntry | undefined {
