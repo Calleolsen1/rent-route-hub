@@ -1008,7 +1008,7 @@ function EntryDialog({ open, onOpenChange, sport, initial, nextOrder, existingGr
                 <Input
                   value={name}
                   onChange={(e) => { setName(e.target.value); setForceSave(false); }}
-                  placeholder={isRace ? "t.ex. Monacos Grand Prix" : "t.ex. Arsenal"}
+                  placeholder={isRace ? "t.ex. Monacos GP" : "t.ex. Arsenal"}
                   autoFocus
                   className={
                     evMatch.status === "match" ? "border-green-500 pr-9" :

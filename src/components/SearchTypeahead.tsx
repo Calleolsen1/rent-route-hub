@@ -119,7 +119,7 @@ export function SearchTypeahead({
     const normalizeRace = (name: string) =>
       name
         .toLowerCase()
-        .replace(/\s*grand\s*prix\s*$/i, "")
+        .replace(/\s*(?:grand\s*prix|gp)\s*$/i, "")
         .replace(/s$/, "")
         .trim();
     const racePageNames = new Set<string>();

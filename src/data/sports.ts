@@ -75,24 +75,31 @@ for (const team of ADDITIONAL_TEAMS) {
 }
 
 export const RACES: Record<string, RaceInfo> = {
-  "ungern": { slug: "ungern", name: "Ungerns Grand Prix", circuit: "Hungaroring", city: "Budapest, Ungern", date: "26 juli 2026", shortDate: "26 juli", tagline: "Monaco utan barriärerna", description: "Hungaroring är en av kalenderns mest tekniska banor - en kurvig utmaning där föraren räknas mer än bilen." },
-  "italien-monza": { slug: "italien-monza", name: "Italiens Grand Prix", circuit: "Autodromo Nazionale Monza", city: "Monza, Italien", date: "6 september 2026", shortDate: "6 september", tagline: "Hastighetens tempel", description: "Monza - F1:s historiska hem och hastighetens tempel. Tifosin målar tribunerna röda när Ferrari kör hemma." },
-  "spanien-madrid": { slug: "spanien-madrid", name: "Spaniens Grand Prix", circuit: "Madring", city: "Madrid, Spanien", date: "13 september 2026", shortDate: "13 september", tagline: "Spaniens nya F1-bana", description: "Madring är F1:s nya stadsbana i Madrid - en spektakulär kombination av gata och permanent bana." },
-  "usa-austin": { slug: "usa-austin", name: "USA:s Grand Prix", circuit: "Circuit of the Americas", city: "Austin, Texas", date: "25 oktober 2026", shortDate: "25 oktober", tagline: "Allt är större i Texas", description: "Austin bjuder på fest, livemusik och en av kalenderns mest älskade banor - Circuit of the Americas." },
-  "las-vegas": { slug: "las-vegas", name: "Las Vegas Grand Prix", circuit: "Las Vegas Strip Circuit", city: "Las Vegas, USA", date: "21 november 2026", shortDate: "21 november", tagline: "F1 under neonen", description: "F1-bilar i 350 km/h ner för Las Vegas Strip i mörkret - kalenderns mest spektakulära nattevent." },
-  "qatar": { slug: "qatar", name: "Qatars Grand Prix", circuit: "Lusail International Circuit", city: "Doha, Qatar", date: "29 november 2026", shortDate: "29 november", tagline: "Race under stjärnorna", description: "Lusail bjuder på ett av säsongens snabbaste flytande race under Qatars stjärnhimmel." },
-  "abu-dhabi": { slug: "abu-dhabi", name: "Abu Dhabi Grand Prix", circuit: "Yas Marina Circuit", city: "Abu Dhabi, UAE", date: "6 december 2026", shortDate: "6 december", tagline: "Säsongsfinalen", description: "F1-säsongens finale på Yas Marina - race från sol till mörker med yacht-show och världsklass-fest." },
-  "miami": { slug: "miami", name: "Miami Grand Prix", circuit: "Miami International Autodrome", city: "Miami, USA", date: "9 maj 2027", shortDate: "9 maj 2027", tagline: "F1 möter South Beach", description: "Miami GP runt Hard Rock Stadium - F1, palmer och South Beach-fest i Florida-värmen." },
-  "monaco": { slug: "monaco", name: "Monacos Grand Prix", circuit: "Circuit de Monaco", city: "Monte Carlo, Monaco", date: "6 juni 2027", shortDate: "6 juni 2027", tagline: "Kronan i F1-kalendern", description: "Monaco - F1:s mest prestigefulla race. Gatorna i Monte Carlo, yachterna i hamnen, glamouren utan motstycke." },
-  "algarve": { slug: "algarve", name: "Algarves Grand Prix", circuit: "Autódromo do Algarve", city: "Portimão, Portugal", date: "13 juni 2027", shortDate: "13 juni 2027", tagline: "Bergen och Atlanten", description: "Portimão - en av F1:s mest dramatiska banor med branta backar och Atlanten som fond." },
-  "storbritannien": { slug: "storbritannien", name: "Storbritanniens Grand Prix", circuit: "Silverstone Circuit", city: "Silverstone, England", date: "4 juli 2027", shortDate: "4 juli 2027", tagline: "Silverstone", description: "Silverstone - F1:s ursprungliga hem - en snabb och flytande bana där historien möter hög fart och en av världens mest passionerade publiker." },
-  "osterrike": { slug: "osterrike", name: "Österrikes Grand Prix", circuit: "Red Bull Ring", city: "Spielberg, Österrike", date: "11 juli 2027", shortDate: "11 juli 2027", tagline: "Spielberg", description: "Red Bull Ring ligger bland de österrikiska alperna - en kort och snabb bana med dramatiska backar och stämning i världsklass." },
-  "belgien": { slug: "belgien", name: "Belgiens Grand Prix", circuit: "Circuit de Spa-Francorchamps", city: "Spa, Belgien", date: "25 juli 2027", shortDate: "25 juli 2027", tagline: "Spa", description: "Spa-Francorchamps är en av F1:s älskade klassiker - de berömda kurvorna Eau Rouge och Raidillon, långa fullgas-passager och belgisk racehistoria." },
+  "ungern": { slug: "ungern", name: "Ungerns GP", circuit: "Hungaroring", city: "Budapest, Ungern", date: "26 juli 2026", shortDate: "26 juli", tagline: "Monaco utan barriärerna", description: "Hungaroring är en av kalenderns mest tekniska banor - en kurvig utmaning där föraren räknas mer än bilen." },
+  "italien-monza": { slug: "italien-monza", name: "Italiens GP", circuit: "Autodromo Nazionale Monza", city: "Monza, Italien", date: "6 september 2026", shortDate: "6 september", tagline: "Hastighetens tempel", description: "Monza - F1:s historiska hem och hastighetens tempel. Tifosin målar tribunerna röda när Ferrari kör hemma." },
+  "spanien-madrid": { slug: "spanien-madrid", name: "Spaniens GP", circuit: "Madring", city: "Madrid, Spanien", date: "13 september 2026", shortDate: "13 september", tagline: "Spaniens nya F1-bana", description: "Madring är F1:s nya stadsbana i Madrid - en spektakulär kombination av gata och permanent bana." },
+  "usa-austin": { slug: "usa-austin", name: "USA:s GP", circuit: "Circuit of the Americas", city: "Austin, Texas", date: "25 oktober 2026", shortDate: "25 oktober", tagline: "Allt är större i Texas", description: "Austin bjuder på fest, livemusik och en av kalenderns mest älskade banor - Circuit of the Americas." },
+  "las-vegas": { slug: "las-vegas", name: "Las Vegas GP", circuit: "Las Vegas Strip Circuit", city: "Las Vegas, USA", date: "21 november 2026", shortDate: "21 november", tagline: "F1 under neonen", description: "F1-bilar i 350 km/h ner för Las Vegas Strip i mörkret - kalenderns mest spektakulära nattevent." },
+  "qatar": { slug: "qatar", name: "Qatars GP", circuit: "Lusail International Circuit", city: "Doha, Qatar", date: "29 november 2026", shortDate: "29 november", tagline: "Race under stjärnorna", description: "Lusail bjuder på ett av säsongens snabbaste flytande race under Qatars stjärnhimmel." },
+  "abu-dhabi": { slug: "abu-dhabi", name: "Abu Dhabi GP", circuit: "Yas Marina Circuit", city: "Abu Dhabi, UAE", date: "6 december 2026", shortDate: "6 december", tagline: "Säsongsfinalen", description: "F1-säsongens finale på Yas Marina - race från sol till mörker med yacht-show och världsklass-fest." },
+  "miami": { slug: "miami", name: "Miami GP", circuit: "Miami International Autodrome", city: "Miami, USA", date: "9 maj 2027", shortDate: "9 maj 2027", tagline: "F1 möter South Beach", description: "Miami GP runt Hard Rock Stadium - F1, palmer och South Beach-fest i Florida-värmen." },
+  "monaco": { slug: "monaco", name: "Monacos GP", circuit: "Circuit de Monaco", city: "Monte Carlo, Monaco", date: "6 juni 2027", shortDate: "6 juni 2027", tagline: "Kronan i F1-kalendern", description: "Monaco - F1:s mest prestigefulla race. Gatorna i Monte Carlo, yachterna i hamnen, glamouren utan motstycke." },
+  "algarve": { slug: "algarve", name: "Algarves GP", circuit: "Autódromo do Algarve", city: "Portimão, Portugal", date: "13 juni 2027", shortDate: "13 juni 2027", tagline: "Bergen och Atlanten", description: "Portimão - en av F1:s mest dramatiska banor med branta backar och Atlanten som fond." },
+  "storbritannien": { slug: "storbritannien", name: "Storbritanniens GP", circuit: "Silverstone Circuit", city: "Silverstone, England", date: "4 juli 2027", shortDate: "4 juli 2027", tagline: "Silverstone", description: "Silverstone - F1:s ursprungliga hem - en snabb och flytande bana där historien möter hög fart och en av världens mest passionerade publiker." },
+  "osterrike": { slug: "osterrike", name: "Österrikes GP", circuit: "Red Bull Ring", city: "Spielberg, Österrike", date: "11 juli 2027", shortDate: "11 juli 2027", tagline: "Spielberg", description: "Red Bull Ring ligger bland de österrikiska alperna - en kort och snabb bana med dramatiska backar och stämning i världsklass." },
+  "belgien": { slug: "belgien", name: "Belgiens GP", circuit: "Circuit de Spa-Francorchamps", city: "Spa, Belgien", date: "25 juli 2027", shortDate: "25 juli 2027", tagline: "Spa", description: "Spa-Francorchamps är en av F1:s älskade klassiker - de berömda kurvorna Eau Rouge och Raidillon, långa fullgas-passager och belgisk racehistoria." },
 };
+
+/** "Belgiens GP" -> "Belgien", "USA:s GP" -> "USA", "Las Vegas GP" -> "Las Vegas". */
+const raceShortLabel = (name: string) =>
+  name
+    .replace(/ (?:GP|Grand Prix)$/i, "")
+    .replace(/([^a])s$/i, "$1")
+    .replace(/:$/, "");
 
 export const F1_RACES_NAV = Object.values(RACES).map((r) => ({
   slug: r.slug,
-  label: r.name.replace(/s Grand Prix$/i, "").replace(/ Grand Prix$/i, ""),
+  label: raceShortLabel(r.name),
   date: r.shortDate,
 }));
 
