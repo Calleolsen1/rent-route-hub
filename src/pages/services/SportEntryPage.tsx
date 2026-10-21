@@ -11,6 +11,7 @@ import { useSport, useEntry } from "@/hooks/useNavigation";
 import UpcomingEventsList from "@/components/UpcomingEventsList";
 import { useInquiryDialog } from "@/components/InquiryDialog";
 import { useVenuePhotos, venuePhotoFor } from "@/hooks/useVenuePhotos";
+import { raceSeasonBounds } from "@/lib/raceSeason";
 
 /**
  * Unified landing page for any sport entry - replaces the old TeamPage +
@@ -103,6 +104,7 @@ export default function SportEntryPage() {
     ? info.features_json
     : DEFAULT_FEATURES_BY_KIND[sport.entry_kind] ?? DEFAULT_FEATURES_BY_KIND.team) ?? [];
   const groupOrDate = sport.entry_kind === "race" ? info.date_text : info.group_label;
+  const raceSeason = sport.entry_kind === "race" ? raceSeasonBounds(info.date_text) : {};
 
   return (
     <div className="min-h-screen">
@@ -141,6 +143,10 @@ export default function SportEntryPage() {
         <div className="container mx-auto px-4 max-w-6xl">
           <UpcomingEventsList
             {...{ [labels.queryField]: info.name }}
+            {...raceSeason}
+            sport={sport.entry_kind === "race" ? "formula1" : undefined}
+            emptyMessage={sport.entry_kind === "race" ? "Biljetter för detta lopp finns ännu inte i listan. Skicka en förfrågan så undersöker vi möjligheterna." : undefined}
+            inquiryDestination={sport.entry_kind === "race" ? `${info.name}${info.date_text ? ` – ${info.date_text}` : ""}` : undefined}
             showFilters
             eyebrow={sport.entry_kind === "race" ? "Köp biljett direkt" : ""}
             title={labels.upcomingTitle(info.name)}
