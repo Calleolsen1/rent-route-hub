@@ -61,10 +61,10 @@ const DEFAULT_FEATURES_BY_KIND: Record<string, string[]> = {
     "Svensk reseledare på plats",
   ],
   race: [
-    "Biljetter-weekend/söndag olika kategorier",
-    "Hotell centralt",
-    "Flyg från valfri svensk flygplats",
-    "Transfer från/till flygplats",
+    "Biljetter - weekend alt söndag i olika kategorier",
+    "Hotell - centralt inklusive frukost i olika kategorier",
+    "Flyg - avresa från valfri flygplats",
+    "Transfers - möjlighet att förboka transport till hotell",
   ],
 };
 
@@ -222,12 +222,20 @@ export default function SportEntryPage() {
             {labels.packageTitle(sport.label, info.venue)}
           </h2>
           <ul className="grid md:grid-cols-2 gap-4 max-w-2xl mx-auto">
-            {features.map((f, i) => (
-              <li key={i} className="flex items-start gap-3 bg-card p-4 rounded-lg">
-                <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                <span className="text-sm">{f}</span>
-              </li>
-            ))}
+            {features.map((f, i) => {
+              const space = f.indexOf(" ");
+              const lead = space > 0 ? f.slice(0, space) : f;
+              const rest = space > 0 ? f.slice(space) : "";
+              return (
+                <li key={i} className="flex items-start gap-3 bg-card p-4 rounded-lg">
+                  <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                  <span className="text-sm">
+                    <span className="font-semibold">{lead}</span>
+                    {rest}
+                  </span>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </section>
