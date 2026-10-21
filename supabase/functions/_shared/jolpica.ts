@@ -15,7 +15,7 @@
 //     error worth failing a sync over
 //   - every race carries Circuit.Location (locality, country, lat/long) and
 //     session times (practices, qualifying)
-//   - names are English ("United States Grand Prix"); the site's nav entries
+//   - names are English ("United States GP"); the site's nav entries
 //     are Swedish, hence RACE_NAME_SV below
 
 const DEFAULT_BASE = "https://api.jolpi.ca/ergast/f1";
@@ -79,34 +79,34 @@ interface MRData {
  * keep their English name and still appear in general listings.
  */
 const RACE_NAME_SV: Record<string, string> = {
-  "monaco grand prix": "Monacos Grand Prix",
-  "united states grand prix": "USA:s Grand Prix",
-  "spanish grand prix": "Spaniens Grand Prix",
-  "italian grand prix": "Italiens Grand Prix",
-  "hungarian grand prix": "Ungerns Grand Prix",
-  "qatar grand prix": "Qatars Grand Prix",
-  "portuguese grand prix": "Algarves Grand Prix",
-  "abu dhabi grand prix": "Abu Dhabi Grand Prix",
-  "las vegas grand prix": "Las Vegas Grand Prix",
-  "miami grand prix": "Miami Grand Prix",
-  "british grand prix": "Storbritanniens Grand Prix",
-  "belgian grand prix": "Belgiens Grand Prix",
-  "dutch grand prix": "Nederländernas Grand Prix",
-  "austrian grand prix": "Österrikes Grand Prix",
-  "french grand prix": "Frankrikes Grand Prix",
-  "german grand prix": "Tysklands Grand Prix",
-  "japanese grand prix": "Japans Grand Prix",
-  "australian grand prix": "Australiens Grand Prix",
-  "canadian grand prix": "Kanadas Grand Prix",
-  "brazilian grand prix": "Brasiliens Grand Prix",
-  "mexico city grand prix": "Mexikos Grand Prix",
-  "mexican grand prix": "Mexikos Grand Prix",
-  "azerbaijan grand prix": "Azerbajdzjans Grand Prix",
-  "singapore grand prix": "Singapores Grand Prix",
-  "bahrain grand prix": "Bahrains Grand Prix",
-  "saudi arabian grand prix": "Saudiarabiens Grand Prix",
-  "chinese grand prix": "Kinas Grand Prix",
-  "emilia romagna grand prix": "Emilia Romagnas Grand Prix",
+  "monaco grand prix": "Monacos GP",
+  "united states grand prix": "USA:s GP",
+  "spanish grand prix": "Spaniens GP",
+  "italian grand prix": "Italiens GP",
+  "hungarian grand prix": "Ungerns GP",
+  "qatar grand prix": "Qatars GP",
+  "portuguese grand prix": "Algarves GP",
+  "abu dhabi grand prix": "Abu Dhabi GP",
+  "las vegas grand prix": "Las Vegas GP",
+  "miami grand prix": "Miami GP",
+  "british grand prix": "Storbritanniens GP",
+  "belgian grand prix": "Belgiens GP",
+  "dutch grand prix": "Nederländernas GP",
+  "austrian grand prix": "Österrikes GP",
+  "french grand prix": "Frankrikes GP",
+  "german grand prix": "Tysklands GP",
+  "japanese grand prix": "Japans GP",
+  "australian grand prix": "Australiens GP",
+  "canadian grand prix": "Kanadas GP",
+  "brazilian grand prix": "Brasiliens GP",
+  "mexico city grand prix": "Mexikos GP",
+  "mexican grand prix": "Mexikos GP",
+  "azerbaijan grand prix": "Azerbajdzjans GP",
+  "singapore grand prix": "Singapores GP",
+  "bahrain grand prix": "Bahrains GP",
+  "saudi arabian grand prix": "Saudiarabiens GP",
+  "chinese grand prix": "Kinas GP",
+  "emilia romagna grand prix": "Emilia Romagnas GP",
 };
 
 /**
