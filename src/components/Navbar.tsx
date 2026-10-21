@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { slugify as slug } from "@/data/sports";
 import { CUP_SLUGS, CUP_GROUP_LABEL, cupHref } from "@/data/cups";
-import { useSports, useEntries, useTopMenu, type NavSport, type NavEntry } from "@/hooks/useNavigation";
+import { useSports, useEntries, useTopMenu, sortByRaceDate, type NavSport, type NavEntry } from "@/hooks/useNavigation";
 
 const Navbar = () => {
   const { user, signOut } = useAuth();
@@ -40,9 +40,13 @@ const Navbar = () => {
     };
   }, [mobileOpen]);
 
-  const entriesFor = (sportId: string) =>
+  const entriesFor = (sportId: string) => {
     // show_in_menu defaults to true if absent (backward compat with static fallback)
-    entries.filter((e) => e.sport_id === sportId && (e.show_in_menu ?? true));
+    const list = entries.filter((e) => e.sport_id === sportId && (e.show_in_menu ?? true));
+    // Races follow the calendar, not the admin sort order (same as the race pages).
+    const sport = sports.find((s) => s.id === sportId);
+    return sport?.entry_kind === "race" ? sortByRaceDate(list) : list;
+  };
   const groupedFor = (sportId: string) => {
     const list = entriesFor(sportId);
     const map = new Map<string, NavEntry[]>();
