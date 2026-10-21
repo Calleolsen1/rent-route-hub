@@ -178,7 +178,7 @@ export function ManualEventDialog({ open, onOpenChange, onCreated }: Props) {
               <Input
                 value={raceName}
                 onChange={(e) => setRaceName(e.target.value)}
-                placeholder="Spanish Grand Prix"
+                placeholder="Spaniens GP"
                 className="mt-1"
               />
             </div>

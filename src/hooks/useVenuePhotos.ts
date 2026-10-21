@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
  *
  * Admin uploads under "Arenabilder" are keyed by the supplier's event name
  * (e.g. "Italian Grand Prix") while the menu entries use Swedish names
- * ("Italiens Grand Prix"), so the venue label ("Monza") is the reliable join.
+ * ("Italiens GP"), so the venue label ("Monza") is the reliable join.
  */
 export function useVenuePhotos(): Record<string, string> {
   const [photos, setPhotos] = useState<Record<string, string>>({});

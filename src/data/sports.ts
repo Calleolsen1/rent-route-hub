@@ -90,9 +90,16 @@ export const RACES: Record<string, RaceInfo> = {
   "belgien": { slug: "belgien", name: "Belgiens GP", circuit: "Circuit de Spa-Francorchamps", city: "Spa, Belgien", date: "25 juli 2027", shortDate: "25 juli 2027", tagline: "Spa", description: "Spa-Francorchamps är en av F1:s älskade klassiker - de berömda kurvorna Eau Rouge och Raidillon, långa fullgas-passager och belgisk racehistoria." },
 };
 
+/** "Belgiens GP" -> "Belgien", "USA:s GP" -> "USA", "Las Vegas GP" -> "Las Vegas". */
+const raceShortLabel = (name: string) =>
+  name
+    .replace(/ (?:GP|Grand Prix)$/i, "")
+    .replace(/([^a])s$/i, "$1")
+    .replace(/:$/, "");
+
 export const F1_RACES_NAV = Object.values(RACES).map((r) => ({
   slug: r.slug,
-  label: r.name.replace(/s GP$/i, "").replace(/ GP$/i, ""),
+  label: raceShortLabel(r.name),
   date: r.shortDate,
 }));
 

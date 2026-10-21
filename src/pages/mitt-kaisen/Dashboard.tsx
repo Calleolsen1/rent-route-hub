@@ -27,7 +27,7 @@ export default function MittKaisenDashboard() {
       to: "/mitt-kaisen/biljetter",
       icon: Ticket,
       title: "Mina biljetter",
-      description: "Se dina kommande matcher och Grand Prix",
+      description: "Se dina kommande matcher och GP",
     },
     {
       to: "/mitt-kaisen/fakturor",
