@@ -54,7 +54,7 @@ const KIND_LABELS = {
 const DEFAULT_FEATURES_BY_KIND: Record<string, string[]> = {
   team: [
     "Matchbiljetter - välj mellan olika biljettkategorier",
-    "Hotell - centralt i olika kategorier inklsuive frukost",
+    "Hotell - centralt i olika kategorier inklusive frukost",
     "Flyg - avresa från valfri flygplats",
     "Transfer - möjlighet att förboka transport till hotell",
   ],
