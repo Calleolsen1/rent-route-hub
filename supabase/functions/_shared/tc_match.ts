@@ -54,6 +54,7 @@ const ALIASES: Record<string, string> = {
   "Athletic Bilbao": "Athletic Club",
   "Wolves": "Wolverhampton Wanderers",
   "Spurs": "Tottenham Hotspur",
+  "Rennes": "Stade Rennais",
 };
 
 function stripAccents(s: string): string {
@@ -69,6 +70,10 @@ export function teamTokens(name: string): string[] {
     // initials collapse into one noise token instead of separate letters.
     .replace(/\b([a-z])\.(?=[a-z]\b|[a-z]\.)/g, "$1")
     .replace(/\./g, " ")
+    // "FSV Mainz05": a squad number glued to the name splits off, so it
+    // drops out like the "05" in "1. FSV Mainz 05". Needs 3+ letters so
+    // "u21" stays one squad-marker token.
+    .replace(/\b([a-z]{3,})(\d{2})\b/g, "$1 $2")
     .replace(/[^a-z0-9 ]/g, " ");
   const tokens = cleaned.split(/\s+/).filter(Boolean);
   const meaningful = tokens.filter((t) => !NOISE.has(t) && !/^(18|19|20)\d\d$/.test(t) && !/^\d{1,2}$/.test(t));
@@ -104,14 +109,22 @@ export function resolveTeam(supplierName: string, ourNames: readonly string[]): 
   const key = teamKey(supplierName);
   if (!key) return null;
 
-  const exact = ourNames.filter((n) => teamKey(n) === key);
-  if (exact.length === 1) return exact[0];
-  if (exact.length > 1) return null;
+  // Fixture sources spell the same club differently ("Celta de Vigo" from
+  // football-data, "Celta Vigo" from ESPN). Names sharing a key are one
+  // team, so collapse them before the uniqueness checks below; the matcher
+  // looks fixtures up by key, so whichever spelling wins is fine.
+  const byKey = new Map<string, string>();
+  for (const n of ourNames) {
+    const k = teamKey(n);
+    if (k && !byKey.has(k)) byKey.set(k, n);
+  }
+  const exact = byKey.get(key);
+  if (exact) return exact;
 
   const theirs = new Set(key.split(" "));
   const theirSquad = squadMarker(key);
-  const subset = ourNames.filter((n) => {
-    const ours = teamKey(n).split(" ");
+  const subset = [...byKey.keys()].filter((k) => {
+    const ours = k.split(" ");
     if (!ours.length) return false;
     // "Manchester United Women" contains every token of "Manchester United",
     // but it is a different team. Only compare like with like.
@@ -121,7 +134,7 @@ export function resolveTeam(supplierName: string, ourNames: readonly string[]): 
     const theirsInOurs = [...theirs].every((t) => oursSet.has(t));
     return oursInTheirs || theirsInOurs;
   });
-  return subset.length === 1 ? subset[0] : null;
+  return subset.length === 1 ? byKey.get(subset[0])! : null;
 }
 
 /** Women's, youth and reserve sides, which share a name with the senior team. */
@@ -172,7 +185,7 @@ export class FootballMatcher {
     const soccer = events.filter((e) => e.sport === "soccer" && e.home_team && e.away_team);
     this.names = [...new Set(soccer.flatMap((e) => [e.home_team, e.away_team].filter((name): name is string => !!name)))];
     for (const e of soccer) {
-      const k = `${e.home_team}|${e.away_team}`;
+      const k = `${teamKey(e.home_team!)}|${teamKey(e.away_team!)}`;
       const list = this.byPair.get(k) ?? [];
       list.push(e);
       this.byPair.set(k, list);
@@ -193,7 +206,7 @@ export class FootballMatcher {
       const missing = [!h && home, !a && away].filter(Boolean).join(" och ");
       return { eventId: null, note: `Känner inte igen laget: ${missing}` };
     }
-    const candidates = (this.byPair.get(`${h}|${a}`) ?? []).filter((e) => !taken.has(e.id) && (!competitionCode || e.external_tournament_id === competitionCode));
+    const candidates = (this.byPair.get(`${teamKey(h)}|${teamKey(a)}`) ?? []).filter((e) => !taken.has(e.id) && (!competitionCode || e.external_tournament_id === competitionCode));
     if (!candidates.length) {
       return { eventId: null, note: `Ingen match ${h} – ${a} i vår spelschema` };
     }
