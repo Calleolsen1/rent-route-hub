@@ -236,12 +236,17 @@ Deno.serve(async (req) => {
     // fixture changes hands between runs (a supplier duplicate was removed,
     // a date moved), the old holder must let go before the new one upserts
     // in, or the batch fails on the constraint.
-    // Products gone from the catalogue (played, withdrawn) let go of their
-    // fixture too, unless an admin linked them by hand.
+    // Products gone from the catalogue (played, withdrawn, or sandbox-only
+    // after the switch to production) are deleted, unless an admin linked
+    // them by hand. Keeping them only parked dead rows under "Att granska"
+    // with nothing to link them to. An empty catalogue is treated as a bad
+    // response, not as everything gone.
     const seen = new Set(products.map((p) => p.id));
-    const gone = [...existing.values()]
-      .filter((l) => !seen.has(l.tc_product_id) && l.event_id && l.match_method === "auto")
-      .map((l) => l.tc_product_id);
+    const gone = products.length
+      ? [...existing.values()]
+        .filter((l) => !seen.has(l.tc_product_id) && l.match_method !== "manual")
+        .map((l) => l.tc_product_id)
+      : [];
     const moving = rows
       .filter((r) => {
         const prev = existing.get(r.tc_product_id as number);
@@ -258,11 +263,8 @@ Deno.serve(async (req) => {
           .eq("source", "travelconnection-cup").in("id", vanishedEventIds);
         if (error) throw new Error(`retire cup fixtures: ${error.message}`);
       }
-      const { error } = await admin
-        .from("tc_product_links")
-        .update({ event_id: null, match_method: "none", match_note: "Finns inte längre hos leverantören" })
-        .in("tc_product_id", batch);
-      if (error) throw new Error(`release gone links: ${error.message}`);
+      const { error } = await admin.from("tc_product_links").delete().in("tc_product_id", batch);
+      if (error) throw new Error(`delete gone links: ${error.message}`);
     }
     for (const batch of chunked(moving)) {
       const { error } = await admin.from("tc_product_links").update({ event_id: null }).in("tc_product_id", batch);
