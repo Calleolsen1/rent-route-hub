@@ -14,8 +14,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { demoStorage } from "@/lib/demoStorage";
-import { Separator } from "@/components/ui/separator";
 
 interface AuthDialogProps {
   open: boolean;
@@ -25,9 +23,6 @@ interface AuthDialogProps {
 export const AuthDialog = ({ open, onOpenChange }: AuthDialogProps) => {
   const [loadingStates, setLoadingStates] = useState({
     regular: false,
-    guestDemo: false,
-    hostDemo: false,
-    adminDemo: false,
   });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -41,8 +36,8 @@ export const AuthDialog = ({ open, onOpenChange }: AuthDialogProps) => {
     
     // Registration is disabled - show toast notification
     toast({
-      title: "Registration is disabled",
-      description: "Registration is disabled, use demo mode",
+      title: "Registrering är inaktiverad",
+      description: "Kontakta oss så hjälper vi dig att komma igång.",
       variant: "destructive",
     });
 
