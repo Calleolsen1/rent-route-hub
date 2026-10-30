@@ -14,8 +14,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { demoStorage } from "@/lib/demoStorage";
-import { Separator } from "@/components/ui/separator";
 
 interface AuthDialogProps {
   open: boolean;
@@ -25,9 +23,6 @@ interface AuthDialogProps {
 export const AuthDialog = ({ open, onOpenChange }: AuthDialogProps) => {
   const [loadingStates, setLoadingStates] = useState({
     regular: false,
-    guestDemo: false,
-    hostDemo: false,
-    adminDemo: false,
   });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -41,8 +36,8 @@ export const AuthDialog = ({ open, onOpenChange }: AuthDialogProps) => {
     
     // Registration is disabled - show toast notification
     toast({
-      title: "Registration is disabled",
-      description: "Registration is disabled, use demo mode",
+      title: "Registrering är inaktiverad",
+      description: "Kontakta oss så hjälper vi dig att komma igång.",
       variant: "destructive",
     });
 
@@ -169,92 +164,6 @@ export const AuthDialog = ({ open, onOpenChange }: AuthDialogProps) => {
     setLoadingStates(prev => ({ ...prev, regular: false }));
   };
 
-  const handleDemoGuestLogin = async () => {
-    setLoadingStates(prev => ({ ...prev, guestDemo: true }));
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: "guest@demo.com",
-        password: "demoguest12345",
-      });
-
-      if (error) throw error;
-      if (!data.user) throw new Error("Failed to login");
-
-      toast({
-        title: "Demo Mode Activated",
-        description: "You're now using demo guest mode with sample data.",
-      });
-      onOpenChange(false);
-    } catch (error: any) {
-      console.error("Demo login error:", error);
-      toast({
-        title: "Demo login failed",
-        description: error.message || "Failed to activate demo mode",
-        variant: "destructive",
-      });
-    } finally {
-      setLoadingStates(prev => ({ ...prev, guestDemo: false }));
-    }
-  };
-
-  const handleDemoHostLogin = async () => {
-    setLoadingStates(prev => ({ ...prev, hostDemo: true }));
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: "host@demo.com",
-        password: "demohost12345",
-      });
-
-      if (error) throw error;
-      if (!data.user) throw new Error("Failed to login");
-
-      toast({
-        title: "Demo Mode Activated",
-        description: "You're now using demo host mode with sample data.",
-      });
-      onOpenChange(false);
-      navigate("/host/dashboard");
-    } catch (error: any) {
-      console.error("Demo login error:", error);
-      toast({
-        title: "Demo login failed",
-        description: error.message || "Failed to activate demo mode",
-        variant: "destructive",
-      });
-    } finally {
-      setLoadingStates(prev => ({ ...prev, hostDemo: false }));
-    }
-  };
-
-  const handleDemoAdminLogin = async () => {
-    setLoadingStates(prev => ({ ...prev, adminDemo: true }));
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: "admin@demo.com",
-        password: "demoadmin12345",
-      });
-
-      if (error) throw error;
-      if (!data.user) throw new Error("Failed to login");
-
-      toast({
-        title: "Demo Mode Activated",
-        description: "You're now using demo admin mode with sample data.",
-      });
-      onOpenChange(false);
-      navigate("/admin");
-    } catch (error: any) {
-      console.error("Demo admin login error:", error);
-      toast({
-        title: "Demo login failed",
-        description: error.message || "Failed to activate demo mode",
-        variant: "destructive",
-      });
-    } finally {
-      setLoadingStates(prev => ({ ...prev, adminDemo: false }));
-    }
-  };
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
@@ -305,60 +214,6 @@ export const AuthDialog = ({ open, onOpenChange }: AuthDialogProps) => {
                 )}
               </Button>
             </form>
-
-            <Separator className="my-4" />
-            
-            <div className="space-y-3">
-              <p className="text-sm text-muted-foreground text-center">Prova demoläge</p>
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full rounded-none"
-                onClick={handleDemoGuestLogin}
-                disabled={loadingStates.guestDemo}
-              >
-                {loadingStates.guestDemo ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Laddar demo...
-                  </>
-                ) : (
-                  "Demo - Resenär"
-                )}
-              </Button>
-              <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full rounded-none"
-                  onClick={handleDemoHostLogin}
-                  disabled={loadingStates.hostDemo}
-                >
-                  {loadingStates.hostDemo ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Laddar demo...
-                    </>
-                  ) : (
-                    "Demo - Arrangör"
-                  )}
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full rounded-none"
-                  onClick={handleDemoAdminLogin}
-                  disabled={loadingStates.adminDemo}
-                >
-                  {loadingStates.adminDemo ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Laddar demo...
-                    </>
-                  ) : (
-                    "Demo - Admin"
-                  )}
-                </Button>
-            </div>
           </TabsContent>
 
           <TabsContent value="signup">
