@@ -305,60 +305,6 @@ export const AuthDialog = ({ open, onOpenChange }: AuthDialogProps) => {
                 )}
               </Button>
             </form>
-
-            <Separator className="my-4" />
-            
-            <div className="space-y-3">
-              <p className="text-sm text-muted-foreground text-center">Prova demoläge</p>
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full rounded-none"
-                onClick={handleDemoGuestLogin}
-                disabled={loadingStates.guestDemo}
-              >
-                {loadingStates.guestDemo ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Laddar demo...
-                  </>
-                ) : (
-                  "Demo - Resenär"
-                )}
-              </Button>
-              <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full rounded-none"
-                  onClick={handleDemoHostLogin}
-                  disabled={loadingStates.hostDemo}
-                >
-                  {loadingStates.hostDemo ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Laddar demo...
-                    </>
-                  ) : (
-                    "Demo - Arrangör"
-                  )}
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full rounded-none"
-                  onClick={handleDemoAdminLogin}
-                  disabled={loadingStates.adminDemo}
-                >
-                  {loadingStates.adminDemo ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Laddar demo...
-                    </>
-                  ) : (
-                    "Demo - Admin"
-                  )}
-                </Button>
-            </div>
           </TabsContent>
 
           <TabsContent value="signup">
