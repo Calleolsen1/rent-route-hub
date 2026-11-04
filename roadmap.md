@@ -60,4 +60,4 @@
 
 - [x] Din resa-kortet: etiketten "Offertbaserad" → "FÖRFRÅGAN" och ny text under "Skicka förfrågan" om pris normalt samma dag (vardagar), senast inom 24 timmar och att inget bokas förrän reseförslaget bekräftats. Verifierat på matchsidan i dator och telefon. Inte publicerat.
 
-- [ ] STEG 3 FLYG: texrad under "Välj om ni önskar hjälp med flyg" om egen IATA-licens och tillgång till de flesta flygbolag.
+- [x] STEG 3 FLYG: texrad under "Välj om ni önskar hjälp med flyg" om egen IATA-licens och tillgång till de flesta flygbolag. Verifierad pa matchsidan i dator och telefon. Inte publicerat.
