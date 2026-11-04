@@ -24,7 +24,7 @@ export default function FlightStep({
 }) {
   return (
     <div id="flyg" className="scroll-mt-24">
-      <StepHeader n={3} eyebrow="Flyg" title="Behöver ni flyg?" />
+      <StepHeader n={3} eyebrow="Flyg" title="Välj om ni önskar hjälp med flyg" />
 
       <OnOffChoice
         name="Flyg"
