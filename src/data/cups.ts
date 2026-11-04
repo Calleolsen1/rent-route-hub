@@ -24,7 +24,7 @@ export const CUPS: CupInfo[] = [
     name: "Europa League",
     tournaments: ["Europa League"],
     description:
-      "Officiella biljetter och kompletta resor till Europa League. Vi tar fram paket med matchbiljetter, centralt hotell, flyg och transfer - från gruppspel till final.",
+      "Europa League LIVE – upplev Europas fotbollsstäder!\n\nUpplev spännande matcher mellan Europas välkända klubblag på klassiska arenor runt om i Europa. Europa League bjuder på passionerad fotboll, stora profiler och matcher där mycket står på spel. Sätt ihop din egen fotbollsresa med officiella matchbiljetter, hotell, flyg och transfers – välj det som passar dig och skapa din egen fotbollsupplevelse!",
   },
   {
     slug: "fa-cup",
