@@ -14,14 +14,21 @@ import StadiumPlan from "@/components/StadiumPlan";
 export default function TicketList({ t, sport = "soccer" }: { t: EventTickets; sport?: string | null }) {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   // Football sells match tickets, so the step says matchbiljetter; F1 keeps biljetter.
-  const label = sport !== "formula1" ? "Matchbiljetter" : "Biljetter";
+  const football = sport !== "formula1";
+  const label = football ? "Matchbiljetter" : "Biljetter";
 
   return (
     <div id="biljetter" className="scroll-mt-24">
       <StepHeader
         n={1}
         eyebrow={label}
-        title={t.canBuy && t.fromPrice != null ? `${label} från ${formatSek(t.fromPrice)}` : `Välj dina ${label.toLowerCase()}`}
+        title={
+          t.canBuy && t.fromPrice != null
+            ? `${label} från ${formatSek(t.fromPrice)}`
+            : football
+              ? "Välj dina officiella matchbiljetter"
+              : "Välj dina biljetter"
+        }
       >
         {t.isGeneric ? (
           "Vi ordnar biljetter till den här matchen på förfrågan - välj nivå och antal."
