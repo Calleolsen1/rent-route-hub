@@ -31,14 +31,14 @@ export const CUPS: CupInfo[] = [
     name: "FA Cup",
     tournaments: ["FA Cup"],
     description:
-      "Officiella biljetter och kompletta resor till FA Cup - Englands äldsta och mest traditionsrika cupturnering. Vi tar fram paket med matchbiljetter, hotell, flyg och transfer.",
+      "FA-cupen LIVE – klassisk engelsk fotboll och cupdramatik!\n\nUpplev en av världens mest anrika fotbollsturneringar där Premier League-klubbar möter utmanare från hela det engelska seriesystemet. FA-cupen bjuder på klassiska arenor, passionerade supportrar och matcher där allt kan hända. Sätt ihop din egen fotbollsresa med officiella matchbiljetter, hotell, flyg och transfers – välj det som passar dig och skapa din egen fotbollsupplevelse!",
   },
   {
     slug: "carabao-cup",
     name: "Carabao Cup",
     tournaments: ["Carabao Cup", "EFL Cup"],
     description:
-      "Officiella biljetter och kompletta resor till Carabao Cup - Englands ligacup. Vi tar fram paket med matchbiljetter, hotell, flyg och transfer.",
+      "Carabao Cup LIVE – engelsk cupfotboll med dramatik!\n\nUpplev spännande cupmöten när Englands främsta klubbar gör upp om en eftertraktad titel. Carabao Cup bjuder på klassiska rivalmöten, passionerade supportrar och matcher där mycket står på spel – med finalen på ikoniska Wembley som höjdpunkt. Sätt ihop din egen fotbollsresa med officiella matchbiljetter, hotell, flyg och transfers – välj det som passar dig och skapa din egen fotbollsupplevelse!",
   },
 ];
 
