@@ -252,7 +252,6 @@ export default function EventDetail() {
               onToggle={(on) => setExtras((e) => ({ ...e, flight: on }))}
               from={flightFrom}
               onFrom={setFlightFrom}
-              stayText={extras.hotel ? hotels.datesText : null}
             />
 
             <div>
