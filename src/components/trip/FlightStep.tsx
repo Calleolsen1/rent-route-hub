@@ -12,16 +12,19 @@ export default function FlightStep({
   onToggle,
   from,
   onFrom,
-  stayText,
 }: {
   /** null = not answered yet. */
   on: boolean | null;
   onToggle: (on: boolean) => void;
   from: string | null;
   onFrom: (from: string) => void;
-  /** The hotel dates, when a hotel is chosen — the flights follow them. */
-  stayText: string | null;
 }) {
+  // "Annan ort" stays selected while the visitor types their own place: the
+  // value is then that place, not one of the four buttons.
+  const other =
+    from !== null && (from === "Annan ort" || !DEPARTURES.includes(from as (typeof DEPARTURES)[number]));
+  const otherText = other && from !== "Annan ort" ? from : "";
+
   return (
     <div id="flyg" className="scroll-mt-24">
       <StepHeader n={3} eyebrow="Flyg" title="Välj om ni önskar hjälp med flyg" />
@@ -39,7 +42,7 @@ export default function FlightStep({
           <span className="block text-[10px] uppercase tracking-wider text-muted-foreground mb-2">Avresa från</span>
           <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Avresa från">
             {DEPARTURES.map((d) => {
-              const selected = from === d;
+              const selected = d === "Annan ort" ? other : from === d;
               return (
                 <button
                   key={d}
@@ -58,12 +61,22 @@ export default function FlightStep({
               );
             })}
           </div>
-          <p className="mt-3 text-xs text-muted-foreground leading-relaxed">
-            {stayText
-              ? `Vi föreslår flygtider som passar ert hotell, ${stayText}, och matchen.`
-              : "Vi föreslår flygtider som passar matchen."}{" "}
-            Pris i vårt svar - inget bokas förrän ni har bekräftat.
-          </p>
+
+          {/* Free text when the place is not one of the four buttons. */}
+          {other && (
+            <label className="mt-3 block">
+              <span className="block text-[10px] uppercase tracking-wider text-muted-foreground mb-1">
+                Ange avreseort
+              </span>
+              <input
+                type="text"
+                value={otherText}
+                onChange={(e) => onFrom(e.target.value)}
+                placeholder="Skriv din avreseort"
+                className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm focus:border-primary focus:outline-none"
+              />
+            </label>
+          )}
         </div>
       )}
     </div>
