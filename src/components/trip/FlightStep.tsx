@@ -36,7 +36,7 @@ export default function FlightStep({
         on={on}
         onChange={onToggle}
         off={{ icon: Car, label: "Utan flyg", hint: "Vi tar oss dit själva" }}
-        with={{ icon: Plane, label: "Med flyg", hint: "Tur och retur från Sverige" }}
+        with={{ icon: Plane, label: "Med flyg", hint: "Tur och retur från samtliga svenska flygplatser, Köpenhamn och Oslo" }}
       />
 
       {on && (
