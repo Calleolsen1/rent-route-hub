@@ -1,10 +1,19 @@
-export const ADDITIONAL_TEAMS = [
-  { slug: "crystal-palace", name: "Crystal Palace", league: "Premier League", city: "London, England", stadium: "Selhurst Park" },
-  { slug: "everton", name: "Everton", league: "Premier League", city: "Liverpool, England", stadium: "Hill Dickinson Stadium" },
-  { slug: "fulham", name: "Fulham", league: "Premier League", city: "London, England", stadium: "Craven Cottage" },
-  { slug: "leeds-united", name: "Leeds United", league: "Premier League", city: "Leeds, England", stadium: "Elland Road" },
-  { slug: "aston-villa", name: "Aston Villa", league: "Premier League", city: "Birmingham, England", stadium: "Villa Park" },
-  { slug: "brentford", name: "Brentford", league: "Premier League", city: "London, England", stadium: "Gtech Community Stadium" },
+type ExtraTeam = {
+  slug: string;
+  name: string;
+  league: string;
+  city: string;
+  stadium: string;
+  tagline?: string;
+};
+
+const EXTRA_TEAMS: ExtraTeam[] = [
+  { slug: "crystal-palace", name: "Crystal Palace", league: "Premier League", city: "London, England", stadium: "Selhurst Park", tagline: "South London and Proud" },
+  { slug: "everton", name: "Everton", league: "Premier League", city: "Liverpool, England", stadium: "Hill Dickinson Stadium", tagline: "Nil Satis Nisi Optimum" },
+  { slug: "fulham", name: "Fulham", league: "Premier League", city: "London, England", stadium: "Craven Cottage", tagline: "Come on you Whites" },
+  { slug: "leeds-united", name: "Leeds United", league: "Premier League", city: "Leeds, England", stadium: "Elland Road", tagline: "Marching On Together" },
+  { slug: "aston-villa", name: "Aston Villa", league: "Premier League", city: "Birmingham, England", stadium: "Villa Park", tagline: "Prepared" },
+  { slug: "brentford", name: "Brentford", league: "Premier League", city: "London, England", stadium: "Gtech Community Stadium", tagline: "Up The Bees" },
   { slug: "athletic-bilbao", name: "Athletic Bilbao", league: "La Liga", city: "Bilbao, Spanien", stadium: "San Mamés" },
   { slug: "sevilla", name: "Sevilla", league: "La Liga", city: "Sevilla, Spanien", stadium: "Ramón Sánchez-Pizjuán" },
   { slug: "valencia", name: "Valencia", league: "La Liga", city: "Valencia, Spanien", stadium: "Mestalla" },
@@ -13,4 +22,11 @@ export const ADDITIONAL_TEAMS = [
   { slug: "borussia-monchengladbach", name: "Borussia Mönchengladbach", league: "Bundesliga", city: "Mönchengladbach, Tyskland", stadium: "Borussia-Park" },
   { slug: "celtic", name: "Celtic", league: "Scottish Premiership", city: "Glasgow, Skottland", stadium: "Celtic Park" },
   { slug: "glasgow-rangers", name: "Glasgow Rangers", league: "Scottish Premiership", city: "Glasgow, Skottland", stadium: "Ibrox Stadium" },
-].map((team) => ({ ...team, tagline: "", description: `Upplev ${team.name} på ${team.stadium}. Berätta vad din fotbollsresa ska innehålla så tar vi fram ett reseförslag med matchbiljetter, hotell, flyg och transfer.`, fixtures: [] }));
+];
+
+export const ADDITIONAL_TEAMS = EXTRA_TEAMS.map((team) => ({
+  ...team,
+  tagline: team.tagline ?? "",
+  description: `Upplev ${team.name} på ${team.stadium}. Berätta vad din fotbollsresa ska innehålla så tar vi fram ett reseförslag med matchbiljetter, hotell, flyg och transfer.`,
+  fixtures: [],
+}));
