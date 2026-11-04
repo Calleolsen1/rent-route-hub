@@ -49,3 +49,5 @@
 - [x] Champions League: byt ingress_texten mot den nya texten om Europas bästa klubbfotboll. Verifierad på cupsidan i både dator och telefon; byggd OK. Inte publicerat.
 
 - [x] Europa League-sidan: ny ingress med första raden ensam och blank rad före resten; verifierad på dator och telefon med centrerad kontaktknapp. Inte publicerat.
+
+- [x] Carabao Cup-sidan: ny ingress med första raden ensam och blank rad före resten; verifierad på dator och telefon med centrerad kontaktknapp. Inte publicerat.
