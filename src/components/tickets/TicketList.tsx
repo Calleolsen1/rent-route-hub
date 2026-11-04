@@ -25,7 +25,7 @@ export default function TicketList({ t }: { t: EventTickets }) {
           "Vi ordnar biljetter till den här matchen på förfrågan - välj nivå och antal."
         ) : t.hasPlan && t.onPlanColors && t.onPlanColors.size > 0 ? (
           <>
-            <span className="hidden lg:inline">Håll muspekaren över en biljett för att se var den ligger på arenan.</span>
+            <span className="hidden lg:inline">För muspekaren över en biljettkategori för att se dess placering på arenan.</span>
             <span className="lg:hidden">Tryck på "Visa på kartan" för att se var biljetten ligger.</span>
           </>
         ) : null}
