@@ -109,12 +109,12 @@ export default function SportEntryPage() {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative min-h-[24vh] md:min-h-[28vh] flex items-end py-6 md:py-8">
+      <section className="relative min-h-[24vh] md:min-h-[28vh] flex pt-6 md:pt-8">
         <div className="absolute inset-0">
           <img src={heroSrc} alt={info.name} className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-navy/75" />
         </div>
-        <div className="relative container mx-auto px-4 pb-3 md:pb-5">
+        <div className="relative container mx-auto px-4 flex flex-col justify-end">
           <p className="text-[10px] tracking-[0.28em] text-primary uppercase mb-1 md:mb-1.5 font-sans">
             {labels.eyebrow(sport.label, info.group_label)}
           </p>
@@ -122,17 +122,20 @@ export default function SportEntryPage() {
           {/* Texten under namnet är introtexten (description); tagline används
               bara som reserv när ingen introtext finns sparad. */}
           {(info.description || info.tagline) && (
-            <p className="font-display italic font-light text-white/90 text-sm sm:text-base md:text-lg mb-4 max-w-2xl leading-relaxed whitespace-pre-line">
+            <p className="font-display italic font-light text-white/90 text-sm sm:text-base md:text-lg max-w-2xl leading-relaxed whitespace-pre-line">
               {info.description || info.tagline}
             </p>
           )}
-          <Link
-            to="/contact"
-            className="inline-flex items-center rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-7 py-2.5 text-sm font-medium tracking-wide shadow-lg shadow-navy/30 transition-all hover:scale-105"
-          >
-            Kontakta oss
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Link>
+          {/* Knappen hålls mitt i utrymmet mellan texten och rutans nedre kant. */}
+          <div className="flex flex-1 min-h-[92px] md:min-h-[108px] items-center">
+            <Link
+              to="/contact"
+              className="inline-flex items-center rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-7 py-2.5 text-sm font-medium tracking-wide shadow-lg shadow-navy/30 transition-all hover:scale-105"
+            >
+              Kontakta oss
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </div>
         </div>
       </section>
 

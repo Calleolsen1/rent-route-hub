@@ -57,8 +57,8 @@ export default function Sportresor() {
  <img src={sportsImage} alt="Sportresor" className="w-full h-full object-cover" />
  <div className="absolute inset-0 bg-navy/70" />
  </div>
- <div className="relative container mx-auto px-4 pt-16 sm:pt-24 md:pt-28 pb-8 flex flex-col">
- <div className="max-w-3xl">
+ <div className="relative container mx-auto px-4 pt-16 sm:pt-24 md:pt-28 flex flex-col">
+ <div className="max-w-3xl flex flex-col">
  <p className="text-[11px] sm:text-xs eyebrow text-white/75 uppercase mb-2 font-sans">
  Tjänster - Sportresor
  </p>
@@ -68,9 +68,11 @@ export default function Sportresor() {
  <p className="font-display text-xl md:text-2xl italic font-light text-white mb-3">
  Sport upplevs bäst LIVE
  </p>
- <p className="text-white/80 text-sm max-w-xl mb-5">
+ <p className="text-white/80 text-sm max-w-xl">
  Upplev Formel 1 och Europas bästa fotbollsmatcher på plats. Vi skräddarsyr din sportresa efter dina önskemål – boka allt från matchbiljett och hotell till flyg och transfer, eller välj bara de delar du behöver.
  </p>
+ {/* Knappen hålls mitt i utrymmet mellan texten och rutans nedre kant. */}
+ <div className="flex flex-1 min-h-[96px] items-center">
  <Link
  to="/contact"
  className="inline-flex items-center rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 text-sm font-medium tracking-wide shadow-lg shadow-navy/30 transition-all hover:scale-105"
@@ -78,6 +80,7 @@ export default function Sportresor() {
  Kontakta oss
  <ArrowRight className="ml-2 h-4 w-4" />
  </Link>
+ </div>
  </div>
  </div>
  </section>
