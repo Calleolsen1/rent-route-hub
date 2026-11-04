@@ -50,9 +50,9 @@ export default function HotelStep({
 
   return (
     <div id="hotell" className="scroll-mt-24">
-      <StepHeader n={2} eyebrow="Hotell" title="Vill ni bo nära arenan?">
+      <StepHeader n={2} eyebrow="Hotell" title="Önskar ni tips på bra centrala hotell?">
         {h.covered && h.city
-          ? `Välj ett eller flera hotell i ${h.city} - vi återkommer med pris på alla ni valt.`
+          ? "Vi erbjuder alltid centrala hotell inklusive frukost mellan 3-5* - utvalda av våra resespecialister. Vi har avtalspriser med de flesta hotellen. Välj kategori nedan så återkommer vi med prisförslag på valt hotell samt likvärdiga alternativ."
           : "Vi ordnar hotell efter era önskemål."}
       </StepHeader>
 
