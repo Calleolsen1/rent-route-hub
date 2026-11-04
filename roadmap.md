@@ -40,3 +40,6 @@
 - [x] Fotbollssidan: ligloggor i färg (gråskala borttagen) - alla fyra loggor laddas och visas i färg i både dator och telefon
 - [x] Navigeringen: ta bort "Engelska" ur språkvalet så att bara SV visas högst upp
 - [x] Formel 1-sidorna: "Vad ingår" → "Vad som kan ingår" och "Kompletta paket till X" → "Formel 1-resa till X"
+
+- [x] Matchdatum med stor begynnelsebokstav: "Lördag 9 december 2026" i stället för "lördag 9 december 2026", samtliga matcher. Verifierad på Arsenal och Premier League-sidan; test godkänt. Inte publicerat.
+- [x] Ta bort turneringsnamnet ur matchkortens loggpanel (Celtic/Rangers, Manchester City m.fl.); texten ovanför matchrubriken behålls. Verifierad på Manchester City. Inte publicerat.

@@ -19,7 +19,6 @@ type Props = {
   homeTeam: string | null;
   awayTeam: string | null;
   raceName: string | null;
-  tournamentName: string | null;
   venueName: string | null;
   /** Supplier-provided cover, if any. */
   coverUrl: string | null;
@@ -49,7 +48,7 @@ function inkFor(_hex: string): string {
 }
 
 export default function EventImage({
-  sport, homeTeam, awayTeam, raceName, tournamentName, venueName,
+  sport, homeTeam, awayTeam, raceName, venueName,
   coverUrl, photos, crests, className = "",
 }: Props) {
   const key = sport === "formula1" ? raceName : homeTeam;
@@ -116,14 +115,6 @@ export default function EventImage({
             className="h-[52%] w-auto max-w-[34%] object-contain drop-shadow-lg"
           />
         </div>
-        {tournamentName && (
-          <p
-            className="absolute bottom-2 left-0 right-0 text-center text-[9px] tracking-[0.24em] uppercase opacity-75"
-            style={{ color: ink }}
-          >
-            {tournamentName}
-          </p>
-        )}
       </div>
     );
   }
@@ -149,14 +140,6 @@ export default function EventImage({
       </svg>
 
       <div className="relative h-full flex flex-col items-center justify-center text-center px-4">
-        {tournamentName && (
-          <p
-            className="text-[9px] tracking-[0.28em] uppercase mb-2 opacity-80"
-            style={{ color: ink }}
-          >
-            {tournamentName}
-          </p>
-        )}
         <p
           className="font-display text-lg md:text-xl leading-tight"
           style={{ color: ink }}

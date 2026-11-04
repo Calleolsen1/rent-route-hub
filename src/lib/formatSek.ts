@@ -9,14 +9,17 @@ export const formatSek = (amount: number | string | null | undefined) => {
 
 export const TZ = "Europe/Stockholm";
 
-export const formatEventDate = (iso: string) =>
-  new Date(iso).toLocaleDateString("sv-SE", {
+export const formatEventDate = (iso: string) => {
+  const s = new Date(iso).toLocaleDateString("sv-SE", {
     weekday: "long",
     day: "numeric",
     month: "long",
     year: "numeric",
     timeZone: TZ,
   });
+  // Svensk ortografi skriver liten veckodag, men listan ska läsa som en rad.
+  return s.charAt(0).toUpperCase() + s.slice(1);
+};
 
 /**
  * True when the source hasn't confirmed a kick-off time yet.
