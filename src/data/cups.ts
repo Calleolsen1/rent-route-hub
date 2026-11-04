@@ -17,7 +17,7 @@ export const CUPS: CupInfo[] = [
     name: "Champions League",
     tournaments: ["Champions League"],
     description:
-      "Officiella biljetter och kompletta resor till Europas finaste klubbturnering. Vi tar fram paket med matchbiljetter, centralt hotell, flyg och transfer - från gruppspel till final.",
+      "Champions League LIVE – Europas bästa klubbfotboll! Upplev världens främsta klubblag mötas på Europas största fotbollsscener. Champions League är klubbfotboll när den är som bäst – med stjärnspelare, klassiska arenor och matcher på absolut högsta nivå. Sätt ihop din egen fotbollsresa med officiella matchbiljetter, hotell, flyg och transfers – välj det som passar dig och skapa en fotbollsupplevelse utöver det vanliga!",
   },
   {
     slug: "europa-league",
