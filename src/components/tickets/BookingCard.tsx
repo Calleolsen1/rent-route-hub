@@ -55,7 +55,7 @@ export default function BookingCard({
           <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-foreground/70 font-sans">Din resa</p>
           {!checkout && (
             <span className="shrink-0 bg-muted text-muted-foreground text-[10px] font-semibold uppercase tracking-wide px-2 py-1 rounded">
-              Offertbaserad
+              Förfrågan
             </span>
           )}
         </div>
@@ -161,8 +161,8 @@ export default function BookingCard({
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
             <p className="mt-3 text-[11px] text-muted-foreground leading-relaxed text-center">
-              {trip ? "Vi återkommer med pris på hela resan" : "Vi återkommer med pris och tillgänglighet"}{" "}
-              <span className="font-semibold text-foreground">inom 24h.</span> Inget bokas förrän ni har bekräftat.
+              Vi återkommer med pris på hela resan normalt samma dag (vardagar) eller senast inom 24 timmar.
+              Inget bokas förrän ni har bekräftat reseförslaget.
             </p>
           </>
         )}

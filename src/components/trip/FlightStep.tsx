@@ -27,7 +27,9 @@ export default function FlightStep({
 
   return (
     <div id="flyg" className="scroll-mt-24">
-      <StepHeader n={3} eyebrow="Flyg" title="Välj om ni önskar hjälp med flyg" />
+      <StepHeader n={3} eyebrow="Flyg" title="Välj om ni önskar hjälp med flyg">
+        Vi har egen IATA-licens och har därmed tillgång till och kan boka de flesta flygbolag.
+      </StepHeader>
 
       <OnOffChoice
         name="Flyg"
