@@ -173,7 +173,7 @@ export default function TicketList({ t, sport = "soccer" }: { t: EventTickets; s
             {" "}E-biljetterna släpps närmare matchen och skickas till din e-post och Mitt KAISEN.
           </>
         ) : (
-          "Välj antal och skicka en förfrågan - vi återkommer med pris och tillgänglighet inom 24h. Inget bokas eller debiteras förrän ni har bekräftat."
+          "Markera de biljettkategorier ni är intresserade av, så tar vi fram prisförslag. Vi säljer endast officiella biljetter direkt från klubben eller via auktoriserade återförsäljare."
         )}
       </p>
     </div>
