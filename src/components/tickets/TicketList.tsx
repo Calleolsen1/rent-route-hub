@@ -11,21 +11,30 @@ import StadiumPlan from "@/components/StadiumPlan";
 // the quantities feed a request (nothing is booked); see useEventTickets. Hovering a row lights up its area on
 // the seating plan in the right-hand column; only that row is highlighted.
 
-export default function TicketList({ t }: { t: EventTickets }) {
+export default function TicketList({ t, sport = "soccer" }: { t: EventTickets; sport?: string | null }) {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  // Football sells match tickets, so the step says matchbiljetter; F1 keeps biljetter.
+  const football = sport !== "formula1";
+  const label = football ? "Matchbiljetter" : "Biljetter";
 
   return (
     <div id="biljetter" className="scroll-mt-24">
       <StepHeader
         n={1}
-        eyebrow="Biljetter"
-        title={t.canBuy && t.fromPrice != null ? `Biljetter från ${formatSek(t.fromPrice)}` : "Välj dina biljetter"}
+        eyebrow={label}
+        title={
+          t.canBuy && t.fromPrice != null
+            ? `${label} från ${formatSek(t.fromPrice)}`
+            : football
+              ? "Välj dina officiella matchbiljetter"
+              : "Välj dina biljetter"
+        }
       >
         {t.isGeneric ? (
           "Vi ordnar biljetter till den här matchen på förfrågan - välj nivå och antal."
         ) : t.hasPlan && t.onPlanColors && t.onPlanColors.size > 0 ? (
           <>
-            <span className="hidden lg:inline">Håll muspekaren över en biljett för att se var den ligger på arenan.</span>
+            <span className="hidden lg:inline">För muspekaren över en biljettkategori för att se dess placering på arenan.</span>
             <span className="lg:hidden">Tryck på "Visa på kartan" för att se var biljetten ligger.</span>
           </>
         ) : null}

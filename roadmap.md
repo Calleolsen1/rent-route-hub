@@ -55,3 +55,5 @@
 - [x] Borussia Mönchengladbach-sidan: ny ingress med första raden ensam och blank rad före resten; verifierad på dator och telefon. Inte publicerat.
 
 - [x] Bayer Leverkusen-sidan: ny ingress med första raden ensam och blank rad före resten; verifierad på dator och telefon. Inte publicerat.
+
+- [x] Fotbollsmatcher: STEG 1 MATCHBILJETTER och "Välj dina officiella matchbiljetter" (F1 behåller Biljetter); verifierat på matchsidor i dator och telefon. Arenatexten "För muspekaren över en biljettkategori..." visas när biljettkategorier finns. Inte publicerat.

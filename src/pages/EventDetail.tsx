@@ -223,7 +223,7 @@ export default function EventDetail() {
             {/* Live supplier tickets. Buyable when prices are public or an
                 admin is previewing; otherwise a guide to the categories for
                 the enquiry. Nothing when the supplier has no tickets. */}
-            {t.loading ? <TicketListSkeleton /> : t.hasTickets && <TicketList t={t} />}
+            {t.loading ? <TicketListSkeleton /> : t.hasTickets && <TicketList t={t} sport={event.sport} />}
             {t.count > 0 && extras.hotel === null && (
               <Button
                 variant="outline"
