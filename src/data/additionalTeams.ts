@@ -18,8 +18,8 @@ const EXTRA_TEAMS: ExtraTeam[] = [
   { slug: "sevilla", name: "Sevilla", league: "La Liga", city: "Sevilla, Spanien", stadium: "Ramón Sánchez-Pizjuán" },
   { slug: "valencia", name: "Valencia", league: "La Liga", city: "Valencia, Spanien", stadium: "Mestalla" },
   { slug: "real-sociedad", name: "Real Sociedad", league: "La Liga", city: "San Sebastián, Spanien", stadium: "Reale Arena" },
-  { slug: "bayer-leverkusen", name: "Bayer Leverkusen", league: "Bundesliga", city: "Leverkusen, Tyskland", stadium: "BayArena" },
-  { slug: "borussia-monchengladbach", name: "Borussia Mönchengladbach", league: "Bundesliga", city: "Mönchengladbach, Tyskland", stadium: "Borussia-Park" },
+  { slug: "bayer-leverkusen", name: "Bayer Leverkusen", league: "Bundesliga", city: "Leverkusen, Tyskland", stadium: "BayArena", tagline: "Nur der SVB" },
+  { slug: "borussia-monchengladbach", name: "Borussia Mönchengladbach", league: "Bundesliga", city: "Mönchengladbach, Tyskland", stadium: "Borussia-Park", tagline: "Die Fohlen" },
   { slug: "celtic", name: "Celtic", league: "Scottish Premiership", city: "Glasgow, Skottland", stadium: "Celtic Park" },
   { slug: "glasgow-rangers", name: "Glasgow Rangers", league: "Scottish Premiership", city: "Glasgow, Skottland", stadium: "Ibrox Stadium" },
 ];
