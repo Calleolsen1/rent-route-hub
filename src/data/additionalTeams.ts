@@ -20,8 +20,8 @@ const EXTRA_TEAMS: ExtraTeam[] = [
   { slug: "real-sociedad", name: "Real Sociedad", league: "La Liga", city: "San Sebastián, Spanien", stadium: "Reale Arena", tagline: "Aupa Real" },
   { slug: "bayer-leverkusen", name: "Bayer Leverkusen", league: "Bundesliga", city: "Leverkusen, Tyskland", stadium: "BayArena", tagline: "Nur der SVB" },
   { slug: "borussia-monchengladbach", name: "Borussia Mönchengladbach", league: "Bundesliga", city: "Mönchengladbach, Tyskland", stadium: "Borussia-Park", tagline: "Die Fohlen" },
-  { slug: "celtic", name: "Celtic", league: "Scottish Premiership", city: "Glasgow, Skottland", stadium: "Celtic Park" },
-  { slug: "glasgow-rangers", name: "Glasgow Rangers", league: "Scottish Premiership", city: "Glasgow, Skottland", stadium: "Ibrox Stadium" },
+  { slug: "celtic", name: "Celtic", league: "Scottish Premiership", city: "Glasgow, Skottland", stadium: "Celtic Park", tagline: "You'll Never Walk Alone" },
+  { slug: "glasgow-rangers", name: "Glasgow Rangers", league: "Scottish Premiership", city: "Glasgow, Skottland", stadium: "Ibrox Stadium", tagline: "Follow Follow" },
 ];
 
 export const ADDITIONAL_TEAMS = EXTRA_TEAMS.map((team) => ({
