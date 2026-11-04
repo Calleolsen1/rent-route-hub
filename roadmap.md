@@ -47,3 +47,5 @@
 - [x] Hero-rutorna: "Kontakta oss"-knappen flyttas nedåt så den hamnar mitt emellan texten och rutans nedre kant; sidledsläget lämnas orört. Verifierad på Sportresor, Fotboll, Bundesliga, Champions League, Bayern München, F1 och Miami GP i både dator och telefon; byggd OK. Inte publicerat.
 - [x] Scottish Premiership: byt introtexten mot den nya texten om Old Firm, Glasgow och supportrarna. Verifierad på ligasidan i både dator och telefon; byggd OK. Inte publicerat.
 - [x] Champions League: byt ingress_texten mot den nya texten om Europas bästa klubbfotboll. Verifierad på cupsidan i både dator och telefon; byggd OK. Inte publicerat.
+
+- [x] Europa League-sidan: ny ingress med första raden ensam och blank rad före resten; verifierad på dator och telefon med centrerad kontaktknapp. Inte publicerat.
