@@ -59,3 +59,5 @@
 - [x] Fotbollsmatcher: STEG 1 MATCHBILJETTER och "Välj dina officiella matchbiljetter" (F1 behåller Biljetter); verifierat på matchsidor i dator och telefon. Arenatexten "För muspekaren över en biljettkategori..." visas när biljettkategorier finns. Inte publicerat.
 
 - [x] Din resa-kortet: etiketten "Offertbaserad" → "FÖRFRÅGAN" och ny text under "Skicka förfrågan" om pris normalt samma dag (vardagar), senast inom 24 timmar och att inget bokas förrän reseförslaget bekräftats. Verifierat på matchsidan i dator och telefon. Inte publicerat.
+
+- [ ] STEG 3 FLYG: texrad under "Välj om ni önskar hjälp med flyg" om egen IATA-licens och tillgång till de flesta flygbolag.
