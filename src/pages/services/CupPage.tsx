@@ -55,24 +55,27 @@ export default function CupPage() {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative min-h-[160px] md:min-h-[200px] flex items-end py-6 md:py-8">
+      <section className="relative min-h-[160px] md:min-h-[200px] flex pt-6 md:pt-8">
         <div className="absolute inset-0">
           <img src={fotbollImage} alt={name} className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-navy/75" />
         </div>
-        <div className="relative container mx-auto px-4 pb-4 md:pb-6">
+        <div className="relative container mx-auto px-4 flex flex-col justify-end">
           <p className="text-[10px] tracking-[0.28em] text-primary uppercase mb-1 md:mb-1.5 font-sans">
             {sport.label}sresor - Cup
           </p>
           <h1 className="font-display text-2xl md:text-5xl text-white mb-1">{name}</h1>
-          <p className="text-white/80 text-sm max-w-xl mb-4 whitespace-pre-line">{description}</p>
-          <Link
-            to="/contact"
-            className="inline-flex items-center rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-7 py-2.5 text-sm font-medium tracking-wide shadow-lg shadow-navy/30 transition-all hover:scale-105"
-          >
-            Kontakta oss
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Link>
+          <p className="text-white/80 text-sm max-w-xl whitespace-pre-line">{description}</p>
+          {/* Knappen hålls mitt i utrymmet mellan texten och rutans nedre kant. */}
+          <div className="flex flex-1 min-h-[96px] md:min-h-[112px] items-center">
+            <Link
+              to="/contact"
+              className="inline-flex items-center rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-7 py-2.5 text-sm font-medium tracking-wide shadow-lg shadow-navy/30 transition-all hover:scale-105"
+            >
+              Kontakta oss
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </div>
         </div>
       </section>
 
