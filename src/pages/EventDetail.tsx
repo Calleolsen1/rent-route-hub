@@ -184,7 +184,6 @@ export default function EventDetail() {
             homeTeam={event.home_team}
             awayTeam={event.away_team}
             raceName={event.race_name}
-            tournamentName={event.tournament_name}
             venueName={event.venue_name}
             coverUrl={event.cover_image_url}
             photos={teamPhotos}

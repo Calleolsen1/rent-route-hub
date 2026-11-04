@@ -322,7 +322,6 @@ export default function UpcomingEventsList({
                     homeTeam={e.home_team}
                     awayTeam={e.away_team}
                     raceName={e.race_name}
-                    tournamentName={e.tournament_name}
                     venueName={e.venue_name}
                     coverUrl={e.cover_image_url}
                     photos={teamPhotos}
