@@ -51,3 +51,5 @@
 - [x] Europa League-sidan: ny ingress med första raden ensam och blank rad före resten; verifierad på dator och telefon med centrerad kontaktknapp. Inte publicerat.
 
 - [x] Carabao Cup-sidan: ny ingress med första raden ensam och blank rad före resten; verifierad på dator och telefon med centrerad kontaktknapp. Inte publicerat.
+
+- [x] Borussia Mönchengladbach-sidan: ny ingress med första raden ensam och blank rad före resten; verifierad på dator och telefon. Inte publicerat.
