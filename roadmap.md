@@ -44,4 +44,4 @@
 - [x] Matchdatum med stor begynnelsebokstav: "Lördag 9 december 2026" i stället för "lördag 9 december 2026", samtliga matcher. Verifierad på Arsenal och Premier League-sidan; test godkänt. Inte publicerat.
 - [x] Ta bort turneringsnamnet ur matchkortens loggpanel (Celtic/Rangers, Manchester City m.fl.); texten ovanför matchrubriken behålls. Verifierad på Manchester City. Inte publicerat.
 
-- [ ] Hero-rutorna: "Kontakta oss"-knappen flyttas nedåt så den hamnar mitt emellan texten och rutans nedre kant; sidledsläget lämnas orört.
+- [x] Hero-rutorna: "Kontakta oss"-knappen flyttas nedåt så den hamnar mitt emellan texten och rutans nedre kant; sidledsläget lämnas orört. Verifierad på Sportresor, Fotboll, Bundesliga, Champions League, Bayern München, F1 och Miami GP i både dator och telefon; byggd OK. Inte publicerat.
