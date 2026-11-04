@@ -11,15 +11,17 @@ import StadiumPlan from "@/components/StadiumPlan";
 // the quantities feed a request (nothing is booked); see useEventTickets. Hovering a row lights up its area on
 // the seating plan in the right-hand column; only that row is highlighted.
 
-export default function TicketList({ t }: { t: EventTickets }) {
+export default function TicketList({ t, sport = "soccer" }: { t: EventTickets; sport?: string | null }) {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  // Football sells match tickets, so the step says matchbiljetter; F1 keeps biljetter.
+  const label = sport !== "formula1" ? "Matchbiljetter" : "Biljetter";
 
   return (
     <div id="biljetter" className="scroll-mt-24">
       <StepHeader
         n={1}
-        eyebrow="Biljetter"
-        title={t.canBuy && t.fromPrice != null ? `Biljetter från ${formatSek(t.fromPrice)}` : "Välj dina biljetter"}
+        eyebrow={label}
+        title={t.canBuy && t.fromPrice != null ? `${label} från ${formatSek(t.fromPrice)}` : `Välj dina ${label.toLowerCase()}`}
       >
         {t.isGeneric ? (
           "Vi ordnar biljetter till den här matchen på förfrågan - välj nivå och antal."
