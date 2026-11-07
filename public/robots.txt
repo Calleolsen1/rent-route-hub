@@ -18,4 +18,4 @@ Disallow: /checkout
 Disallow: /order
 Disallow: /quote
 
-Sitemap: https://kaisengroup.se/sitemap.xml
+Sitemap: https://kaisentravel.se/sitemap.xml
