@@ -32,8 +32,11 @@ function json(body: unknown, status = 200) {
 
 /** "Category – product" unless they say the same thing; booking option appended when there are several. */
 export function groupName(p: P1Product, optionName: string | null): string {
-  const cat = (p.categoryName ?? "").trim();
-  const prod = (p.productName ?? "").trim();
+  // P1 prefixes names with the event ("Chelsea vs Leeds United 2026-11-21 - Blues
+  // Dining"); the page already says which match it is, so keep only the seat part.
+  const strip = (s: string | null) => (s ?? "").replace(/^.*?\b20\d{2}-\d{2}-\d{2}\s*[-–]\s*/, "").trim();
+  const cat = strip(p.categoryName);
+  const prod = strip(p.productName);
   let name = cat && prod && !prod.toLowerCase().includes(cat.toLowerCase()) ? `${cat} – ${prod}` : prod || cat || "Biljett";
   if (optionName) name = `${name} (${optionName})`;
   return name;
