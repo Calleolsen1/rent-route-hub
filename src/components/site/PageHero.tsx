@@ -39,8 +39,6 @@ export default function PageHero({ image, imageAlt, eyebrow, title, logo, logoAl
     <section className="relative overflow-hidden bg-navy-deep text-white">
       <img src={resizedImage(image, 1600)} srcSet={responsiveSrcSet(image)} sizes="100vw" alt={imageAlt} className="absolute inset-0 h-full w-full object-cover" decoding="async" fetchPriority="high" />
       <div className="absolute inset-0 bg-gradient-to-r from-navy-deep via-navy-deep/85 to-navy-deep/55" />
-      <div aria-hidden className="pointer-events-none absolute -right-20 -top-40 h-[420px] w-[520px] rotate-[18deg] rounded-[80px] bg-white/[0.05]" />
-      <div aria-hidden className="pointer-events-none absolute right-[30%] -bottom-56 h-[360px] w-[420px] -rotate-[24deg] rounded-[80px] bg-white/[0.035]" />
 
       <div className="relative w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10 py-6 md:py-12 flex items-end justify-between gap-6">
         <div className="min-w-0 max-w-4xl">

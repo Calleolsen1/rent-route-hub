@@ -16,7 +16,7 @@ const channels = [
  {
  icon: Mail,
  title: "E-post",
- desc: "Vi svarar alltid samma dag sålänge e-post inkommer under ordinarie öppetider.",
+ desc: "Vi svarar samma dag, så länge mejlet kommer in under ordinarie öppettider.",
  detail: "info@kaisengroup.se",
  href: "mailto:info@kaisengroup.se",
  cta: "Skicka mejl",
@@ -24,7 +24,7 @@ const channels = [
  {
  icon: MessageSquare,
  title: "Kontaktformulär",
- desc: "Fyll i vårt formulär för Reseförfrågan så återkopplar vi snarast möjligt med ett skräddarsytt förslag på reseupplägg.",
+ desc: "Fyll i vårt formulär för Reseförfrågan så återkommer vi så snart vi kan med ett förslag på reseupplägg.",
  href: "/contact",
  cta: "Öppna formulär",
  internal: true,
@@ -36,8 +36,8 @@ const supportTypes = [
  icon: AlertCircle,
  color: "text-red-500",
  bg: "bg-red-50",
- title: "Akuta ärende under resa",
- desc: "Befinner du dig på resa och behöver kontakta oss utanför ordinarie öppettider finner du vårt journummer på er bokningsbekräftelse. Det går även bra att skicka e-post till info@kaisengroup.se",
+ title: "Akuta ärenden under resan",
+ desc: "Befinner du dig på resa och behöver kontakta oss utanför ordinarie öppettider finner du vårt journummer på er bokningsbekräftelse. Det går också bra att mejla info@kaisengroup.se.",
  },
  {
  icon: HelpCircle,
@@ -50,8 +50,8 @@ const supportTypes = [
  icon: CheckCircle,
  color: "text-green-600",
  bg: "bg-green-50",
- title: "Feedback & förbättringar",
- desc: "Har du rest med oss och vill dela med dig av dina intryck? Vi tar alltid emot feedback - positiv och negativ - för att bli bättre.",
+ title: "Feedback",
+ desc: "Har du rest med oss och vill dela med dig av dina intryck? Vi tar gärna emot både positiv och negativ feedback, den hjälper oss att bli bättre.",
  },
 ];
 
@@ -68,15 +68,13 @@ export default function Support() {
 
  {/* Hero */}
  <section className="relative overflow-hidden bg-navy-deep">
- <div aria-hidden className="pointer-events-none absolute -right-20 -top-40 h-[420px] w-[520px] rotate-[18deg] rounded-[80px] bg-white/[0.05]" />
- <div aria-hidden className="pointer-events-none absolute right-[30%] -bottom-56 h-[360px] w-[420px] -rotate-[24deg] rounded-[80px] bg-white/[0.035]" />
  <div className="relative w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10 py-8 md:py-12">
  <p className="eyebrow text-sky-300 uppercase mb-1.5">Support</p>
  <h1 className="font-display text-[34px] sm:text-5xl md:text-6xl text-white mb-3">
  Vi finns här för <em className="italic font-light text-white">dig</em>
  </h1>
  <p className="text-white/85 max-w-2xl text-sm md:text-base leading-relaxed">
- Personlig och snabb service - oavsett om du planerar, packar eller redan är på plats.
+ Hör av dig när du planerar, inför avresan eller när du redan är på plats.
  </p>
  </div>
  </section>
@@ -97,26 +95,26 @@ export default function Support() {
               <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground">Kontakta oss</h2>
 
  </div>
- <div className="grid md:grid-cols-3 gap-4">
+ <div className="grid md:grid-cols-3 gap-x-10 gap-y-8">
  {channels.map((ch) => (
- <div key={ch.title} className="sb-card p-6 flex flex-col hover:border-primary/50 hover:shadow-md transition-all">
- <div className="w-11 h-11 bg-primary rounded-md flex items-center justify-center mb-4">
- <ch.icon className="h-5 w-5 text-white" />
- </div>
- <h3 className="font-display text-xl text-foreground mb-2">{ch.title}</h3>
+ <div key={ch.title} className="flex flex-col border-t border-border pt-5">
+ <h3 className="flex items-center gap-2 font-display text-2xl text-foreground mb-2">
+ <ch.icon className="h-4 w-4 text-primary" aria-hidden />
+ {ch.title}
+ </h3>
  <p className="text-sm text-muted-foreground leading-relaxed mb-3">{ch.desc}</p>
  {ch.detail && (
- <p className="font-display text-lg font-semibold text-primary mb-5">{ch.detail}</p>
+ <p className="text-base font-medium text-primary mb-5">{ch.detail}</p>
  )}
  {ch.internal ? (
  <Link to={ch.href}>
- <Button variant="outline" className="h-10 rounded-lg border-primary text-primary hover:bg-primary hover:text-primary-foreground font-display uppercase font-semibold tracking-wide text-[15px] w-full">
+ <Button variant="outline" className="mt-auto h-11 rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground text-sm font-medium w-full sm:w-auto px-6">
  {ch.cta} <ArrowRight className="h-3 w-3 ml-1" />
  </Button>
  </Link>
  ) : (
  <a href={ch.href}>
- <Button variant="outline" className="h-10 rounded-lg border-primary text-primary hover:bg-primary hover:text-primary-foreground font-display uppercase font-semibold tracking-wide text-[15px] w-full">
+ <Button variant="outline" className="mt-auto h-11 rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground text-sm font-medium w-full sm:w-auto px-6">
  {ch.cta} <ArrowRight className="h-3 w-3 ml-1" />
  </Button>
  </a>
@@ -131,45 +129,40 @@ export default function Support() {
  <section className="sb-section-alt">
  <div className="sb-container">
  <div className="mb-8 md:mb-10">
- <p className="eyebrow text-primary uppercase mb-1">Typ av ärende</p>
+ <p className="eyebrow text-primary uppercase mb-2">Typ av ärende</p>
  <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground">Hur kan vi hjälpa till?</h2>
  </div>
- <div className="grid md:grid-cols-3 gap-4">
+ <dl className="divide-y divide-border border-y border-border max-w-4xl">
  {supportTypes.map((st) => (
- <div key={st.title} className="sb-card p-6">
- <div className={`w-10 h-10 ${st.bg} rounded-md flex items-center justify-center mb-4`}>
- <st.icon className={`h-5 w-5 ${st.color}`} />
- </div>
- <h3 className="font-display text-xl text-foreground mb-2">{st.title}</h3>
- <p className="text-sm text-muted-foreground leading-relaxed">{st.desc}</p>
+ <div key={st.title} className="grid md:grid-cols-[260px_1fr] gap-1 md:gap-8 py-5">
+ <dt className="font-display text-xl text-foreground">{st.title}</dt>
+ <dd className="text-sm text-muted-foreground leading-relaxed">{st.desc}</dd>
  </div>
  ))}
- </div>
+ </dl>
  </div>
  </section>
 
  {/* Promise section */}
  <section className="sb-container py-10 md:py-14">
- <div className="relative overflow-hidden rounded-lg bg-primary text-white">
- <div aria-hidden className="pointer-events-none absolute -left-24 -top-28 h-[380px] w-[380px] rotate-12 rounded-[64px] bg-white/[0.06]" />
- <div aria-hidden className="pointer-events-none absolute -right-28 -bottom-40 h-[380px] w-[380px] -rotate-12 rounded-[64px] bg-white/[0.04]" />
- <div className="relative px-6 py-10 md:px-16 md:py-14 text-center max-w-3xl mx-auto">
+ <div className="rounded-2xl bg-navy text-white">
+ <div className="px-6 py-10 md:px-14 md:py-14 max-w-3xl">
  <p className="eyebrow text-sky-200 uppercase mb-2">Vårt löfte</p>
  <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-white mb-5">
- Vi svarar alltid - <em className="italic font-light text-white">på riktigt</em>
+ Du pratar alltid med <em className="italic font-light text-white">en människa</em>
  </h2>
  <p className="text-white/80 leading-relaxed mb-8">
- Hos KAISEN möter du människor med erfarenhet och kunskap. Ingen automatiserad kundservice eller opersonliga standardsvar – bara personlig kontakt med en resespecialist som hjälper dig hela vägen.
+ Hos KAISEN svarar en erfaren resespecialist, inte en automatisk kundtjänst. Samma person hjälper dig från första frågan till hemresan.
  </p>
  <div className="grid grid-cols-3 gap-3 sm:gap-6 border-t border-white/15 pt-8">
  {[
- { value: "24h", label: "SNABB ÅTERKOPPLING" },
- { value: "24/7", label: "TRYGGHET UNDER RESAN" },
- { value: "100%", label: "PERSONLIG KONTAKT" },
+ { value: "24h", label: "Snabb återkoppling" },
+ { value: "24/7", label: "Trygghet under resan" },
+ { value: "100%", label: "Personlig kontakt" },
  ].map((s) => (
  <div key={s.label}>
- <div className="font-display text-3xl md:text-4xl font-bold italic text-white mb-1">{s.value}</div>
- <div className="font-display text-xs sm:text-sm font-semibold tracking-wide text-white/70 uppercase">{s.label}</div>
+ <div className="font-display text-3xl md:text-4xl text-white mb-1">{s.value}</div>
+ <div className="text-xs sm:text-sm text-white/70">{s.label}</div>
  </div>
  ))}
  </div>
@@ -179,10 +172,10 @@ export default function Support() {
 
  {/* Also see FAQ */}
  <section className="pb-4 bg-background">
- <div className="sb-container text-center">
+ <div className="sb-container">
  <p className="text-muted-foreground text-sm mb-4">Letar du efter svar på en specifik fråga?</p>
  <Link to="/faq">
- <Button variant="outline" className="h-10 rounded-lg border-primary text-primary hover:bg-primary hover:text-primary-foreground px-6 font-display uppercase font-semibold tracking-wide text-[15px]">
+ <Button variant="outline" className="h-11 rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground px-7 text-sm font-medium">
  Gå till FAQ <ArrowRight className="h-4 w-4 ml-2" />
  </Button>
  </Link>

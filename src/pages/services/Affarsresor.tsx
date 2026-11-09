@@ -1,10 +1,9 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Check, Clock, Shield, Globe, HeadphonesIcon } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import PageHero from "@/components/site/PageHero";
 import CtaBand from "@/components/site/CtaBand";
-import heroImage from "@/assets/kaisen-hero.jpg";
 import { PHOTO } from "@/data/photos";
 const businessImage = PHOTO["affarsresor-hero"];
 
@@ -19,24 +18,20 @@ const tailored = [
 
 const benefits = [
  {
- icon: Clock,
- title: "Din tid sparas",
- description: "Vi hanterar all planering. Du fokuserar på affärerna.",
+ title: "Mindre administration",
+ description: "Vi sköter bokningar och ombokningar, du lägger tiden på mötena.",
  },
  {
- icon: Shield,
- title: "Trygg flexibilitet",
- description: "Planer ändras - vi har avbokningsskydd och snabb ombokning.",
+ title: "När planerna ändras",
+ description: "Avbokningsskydd och snabb ombokning när ett möte flyttas.",
  },
  {
- icon: Globe,
- title: "Globalt nätverk",
- description: "Partners i alla stora affärsstäder, lokalt och globalt.",
+ title: "Kontakter på plats",
+ description: "Samarbetspartners i de stora affärsstäderna.",
  },
  {
- icon: HeadphonesIcon,
- title: "Personlig assistent",
- description: "En kontakt som känner dina behov och alltid finns tillgänglig.",
+ title: "En kontaktperson",
+ description: "Samma person hos oss, som lär sig hur du vill resa.",
  },
 ];
 
@@ -46,7 +41,7 @@ const destinations = [
  { city: "Dubai", desc: "MENA-regionens nav" },
  { city: "Singapore", desc: "Asiens affärsmetropol" },
  { city: "New York", desc: "Wall Street & Midtown" },
- { city: "Zürich", desc: "Banking & Life Sciences" },
+ { city: "Zürich", desc: "Bank och life science" },
 ];
 
 export default function Affarsresor() {
@@ -55,19 +50,19 @@ export default function Affarsresor() {
  <Navbar />
 
  <PageHero
- image={heroImage}
+ image={businessImage}
  imageAlt="Affärsresor"
- eyebrow="Tjänster - Affärsresor"
- title={<>Skräddarsydda <em className="italic text-white">Affärsresor</em></>}
+ eyebrow="Affärsresor"
+ title={<>Affärsresor <em className="italic text-white">efter ditt schema</em></>}
  action={null}
  />
 
  {/* Intro quote */}
  <section className="sb-section-alt">
- <div className="sb-container max-w-3xl text-center">
- <p className="font-display text-2xl md:text-3xl text-foreground italic font-semibold uppercase leading-snug">
- "Din tid är värdefull. Vi ser till att varje minut av din affärsresa är optimerad."
- </p>
+ <div className="sb-container">
+ <blockquote className="max-w-3xl border-l-2 border-primary pl-5 md:pl-8 font-display italic text-2xl md:text-[32px] leading-snug text-foreground">
+ Du ska kunna tänka på mötet, inte på resan dit.
+ </blockquote>
  </div>
  </section>
 
@@ -82,19 +77,16 @@ export default function Affarsresor() {
  />
  </div>
  <div>
- <p className="eyebrow text-primary uppercase mb-1">Skräddarsytt för dig</p>
+ <p className="eyebrow text-primary uppercase mb-2">Planering</p>
  <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-4">
- Inga mallar - bara din resa
+ Upplagt efter ditt schema
  </h2>
  <p className="text-foreground/80 leading-relaxed mb-6 text-[15px]">
- Varje affärsresa är unik. Vi lyssnar på dina behov och skapar ett upplägg som passar ditt schema, din budget och dina förväntningar - från enklare dagsresor till komplexa flerstadsturer.
+ Vi utgår från ditt schema, din budget och vad resan ska ge, oavsett om det är en enkel dagsresa eller flera städer på en vecka.
  </p>
- <ul className="space-y-2.5 mb-8">
+ <ul className="mb-8 divide-y divide-border border-y border-border">
  {tailored.map((f) => (
- <li key={f} className="flex items-start gap-3 text-sm">
- <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded bg-primary text-white"><Check className="h-3.5 w-3.5" /></span>
- <span className="text-foreground/85">{f}</span>
- </li>
+ <li key={f} className="py-2.5 text-sm text-foreground/85">{f}</li>
  ))}
  </ul>
  <Link to="/contact" className="sb-btn-primary">
@@ -108,15 +100,17 @@ export default function Affarsresor() {
  {/* Benefits */}
  <section className="sb-section-alt">
  <div className="sb-container">
- <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
- {benefits.map((b) => (
- <div key={b.title} className="sb-card p-6 hover:border-primary/50 hover:shadow-md transition-all">
- <span className="mb-4 flex h-10 w-10 items-center justify-center rounded-md bg-primary text-white"><b.icon className="h-5 w-5" /></span>
- <h3 className="font-display text-xl text-foreground mb-1.5">{b.title}</h3>
- <p className="text-muted-foreground text-sm leading-relaxed">{b.description}</p>
+ <dl className="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-8">
+ {benefits.map((b, i) => (
+ <div key={b.title} className="border-t border-border pt-5">
+ <dt className="flex items-baseline gap-3 mb-1.5">
+ <span className="font-display text-lg text-primary tabular-nums">{String(i + 1).padStart(2, "0")}</span>
+ <span className="font-display text-xl text-foreground">{b.title}</span>
+ </dt>
+ <dd className="text-muted-foreground text-sm leading-relaxed">{b.description}</dd>
  </div>
  ))}
- </div>
+ </dl>
  </div>
  </section>
 
@@ -125,23 +119,23 @@ export default function Affarsresor() {
  <div className="sb-container">
  <p className="eyebrow text-primary uppercase mb-1">Populära destinationer</p>
  <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-8 md:mb-10">
- Världens ledande affärsstäder
+ Städer vi ofta bokar
  </h2>
- <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+ <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-10 border-t border-border">
  {destinations.map((d) => (
- <div key={d.city} className="sb-card p-5 md:p-6 hover:border-primary/50 hover:shadow-md transition-all">
- <h3 className="font-display text-lg sm:text-xl md:text-2xl italic font-bold text-foreground mb-1">{d.city}</h3>
- <p className="text-xs text-muted-foreground">{d.desc}</p>
- </div>
+ <li key={d.city} className="flex items-baseline justify-between gap-4 border-b border-border py-4">
+ <span className="font-display text-xl md:text-2xl text-foreground">{d.city}</span>
+ <span className="text-xs text-muted-foreground text-right">{d.desc}</span>
+ </li>
  ))}
- </div>
+ </ul>
  </div>
  </section>
 
  <CtaBand
  eyebrow="Kom igång"
  title="Låt oss ta hand om dina affärsresor"
- text="Kontakta oss för en kostnadsfri genomgång av hur vi kan effektivisera era företagsresor."
+ text="Boka en kostnadsfri genomgång av hur ni reser i dag, så visar vi vad som kan bli enklare."
  >
  <Link to="/contact" className="sb-btn-light">
  Kontakta oss <ArrowRight className="h-4 w-4" />

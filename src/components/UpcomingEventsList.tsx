@@ -221,7 +221,7 @@ export default function UpcomingEventsList({
           </p>
         )}
         {!emptyMessage && <p className="text-foreground font-medium mb-5">
-          Hittar du inte det du letar efter? Vi kan säkert fixa det ändå.
+          Hittar du inte det du letar efter? Hör av dig, så kollar vi vad vi kan ordna.
         </p>}
         <Button
           className="gap-2 h-10 rounded-lg px-6 font-display uppercase font-semibold text-[15px] tracking-wide"

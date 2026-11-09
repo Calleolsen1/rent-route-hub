@@ -387,7 +387,7 @@ export default function EventDetail() {
       </section>
 
       <PackageCards
-        eyebrow="Skräddarsy din resa"
+        eyebrow="Det här kan ingå"
         title={packageTitle(kind, kind === "race" ? "Formel 1" : "Fotboll", event.venue_name)}
         features={navEntry?.features_json?.length ? navEntry.features_json : DEFAULT_FEATURES_BY_KIND[kind]}
         venuePhoto={venuePhoto}

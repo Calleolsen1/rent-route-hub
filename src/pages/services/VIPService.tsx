@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Star, Shield, Clock, Phone, Plane, Car } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import PageHero from "@/components/site/PageHero";
@@ -12,61 +12,52 @@ const vipTransfer = PHOTO["vip-transfer"];
 
 const services = [
  {
- icon: Phone,
- title: "Personlig Resekonsult",
+ title: "Personlig resekonsult",
  description:
- "Du får en dedikerad kontaktperson som lär känna dina preferenser, rutiner och önskemål. Oavsett om det gäller en privat semester eller en viktig affärsresa - vi finns där.",
+ "Du får en egen kontaktperson som lär sig dina vanor och önskemål, både för privata resor och affärsresor.",
  },
  {
- icon: Star,
- title: "Skräddarsydda Resplaner",
+ title: "Resplaner efter dina behov",
  description:
- "Ingen mall, ingen standardlösning. Vi bygger din resa från grunden baserat på dina behov - hotell, transport, aktiviteter och tajming väljs ut noggrant för just dig.",
+ "Vi börjar från dina behov och väljer hotell, transport, aktiviteter och tider med omsorg.",
  },
  {
- icon: Clock,
- title: "Tillgängliga Dygnet Runt",
+ title: "Tillgängliga dygnet runt",
  description:
- "Tidszoner spelar ingen roll. Vår service är tillgänglig 24/7 - för sista-minutenändringar, akuta behov eller bara en fråga längs vägen.",
+ "Vi svarar dygnet runt, oavsett tidszon, för ändringar i sista minuten eller en snabb fråga under resan.",
  },
  {
- icon: Shield,
- title: "Full Diskretion",
+ title: "Full diskretion",
  description:
- "Vi hanterar alla resor med absolut konfidentialitet. Din integritet skyddas i varje steg - oavsett om du reser privat eller i yrkesroll.",
+ "Alla resor hanteras konfidentiellt, oavsett om du reser privat eller i tjänsten.",
  },
  {
- icon: Plane,
- title: "Privatflyg & Business Class",
+ title: "Privatflyg och business class",
  description:
- "Från privata jetflygningar till prioriterad business class - vi väljer det bästa alternativet för din resa, tid och komfort.",
+ "Privatjet eller business class: vi väljer det som passar resan, tiden och komforten bäst.",
  },
  {
- icon: Car,
- title: "Chauffeur & Transfer",
+ title: "Chaufför och transfer",
  description:
- "Lyxiga transferlösningar i hela världen. Chauffördriven Mercedes, privata fordon och VIP-mottagning på flygplatser ingår alltid i vår service.",
+ "Chaufförsdriven Mercedes, privata fordon och VIP-mottagning på flygplatsen ingår alltid, var du än reser.",
  },
 ];
 
 const howItWorks = [
  {
  step: "01",
- title: "Du berättar - vi lyssnar",
- description:
- "Berätta om din resa, dina önskemål och vad som är viktigast för dig. Inget är för litet eller för stort.",
+ title: "Du berättar",
+ description: "Berätta om resan, dina önskemål och vad som är viktigast för dig.",
  },
  {
  step: "02",
- title: "Vi skräddarsyr",
- description:
- "Utifrån din briefing skapar vi ett komplett resförslag med hotell, transport och upplevelser - allt handplockat.",
+ title: "Vi tar fram ett förslag",
+ description: "Utifrån det du berättat sätter vi ihop ett förslag med hotell, transport och aktiviteter.",
  },
  {
  step: "03",
- title: "Du godkänner, vi levererar",
- description:
- "När du är nöjd tar vi hand om allt. Du fokuserar på resan - vi hanterar logistiken.",
+ title: "Vi ordnar resten",
+ description: "När du har godkänt förslaget bokar och samordnar vi allt det praktiska.",
  },
 ];
 
@@ -78,19 +69,19 @@ export default function VIPService() {
  <PageHero
  image={vipImage}
  imageAlt="VIP Service"
- eyebrow="Tjänster - VIP Service"
- title={<>Resor på <em className="italic text-white">Dina Villkor</em></>}
+ eyebrow="VIP-service"
+ title={<>Resor på <em className="italic text-white">dina villkor</em></>}
  action={null}
  >
- White glove service för privat- och affärsresenären som värdesätter tid, komfort och omsorg om detaljerna.
+ Personlig service för privat- och affärsresenärer som vill att allt runt resan bara fungerar.
  </PageHero>
 
  {/* Intro quote */}
  <section className="sb-section-alt">
- <div className="sb-container max-w-3xl text-center">
- <p className="font-display text-2xl md:text-3xl text-foreground italic font-semibold uppercase leading-snug">
- "Vi tar hand om varje detalj - så att du kan fokusera på det som verkligen spelar roll."
- </p>
+ <div className="sb-container">
+ <blockquote className="max-w-3xl border-l-2 border-primary pl-5 md:pl-8 font-display italic text-2xl md:text-[32px] leading-snug text-foreground">
+ Du ska bara behöva tänka på varför du reser.
+ </blockquote>
  </div>
  </section>
 
@@ -105,15 +96,15 @@ export default function VIPService() {
  />
  </div>
  <div>
- <p className="eyebrow text-primary uppercase mb-1">Privat & Affärsresor</p>
+ <p className="eyebrow text-primary uppercase mb-2">Privat- och affärsresor</p>
  <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-4">
- En Service Som Anpassar Sig Efter Dig
+ En service som anpassar sig efter dig
  </h2>
  <p className="text-foreground/80 leading-relaxed mb-4 text-[15px]">
- Oavsett om du planerar en privat familjesemester, ett romantiskt citybreak eller en intensiv affärsresa med tight schema - vi levererar samma höga servicenivå.
+ Familjesemester, en helg i en annan stad eller en affärsresa med tätt schema: du får samma noggranna service.
  </p>
  <p className="text-foreground/80 leading-relaxed mb-8 text-[15px]">
- Vår white glove service innebär att inget lämnas åt slumpen. Från first contact till hemkomst finns vi alltid ett samtal bort.
+ Vi planerar varje del i förväg, och från första kontakt till hemkomst når du oss på telefon.
  </p>
  <Link to="/contact" className="sb-btn-primary">
  Kom i kontakt
@@ -123,25 +114,21 @@ export default function VIPService() {
  </div>
  </section>
 
- {/* Services grid */}
+ {/* What's included: two-column list with dividers */}
  <section className="sb-section-alt">
  <div className="sb-container">
- <p className="eyebrow text-primary uppercase mb-1">Vad Ingår</p>
+ <p className="eyebrow text-primary uppercase mb-2">Vad som ingår</p>
  <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-8 md:mb-10">
- Komplett White Glove Service
+ Det här ingår
  </h2>
- <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
- {services.map((s) => {
- const Icon = s.icon;
- return (
- <div key={s.title} className="sb-card p-6 hover:border-primary/50 hover:shadow-md transition-all">
- <span className="mb-4 flex h-10 w-10 items-center justify-center rounded-md bg-primary text-white"><Icon className="h-5 w-5" /></span>
- <h3 className="font-display text-xl text-foreground mb-2">{s.title}</h3>
- <p className="text-muted-foreground text-sm leading-relaxed">{s.description}</p>
+ <dl className="grid md:grid-cols-2 gap-x-14 border-t border-border">
+ {services.map((s) => (
+ <div key={s.title} className="border-b border-border py-5">
+ <dt className="font-display text-xl text-foreground mb-1">{s.title}</dt>
+ <dd className="text-muted-foreground text-sm leading-relaxed">{s.description}</dd>
  </div>
- );
- })}
- </div>
+ ))}
+ </dl>
  </div>
  </section>
 
@@ -149,14 +136,14 @@ export default function VIPService() {
  <section className="sb-section">
  <div className="sb-container grid md:grid-cols-2 gap-8 lg:gap-14 items-center">
  <div>
- <p className="eyebrow text-primary uppercase mb-1">Så här fungerar det</p>
+ <p className="eyebrow text-primary uppercase mb-2">Tre steg</p>
  <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-6">
- Enkelt för Dig - Detaljerat för Oss
+ Så går det till
  </h2>
- <div className="space-y-3">
+ <div className="divide-y divide-border border-y border-border">
  {howItWorks.map((step) => (
- <div key={step.step} className="sb-card flex gap-4 p-5">
- <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-primary font-display text-lg font-bold italic text-white">
+ <div key={step.step} className="flex gap-5 py-5">
+ <span className="font-display text-2xl text-primary tabular-nums leading-none pt-1">
  {step.step}
  </span>
  <div>
@@ -183,9 +170,9 @@ export default function VIPService() {
  <img src={vipTransfer} alt="VIP transfer service" className="w-full h-full object-cover object-center" />
  <div className="absolute inset-0 bg-navy-deep/65 flex items-center justify-center px-6">
  <div className="text-center">
- <p className="eyebrow text-sky-300 uppercase mb-2">Varje detalj räknas</p>
- <p className="font-display text-3xl md:text-[36px] lg:text-[44px] text-white italic font-bold uppercase leading-tight">
- Från avresa till ankomst - sömlöst.
+ <p className="eyebrow text-white/70 uppercase mb-2">Transfer</p>
+ <p className="font-display text-3xl md:text-[36px] lg:text-[44px] text-white leading-tight">
+ Hämtad vid flygplatsen, <em className="italic">körd ända fram.</em>
  </p>
  </div>
  </div>
@@ -200,7 +187,7 @@ export default function VIPService() {
  type="vip"
  eyebrow="Privat konsultation"
  heading="Berätta om din resa"
- intro="Vi lyssnar, vi planerar - och sedan levererar vi. En personlig rådgivare återkommer för en privat konsultation."
+ intro="Berätta kort om resan, så hör en personlig rådgivare av sig för ett samtal."
  />
  </div>
  </div>

@@ -1,10 +1,9 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Check, Users, Projector, Utensils, Wifi, Car, Award, Mic2, Coffee, Palette, MessageSquare } from "lucide-react";
+import { ArrowRight, MessageSquare } from "lucide-react";
 import Footer from "@/components/Footer";
 import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
 import PageHero from "@/components/site/PageHero";
-import FloatingInquiryButton from "@/components/FloatingInquiryButton";
 import { useInquiryDialog } from "@/components/InquiryDialog";
 import { PHOTO } from "@/data/photos";
 const konferensHero = PHOTO["konferens-hero"];
@@ -13,48 +12,42 @@ const konferens2 = PHOTO["konferens-event"];
 
 const packages = [
   {
-    icon: Mic2,
-    title: "Konferens & Möten",
+    title: "Konferens och möten",
     tagline: "Lokaler · AV-teknik · Koordinering",
     desc: "Vi bokar rätt lokal för er grupps storlek och teknikbehov. Allt från små mötesrum till kongresshallar.",
   },
   {
-    icon: Utensils,
-    title: "Catering & Middagar",
+    title: "Mat och middagar",
     tagline: "Fika · Lunch · Galamiddag",
-    desc: "Från enkel fika till flerrättersmiddagar med underhållning. Mat som ger energi och imponerar.",
+    desc: "Från enkel fika till flerrättersmiddag med underhållning.",
   },
   {
-    icon: Palette,
-    title: "Aktiviteter & Upplevelser",
+    title: "Aktiviteter",
     tagline: "Teambuilding · Kultur · Äventyr",
-    desc: "Matlagningskurser, privata museibesök, vinprovningar eller utomhusäventyr. Kombinera jobb med minnen.",
+    desc: "Matlagningskurser, privata museibesök, vinprovningar eller aktiviteter utomhus.",
   },
   {
-    icon: Car,
-    title: "Transport & Logistik",
+    title: "Transport och logistik",
     tagline: "Flyg · Transfer · Shuttle",
-    desc: "Vi hanterar alla deltagares resor - från flygbiljetter till shuttlebussar mellan hotell och lokal.",
+    desc: "Vi ordnar alla deltagares resor, från flygbiljetter till bussar mellan hotell och lokal.",
   },
   {
-    icon: Wifi,
-    title: "Teknik & IT-support",
+    title: "Teknik och uppkoppling",
     tagline: "Uppkoppling · Streaming · Helpdesk",
-    desc: "Stabil wifi, hybrid-lösningar och tekniker på plats. Så inget strular när det väl gäller.",
+    desc: "Stabilt wifi, hybridlösningar och tekniker på plats.",
   },
   {
-    icon: Award,
-    title: "Event & Underhållning",
+    title: "Kvällsprogram",
     tagline: "Speaker · Shower · Middagsarrangemang",
-    desc: "Talare, shower och kvällsarrangemang som höjer evenemanget. Vi koordinerar hela upplevelsen.",
+    desc: "Talare, shower och kvällsarrangemang, samordnat med resten av programmet.",
   },
 ];
 
 const formats = [
-  { title: "Dagsmöte", desc: "Lokal, teknik, lunch och fika - allt klart när ni kommer.", guests: "10-50" },
-  { title: "2-3 dagars konferens", desc: "Boende, middagar och aktiviteter. Komplett paket.", guests: "20-150" },
-  { title: "Incentive-resa", desc: "Belöna era bästa medarbetare med en upplevelse utomlands.", guests: "10-100" },
-  { title: "Stor kongress", desc: "Internationella kongresser i Europas bästa kongresscentra.", guests: "100-500+" },
+  { title: "Dagsmöte", desc: "Lokal, teknik, lunch och fika är klart när ni kommer.", guests: "10–50" },
+  { title: "Konferens 2–3 dagar", desc: "Boende, middagar och aktiviteter ingår.", guests: "20–150" },
+  { title: "Incentiveresa", desc: "En resa utomlands som tack till medarbetare som gjort ett bra år.", guests: "10–100" },
+  { title: "Stor kongress", desc: "Internationella kongresser i Europas stora kongresscenter.", guests: "100–500+" },
 ];
 
 export default function Konferens() {
@@ -74,7 +67,7 @@ export default function Konferens() {
         image={konferensHero}
         imageAlt="Konferensresor utomlands"
         eyebrow="Konferens & Event"
-        title={<>Event som <em className="italic text-white">imponerar</em></>}
+        title={<>Konferenser <em className="italic text-white">utan krångel</em></>}
         action={
           <button type="button" onClick={openKonferensInquiry} className="sb-btn-light">
             <MessageSquare className="h-4 w-4" />
@@ -82,26 +75,28 @@ export default function Konferens() {
           </button>
         }
       >
-        Vi sköter detaljerna. Du fokuserar på innehållet.
+        Vi sköter det praktiska, så att ni kan lägga tiden på innehållet.
       </PageHero>
 
-      {/* Packages Grid - SALES FIRST */}
+      {/* What we arrange: numbered editorial list, no icon cards */}
       <section className="sb-section">
         <div className="sb-container">
-          <p className="eyebrow text-primary uppercase mb-1">Vad Vi Fixar</p>
-          <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-8 md:mb-10">
-            Helheten - <em className="italic">från idé till avslut</em>
+          <p className="eyebrow text-primary uppercase mb-2">Det här ordnar vi</p>
+          <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-8 md:mb-10 max-w-2xl">
+            Hela arrangemanget, <em className="italic">från idé till genomförande</em>
           </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {packages.map((pkg) => (
-              <div key={pkg.title} className="group sb-card p-6 hover:border-primary/50 hover:shadow-md transition-all duration-300">
-                <span className="mb-4 flex h-10 w-10 items-center justify-center rounded-md bg-primary text-white"><pkg.icon className="h-5 w-5" /></span>
-                <h3 className="font-display text-xl text-foreground mb-1">{pkg.title}</h3>
-                <p className="eyebrow !text-[13px] !tracking-[0.04em] text-primary uppercase mb-3">{pkg.tagline}</p>
-                <p className="text-muted-foreground text-sm leading-relaxed">{pkg.desc}</p>
-              </div>
+          <ol className="grid md:grid-cols-2 gap-x-14 border-t border-border">
+            {packages.map((pkg, i) => (
+              <li key={pkg.title} className="flex gap-5 border-b border-border py-6">
+                <span className="font-display text-2xl text-primary tabular-nums leading-none pt-1">{String(i + 1).padStart(2, "0")}</span>
+                <div>
+                  <h3 className="font-display text-xl text-foreground">{pkg.title}</h3>
+                  <p className="text-xs text-muted-foreground mt-0.5 mb-2">{pkg.tagline}</p>
+                  <p className="text-foreground/80 text-sm leading-relaxed">{pkg.desc}</p>
+                </div>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
       </section>
 
@@ -109,21 +104,21 @@ export default function Konferens() {
       <section className="sb-section-alt">
         <div className="sb-container grid md:grid-cols-2 gap-8 lg:gap-14 items-center">
           <div>
-            <p className="eyebrow text-primary uppercase mb-1">Format</p>
+            <p className="eyebrow text-primary uppercase mb-2">Format</p>
             <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-6">
-              Anpassat efter er
+              Fyra vanliga upplägg
             </h2>
-            <div className="space-y-3">
+            <dl className="divide-y divide-border border-y border-border">
               {formats.map((f) => (
-                <div key={f.title} className="sb-card p-5 hover:border-primary/50 transition-colors">
-                  <div className="flex items-center justify-between gap-3 mb-1.5">
-                    <h3 className="font-display text-xl text-foreground">{f.title}</h3>
-                    <span className="shrink-0 rounded-md bg-primary/10 px-2 py-1 font-display text-sm font-semibold uppercase tracking-wide text-primary">{f.guests} deltagare</span>
-                  </div>
-                  <p className="text-muted-foreground text-sm">{f.desc}</p>
+                <div key={f.title} className="py-4">
+                  <dt className="flex items-baseline justify-between gap-3">
+                    <span className="font-display text-xl text-foreground">{f.title}</span>
+                    <span className="shrink-0 text-xs text-muted-foreground">{f.guests} deltagare</span>
+                  </dt>
+                  <dd className="text-muted-foreground text-sm mt-1">{f.desc}</dd>
                 </div>
               ))}
-            </div>
+            </dl>
           </div>
           <div className="aspect-[16/10] md:aspect-[4/3] overflow-hidden rounded-lg">
             <img
@@ -146,21 +141,16 @@ export default function Konferens() {
             />
           </div>
           <div>
-            <p className="eyebrow text-primary uppercase mb-1">Komplett service</p>
+            <p className="eyebrow text-primary uppercase mb-2">Samordning</p>
             <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-4">
-              En kontaktpunkt. Allt löst.
+              En kontaktperson för allt
             </h2>
             <p className="text-foreground/80 leading-relaxed mb-6 text-[15px]">
-              Istället för att ringa hotell, lokal, catering och teknik separat - pratar du med oss. Vi koordinerar hela kedjan och ser till att inget glöms.
+              I stället för att ringa hotell, lokal, catering och teknik var för sig pratar ni med oss. Vi håller ihop alla delar och ser till att inget faller mellan stolarna.
             </p>
-            <div className="grid grid-cols-2 gap-3 mb-8">
-              {["Lokalbokning", "AV & teknik", "Catering", "Logistik", "Aktiviteter", "Support på plats"].map((item) => (
-                <div key={item} className="flex items-center gap-2 text-sm text-foreground/85">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded bg-primary text-white"><Check className="h-3.5 w-3.5" /></span>
-                  {item}
-                </div>
-              ))}
-            </div>
+            <p className="text-sm text-muted-foreground mb-8">
+              Lokalbokning, AV och teknik, catering, logistik, aktiviteter och support på plats.
+            </p>
             <button type="button" onClick={openKonferensInquiry} className="sb-btn-primary">
               Begär offert
               <ArrowRight className="h-4 w-4" />
@@ -169,15 +159,6 @@ export default function Konferens() {
         </div>
       </section>
 
-      <FloatingInquiryButton
-        label="Begär offert"
-        inquiry={{
-          type: "conference",
-          eyebrow: "Begär offert",
-          heading: "Berätta om er konferens",
-          intro: "Antal deltagare, ungefärliga datum, destination och budget. Vi återkommer med ett komplett förslag.",
-        }}
-      />
       <RequestCta />
       <Footer />
     </div>

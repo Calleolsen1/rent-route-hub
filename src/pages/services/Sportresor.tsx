@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Footer from "@/components/Footer";
 import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
@@ -19,7 +19,7 @@ const sports = [
  heading: "Formel 1-resor",
  image: f1Image,
  description:
- "Upplev Formel 1 på plats – från nervkittlande kval till dramatiken i racet. Vi hjälper dig att skapa din F1-resa till världens ikoniska racingbanor, med möjlighet att boka biljetter, hotell, flyg och transfer var för sig eller som en komplett resa.",
+ "Se kvalet och racet på plats. Vi ordnar resor till F1-banorna i kalendern, och du kan boka biljetter, hotell, flyg och transfer var för sig eller som en hel resa.",
  features: [
  "Biljetter till träningar, kval och race",
  "Flygresa från samtliga Sveriges flygplatser",
@@ -34,7 +34,7 @@ const sports = [
  heading: "Fotbollsresor",
  image: fotbollImage,
  description:
- "Upplev Europas bästa fotbollsmatcher på plats – från klassiska derbyn i Premier League, Serie A och La Liga - till Champions League. Vi hjälper dig att skapa just din fotbollsresa - med möjlighet att boka matchbiljetter, hotell, flyg och transfer var för sig eller som en komplett resa.",
+ "Derbyn i Premier League, Serie A och La Liga, och matcher i Champions League. Du kan boka matchbiljetter, hotell, flyg och transfer var för sig eller som en hel resa.",
  features: [
  "Premier League, La Liga, Bundesliga, Serie A och fler ligor",
  "Champions League, Europa League och inhemska cuper",
@@ -47,17 +47,17 @@ const sports = [
 export default function Sportresor() {
  usePageMeta({
    title: "Sportresor - F1 & Fotboll | Kaisen Travel Group",
-   description: "Skräddarsydda sportresor med hotell, transfer och upplevelser till F1-race, Premier League, Champions League och fler sportevent. Personlig service från KAISEN TRAVEL GROUP.",
+   description: "Sportresor med biljetter, hotell, flyg och transfer till F1, Premier League, Champions League och fler sportevent. Personlig service från KAISEN TRAVEL GROUP.",
  });
  return (
  <div className="min-h-screen">
  <Navbar />
 
- <PageHero image={sportsImage} imageAlt="Sportresor" eyebrow="Tjänster - Sportresor" title="Sportresor">
- <p className="font-display text-xl md:text-2xl italic font-semibold uppercase text-white mb-2">
- Sport upplevs bäst LIVE
+ <PageHero image={sportsImage} imageAlt="Sportresor" eyebrow="Sportresor" title="Sportresor">
+ <p className="font-display text-xl md:text-2xl italic text-white mb-2">
+ Sport upplevs bäst på plats
  </p>
- Upplev Formel 1 och Europas bästa fotbollsmatcher på plats. Vi skräddarsyr din sportresa efter dina önskemål – boka allt från matchbiljett och hotell till flyg och transfer, eller välj bara de delar du behöver.
+ Formel 1 och Europas största fotbollsmatcher. Boka allt från matchbiljett och hotell till flyg och transfer, eller bara de delar du behöver.
  </PageHero>
 
  {/* Sport Sections - alternating media/text bands */}
@@ -79,19 +79,16 @@ export default function Sportresor() {
 
  {/* Content */}
  <div>
- <p className="eyebrow text-primary uppercase mb-1">{sport.title}</p>
+ <p className="eyebrow text-primary uppercase mb-2">{sport.title}</p>
  <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-4">
  {sport.heading}
  </h2>
  <p className="text-foreground/80 leading-relaxed mb-6 text-[15px]">
  {sport.description}
  </p>
- <ul className="space-y-2.5 mb-8">
+ <ul className="mb-8 divide-y divide-border border-y border-border">
  {sport.features.map((f) => (
- <li key={f} className="flex items-start gap-3 text-sm">
- <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded bg-primary text-white"><Check className="h-3.5 w-3.5" /></span>
- <span className="text-foreground/85">{f}</span>
- </li>
+ <li key={f} className="py-2.5 text-sm text-foreground/85">{f}</li>
  ))}
  </ul>
  <Link to="/contact" className="sb-btn-primary">
@@ -106,8 +103,8 @@ export default function Sportresor() {
  <CtaBand
  image={luxuryImage}
  eyebrow="Boka din sportresa"
- title="Vilken sportupplevelse drömmer du om?"
- text="Berätta vilken match eller tävling du vill uppleva på plats. Vi hjälper dig att skapa en sportresa anpassad efter dina önskemål."
+ title="Vilken match eller vilket lopp vill du se?"
+ text="Berätta vad du vill se på plats, så sätter vi ihop en resa efter dina önskemål."
  >
  <Link to="/contact" className="sb-btn-light">
  Kontakta oss

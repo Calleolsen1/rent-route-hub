@@ -1,12 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Footer from "@/components/Footer";
 import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
 import FloatingInquiryButton from "@/components/FloatingInquiryButton";
 import { useInquiryDialog } from "@/components/InquiryDialog";
-import groupImageAsset from "@/assets/kaisen-group-europe-skyline.jpg.asset.json";
-const groupImage = groupImageAsset.url;
+const groupImage = PHOTO["kaisen-group"];
 const groupCorporate = PHOTO["group-corporate"];
 const groupAdventure = PHOTO["group-adventure"];
 
@@ -20,7 +19,7 @@ const GROUP_KEYS = ["group_hero_eyebrow", "group_hero_title", "group_hero_taglin
 export default function GroupTravel() {
   usePageMeta({
     title: "Grupp- & konferensresor | Kaisen Travel Group",
-    description: "Vi producerar och genomför grupp- och konferensresor i Europa - med över 50 års samlad erfarenhet från resebranschen. Vi tar ansvar för helheten så att ni kan fokusera på upplevelsen.",
+    description: "Vi planerar och genomför grupp- och konferensresor i Europa, med över 50 års samlad erfarenhet från resebranschen. Vi tar ansvar för helheten så att ni kan fokusera på programmet.",
   });
   const { get } = useSiteContent(GROUP_KEYS);
   const { open: openInquiry } = useInquiryDialog();
@@ -29,7 +28,7 @@ export default function GroupTravel() {
       type: "group",
       eyebrow: "Skicka förfrågan",
       heading: "Berätta om er gruppresa",
-      intro: "Antal personer, ungefärliga datum, destination och budget - vi återkommer med ett skräddarsytt förslag.",
+      intro: "Antal personer, ungefärliga datum, resmål och budget, så återkommer vi med ett förslag.",
     });
 
   return (
@@ -52,13 +51,13 @@ export default function GroupTravel() {
           <div className="grid md:grid-cols-2 gap-8 lg:gap-14 items-center">
             <div>
               <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-5">
-                Erfarenhet som <em className="italic font-light">gör skillnad</em>
+                Vi har gjort det här <em className="italic font-light">länge</em>
               </h2>
               <p className="text-foreground/80 text-[15px] leading-relaxed mb-5">
-                När många människor ska resa tillsammans blir detaljerna avgörande. Med över 50 års samlad erfarenhet från resebranschen har vi en gedigen erfarenhet av att producera och genomföra grupp- och konferensresor i Europa.
+                När många människor ska resa tillsammans blir detaljerna avgörande. Med över 50 års samlad erfarenhet från resebranschen har vi planerat och genomfört många grupp- och konferensresor i Europa.
               </p>
               <p className="text-foreground/80 text-[15px] leading-relaxed">
-                Vi har byggt upp ett omfattande nätverk av hotell, destinationer, restauranger, aktiviteter och samarbetspartners som gör det möjligt att skapa resor med både kvalitet och personlighet. Oavsett om det handlar om en mindre ledningsgrupp, en företagskonferens eller en större gruppresa har vi erfarenheten och kapaciteten att ta hand om hela arrangemanget.
+                Vi har byggt upp ett omfattande nätverk av hotell, destinationer, restauranger, aktiviteter och samarbetspartners som gör att vi kan ordna resor med hög kvalitet och egen karaktär. Oavsett om det handlar om en mindre ledningsgrupp, en företagskonferens eller en större gruppresa har vi erfarenheten och kapaciteten att ta hand om hela arrangemanget.
               </p>
             </div>
             <div className="aspect-[16/10] md:aspect-[4/3] overflow-hidden rounded-lg">
@@ -85,20 +84,17 @@ export default function GroupTravel() {
             </div>
             <div>
               <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-5">
-                Vi kan resan - <em className="italic font-light">och logistiken</em>
+                Vi kan resan, <em className="italic font-light">och logistiken</em>
               </h2>
               <p className="text-foreground/80 text-[15px] leading-relaxed mb-5">
-                En lyckad gruppresa handlar om så mycket mer än att boka rätt hotell och flyg. Det är logistiken mellan alla delar som gör skillnaden.
+                En lyckad gruppresa handlar om mer än att boka rätt hotell och flyg. Det är logistiken mellan alla delar som avgör.
               </p>
               <p className="text-foreground/80 text-[15px] leading-relaxed mb-6">
-                Vi är vana att planera och koordinera allt från transporter och hotell till middagar, aktiviteter, konferenser och upplevelser. Med vår erfarenhet ser vi detaljerna innan de blir problem och skapar ett genomtänkt flöde genom hela resan.
+                Vi är vana att planera och koordinera allt från transporter och hotell till middagar, aktiviteter, konferenser och upplevelser. Vi ser detaljerna innan de blir problem och ser till att dagarna hänger ihop.
               </p>
-              <div className="flex items-start gap-3 rounded-lg bg-card border border-border border-l-4 border-l-primary p-4">
-                <Check className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                <p className="text-foreground font-medium">
-                  Vi tar ansvar för helheten - så att ni kan fokusera på upplevelsen.
-                </p>
-              </div>
+              <p className="border-l-2 border-primary pl-4 font-display text-xl md:text-2xl text-foreground leading-snug">
+                Vi tar ansvar för helheten, så att ni kan fokusera på varandra och programmet.
+              </p>
             </div>
           </div>
         </div>
@@ -112,43 +108,47 @@ export default function GroupTravel() {
               Professionell <em className="italic font-light">reseledarservice</em> på plats
             </h2>
             <p className="text-foreground/80 text-[15px] leading-relaxed mb-5">
-              För den som vill få ut ännu mer av resan erbjuder vi professionell reseledarservice på plats - en service som kan ta gruppresan till en helt annan nivå.
+              Vill ni få ut ännu mer av resan kan vi skicka med en reseledare. För en grupp gör det stor skillnad.
             </p>
             <p className="text-foreground/80 text-[15px] leading-relaxed mb-5">
-              Behoven kan se olika ut. Vår reseledare kan fungera som koordinator för gruppens logistik, finnas till hands under hela resan och säkerställa att allt fungerar smidigt. För den som vill komma närmare destinationen erbjuder vi även professionell guideservice, där våra reseledare delar med sig av sin kunskap och erfarenhet för att ge gruppen en djupare förståelse för resmålet.
+              Behoven ser olika ut. Reseledaren kan samordna gruppens logistik, finnas till hands under hela resan och se till att allt fungerar. Vill ni lära känna resmålet bättre kan reseledaren också guida och berätta om platserna ni besöker.
             </p>
             <p className="text-foreground/80 text-[15px] leading-relaxed">
-              På så sätt kan reseledarservicen anpassas efter just er resa - från trygg och professionell koordinering till en mer innehållsrik och personlig upplevelse av destinationen.
+              Ni väljer själva hur mycket reseledaren ska vara med, från enbart samordning till guidning under hela resan.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Erfarna på att skapa resor tillsammans */}
+      {/* How we plan a group trip: numbered steps */}
       <section className="sb-section-alt">
         <div className="sb-container">
-          <div className="max-w-[880px]">
-            <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-5">
-              Erfarna på att skapa <em className="italic font-light">resor tillsammans</em>
+          <div className="max-w-2xl mb-8 md:mb-10">
+            <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground">
+              Så planerar vi <em className="italic font-light">en gruppresa</em>
             </h2>
-            <p className="text-foreground/80 text-[15px] leading-relaxed mb-5">
-              Vi tror på att börja med att lyssna. Vad är syftet med resan? Vad vill ni uppleva? Vilken känsla vill ni att deltagarna ska ta med sig hem?
+          </div>
+          <ol className="grid md:grid-cols-3 gap-x-10">
+            {[
+              { t: "Vi lyssnar", d: "Vad är syftet med resan? Vad vill ni uppleva, och vad ska deltagarna ta med sig hem?" },
+              { t: "Vi sätter ihop resan", d: "Utifrån era önskemål väljer vi resmål, boende, aktiviteter och program som hänger ihop." },
+              { t: "Ni reser", d: "Ni berättar vad ni vill uppnå. Vi tar hand om resten, före och under resan." },
+            ].map((step, i) => (
+              <li key={step.t} className="border-t border-border py-6">
+                <span className="font-display text-2xl text-primary/60 tabular-nums">{String(i + 1).padStart(2, "0")}</span>
+                <h3 className="font-display text-xl text-foreground mt-2 mb-2">{step.t}</h3>
+                <p className="text-foreground/80 text-[15px] leading-relaxed">{step.d}</p>
+              </li>
+            ))}
+          </ol>
+          <div className="mt-8 md:mt-10 flex flex-col md:flex-row md:items-center md:justify-between gap-5 rounded-xl bg-primary p-6 md:p-8">
+            <p className="text-white text-lg font-light leading-relaxed max-w-2xl">
+              Har ni en idé om nästa konferens- eller gruppresa? Hör av er så börjar vi planera tillsammans.
             </p>
-            <p className="text-foreground/80 text-[15px] leading-relaxed mb-6">
-              Utifrån era önskemål skapar vi en resa där destination, boende, aktiviteter och upplevelser hänger ihop.
-            </p>
-            <p className="font-display text-2xl md:text-[30px] font-semibold uppercase text-foreground mb-10">
-              Ni berättar vad ni vill uppnå. <em className="italic font-light">Vi tar hand om resten.</em>
-            </p>
-            <div className="relative overflow-hidden rounded-lg bg-primary p-8 md:p-10 text-center">
-              <p className="text-white text-lg md:text-xl font-light leading-relaxed max-w-2xl mx-auto">
-                Har ni en idé om nästa konferens- eller gruppresa? Kontakta oss så börjar vi planera tillsammans.
-              </p>
-              <Button onClick={openGroupInquiry} className="mt-6 h-11 rounded-lg bg-white text-primary hover:bg-white/85 px-8 font-display uppercase font-semibold tracking-wide text-base">
-                Skicka förfrågan
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
+            <Button onClick={openGroupInquiry} className="h-11 rounded-full bg-white text-primary hover:bg-white/90 px-8 text-sm font-medium shrink-0">
+              Skicka förfrågan
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
           </div>
         </div>
       </section>
@@ -158,7 +158,7 @@ export default function GroupTravel() {
           type: "group",
           eyebrow: "Skicka förfrågan",
           heading: "Berätta om er gruppresa",
-          intro: "Antal personer, ungefärliga datum, destination och budget - vi återkommer med ett skräddarsytt förslag.",
+          intro: "Antal personer, ungefärliga datum, resmål och budget, så återkommer vi med ett förslag.",
         }}
       />
       <RequestCta />

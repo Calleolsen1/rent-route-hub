@@ -51,8 +51,6 @@ const Footer = () => {
       {/* Newsletter - dark rounded box on white, like the reference */}
       <div className="sb-container pt-10 md:pt-16 pb-10 md:pb-16">
         <div className="relative overflow-hidden rounded-lg bg-primary text-white">
-          <div aria-hidden className="pointer-events-none absolute -right-24 -top-24 h-[420px] w-[420px] rotate-12 rounded-[64px] bg-white/[0.06]" />
-          <div aria-hidden className="pointer-events-none absolute -left-32 bottom-[-180px] h-[360px] w-[360px] -rotate-12 rounded-[64px] bg-white/[0.04]" />
           <div className="relative px-6 py-10 sm:px-10 md:px-16 md:py-14 max-w-[680px] mx-auto">
             <p className="eyebrow text-white/70 uppercase mb-2">Nyhetsbrev</p>
             <h2 className="font-display text-3xl sm:text-4xl text-white">

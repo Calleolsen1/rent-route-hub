@@ -14,12 +14,18 @@ type Props = {
  * Liten rund knapp nära sidfoten som öppnar förfrågnings-popupen.
  * Ersätter den tidigare stora mörkblå CTA-rutan.
  */
+const RETIRED = true;
+
 const RequestCta = ({
   type = "contact",
   presetTopic,
   defaultDestination,
 }: Props) => {
   const { open } = useInquiryDialog();
+  // Retired: every page already has a request button in its banner/CTA
+  // and phones have the fixed bottom bar; a third pill above the footer
+  // read as template filler. Kept as a component so call sites stay valid.
+  if (RETIRED) return null;
 
   return (
     <section className="hidden md:block sb-container pt-2 pb-0 text-center">

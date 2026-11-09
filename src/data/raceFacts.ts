@@ -76,7 +76,7 @@ export const RACE_FACTS: Record<string, RaceFacts> = {
       { date: "2027-06-06", label: "Lopp" },
     ],
     aboutTrack: "Circuit de Monaco slingrar sig genom furstendömets smala gator – från Casinotorget, genom tunneln och längs hamnen. Det är säsongens långsammaste och mest krävande bana där minsta misstag straffas, och där kvalet ofta avgör loppet.",
-    whyVisit: "Inget lopp har samma glamour som Monaco. Yachterna i hamnen, Rivieran och möjligheten att se bilarna passera bara några meter bort gör helgen till en upplevelse utöver det vanliga – och på kvällarna lever hela staden upp.",
+    whyVisit: "Inget lopp har samma glamour som Monaco. Yachterna i hamnen, Rivieran och möjligheten att se bilarna passera bara några meter bort gör helgen till något helt eget – och på kvällarna lever hela staden upp.",
     bestSeats: "Tribunerna vid Swimming Pool-sektionen ger dig bilarna genom den snabba chikanen vid hamnen, och tribunen vid Casinotorget erbjuder en klassisk vy över Monacos mest ikoniska del av banan.",
   },
   "algarve": {
@@ -148,7 +148,7 @@ export const RACE_FACTS: Record<string, RaceFacts> = {
       { date: "2027-07-25", label: "Lopp" },
     ],
     aboutTrack: "Spa-Francorchamps är säsongens längsta bana på drygt sju kilometer och en favorit bland förarna. Den legendariska kombinationen Eau Rouge och Raidillon, de långa raksträckorna och Ardennernas växlande väder gör varje lopp oförutsägbart.",
-    whyVisit: "Spa är en klassiker bland klassiker. Den vackra skogsmiljön, banans historia och möjligheten att se bilarna i full fart genom Eau Rouge gör Belgiens GP till ett måste för alla som älskar motorsport.",
+    whyVisit: "Spa är en klassiker bland klassiker. Den vackra skogsmiljön, banans historia och möjligheten att se bilarna i full fart genom Eau Rouge gör Belgiens GP till ett av säsongens finaste lopp att se på plats.",
     bestSeats: "Tribunerna vid Eau Rouge ger dig den mest ikoniska vyn i hela Formel 1, och vid Pouhon ser du bilarna i hög fart genom en av banans svåraste kurvor.",
   },
   "ungern": {

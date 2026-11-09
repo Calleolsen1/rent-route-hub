@@ -13,24 +13,21 @@ import CtaBand from "@/components/site/CtaBand";
 const values = [
   {
     title: "Personlig service",
-    desc: "Du möter erfarna resespecialister som lyssnar, förstår dina önskemål och hjälper dig att skapa en resa som passar just dig.",
+    desc: "Du har en och samma kontakt genom hela planeringen. Vi lyssnar in vad du vill uppleva och föreslår det som passar dig och ditt sällskap.",
   },
   {
-    title: "Kompetens byggd på erfarenhet",
-    desc: "Sedan 1990 har vi samlat kunskap och erfarenhet inom sportresor, gruppresor och konferenser. Vi vet vad som krävs för att planera och genomföra resor där detaljerna gör skillnaden.",
+    title: "Lång erfarenhet",
+    desc: "Sedan 1990 har vi arrangerat sportresor, gruppresor och konferenser. Vi vet var det brukar uppstå problem och planerar för det i förväg.",
   },
   {
-    title: "Trygghet hela vägen",
-    desc: "Med noggrann planering, etablerade utvalda leverantörer och resegaranti skapar vi trygghet före, under och efter resan.",
+    title: "Trygghet före, under och efter",
+    desc: "Noggrann planering, leverantörer vi har jobbat med länge och resegaranti hos Kammarkollegiet.",
   },
   {
-    title: "Förtroende och diskretion",
-    desc: "Vi värnar om våra kundrelationer och hanterar varje uppdrag med integritet, respekt och diskretion. Oavsett om det gäller en privat resa, en företagsgrupp eller ett större evenemang kan du lita på vårt professionella omdöme.",
+    title: "Diskretion",
+    desc: "Vi är rädda om våra kundrelationer. Privatresa, företagsgrupp eller större evenemang: varje uppdrag hanteras med respekt och omdöme.",
   },
 ];
-
-
-
 
 import { usePageMeta } from "@/lib/usePageMeta";
 import { PHOTO } from "@/data/photos";
@@ -39,7 +36,7 @@ export default function About() {
   const { open: openInquiry } = useInquiryDialog();
   usePageMeta({
     title: "Om oss - Kaisen Travel Group",
-    description: "KAISEN TRAVEL GROUP arrangerar skräddarsydda sportresor, träningsläger och gruppresor. Personlig service från en dedikerad rådgivare - inga mallar, inga callcenter.",
+    description: "KAISEN TRAVEL GROUP arrangerar sportresor, träningsläger och gruppresor sedan 1990. Du har en egen rådgivare genom hela planeringen.",
   });
   return (
   <div className="min-h-screen">
@@ -49,149 +46,152 @@ export default function About() {
   image={heroImage}
   imageAlt="Om KAISEN TRAVEL GROUP"
   eyebrow="Om oss"
-  title={<>Resespecialister på <em className="italic font-light text-white">en annan nivå</em></>}
+  title={<>Resespecialister <em className="italic font-light text-white">sedan 1990</em></>}
   action={null}
   />
 
-  {/* Intro */}
+  {/* Intro: editorial, left-aligned */}
   <section className="sb-section-alt">
-  <div className="sb-container max-w-[880px]">
+  <div className="sb-container grid md:grid-cols-12 gap-6 md:gap-12">
+  <div className="md:col-span-5">
+  <p className="eyebrow text-primary uppercase mb-2">Vilka vi är</p>
+  <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground">
+  En mindre byrå med lång erfarenhet
+  </h2>
+  </div>
+  <div className="md:col-span-7 space-y-4 text-foreground/80 text-[15px] leading-relaxed md:pt-8">
+  <p>
+  KAISEN TRAVEL GROUP är en resebyrå för dig som vill ha personlig service och någon som tar ansvar för hela resan. Vi är ett mindre team av seniora resespecialister med över 50 års samlad erfarenhet från resebranschen.
+  </p>
+  <p>
+  Vi ställer samma krav på resan som du ställer på matchen eller loppet du ska se.
+  </p>
+  </div>
+  </div>
+  </section>
+
+  {/* Philosophy + team side by side */}
+  <section className="sb-section">
+  <div className="sb-container grid md:grid-cols-2 gap-10 md:gap-14">
   <div>
-  <p className="eyebrow text-primary uppercase mb-1">Vilka vi är</p>
-  <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-5">
-   Vi tillhör eliten inom resor
+  <p className="eyebrow text-primary uppercase mb-2">Vår filosofi</p>
+  <h2 className="font-display text-3xl md:text-[36px] text-foreground mb-4">
+  Vi tar hand om helheten
   </h2>
-  <p className="text-foreground text-lg leading-relaxed italic mb-5">
-  Vi tillhör eliten inom resor - precis som reseupplevelsen, matchen eller loppet du ska uppleva.
-  </p>
   <div className="space-y-4 text-foreground/80 text-[15px] leading-relaxed">
   <p>
-  KAISEN TRAVEL GROUP är en resebyrå för dig som uppskattar personlig service, gedigen erfarenhet och någon som verkligen bryr sig om hela resan. Vi är ett mindre team av seniora resespecialister med över 50 års samlad erfarenhet från resebranschen.
+  En bra resa handlar om mer än flyg, hotell och biljetter. Det är detaljerna, tryggheten och att ha någon kunnig att ringa när något ändras.
+  </p>
+  <p>
+  Vi börjar med att förstå vad du vill uppleva och hittar sedan den lösning som passar dig, ditt sällskap eller din grupp. Fotbollsresa, Formel 1, träningsläger eller en större gruppresa: målet är detsamma, att resan ska bli så bra och smidig som möjligt.
+  </p>
+  </div>
+  </div>
+  <div>
+  <p className="eyebrow text-primary uppercase mb-2">Vårt team</p>
+  <h2 className="font-display text-3xl md:text-[36px] text-foreground mb-4">
+  Ett erfaret team
+  </h2>
+  <div className="space-y-4 text-foreground/80 text-[15px] leading-relaxed">
+  <p>
+  Hos KAISEN arbetar resespecialister med lång erfarenhet och god kännedom om resmålen vi säljer. Till det kommer nära relationer och bra avtal med våra leverantörer.
+  </p>
+  <p>
+  Så tycker vi att en resebyrå ska fungera i dag: kunnigt folk, personlig kontakt och ett verkligt intresse för att resan blir bra.
   </p>
   </div>
   </div>
   </div>
   </section>
 
-  {/* Vi bryr oss */}
-  <section className="sb-section">
-  <div className="sb-container max-w-[880px]">
-  <p className="eyebrow text-primary uppercase mb-1">Vår filosofi</p>
-  <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-5">
-  Vi bryr oss. <em className="italic font-light">Hela vägen.</em>
-  </h2>
-  <div className="space-y-4 text-foreground/80 text-[15px] leading-relaxed">
-  <p>
-  För oss handlar en riktigt bra resa om mer än att hitta flyg, hotell och biljetter. Det handlar om detaljerna, tryggheten och känslan av att ha någon kunnig vid sin sida.
-  </p>
-  <p>
-  Vi lägger stor vikt vid att förstå vad du faktiskt vill uppleva och hitta den lösning som passar just dig, ditt sällskap eller din grupp. Oavsett om det handlar om en fotbollsresa, Formel 1, ett träningsläger eller en större gruppresa är vårt mål detsamma: att göra resan så bra och smidig som möjligt.
-  </p>
-  </div>
-  </div>
-  </section>
-
-  {/* Senior kompetens */}
+  {/* Beyond the website */}
   <section className="sb-section-alt">
-  <div className="sb-container max-w-[880px]">
-  <p className="eyebrow text-primary uppercase mb-1">Vårt Team</p>
-  <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-5">
-  Senior kompetens. <em className="italic font-light">Personlig service.</em>
-  </h2>
-  <div className="space-y-4 text-foreground/80 text-[15px] leading-relaxed">
-  <p>
-  KAISEN består av resespecialister med lång erfarenhet och djup kunskap om de resor och upplevelser vi erbjuder. Det kombinerar vi med starka relationer och konkurrenskraftiga avtal med våra leverantörer.
-  </p>
-  <p>
-  Resultatet är det vi tycker att en modern resebyrå borde stå för: hög kompetens, personlig service och ett genuint engagemang.
-  </p>
-  </div>
-  </div>
-  </section>
-
-  {/* Mer än det du ser på hemsidan */}
-  <section className="sb-section">
-  <div className="sb-container max-w-[880px]">
-  <p className="eyebrow text-primary uppercase mb-1">Upplevelser & Tjänster</p>
-  <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-5">
+  <div className="sb-container grid md:grid-cols-12 gap-6 md:gap-12 items-end">
+  <div className="md:col-span-7">
+  <p className="eyebrow text-primary uppercase mb-2">Upplevelser och tjänster</p>
+  <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-4">
   Mer än det du ser <em className="italic font-light">på hemsidan</em>
   </h2>
   <div className="space-y-4 text-foreground/80 text-[15px] leading-relaxed">
   <p>
-  Se inte vår hemsida som en katalog över allt vi kan erbjuda - utan som en dörröppnare till vår resevärld.
+  Hemsidan visar ett urval, inte allt vi kan ordna.
   </p>
   <p>
-  Har du en idé, ett evenemang eller en resa som du inte hittar här? Hör av dig. Vi välkomnar en dialog och hjälper gärna till att hitta rätt lösning, även när den inte finns färdigpaketerad på hemsidan.
+  Har du en idé, ett evenemang eller en resa som du inte hittar här? Hör av dig. Vi hjälper gärna till att hitta en lösning, även när den inte finns färdigpaketerad.
   </p>
   </div>
-   <p className="font-display text-2xl md:text-[28px] font-semibold uppercase text-foreground mt-10">
-   Berätta vart du vill - så hjälper vi dig hela vägen.
-   </p>
-   <div className="mt-6">
-   <Button
-   size="lg"
-   className="h-11 rounded-lg bg-primary text-white hover:bg-navy-deep px-8 font-display uppercase font-semibold tracking-wide text-base border-0"
-   onClick={() =>
-   openInquiry({
-   type: "contact",
-   presetTopic: "Begär offert",
-   heading: "Begär offert",
-   intro: "Berätta vart du vill resa så återkommer vi med en skräddarsydd offert.",
-   showTripParts: true,
-   })
-   }
-   >
-   Begär offert
-   <ArrowRight className="ml-2 h-4 w-4" />
-   </Button>
-   </div>
+  </div>
+  <div className="md:col-span-5 md:text-right">
+  <p className="font-display text-2xl md:text-[28px] text-foreground mb-5">
+  Berätta vart du vill, så ordnar vi resten.
+  </p>
+  <Button
+  size="lg"
+  className="h-11 rounded-full bg-primary text-white hover:bg-primary/90 px-8 text-sm font-medium border-0"
+  onClick={() =>
+  openInquiry({
+  type: "contact",
+  presetTopic: "Begär offert",
+  heading: "Begär offert",
+  intro: "Berätta vart du vill resa så återkommer vi med en offert.",
+  showTripParts: true,
+  })
+  }
+  >
+  Begär offert
+  <ArrowRight className="ml-2 h-4 w-4" />
+  </Button>
+  </div>
   </div>
   </section>
 
-  {/* Trygg partner strip */}
-  <section className="bg-navy-deep py-12 md:py-16">
+  {/* Credentials: a plain row with dividers, no boxed cards */}
+  <section className="bg-navy-deep py-10 md:py-12">
   <div className="sb-container">
-  <p className="eyebrow text-sky-300 uppercase mb-6 md:mb-8 text-center">En erfaren partner – en tryggare upplevelse</p>
-  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+  <p className="eyebrow text-white/60 uppercase mb-6">En trygg partner</p>
+  <dl className="grid sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-white/15">
   {[
-  { label: "OFFICIELLA BILJETTER", detail: "Genom utvalda, officiella biljettleverantörer" },
-  { label: "RESEGARANTI", detail: "Resegaranti ställd hos Kammarkollegiet" },
-  { label: "IATA & AMADEUS", detail: "IATA-certifierade med Amadeus-licens och tillgång till flygbolag världen över" }].
+  { label: "Officiella biljetter", detail: "Via utvalda, officiella biljettleverantörer" },
+  { label: "Resegaranti", detail: "Ställd hos Kammarkollegiet" },
+  { label: "IATA och Amadeus", detail: "IATA-certifierade med Amadeus-licens och tillgång till flygbolag världen över" }].
   map((ref) =>
-  <div key={ref.label} className="rounded-lg border border-white/15 bg-white/[0.04] p-6 text-center">
-  <h3 className="font-display text-xl italic font-bold text-white mb-2">{ref.label}</h3>
-  <p className="text-white/70 text-sm leading-relaxed">{ref.detail}</p>
+  <div key={ref.label} className="py-4 sm:py-0 sm:px-6 first:sm:pl-0">
+  <dt className="font-display text-xl text-white mb-1">{ref.label}</dt>
+  <dd className="text-white/70 text-sm leading-relaxed">{ref.detail}</dd>
   </div>
   )}
-  </div>
+  </dl>
   </div>
   </section>
 
-  {/* Values */}
+  {/* Values: numbered list */}
   <section className="sb-section">
   <div className="sb-container">
-  <div className="mb-8 md:mb-10">
-  <p className="eyebrow text-primary uppercase mb-1">Varför resa med KAISEN TRAVEL GROUP?</p>
+  <div className="mb-8 md:mb-10 max-w-2xl">
+  <p className="eyebrow text-primary uppercase mb-2">Varför resa med KAISEN TRAVEL GROUP</p>
   <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground">
-  Erfarenhet som märks. Engagemang som känns.
+  Det här kan du räkna med
   </h2>
   </div>
-  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-  {values.map((v) =>
-  <div key={v.title} className="sb-card p-5 border-t-4 border-t-primary">
-  <h3 className="font-display text-xl text-foreground mb-3">{v.title}</h3>
-  <p className="text-muted-foreground text-sm leading-relaxed">{v.desc}</p>
+  <ol className="grid md:grid-cols-2 gap-x-14">
+  {values.map((v, i) =>
+  <li key={v.title} className="flex gap-5 border-t border-border py-6">
+  <span className="font-display text-2xl text-primary/60 tabular-nums">{String(i + 1).padStart(2, "0")}</span>
+  <div>
+  <h3 className="font-display text-xl text-foreground mb-2">{v.title}</h3>
+  <p className="text-muted-foreground text-[15px] leading-relaxed">{v.desc}</p>
   </div>
+  </li>
   )}
-  </div>
+  </ol>
   </div>
   </section>
 
   <TeamSection />
 
   <CtaBand
-  title="Redo att Planera Er Resa?"
-  text="En personlig konversation är alltid startpunkten för en bra resa. Kontakta oss idag."
+  title="Redo att planera er resa?"
+  text="Det bästa sättet att börja är ett samtal. Hör av dig så hjälper vi dig vidare."
   >
   <Link to="/contact" className="sb-btn-light">
   Kom i kontakt

@@ -1,23 +1,19 @@
-import type { ReactNode } from "react";
-import { ArrowRight, Calendar, Clock, Flag, Gauge, MapPin, RotateCw, Timer, Trophy } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { RaceFacts } from "@/data/raceFacts";
 import { noBreakHyphen } from "@/lib/noBreakHyphen";
 
-/** Fact tile: navy icon square + small label + big condensed value. */
-function Fact({ icon, label, value, sub }: { icon: ReactNode; label: string; value: string; sub?: string }) {
+/** One fact in the spec sheet: quiet label over the value, no icon. */
+function Fact({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div className="sb-card flex items-center gap-2.5 sm:gap-3.5 p-3 sm:p-4">
-      <span className="hidden min-[400px]:flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-md bg-primary text-white [&>svg]:h-4 [&>svg]:w-4 sm:[&>svg]:h-5 sm:[&>svg]:w-5">{icon}</span>
-      <div className="min-w-0">
-        <p className="eyebrow !text-[11px] sm:!text-[12px] !tracking-[0.04em] text-muted-foreground uppercase leading-none mb-1">{label}</p>
-        <p className="font-display text-[15px] sm:text-lg md:text-xl font-semibold uppercase leading-tight">{noBreakHyphen(value)}</p>
-        {sub && <p className="text-[11px] sm:text-xs text-muted-foreground leading-tight mt-0.5">{sub}</p>}
-      </div>
+    <div className="px-4 py-3.5 sm:px-5 sm:py-4">
+      <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.18em] text-muted-foreground mb-1">{label}</p>
+      <p className="font-sans text-base sm:text-lg font-medium text-foreground leading-tight tabular-nums">{noBreakHyphen(value)}</p>
+      {sub && <p className="text-[11px] sm:text-xs text-muted-foreground leading-tight mt-0.5">{sub}</p>}
     </div>
   );
 }
 
-/** Key facts directly under the race banner (like the official race pages). */
+/** Key facts directly under the race banner, as one calm spec sheet. */
 export function RaceFactsGrid({
   facts,
   weekend,
@@ -29,20 +25,19 @@ export function RaceFactsGrid({
   city?: string | null;
   venue?: string | null;
 }) {
-  const i = "h-5 w-5";
   return (
-    <section className="bg-cream py-4 md:py-8 border-b border-border">
-      <div className="sb-container grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
-        {weekend && <Fact icon={<Calendar className={i} />} label="Datum" value={weekend} sub="Fredag–söndag" />}
-        <Fact icon={<Clock className={i} />} label="Starttid lopp" value={facts.startTime || "TBC"} />
-        {city && <Fact icon={<MapPin className={i} />} label="Stad" value={city} />}
-        {venue && <Fact icon={<Flag className={i} />} label="Bana" value={venue} />}
-        {facts.length && <Fact icon={<Gauge className={i} />} label="Banans längd" value={facts.length} />}
-        {facts.laps && <Fact icon={<RotateCw className={i} />} label="Antal varv" value={facts.laps} />}
-        {facts.firstRace && <Fact icon={<Trophy className={i} />} label="Första loppet" value={facts.firstRace} />}
-        {facts.lapRecord && (
-          <Fact icon={<Timer className={i} />} label="Snabbaste varv" value={facts.lapRecord} sub={facts.lapRecordBy || undefined} />
-        )}
+    <section className="py-5 md:py-8">
+      <div className="sb-container">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-px overflow-hidden rounded-xl border border-border/70 bg-border/70 [&>*]:bg-card [&>*:last-child:nth-child(odd)]:col-span-2 lg:[&>*:last-child:nth-child(odd)]:col-span-1">
+          {weekend && <Fact label="Datum" value={weekend} sub="Fredag–söndag" />}
+          <Fact label="Starttid lopp" value={facts.startTime || "TBC"} />
+          {city && <Fact label="Stad" value={city} />}
+          {venue && <Fact label="Bana" value={venue} />}
+          {facts.length && <Fact label="Banans längd" value={facts.length} />}
+          {facts.laps && <Fact label="Antal varv" value={facts.laps} />}
+          {facts.firstRace && <Fact label="Första loppet" value={facts.firstRace} />}
+          {facts.lapRecord && <Fact label="Snabbaste varv" value={facts.lapRecord} sub={facts.lapRecordBy || undefined} />}
+        </div>
       </div>
     </section>
   );

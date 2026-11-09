@@ -18,49 +18,49 @@ const destinations = [
  city: "Paris",
  country: "Frankrike",
  image: parisImage,
- tagline: "Kaféer, konst & croissanter",
+ tagline: "Kaféer och bistroer",
  description:
- "Börja morgonen med en crème brûlée-latte på ett gatukafé, strosa längs Seine och avsluta dagen med middag i en liten bistro i Le Marais. Paris är platsen för de som vill sakta ner och njuta.",
+ "Börja morgonen med kaffe på ett gatukafé, promenera längs Seine och ät middag på en liten bistro i Le Marais. En stad för dig som vill ta det lugnt.",
  },
  {
  city: "Amsterdam",
  country: "Nederländerna",
  image: amsterdamImage,
- tagline: "Kanaler, cykel & kultur",
+ tagline: "Kanaler och cykel",
  description:
- "Hyr en cykel och följ kanalerna genom stadens charmiga kvarter. Besök Rijksmuseet, fika på ett brunt hörncafé och ta en kvällsbåt längs de upplystta husfasaderna.",
+ "Hyr en cykel och följ kanalerna genom de gamla kvarteren. Besök Rijksmuseet, fika på ett brunt hörncafé och ta en kvällsbåt förbi de upplysta husfasaderna.",
  },
  {
  city: "Barcelona",
  country: "Spanien",
  image: barcelonaImage,
- tagline: "Tapas, sol & arkitektur",
+ tagline: "Tapas och arkitektur",
  description:
- "Vandra runt bland Gaudís drömska byggnader på dagen och gå på tapasrunda i El Born på kvällen. Barcelona ger dig den perfekta mixen av avslappning, mat och upplevelser.",
+ "Se Gaudís byggnader på dagen och gå på tapasrunda i El Born på kvällen. Sol, god mat och arkitektur på samma helg.",
  },
  {
  city: "Köpenhamn",
  country: "Danmark",
  image: copenhagenImage,
- tagline: "Hygge, ljus & skandinavisk mat",
+ tagline: "Hygge och nordisk mat",
  description:
- "Känn hygge-känslan i ett litet kafé med levande ljus och nybakade kanelbullar. Utforska Nørrebro till fots och avsluta kvällen på en av stadens bästa restauranger.",
+ "Sitt på ett litet kafé med levande ljus och nybakade kanelbullar, gå runt i Nørrebro och avsluta kvällen på någon av stadens bästa restauranger.",
  },
  {
  city: "Prag",
  country: "Tjeckien",
  image: pragueImage,
- tagline: "Medeltid, öl & kvällsstämning",
+ tagline: "Gamla stan och öl",
  description:
- "Ta en promenad över Karlsbroen i skymningen och utforska Gamla Stans vindlande gränder. Kvällen avslutas med ett lokalt hantverk-öl på en krypin-bar under stadens gotiska torn.",
+ "Gå över Karlsbron i skymningen och vidare in i Gamla stans gränder. Avsluta kvällen med en lokal öl på en liten källarkrog.",
  },
  {
  city: "Venedig",
  country: "Italien",
  image: veniceImage,
- tagline: "Gondoler, solnedgångar & cicchetti",
+ tagline: "Kanaler och cicchetti",
  description:
- "Gå vilse bland Venedigs smala kanaler och rondola-broar - det är omöjligt att inte charmas. Prova cicchetti (venetiansk tapas) på en lokal bacaro och se solnedgången spegla sig i vattnet.",
+ "Gå vilse bland de smala kanalerna och broarna. Prova cicchetti, venetiansk tapas, på en lokal bacaro och se solnedgången över vattnet.",
  },
 ];
 
@@ -72,60 +72,54 @@ export default function WeekendGetaway() {
  <PageHero
  image={weekendImage}
  imageAlt="Weekend Getaway"
- eyebrow="Tjänster - Weekend Getaway"
- title={<>Europas Mysigaste <em className="italic text-white">Helgresmål</em></>}
+ eyebrow="Weekendresor"
+ title={<>Europas mysigaste <em className="italic text-white">helgresmål</em></>}
  action={null}
  />
 
  {/* Intro */}
  <section className="sb-section-alt">
- <div className="sb-container max-w-3xl text-center">
- <p className="font-display text-2xl md:text-3xl text-foreground italic font-semibold uppercase leading-snug">
- "Tre dagar kan förändra allt. Vi ser till att de tre dagarna blir minnesvärda."
- </p>
+ <div className="sb-container">
+ <blockquote className="max-w-3xl border-l-2 border-primary pl-5 md:pl-8 font-display italic text-2xl md:text-[32px] leading-snug text-foreground">
+ Tre dagar räcker längre än man tror, om resan är rätt planerad.
+ </blockquote>
  </div>
  </section>
 
- {/* City Sections - alternating media/text bands */}
- {destinations.map((dest, index) => (
- <section key={dest.city} className={index % 2 === 1 ? "sb-section-alt" : "sb-section"}>
- <div
- className={`sb-container grid md:grid-cols-2 gap-8 lg:gap-14 items-center ${
- index % 2 === 1 ? "md:[&>*:first-child]:order-2" : ""
- }`}
- >
- {/* Image */}
- <div className="aspect-[16/10] md:aspect-[4/3] overflow-hidden rounded-lg">
+ {/* Cities: a two-column editorial grid instead of six identical bands */}
+ <section className="sb-section">
+ <div className="sb-container grid md:grid-cols-2 gap-x-10 gap-y-12 md:gap-y-16">
+ {destinations.map((dest) => (
+ <article key={dest.city}>
+ <div className="aspect-[16/10] overflow-hidden rounded-2xl">
  <img
  src={dest.image}
  alt={dest.city}
+ loading="lazy"
  className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
  />
  </div>
-
- {/* Content */}
- <div>
- <p className="eyebrow text-primary uppercase mb-1">{dest.tagline}</p>
- <div className="flex items-baseline gap-3 mb-4">
- <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground">{dest.city}</h2>
+ <div className="mt-5 flex items-baseline justify-between gap-4">
+ <h2 className="font-display text-3xl md:text-[36px] text-foreground">{dest.city}</h2>
  <span className="text-sm text-muted-foreground">{dest.country}</span>
  </div>
- <p className="text-foreground/80 leading-relaxed text-[15px] mb-8">
+ <p className="eyebrow text-primary uppercase mt-1 mb-3">{dest.tagline}</p>
+ <p className="text-foreground/80 leading-relaxed text-[15px] mb-5">
  {dest.description}
  </p>
- <Link to="/contact" className="sb-btn-primary">
+ <Link to="/contact" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:gap-3 transition-all">
  Boka helgresa till {dest.city}
  <ArrowRight className="h-4 w-4" />
  </Link>
- </div>
+ </article>
+ ))}
  </div>
  </section>
- ))}
 
  <CtaBand
  eyebrow="Boka din helg"
  title="Vilken stad lockar dig mest?"
- text="Berätta vart du vill och vi skräddarsyr ett helgpaket som passar dig perfekt."
+ text="Berätta vart du vill åka, så sätter vi ihop en helg som passar dig."
  >
  <Link to="/contact" className="sb-btn-light">
  Planera din helg <ArrowRight className="h-4 w-4" />

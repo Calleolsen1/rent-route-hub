@@ -23,7 +23,7 @@ const CONTACT_KEYS = [
 export default function Contact() {
   usePageMeta({
     title: "Kontakt - Kaisen Travel Group",
-    description: "Skicka en förfrågan så återkommer en konsult inom 24 timmar med ett skräddarsytt förslag.",
+    description: "Skicka en förfrågan så återkommer en av våra rådgivare inom 24 timmar med ett förslag.",
   });
   const { get } = useSiteContent(CONTACT_KEYS);
   const phone = get("contact_phone", "+46 8 123 45 67");
@@ -42,7 +42,7 @@ export default function Contact() {
         image={heroImage}
         imageAlt="Kontakta KAISEN"
         eyebrow={get("contact_hero_eyebrow", "Kom i kontakt")}
-        title={get("contact_hero_title", "Planera Er Resa")}
+        title={get("contact_hero_title", "Planera er resa")}
         action={null}
       />
 
@@ -54,8 +54,8 @@ export default function Contact() {
               <InquiryForm
                 type="contact"
                 eyebrow="Reseförfrågan"
-                heading="Berätta Om Er Resa"
-                intro="Skriv några rader om vad ni planerar - antal personer, ungefärliga datum, destination och önskemål. Vi återkommer med ett förslag."
+                heading="Berätta om er resa"
+                intro="Skriv några rader om vad ni planerar: antal personer, ungefärliga datum, resmål och önskemål. Vi återkommer med ett förslag."
                 showTripParts
               />
             </div>
@@ -64,30 +64,29 @@ export default function Contact() {
             <div className="lg:col-span-5 order-1">
               <p className="eyebrow text-primary uppercase mb-1">{get("contact_section_eyebrow", "Tala med oss")}</p>
               <h2 className="font-display text-3xl md:text-[40px] text-foreground mb-4">
-                {get("contact_section_title", "Vi startar med ett Samtal")}
+                {get("contact_section_title", "Vi börjar med ett samtal")}
               </h2>
               <p className="text-foreground/80 leading-relaxed mb-6 lg:mb-8 text-[15px] whitespace-pre-line">
-                {get("contact_intro", "Föredrar du att ringa eller mejla direkt? Ingen mall - bara ett riktigt samtal. En dedikerad rådgivare återkommer normalt inom 24 timmar på vardagar.")}
+                {get("contact_intro", "Ring eller mejla oss direkt om du hellre vill det. En rådgivare återkommer normalt inom 24 timmar på vardagar.")}
               </p>
-              <div className="space-y-3">
+              {/* Plain list with dividers; the small icon is only a cue, not a tile */}
+              <dl className="divide-y divide-border border-y border-border">
                 {contactInfo.map((info) => (
-                  <div key={info.label} className="sb-card flex items-center gap-4 p-4">
-                    <div className="w-10 h-10 flex-shrink-0 bg-primary rounded-md flex items-center justify-center">
-                      <info.icon className="h-4 w-4 text-white" />
-                    </div>
-                    <div>
-                      <div className="eyebrow !text-[13px] !tracking-[0.04em] text-muted-foreground uppercase mb-0.5">{info.label}</div>
+                  <div key={info.label} className="flex items-baseline justify-between gap-4 py-3.5">
+                    <dt className="eyebrow text-muted-foreground uppercase shrink-0">{info.label}</dt>
+                    <dd className="text-right">
                       {info.href ? (
-                        <a href={info.href} className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+                        <a href={info.href} className="inline-flex items-center gap-1.5 text-[15px] font-medium text-foreground hover:text-primary transition-colors">
+                          <info.icon className="h-3.5 w-3.5 text-muted-foreground" aria-hidden />
                           {info.value}
                         </a>
                       ) : (
-                        <span className="text-sm font-medium text-foreground">{info.value}</span>
+                        <span className="text-[15px] font-medium text-foreground">{info.value}</span>
                       )}
-                    </div>
+                    </dd>
                   </div>
                 ))}
-              </div>
+              </dl>
             </div>
           </div>
         </div>

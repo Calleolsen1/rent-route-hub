@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Check, Calendar, MapPin, Trophy, Flag } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Footer from "@/components/Footer";
 import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
@@ -43,10 +43,9 @@ const KIND_LABELS = {
     eyebrow: (sportLabel: string, groupLabel?: string | null) =>
       `${sportLabel}sresor${groupLabel ? ` - ${groupLabel}` : ""}`,
     venueLabel: "Arena",
-    venueIcon: Trophy,
     groupLabel: "Liga",
     upcomingTitle: (name: string) => `Fotbollsresor till ${name}`,
-    whatsIncluded: "Skräddarsy din resa",
+    whatsIncluded: "Det här kan ingå",
     packageTitle: (_sportLabel: string, venue?: string | null) =>
       venue ? `Kompletta paket till ${venue}` : "Kompletta paket",
     queryField: "team" as const,
@@ -54,10 +53,9 @@ const KIND_LABELS = {
   race: {
     eyebrow: (sportLabel: string, _g?: string | null) => `${sportLabel}-resa`,
     venueLabel: "Bana",
-    venueIcon: Flag,
     groupLabel: "Datum",
     upcomingTitle: (name: string) => `Biljetter till ${name}`,
-    whatsIncluded: "Skräddarsy din resa",
+    whatsIncluded: "Det här kan ingå",
     packageTitle: (sportLabel: string, venue?: string | null) =>
       venue ? `${sportLabel}-resa till ${venue}` : `${sportLabel}-resa`,
     queryField: "race" as const,
@@ -91,7 +89,6 @@ export default function SportEntryPage() {
   }
 
   const labels = KIND_LABELS[sport.entry_kind] ?? KIND_LABELS.team;
-  const VenueIcon = labels.venueIcon;
   const venuePhoto = venuePhotoFor(venuePhotos, info.venue, info.name);
   const cityBreak = cityBreakFor(info.city);
   const heroSrc =
@@ -184,7 +181,7 @@ export default function SportEntryPage() {
           {!eventsEmpty && (
             <div className="mt-4 md:mt-6 sb-card bg-cream border-transparent flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-4 md:px-5 text-center sm:text-left">
               <p className="text-sm text-foreground/80">
-                Hittar du inte matchen du letar efter? Vi kan säkert fixa det ändå.
+                Hittar du inte matchen du letar efter? Hör av dig, så kollar vi vad vi kan ordna.
               </p>
               <button
                 type="button"
@@ -225,32 +222,23 @@ export default function SportEntryPage() {
       {!raceFacts && (info.city || groupOrDate || info.venue) && (
         <section className="sb-section-alt">
           <div className="sb-container">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-px overflow-hidden rounded-xl border border-border/70 bg-border/70 [&>*]:bg-card">
               {info.city && (
-                <div className="sb-card flex items-center gap-3 sm:gap-4 p-3 sm:p-5">
-                  <span className="flex h-9 w-9 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-md bg-primary text-white"><MapPin className="h-5 w-5" /></span>
-                  <div>
-                    <p className="eyebrow !text-[13px] !tracking-[0.04em] text-muted-foreground uppercase">Stad</p>
-                    <p className="font-display text-lg sm:text-xl font-semibold uppercase leading-tight">{info.city}</p>
-                  </div>
+                <div className="px-5 py-4">
+                  <p className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground mb-1">Stad</p>
+                  <p className="font-display text-xl leading-tight">{info.city}</p>
                 </div>
               )}
               {groupOrDate && (
-                <div className="sb-card flex items-center gap-3 sm:gap-4 p-3 sm:p-5">
-                  <span className="flex h-9 w-9 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-md bg-primary text-white"><Calendar className="h-5 w-5" /></span>
-                  <div>
-                    <p className="eyebrow !text-[13px] !tracking-[0.04em] text-muted-foreground uppercase">{labels.groupLabel}</p>
-                    <p className="font-display text-lg sm:text-xl font-semibold uppercase leading-tight">{groupOrDate}</p>
-                  </div>
+                <div className="px-5 py-4">
+                  <p className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground mb-1">{labels.groupLabel}</p>
+                  <p className="font-display text-xl leading-tight">{groupOrDate}</p>
                 </div>
               )}
               {info.venue && (
-                <div className="sb-card flex items-center gap-3 sm:gap-4 p-3 sm:p-5">
-                  <span className="flex h-9 w-9 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-md bg-primary text-white"><VenueIcon className="h-5 w-5" /></span>
-                  <div>
-                    <p className="eyebrow !text-[13px] !tracking-[0.04em] text-muted-foreground uppercase">{labels.venueLabel}</p>
-                    <p className="font-display text-lg sm:text-xl font-semibold uppercase leading-tight">{noBreakHyphen(info.venue)}</p>
-                  </div>
+                <div className="px-5 py-4">
+                  <p className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground mb-1">{labels.venueLabel}</p>
+                  <p className="font-display text-xl leading-tight">{noBreakHyphen(info.venue)}</p>
                 </div>
               )}
             </div>

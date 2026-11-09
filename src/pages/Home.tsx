@@ -67,7 +67,7 @@ const fallbackHeroSlides: HeroSlide[] = [
     title: "Resor skapade",
     italic: "Just för dig",
     description:
-      "Sportresor, gruppresor, träningsläger och VIP-service - levererat med personlig omsorg av en dedikerad resekonsult.",
+      "Sportresor, gruppresor, träningsläger och VIP-service, med en egen resekonsult från första samtalet.",
     primary: { label: "Planera din resa", to: "/contact" },
   },
   {
@@ -455,7 +455,7 @@ const Home = () => {
     })();
   }, []);
 
-  // Admin-curated experience cards ("Upplevelser. På riktigt.").
+  // Admin-curated experience cards ("Det vi arrangerar").
   useEffect(() => {
     (async () => {
       const { data } = await (supabase as any)
@@ -702,7 +702,7 @@ const Home = () => {
         <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
           <div className="flex items-center justify-between mb-8 gap-6">
             <h2 className="!font-sans !font-semibold text-xl md:text-2xl text-foreground relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-16 after:h-[2px] after:bg-primary">
-              Upplevelser. På riktigt.
+              Det vi arrangerar
             </h2>
             <Link to="/resor" className="hidden md:inline-flex items-center gap-2 text-sm font-semibold text-primary border border-primary/30 px-5 py-2.5 rounded-full hover:bg-primary hover:text-primary-foreground transition-colors">
               Se alla
@@ -752,18 +752,18 @@ const Home = () => {
       {/* Om oss */}
       <section className="py-12 md:py-16 bg-background">
         <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10">
-          <h2 className="!font-sans !font-semibold text-3xl md:text-5xl text-foreground text-center mb-16 md:mb-20">
-            Erfarenhet som gör skillnad
+          <h2 className="!font-sans !font-semibold text-3xl md:text-5xl text-foreground mb-10 md:mb-14">
+            Varför resa med oss
           </h2>
 
           <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div className="max-w-xl">
               <h3 className="font-sans !font-bold text-2xl md:text-4xl text-foreground mb-6 leading-tight whitespace-pre-line">
-                {"Personlig service\nSenior kompetens"}
+                {"En rådgivare\nfrån start till hemresa"}
               </h3>
               <p className="text-foreground/80 text-[15px] md:text-base leading-relaxed mb-8 whitespace-pre-line">
 
-                {"I en värld där allt fler resor bokas online går vi åt andra hållet. Vi tror på den personliga kontakten, den erfarna rådgivaren och värdet av att ha någon som verkligen bryr sig om hela resan.\n\nHos KAISEN möter du seniora Resespecialister med erfarenheten, kunskapen och nätverket att skapa resor utöver det vanliga. Vi lyssnar på dina önskemål, delar med oss av vår expertis och ser till att varje detalj hänger ihop.\n\nFör oss är personlig service inte ett tillval utan en självklar del av varje resa vi skapar."}
+                {"De flesta resor bokas i dag på egen hand online. Vi jobbar tvärtom: du får en egen rådgivare som du kan ringa, som känner till arenorna och hotellen och som följer resan tills du är hemma igen.\n\nHos KAISEN arbetar resespecialister med många år i branschen. Vi lyssnar på vad du vill uppleva, föreslår det vi själva tror på och ser till att biljetter, hotell, flyg och transfer passar ihop.\n\nDen personliga kontakten är inget tillägg, den ingår i varje resa."}
               </p>
               <Link
                 to="/about"
@@ -851,16 +851,14 @@ const Home = () => {
         <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
           <div className="relative overflow-hidden rounded-3xl bg-navy p-8 sm:p-10 md:p-16 grid md:grid-cols-[1fr_auto] gap-8 md:gap-10 items-center">
             {/* Decorative blurred orbs */}
-            <div className="pointer-events-none absolute -top-24 -right-16 w-80 h-80 rounded-full bg-primary/30 blur-3xl" />
-            <div className="pointer-events-none absolute -bottom-32 -left-20 w-96 h-96 rounded-full bg-primary/40 blur-3xl" />
 
             <div className="relative max-w-2xl">
               <p className="text-[11px] eyebrow text-white/70 uppercase mb-4 font-sans font-semibold">Kontakta oss</p>
               <h2 className="!font-sans !font-bold text-3xl md:text-5xl text-white mb-4 leading-tight">
-                Ditt nästa äventyr börjar med ett <em className="italic font-light text-white">samtal</em>
+                Planera resan <em className="italic font-light text-white">tillsammans</em> med oss
               </h2>
               <p className="text-[15px] text-white/80 leading-relaxed">
-                Prata med en av våra resespecialister. Inga mallar, inga algoritmer – bara erfarenhet, expertis och personlig rådgivning för att skapa en resa utifrån just dina önskemål.
+                Ring eller skriv till en av våra resespecialister. Berätta vad du vill se och när, så tar vi fram ett förslag med pris.
               </p>
 
             </div>

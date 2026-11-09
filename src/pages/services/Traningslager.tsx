@@ -1,9 +1,8 @@
-import { ArrowRight, Check, MapPin, MessageSquare } from "lucide-react";
+import { ArrowRight, MapPin, MessageSquare } from "lucide-react";
 import Footer from "@/components/Footer";
 import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
 import PageHero from "@/components/site/PageHero";
-import FloatingInquiryButton from "@/components/FloatingInquiryButton";
 import { useInquiryDialog } from "@/components/InquiryDialog";
 const heroImage = PHOTO["camps-hero"];
 import valenciaImg from "@/assets/camp-valencia-pitch.jpg.asset.json";
@@ -18,7 +17,7 @@ const camps = [
     image: valenciaImg.url,
     sport: "Fotboll",
     location: "Valencia, Spanien",
-    title: "Träningsläger för lag med ambitioner",
+    title: "Parador de El Saler",
     desc: "Parador de El Saler ligger naturskönt mellan Albufera naturpark och Medelhavet, cirka 18 km från Valencia. Egen naturgräsplan i perfekt skick samt training center med gym och spa. Klubbar som Valencia CF, Levante UD och UD Las Palmas lägger ofta sina läger här.",
     price: "från 12 500 kr / person",
   },
@@ -26,24 +25,24 @@ const camps = [
     image: antalyaImg.url,
     sport: "Fotboll",
     location: "Antalya, Turkiet",
-    title: "Allt-inkluderat i förstklassig miljö",
-    desc: "Ramada Resort är ett mycket prisvärt och högfunktionellt alternativ för träningsläger, där hög hotellstandard kombineras med riktigt fina fotbollsplaner och ett fullt utrustat gym & spa. Anläggningen passar perfekt för lag som söker maximalt sportsligt värde och hög komfort.",
+    title: "Allt inkluderat på Ramada Resort",
+    desc: "Ramada Resort är ett mycket prisvärt och högfunktionellt alternativ för träningsläger, där hög hotellstandard kombineras med riktigt fina fotbollsplaner och ett fullt utrustat gym & spa. Ett bra val för lag som vill få mycket träning för pengarna utan att ge avkall på boendet.",
     price: "från 5 900 kr / person",
   },
   {
     image: ayiaNapaImg.url,
     sport: "Fotboll",
     location: "Ayia Napa, Cypern",
-    title: "Där fotboll möter perfekta förhållanden",
-    desc: "Träna tillsammans, umgås tillsammans och skapa minnen tillsammans - Milea Hotel blir er bas under ett träningsläger ni sent kommer att glömma. Nära stranden och centralt beläget med allt laget behöver för en härlig vistelse på solsäkra Cypern.",
+    title: "Fotbollsläger nära stranden",
+    desc: "Milea Hotel blir lagets bas i Ayia Napa: nära stranden, centralt och med planer, boende och mat på samma ställe. Cypern är solsäkert stora delar av året.",
     price: "från 7 100 kr / person",
   },
   {
     image: santaSusannaImg.url,
     sport: "Fotboll",
     location: "Santa Susanna, Spanien",
-    title: "Fotbollsläger med semesterkänsla",
-    desc: "Med sitt läge vid den spanska Medelhavskusten erbjuder Santa Susanna och hotell Don Ángel en härlig inramning för ett träningsläger. Här kombineras fotbollen med sol, hav och en miljö som gör vistelsen till något mer än bara några dagar av träning. Passa också på att göra ett besök i världsmetropolen Barcelona och varför inte en match på Camp Nou. Vi löser självklart fotbollsbiljetter åt er.",
+    title: "Fotboll vid Medelhavet",
+    desc: "Med sitt läge vid den spanska Medelhavskusten erbjuder Santa Susanna och hotell Don Ángel en härlig inramning för ett träningsläger. Fotboll på dagarna, sol och hav på kvällarna. Barcelona ligger nära, så det går fint att lägga in en match på Camp Nou – vi ordnar biljetterna.",
     price: "från 6 800 kr / person",
   },
   {
@@ -52,15 +51,15 @@ const camps = [
     sport: "Simning",
     location: "Torremolinos, Spanien",
     title: "50-metersbassäng under öppen himmel",
-    desc: "Sol, värme och hårda träningspass i uppvärmd 50-metersbassäng - ett simläger i Torremolinos är den perfekta kombinationen av träning och gemenskap. Med bra träningsmöjligheter, härligt klimat och roliga aktiviteter får simmarna chansen att utvecklas både i bassängen och som lag.",
+    desc: "Hårda pass i uppvärmd 50-metersbassäng utomhus, och sol mellan passen. I Torremolinos får simmarna bra träning och tid tillsammans som grupp.",
     price: "från 8 700 kr / person",
   },
   {
     image: nerjaImg.url,
     sport: "Friidrott",
     location: "Nerja, Spanien",
-    title: "Optimala träningsförhållanden vid Medelhavet",
-    desc: "I Nerja väntar en inspirerande miljö för friidrottare som vill kombinera seriös träning med gemenskap och nya upplevelser. Med fina träningsanläggningar, behagligt klimat och närhet till strand, stad och träning får ni en perfekt kombination av fokuserad träning och en härlig lägerupplevelse.",
+    title: "Friidrott i Nerja",
+    desc: "Nerja passar friidrottare som vill träna seriöst i ett behagligt klimat. Fina anläggningar och nära till både strand och stad.",
     price: "från 8 200 kr / person",
   },
 ];
@@ -110,7 +109,7 @@ export default function Traningslager() {
       defaultDestination: destination,
       eyebrow: "Förfrågan träningsläger",
       heading: "Berätta om ert lag",
-      intro: "Sport, antal spelare och stab, önskad period och destination - vi tar fram ett upplägg som passar just ert lag.",
+      intro: "Berätta om sport, antal spelare och ledare, önskad period och destination, så tar vi fram ett upplägg för ert lag.",
     });
   const chooseCamp = (location: string, sport: string) => openCampInquiry(`${location} (${sport})`);
  const editableFeatures = getArray("training_features", FALLBACK_TRAINING_FEATURES);
@@ -121,7 +120,7 @@ export default function Traningslager() {
  <PageHero
  image={heroImage}
  imageAlt="Träningsläger"
- eyebrow={get("training_hero_eyebrow", "Tjänster - Träningsläger")}
+ eyebrow={get("training_hero_eyebrow", "Träningsläger")}
  title={get("training_hero_title", "En värld där idrott och resor möts")}
  action={
  <button type="button" onClick={() => openCampInquiry()} className="sb-btn-light">
@@ -130,18 +129,18 @@ export default function Traningslager() {
  </button>
  }
  >
- {get("training_hero_tagline", "Träningsläger för fotboll, simning och friidrott - för föreningar, lag och grupper som vill ta träningen till nästa nivå.")}
+ {get("training_hero_tagline", "Träningsläger i fotboll, simning och friidrott för föreningar, lag och grupper.")}
  </PageHero>
 
  {/* Camps grid */}
  <section className="sb-section">
  <div className="sb-container">
- <p className="eyebrow text-primary uppercase mb-1">Utvalda Träningsläger</p>
+ <p className="eyebrow text-primary uppercase mb-1">Utvalda träningsläger</p>
  <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground">
  Ett axplock av <em className="italic">våra läger</em>
  </h2>
  <p className="text-foreground/80 text-[15px] mt-3 mb-8 md:mb-10 max-w-2xl">
- Detta är ett urval ur vårt kompletta program. Hör av er så hittar vi rätt destination för just ert lag.
+ Ett urval ur vårt program. Hör av er så hittar vi en destination som passar ert lag.
  </p>
 
  <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
@@ -182,7 +181,7 @@ export default function Traningslager() {
  </article>
  ))}
  </div>
- <div className="mt-10 text-center">
+ <div className="mt-10">
   <button type="button" onClick={() => openCampInquiry()} className="sb-btn-primary h-11">
   <MessageSquare className="h-4 w-4" />
   Få offert för ert träningsläger
@@ -192,73 +191,68 @@ export default function Traningslager() {
  </div>
  </section>
 
- {/* Intro */}
+ {/* Intro quote: left-aligned, editorial */}
  <section className="sb-section-alt">
- <div className="sb-container max-w-3xl text-center">
- <p className="font-display text-2xl md:text-3xl text-foreground italic font-semibold uppercase leading-snug">
- "Hos oss handlar det inte bara om träning - det handlar om att skapa energi, laganda och motivation som varar långt efter lägret är slut."
- </p>
+ <div className="sb-container">
+ <blockquote className="max-w-3xl border-l-2 border-primary pl-5 md:pl-8 font-display italic text-2xl md:text-[32px] leading-snug text-foreground">
+ Ett bra läger märks långt efter hemresan, både i formen och i hur laget håller ihop.
+ </blockquote>
  </div>
  </section>
 
- {/* Pillar text blocks */}
+ {/* Two short editorial columns, no cards */}
  <section className="sb-section">
- <div className="sb-container grid md:grid-cols-2 gap-5">
- <div className="sb-card p-6 md:p-8">
- <p className="eyebrow text-primary uppercase mb-1">Noggrant Utvalda Destinationer</p>
+ <div className="sb-container grid md:grid-cols-2 gap-10 md:gap-16">
+ <div className="border-t border-border pt-6">
+ <p className="eyebrow text-primary uppercase mb-2">Destinationer</p>
  <h2 className="font-display text-3xl md:text-[30px] lg:text-[36px] text-foreground mb-4">
- Europas bästa träningsmiljöer
+ Anläggningar vi känner väl
  </h2>
  <p className="text-foreground/80 leading-relaxed text-[15px]">
- Våra destinationer i Europa är noggrant utvalda för att ge bästa förutsättningarna för träning, vila och inspiration. Spanien, Turkiet, Italien, Portugal, Polen, Holland, Tyskland, Danmark och Sverige - soliga kustorter, moderna anläggningar och klassiska idrottsstäder.
+ Vi arbetar med anläggningar i Spanien, Turkiet, Italien, Portugal, Polen, Holland, Tyskland, Danmark och Sverige: kustorter med sol stora delar av året, moderna sportanläggningar och klassiska idrottsstäder.
  </p>
  </div>
- <div className="sb-card p-6 md:p-8">
- <p className="eyebrow text-primary uppercase mb-1">Vi Tar Hand Om Helheten</p>
+ <div className="border-t border-border pt-6">
+ <p className="eyebrow text-primary uppercase mb-2">Planering</p>
  <h2 className="font-display text-3xl md:text-[30px] lg:text-[36px] text-foreground mb-4">
  Ni fokuserar på träningen
  </h2>
  <p className="text-foreground/80 leading-relaxed text-[15px]">
- Att planera ett träningsläger kan vara komplext - men vi gör det enkelt. Transport, boende, träningstider och praktiska detaljer hanterar vi. Varje upplägg skräddarsys efter era mål och förväntningar.
+ Ett läger har många delar som ska passa ihop. Vi ordnar transport, boende, träningstider och det praktiska, och anpassar upplägget efter vad laget vill uppnå.
  </p>
  </div>
  </div>
  </section>
 
- {/* Stronger together + features */}
+ {/* Off the pitch + what we arrange (numbered list) */}
  <section className="sb-section-alt">
- <div className="sb-container grid md:grid-cols-2 gap-8 lg:gap-14 items-center">
+ <div className="sb-container grid md:grid-cols-2 gap-8 lg:gap-14 items-start">
  <div>
- <p className="eyebrow text-primary uppercase mb-1">En Resa Som Stärker Laget</p>
+ <p className="eyebrow text-primary uppercase mb-2">Laget</p>
  <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-4">
- Mer än bara träning
+ Tid tillsammans utanför planen
  </h2>
  <p className="text-foreground/80 leading-relaxed mb-4 text-[15px]">
- Ett framgångsrikt träningsläger handlar om gemenskap, glädje och att skapa minnen tillsammans. Vi planerar varje del med omtanke - från träning till fritid, från logistik till upplevelser.
+ Ett läger är också dagarna mellan passen. Vi planerar fritiden lika noga som träningen, med aktiviteter och middagar som för laget närmare varandra.
  </p>
  <p className="text-foreground/80 leading-relaxed text-[15px]">
- Målet är att varje deltagare ska känna sig motiverad, inspirerad och delaktig.
+ Målet är att alla kommer hem lite starkare, och lite mer av ett lag.
  </p>
  </div>
- <ul className="sb-card p-5 md:p-6 space-y-3">
+ <div>
+ <p className="eyebrow text-muted-foreground uppercase mb-3">Det här ordnar vi</p>
+ <ol className="divide-y divide-border border-y border-border">
  {editableFeatures.map((f, i) => (
- <li key={i} className="flex items-start gap-3 text-sm">
- <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded bg-primary text-white"><Check className="h-3.5 w-3.5" /></span>
+ <li key={i} className="flex items-baseline gap-4 py-3.5 text-[15px]">
+ <span className="font-display text-lg text-primary tabular-nums w-7 shrink-0">{String(i + 1).padStart(2, "0")}</span>
  <span className="text-foreground/85">{f}</span>
  </li>
  ))}
- </ul>
+ </ol>
+ </div>
  </div>
  </section>
 
-  <FloatingInquiryButton
-    inquiry={{
-      type: "training_camp",
-      eyebrow: "Förfrågan träningsläger",
-      heading: "Berätta om ert lag",
-      intro: "Sport, antal spelare och stab, önskad period och destination - vi tar fram ett upplägg som passar just ert lag.",
-    }}
-  />
  <RequestCta />
       <Footer />
  </div>

@@ -6,8 +6,7 @@ import RequestCta from "@/components/RequestCta";
 import { usePageMeta } from "@/lib/usePageMeta";
 const fotbollImage = PHOTO["sport-fotboll"];
 const f1Image = PHOTO["sport-f1"];
-import groupImageAsset from "@/assets/kaisen-group-europe-skyline.jpg.asset.json";
-const groupImage = groupImageAsset.url;
+const groupImage = PHOTO["kaisen-group"];
 import valenciaImage from "@/assets/camp-valencia-pitch.jpg.asset.json";
 import { PHOTO } from "@/data/photos";
 
@@ -17,7 +16,7 @@ const choices = [
     title: "Fotboll",
     subtitle: "Premier League · La Liga · Serie A · Bundesliga",
     description:
-      "Välj liga och lag - vi paketerar resan med hotell, transfer och platser på läktaren.",
+      "Välj liga och lag, så sätter vi ihop resan med hotell, transfer och platser på läktaren.",
     image: fotbollImage,
     href: "/services/sportresor/fotboll",
   },
@@ -26,7 +25,7 @@ const choices = [
     title: "Formel 1",
     subtitle: "Monaco · Silverstone · Spa · Las Vegas",
     description:
-      "Alla race i kalendern - välj helg och vi ordnar biljetter, boende och logistik.",
+      "Alla race i kalendern. Välj helg så ordnar vi biljetter, boende och resa.",
     image: f1Image,
     href: "/services/sportresor/f1",
   },
@@ -35,16 +34,16 @@ const choices = [
     title: "Träningsläger",
     subtitle: "Fotboll · Simning · Friidrott",
     description:
-      "Kompletta läger i Spanien, Turkiet och Cypern - planer, boende och helpension.",
+      "Läger i Spanien, Turkiet och Cypern med planer, boende och helpension.",
     image: valenciaImage.url,
     href: "/services/traningslager",
   },
   {
     tag: "Företag & sällskap",
-    title: "Grupp & Konferens",
+    title: "Grupp & konferens",
     subtitle: "Konferenser · Kickoffer · Gruppresor",
     description:
-      "Från åtta till 200+ resenärer - vi sköter program, logi och all logistik på plats.",
+      "Från åtta till över 200 resenärer. Vi sköter program, boende och logistiken på plats.",
     image: groupImage,
     href: "/group-travel",
   },
@@ -54,7 +53,7 @@ const Resor = () => {
   usePageMeta({
     title: "Utforska alla resor - Kaisen Travel Group",
     description:
-      "Välj mellan fotbollsresor, Formel 1, träningsläger och grupp- och konferensresor - vi paketerar hela resan.",
+      "Välj mellan fotbollsresor, Formel 1, träningsläger och grupp- och konferensresor. Vi sätter ihop hela resan.",
   });
 
   return (
@@ -62,15 +61,13 @@ const Resor = () => {
       <Navbar />
 
       <section className="relative overflow-hidden bg-navy-deep text-white">
-        <div aria-hidden className="pointer-events-none absolute -right-20 -top-40 h-[420px] w-[520px] rotate-[18deg] rounded-[80px] bg-white/[0.05]" />
-        <div aria-hidden className="pointer-events-none absolute right-[30%] -bottom-56 h-[360px] w-[420px] -rotate-[24deg] rounded-[80px] bg-white/[0.035]" />
         <div className="relative w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10 py-10 md:py-14">
-          <p className="eyebrow text-sky-300 uppercase mb-1.5">
+          <p className="eyebrow text-white/70 uppercase mb-1.5">
             Utforska alla resor
           </p>
           <h1 className="font-display text-[34px] sm:text-5xl md:text-6xl text-white mb-3">Vart vill du resa?</h1>
           <p className="text-white/85 text-sm md:text-base leading-relaxed max-w-2xl">
-            Välj en kategori så visar vi ligor, lag, race och destinationer - och sätter ihop
+            Välj en kategori så visar vi ligor, lag, race och resmål. Sedan sätter vi ihop
             hela resan med hotell, flyg och transfer.
           </p>
         </div>
@@ -93,9 +90,6 @@ const Resor = () => {
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/90 via-navy-deep/30 to-transparent" />
-                  <span className="absolute top-4 left-4 rounded-md bg-white text-primary px-2.5 py-1 font-display uppercase font-semibold text-sm tracking-wide">
-                    {c.tag}
-                  </span>
                   <div className="absolute bottom-0 left-0 right-0 p-5">
                     <h2 className="font-display text-3xl md:text-4xl text-white mb-1">{c.title}</h2>
                     <p className="text-xs tracking-wide text-white/85 uppercase">

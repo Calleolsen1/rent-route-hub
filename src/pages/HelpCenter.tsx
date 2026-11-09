@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, LogIn, MapPin, Calendar, CreditCard, Users, Headphones, FileText, ChevronRight, ChevronDown, ChevronUp, Search } from "lucide-react";
+import { ArrowRight, LogIn, MapPin, Calendar, CreditCard, Users, Headphones, ChevronRight, ChevronDown, ChevronUp, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
@@ -24,7 +24,7 @@ const topics: Topic[] = [
  {
  icon: LogIn,
  slug: "konto",
- title: "Mitt konto & inloggning",
+ title: "Mitt konto och inloggning",
  desc: "Logga in, hantera ditt konto och spåra dina bokningar.",
  comingSoon: true,
  articles: [
@@ -38,7 +38,7 @@ const topics: Topic[] = [
  },
  {
  question: "Hur håller jag koll på min resa?",
- answer: "Just nu skickar vi all information om din resa via e-post - bekräftelser, fakturor och uppdateringar. Vår kommande portal 'Mitt KAISEN' kommer samla allt på ett ställe.",
+ answer: "Just nu skickar vi all information om din resa via e-post: bekräftelser, fakturor och uppdateringar. Vår kommande portal 'Mitt KAISEN' kommer att samla allt på ett ställe.",
  },
  {
  question: "Uppdatera mina kontaktuppgifter",
@@ -49,7 +49,7 @@ const topics: Topic[] = [
  {
  icon: Calendar,
  slug: "bokningar",
- title: "Bokningar & Ändringar",
+ title: "Bokningar och ändringar",
  desc: "Allt om hur din resa bokas, bekräftas och eventuellt ändras.",
  articles: [
  {
@@ -62,11 +62,11 @@ const topics: Topic[] = [
  },
  {
  question: "Vad händer om jag behöver avboka?",
- answer: "Avbokningsregler varierar beroende på resa och tidpunkt. Vi informerar alltid om villkoren innan du bekräftar. Kontakta oss direkt om du behöver avboka - vi hjälper dig på bästa möjliga sätt.",
+ answer: "Avbokningsregler varierar beroende på resa och tidpunkt. Vi informerar alltid om villkoren innan du bekräftar. Kontakta oss direkt om du behöver avboka, så hjälper vi dig.",
  },
  {
  question: "Var finns mina resehandlingar och vouchers?",
- answer: "Alla resehandlingar skickas till din e-postadress i god tid innan avresa. Har du inte fått dem - kontakta oss på info@kaisengroup.se så skickar vi om dem direkt.",
+ answer: "Alla resehandlingar skickas till din e-postadress i god tid innan avresa. Har du inte fått dem? Kontakta oss på info@kaisengroup.se så skickar vi dem igen.",
  },
  {
  question: "Kan jag boka med kort varsel?",
@@ -77,7 +77,7 @@ const topics: Topic[] = [
  {
  icon: CreditCard,
  slug: "betalning",
- title: "Betalning & Fakturering",
+ title: "Betalning och fakturering",
  desc: "Betalningsvillkor, fakturor och hur vår faktureringsprocess fungerar.",
  articles: [
  {
@@ -86,11 +86,11 @@ const topics: Topic[] = [
  },
  {
  question: "Krävs det en handpenning?",
- answer: "Ja, för de flesta bokningar krävs en handpenning vid bekräftelse - vanligtvis 20-30% av totalsumman. Resterande belopp faktureras normalt 30 dagar efter bokning eller enligt överenskommelse.",
+ answer: "Ja, för de flesta bokningar krävs en handpenning vid bekräftelse, vanligtvis 20–30 % av totalsumman. Resterande belopp faktureras normalt 30 dagar efter bokning eller enligt överenskommelse.",
  },
  {
  question: "Hur får jag min faktura?",
- answer: "Fakturan skickas automatiskt till din e-postadress vid bekräftelse och vid eventuella uppdateringar. Behöver du en kopia eller ändrad fakturaadress - kontakta oss på info@kaisengroup.se.",
+ answer: "Fakturan skickas automatiskt till din e-postadress vid bekräftelse och vid eventuella uppdateringar. Behöver du en kopia eller ändrad fakturaadress? Kontakta oss på info@kaisengroup.se.",
  },
  {
  question: "Vilka betalningsmetoder accepterar ni?",
@@ -102,7 +102,7 @@ const topics: Topic[] = [
  },
  {
  question: "Vad händer om priset ändras efter bokning?",
- answer: "Det bekräftade priset gäller - vi tar aldrig ut extra kostnader utan att informera dig i förväg. Ändras externa kostnader väsentligt kontaktar vi alltid dig innan vi bekräftar.",
+ answer: "Det bekräftade priset gäller. Vi tar aldrig ut extra kostnader utan att informera dig i förväg. Ändras externa kostnader väsentligt kontaktar vi alltid dig innan vi bekräftar.",
  },
  ],
  },
@@ -110,15 +110,15 @@ const topics: Topic[] = [
  icon: Users,
  slug: "gruppresor",
  title: "Gruppresor",
- desc: "Specifika frågor om att resa i grupp - logistik, priser och upplägg.",
+ desc: "Frågor om att resa i grupp: logistik, priser och upplägg.",
  articles: [
  {
  question: "Hur många personer krävs för en gruppresa?",
- answer: "Vi arbetar med grupper från 8 personer och uppåt - utan något tak. Vi har arrangerat resor för upp till 200+ personer.",
+ answer: "Vi arbetar med grupper från 8 personer och uppåt, utan något tak. Vi har arrangerat resor för över 200 personer.",
  },
  {
  question: "Vad ingår i en gruppresa?",
- answer: "Vanligtvis transport, boende, aktiviteter och logistikkoordinering. Vi skräddarsyr exakt vad som ingår utifrån era önskemål och budget. Vi hanterar allt från visum till lokala guider.",
+ answer: "Vanligtvis transport, boende, aktiviteter och logistikkoordinering. Exakt vad som ingår anpassar vi efter era önskemål och budget. Vi hanterar allt från visum till lokala guider.",
  },
  {
  question: "Erbjuder ni gruprabatter?",
@@ -126,23 +126,23 @@ const topics: Topic[] = [
  },
  {
  question: "Hur hanterar ni specialkost och tillgänglighet?",
- answer: "Vi tar hänsyn till alla specialbehov - allergier, dietrestriktioner och tillgänglighetsbehov. Uppge detta i din förfrågan så ordnar vi det.",
+ answer: "Vi tar hänsyn till specialbehov som allergier, kostönskemål och tillgänglighet. Uppge detta i din förfrågan så ordnar vi det.",
  },
  {
  question: "Kan ni arrangera företagsevent utomlands?",
- answer: "Absolut - det är ett av våra starkaste områden. Vi har stor erfarenhet av incentiveresor, konferenser och företagsgetaways. Kontakta oss för ett skräddarsytt förslag.",
+ answer: "Ja, det är ett av våra starkaste områden. Vi har stor erfarenhet av incentiveresor, konferenser och företagsresor. Kontakta oss så tar vi fram ett förslag.",
  },
  ],
  },
  {
  icon: MapPin,
  slug: "destinationer",
- title: "Destinationer & Upplevelser",
+ title: "Destinationer och upplevelser",
  desc: "Information om våra destinationer, event och vad vi kan ordna på plats.",
  articles: [
  {
  question: "Vilka destinationer arbetar ni med?",
- answer: "Vi arbetar med destinationer över hela världen - med särskilt fokus på Europa. Populära destinationer inkluderar Monaco, Barcelona, London, Milano och Skandinavien. Men hör av dig - vi fixar det mesta.",
+ answer: "Vi arbetar med destinationer över hela världen, med särskilt fokus på Europa. Populära resmål är Monaco, Barcelona, London, Milano och Skandinavien. Hör av dig om du har något annat i tankarna.",
  },
  {
  question: "Kan ni ordna VIP-biljetter till sportevent?",
@@ -150,11 +150,11 @@ const topics: Topic[] = [
  },
  {
  question: "Erbjuder ni lokala guider och aktiviteter?",
- answer: "Ja, vi kan ordna lokala guider, privata turer, restaurangbokningar och skräddarsydda upplevelser på plats.",
+ answer: "Ja, vi kan ordna lokala guider, privata turer, restaurangbokningar och andra upplevelser på plats.",
  },
  {
  question: "Vad är Incoming-tjänsten?",
- answer: "Incoming innebär att vi tar emot internationella grupper i Sverige och ordnar hela deras vistelse - transport, boende, aktiviteter och guidning. Perfekt för utländska företag och organisationer.",
+ answer: "Incoming innebär att vi tar emot internationella grupper i Sverige och ordnar hela deras vistelse: transport, boende, aktiviteter och guidning. Passar utländska företag och organisationer.",
  },
  ],
  },
@@ -170,7 +170,7 @@ const topics: Topic[] = [
  },
  {
  question: "Hur kontaktar jag er utanför kontorstid?",
- answer: "Akuta ärenden under pågående resa: ring +46 8 000 00 00. För icke-akuta ärenden - skicka ett mejl till info@kaisengroup.se så svarar vi nästa arbetsdag.",
+ answer: "Akuta ärenden under pågående resa: ring +46 8 000 00 00. För övriga ärenden, skicka ett mejl till info@kaisengroup.se så svarar vi nästa arbetsdag.",
  },
  {
  question: "Vad händer vid förseningar och störningar?",
@@ -211,15 +211,13 @@ export default function HelpCenter() {
 
  {/* Hero */}
  <section className="relative overflow-hidden bg-navy-deep">
- <div aria-hidden className="pointer-events-none absolute -right-20 -top-40 h-[420px] w-[520px] rotate-[18deg] rounded-[80px] bg-white/[0.05]" />
- <div aria-hidden className="pointer-events-none absolute right-[30%] -bottom-56 h-[360px] w-[420px] -rotate-[24deg] rounded-[80px] bg-white/[0.035]" />
  <div className="relative w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10 py-8 md:py-12">
  <p className="eyebrow text-sky-300 uppercase mb-1.5">Hjälpcenter</p>
  <h1 className="font-display text-[34px] sm:text-5xl md:text-6xl text-white mb-3">
  Hur kan vi <em className="italic font-light text-white">hjälpa dig?</em>
  </h1>
  <p className="text-white/85 max-w-2xl text-sm md:text-base leading-relaxed mb-6">
- Hitta svar på dina frågor eller kontakta oss direkt - vi svarar alltid inom en timme.
+ Hitta svar på dina frågor eller kontakta oss direkt. Vi svarar inom en timme.
  </p>
  {/* Search */}
  <div className="max-w-md relative">
@@ -229,7 +227,7 @@ export default function HelpCenter() {
  placeholder="Sök efter svar..."
  value={search}
  onChange={(e) => setSearch(e.target.value)}
- className="w-full h-11 rounded-md bg-white text-foreground placeholder:text-muted-foreground pl-11 pr-4 text-base focus:outline-none focus:ring-2 focus:ring-white/60 transition-colors"
+ className="w-full h-11 rounded-full bg-white text-foreground placeholder:text-muted-foreground pl-11 pr-4 text-base focus:outline-none focus:ring-2 focus:ring-white/60 transition-colors"
  />
  </div>
  </div>
@@ -240,16 +238,13 @@ export default function HelpCenter() {
  <div className="sb-container">
  <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
  <div className="flex items-center gap-3">
- <div className="w-9 h-9 bg-primary rounded-md flex items-center justify-center flex-shrink-0">
- <LogIn className="h-4 w-4 text-white" />
- </div>
  <div>
- <p className="font-display uppercase font-semibold text-base text-foreground">Mitt KAISEN - Lanseras snart</p>
+ <p className="font-medium text-base text-foreground">Mitt KAISEN lanseras snart</p>
  <p className="text-xs text-muted-foreground">Logga in och håll koll på din resa, fakturor och uppdateringar i realtid.</p>
  </div>
  </div>
  <Link to="/contact">
- <Button size="sm" variant="outline" className="h-9 rounded-lg border-primary text-primary hover:bg-primary hover:text-primary-foreground font-display uppercase font-semibold tracking-wide text-[15px] whitespace-nowrap">
+ <Button size="sm" variant="outline" className="h-9 rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground text-sm font-medium whitespace-nowrap">
  Få tidig åtkomst <ChevronRight className="h-3 w-3 ml-1" />
  </Button>
  </Link>
@@ -267,26 +262,23 @@ export default function HelpCenter() {
  </div>
  )}
 
- <div className="space-y-3">
+ <div className="divide-y divide-border border-y border-border">
  {filtered.map((topic) => (
- <div key={topic.slug} className={`sb-card overflow-hidden transition-colors ${openTopic === topic.slug ? "border-primary/50" : ""}`}>
+ <div key={topic.slug}>
  {/* Topic header */}
  <button
- className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-cream transition-colors"
+ className="w-full flex items-center justify-between py-5 text-left hover:text-primary transition-colors"
  onClick={() => {
  setOpenTopic(openTopic === topic.slug ? null : topic.slug);
  setOpenArticle(null);
  }}
  >
  <div className="flex items-center gap-4">
- <div className="w-10 h-10 rounded-md bg-primary/10 flex items-center justify-center flex-shrink-0">
- <topic.icon className="h-5 w-5 text-primary" />
- </div>
  <div className="text-left">
  <div className="flex items-center gap-2">
- <span className="font-display text-lg md:text-xl uppercase font-semibold text-foreground">{topic.title}</span>
+ <span className="font-display text-xl md:text-2xl text-foreground">{topic.title}</span>
  {topic.comingSoon && (
- <span className="rounded bg-primary/10 text-primary px-2 py-0.5 font-display text-xs uppercase font-semibold tracking-wide">Kommer snart</span>
+ <span className="text-xs text-muted-foreground">(kommer snart)</span>
  )}
  </div>
  <span className="text-xs text-muted-foreground">{topic.articles.length} artiklar</span>
@@ -300,18 +292,17 @@ export default function HelpCenter() {
 
  {/* Articles */}
  {openTopic === topic.slug && (
- <div className="border-t border-border divide-y divide-border">
+ <div className="divide-y divide-border pb-3">
  {topic.articles.map((article, i) => {
  const key = `${topic.slug}-${i}`;
  return (
  <div key={key}>
  <button
- className="w-full flex items-center justify-between text-left px-5 py-3.5 hover:bg-cream transition-colors gap-4"
+ className="w-full flex items-center justify-between text-left pl-4 py-3 hover:text-primary transition-colors gap-4"
  onClick={() => setOpenArticle(openArticle === key ? null : key)}
  >
  <div className="flex items-center gap-3">
- <ChevronRight className="h-3 w-3 text-primary flex-shrink-0" />
- <span className="text-[15px] font-medium text-foreground">{article.question}</span>
+ <span className="text-[15px] text-foreground">{article.question}</span>
  </div>
  {openArticle === key
  ? <ChevronUp className="h-3 w-3 text-primary flex-shrink-0" />
@@ -319,7 +310,7 @@ export default function HelpCenter() {
  }
  </button>
  {openArticle === key && (
- <div className="px-5 pb-5 pt-1 ml-6">
+ <div className="pl-4 pr-8 pb-5 pt-1">
  <p className="text-[15px] text-foreground/80 leading-relaxed">{article.answer}</p>
  </div>
  )}
@@ -338,44 +329,39 @@ export default function HelpCenter() {
  <section className="sb-section-alt">
  <div className="sb-container">
  <div className="mb-8 md:mb-10">
- <p className="eyebrow text-primary uppercase mb-1">Transparens</p>
+ <p className="eyebrow text-primary uppercase mb-2">Uppdateringar</p>
  <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground">
- Alltid uppdaterad - <em className="italic font-light">utan ansträngning</em>
+ Du får veta <em className="italic font-light">när något ändras</em>
  </h2>
  </div>
- <div className="grid md:grid-cols-3 gap-4">
+ <ol className="grid md:grid-cols-3 gap-x-10 gap-y-6">
  {[
  {
- icon: FileText,
  title: "Automatiska fakturor",
  desc: "Varje gång något uppdateras i din bokning skickas en ny faktura eller bekräftelse direkt till din e-post.",
  },
  {
- icon: Headphones,
  title: "E-postnotiser",
- desc: "Du får alltid ett mejl när vi gör en ändring - ingen uppdatering sker utan att du informeras.",
+ desc: "Du får alltid ett mejl när vi gör en ändring. Inget uppdateras utan att du får veta det.",
  },
  {
- icon: LogIn,
  title: "Reseportal (kommer snart)",
- desc: "Snart lanserar vi 'Mitt KAISEN' - en inloggningssida där du ser alla dina resor, fakturor och uppdateringar på ett ställe.",
+ desc: "Snart lanserar vi 'Mitt KAISEN', en inloggningssida där du ser dina resor, fakturor och uppdateringar på ett ställe.",
  },
- ].map((item) => (
- <div key={item.title} className="sb-card p-5">
- <div className="w-10 h-10 bg-primary rounded-md flex items-center justify-center mb-4">
- <item.icon className="h-5 w-5 text-white" />
- </div>
- <h3 className="font-display text-xl text-foreground mb-1.5">{item.title}</h3>
+ ].map((item, i) => (
+ <li key={item.title} className="border-t border-border pt-5">
+ <span className="font-display text-lg text-primary tabular-nums">{String(i + 1).padStart(2, "0")}</span>
+ <h3 className="font-display text-xl text-foreground mt-1 mb-1.5">{item.title}</h3>
  <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
- </div>
+ </li>
  ))}
- </div>
+ </ol>
  </div>
  </section>
 
  <CtaBand
  title="Hittade du inte svaret?"
- text="Vårt team svarar alltid inom en timme under kontorstid."
+ text="Vi svarar inom en timme under kontorstid."
  >
  <Link to="/support" className="sb-btn-light">
  Gå till Support <ArrowRight className="h-4 w-4" />

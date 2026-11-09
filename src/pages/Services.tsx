@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Footer from "@/components/Footer";
 import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
 import sportsImage from "@/assets/kaisen-sports.jpg";
 import luxuryImage from "@/assets/kaisen-luxury.jpg";
-import groupImageAsset from "@/assets/kaisen-group-europe-skyline.jpg.asset.json";
-const groupImage = groupImageAsset.url;
+import { PHOTO } from "@/data/photos";
+const groupImage = PHOTO["kaisen-group"];
 import heroImage from "@/assets/kaisen-hero.jpg";
 import PageHero from "@/components/site/PageHero";
 import CtaBand from "@/components/site/CtaBand";
@@ -16,13 +16,13 @@ const categories = [
   id: "group",
   tag: "Gruppresor",
   title: "Resor som blir bättre tillsammans",
-  description: "Oavsett om det är en milstolpe att fira, en företagskonferens, en familjeåterförening eller en grupp likasinnade upptäcktsresande - vi sköter varje detalj så att ditt enda jobb är att njuta av stunden.",
+  description: "Ett jubileum, en företagskonferens, en släktresa eller en grupp vänner med samma intresse. Vi sköter detaljerna så att ni kan njuta av resan.",
   image: groupImage,
   features: [
   "Grupper från 8 till 200+ resenärer",
-  "Dedikerad gruppsamordnare",
-  "Förhandlade gruppriser och exklusiv tillgång",
-  "Skräddarsydda program för alla intressen",
+  "En egen gruppsamordnare",
+  "Förhandlade grupppriser och exklusiv tillgång",
+  "Program efter gruppens intressen",
   "Flygplatstransfer och logistik",
   "Support på plats under hela resan",
   ],
@@ -31,9 +31,9 @@ const categories = [
  },
  {
   id: "sports",
-  tag: "Sport & äventyr",
-  title: "Sportupplevelser i toppklass",
-  description: "Vi är den självklara byrån för sportentusiaster som ställer höga krav. Från golfresor till alpin skidåkning, segling till Formel 1-helger - vi tar dig till hjärtat av händelsen.",
+  tag: "Sport och äventyr",
+  title: "Sportresor för dig som ställer krav",
+  description: "Vi ordnar resor för dig som vill se sporten på plats: fotboll, Formel 1, golf, skidåkning och segling. Biljetter, boende och resa planeras av samma person.",
   image: sportsImage,
   features: [
   "Fotbollsresor till Europas största ligor",
@@ -49,13 +49,13 @@ const categories = [
  {
   id: "luxury",
   tag: "Exklusiva resor",
-  title: "Kvalitet utan kompromisser",
-  description: "För resenärer som förväntar sig det lilla extra skapar vi upplevelser utöver det vanliga - exklusiv tillgång, handplockat boende och service som definierar destinationen.",
+  title: "När allt ska vara rätt",
+  description: "För dig som vill ha det lilla extra: noga utvalda hotell, privata transfers och upplevelser som är svåra att boka på egen hand.",
   image: luxuryImage,
   features: [
   "Handplockade hotell och boenden",
-  "Skräddarsydda resprogram",
-  "Exklusiva upplevelser och tillgång",
+  "Resprogram efter dina önskemål",
+  "Upplevelser som är svåra att boka själv",
   "Personlig reseplanering",
   "Diskret och personlig service",
   ],
@@ -73,15 +73,15 @@ export default function Services() {
   image={heroImage}
   imageAlt="KAISEN TRAVEL GROUP"
   eyebrow="Våra specialiteter"
-  title={<>Upplevelser & <em className="italic font-light text-white">Tjänster</em></>}
+  title={<>Upplevelser och <em className="italic font-light text-white">tjänster</em></>}
   action={null}
   />
 
   {/* Intro */}
   <section className="sb-section-alt">
-  <div className="sb-container max-w-[880px] text-center">
-   <p className="font-display text-2xl md:text-[34px] text-foreground italic font-semibold uppercase leading-tight">
-   "Varje resa börjar med ett samtal. Vi lyssnar först - sen bygger vi något extraordinärt."
+  <div className="sb-container max-w-[880px]">
+   <p className="font-display text-2xl md:text-[34px] text-foreground leading-snug border-l-2 border-primary pl-5">
+   Varje resa börjar med ett samtal. Först lyssnar vi, sedan planerar vi.
    </p>
   </div>
   </section>
@@ -104,11 +104,10 @@ export default function Services() {
     </p>
     <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-4">{cat.title}</h2>
     <p className="text-foreground/80 leading-relaxed mb-6 text-[15px]">{cat.description}</p>
-    <ul className="space-y-2.5 mb-8">
+    <ul className="grid sm:grid-cols-2 gap-x-8 border-t border-border mb-8">
      {cat.features.map((f) => (
-     <li key={f} className="flex items-start gap-3 text-sm">
-      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded bg-primary text-white"><Check className="h-3.5 w-3.5" /></span>
-      <span className="text-foreground/85">{f}</span>
+     <li key={f} className="border-b border-border py-2.5 text-sm text-foreground/85">
+      {f}
      </li>
      ))}
     </ul>
@@ -123,9 +122,9 @@ export default function Services() {
   ))}
 
   <CtaBand
-  eyebrow="Skräddarsytt av naturen"
+  eyebrow="Fler resmål och idéer"
   title="Hittar du inte det du söker?"
-  text="Vår expertis sträcker sig längre än kategorierna. Berätta om din vision så gör vi den till verklighet."
+  text="Vi ordnar mer än det som står här. Berätta vad du har i tankarna så ser vi vad vi kan göra."
   >
   <Link to="/contact" className="sb-btn-light">
    Prata med en rådgivare

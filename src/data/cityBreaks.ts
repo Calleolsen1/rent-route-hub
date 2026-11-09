@@ -14,7 +14,7 @@ export type CityBreak = {
 export const CITY_BREAKS: Record<string, CityBreak> = {
   "london": {
     title: "Gör det till en citybreak i London",
-    text: "Passa på att upptäcka London när du ändå är på plats. Promenera längs Themsen förbi Tower Bridge och Big Ben, shoppa på Oxford Street eller i Covent Garden och avsluta dagen på en klassisk engelsk pub.\n\nLondon bjuder på museer i världsklass – många med fri entré – musikaler i West End och restauranger från hela världen. Kombinera matchen med några dagar i staden och gör resan till en weekend du sent kommer att glömma.",
+    text: "Passa på att upptäcka London när du ändå är på plats. Promenera längs Themsen förbi Tower Bridge och Big Ben, shoppa på Oxford Street eller i Covent Garden och avsluta dagen på en klassisk engelsk pub.\n\nLondon bjuder på museer i världsklass – många med fri entré – musikaler i West End och restauranger från hela världen. Lägg till ett par dagar före eller efter matchen, så hinner du se det mesta.",
     image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1600&q=80&auto=format&fit=crop",
   },
   "liverpool": {
@@ -24,7 +24,7 @@ export const CITY_BREAKS: Record<string, CityBreak> = {
   },
   "manchester": {
     title: "Gör det till en citybreak i Manchester",
-    text: "Manchester bjuder på mer än fotboll. Utforska de kreativa kvarteren i Northern Quarter med caféer, vintagebutiker och street art, eller ta en promenad längs kanalerna i Castlefield.\n\nStaden är känd för sin musikscen och sitt nattliv, och shoppingen i centrum är något utöver det vanliga. Kombinera matchen med en weekend i en av Englands mest levande städer.",
+    text: "Manchester bjuder på mer än fotboll. Utforska de kreativa kvarteren i Northern Quarter med caféer, vintagebutiker och street art, eller ta en promenad längs kanalerna i Castlefield.\n\nStaden är känd för sin musikscen och sitt nattliv, och i centrum finns gott om shopping. Kombinera matchen med en weekend i en av Englands mest levande städer.",
     image: "https://images.unsplash.com/photo-1515586838455-8f8f940d6853?w=1600&q=80&auto=format&fit=crop",
   },
   "birmingham": {
@@ -89,7 +89,7 @@ export const CITY_BREAKS: Record<string, CityBreak> = {
   },
   "san sebastián": {
     title: "Gör det till en citybreak i San Sebastián",
-    text: "San Sebastián är en av Spaniens vackraste städer, belägen vid den berömda La Concha-bukten. Promenera längs strandpromenaden, ta dig upp till Monte Igueldo för utsikten och utforska gamla stan.\n\nStaden är känd för sin gastronomi – här finns några av världens mest hyllade restauranger och oändligt med pintxosbarer. Kombinera matchen med en weekend för alla sinnen.",
+    text: "San Sebastián är en av Spaniens vackraste städer, belägen vid den berömda La Concha-bukten. Promenera längs strandpromenaden, ta dig upp till Monte Igueldo för utsikten och utforska gamla stan.\n\nStaden är känd för sin gastronomi – här finns några av världens mest hyllade restauranger och oändligt med pintxosbarer. Ta gärna en extra dag – maten är skäl nog.",
     image: "https://images.unsplash.com/photo-1682312990271-8c4238452042?w=1600&q=80&auto=format&fit=crop",
   },
   "milano": {
@@ -104,7 +104,7 @@ export const CITY_BREAKS: Record<string, CityBreak> = {
   },
   "rom": {
     title: "Gör det till en citybreak i Rom",
-    text: "Rom är en levande historiebok. Upplev Colosseum och Forum Romanum, kasta ett mynt i Fontana di Trevi och besök Vatikanen och Peterskyrkan.\n\nAvsluta dagarna med pasta och vin på en trattoria i Trastevere. Kombinera matchen med en weekend i den eviga staden – en resa du sent kommer att glömma.",
+    text: "Rom är en levande historiebok. Upplev Colosseum och Forum Romanum, kasta ett mynt i Fontana di Trevi och besök Vatikanen och Peterskyrkan.\n\nAvsluta dagarna med pasta och vin på en trattoria i Trastevere. Lägg till ett par dagar, Rom tar tid att se.",
     image: "https://images.unsplash.com/photo-1555992828-35627f3b373f?w=1600&q=80&auto=format&fit=crop",
   },
 };
