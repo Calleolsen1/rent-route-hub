@@ -73,7 +73,9 @@ async function errorMessage(error: unknown): Promise<string> {
 export function useEventTickets(eventId: string | undefined, sport: string | null = "soccer") {
   const navigate = useNavigate();
   const [data, setData] = useState<TicketsResponse | null>(null);
-  const [loading, setLoading] = useState(true);
+  // No event id (an F1 race with no fixture row yet): nothing to load, so the
+  // generic tiers show straight away and the visitor can still enquire.
+  const [loading, setLoading] = useState(Boolean(eventId));
   const [qty, setQty] = useState<Record<string, number>>({});
   const [busy, setBusy] = useState(false);
   // Highlighting. A row is lit only when it is the one under the pointer or
@@ -85,7 +87,11 @@ export function useEventTickets(eventId: string | undefined, sport: string | nul
   const rowEls = useRef<Record<string, HTMLElement | null>>({});
 
   useEffect(() => {
-    if (!eventId) return;
+    if (!eventId) {
+      setData(null);
+      setLoading(false);
+      return;
+    }
     let cancelled = false;
     setLoading(true);
     (async () => {

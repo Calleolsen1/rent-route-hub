@@ -22,6 +22,7 @@ import CityBreak from "@/components/site/CityBreak";
 import { cityBreakFor } from "@/data/cityBreaks";
 import { RACE_FACTS, weekendLabel } from "@/data/raceFacts";
 import { RaceFactsGrid, RaceSchedule, RaceTextSections } from "@/components/site/RaceDetails";
+import RaceTripFlow from "@/components/trip/RaceTripFlow";
 
 /**
  * Unified landing page for any sport entry - replaces the old TeamPage +
@@ -166,6 +167,16 @@ export default function SportEntryPage() {
               title=""
               compact
               onEmptyChange={setEventsEmpty}
+              emptyContent={
+                isRace ? (
+                  <RaceTripFlow
+                    raceName={info.name}
+                    when={raceWeekend ?? info.date_text}
+                    venue={info.venue}
+                    raceDay={raceFacts?.schedule.at(-1)?.date ?? null}
+                  />
+                ) : undefined
+              }
             />
           </div>
           {!eventsEmpty && (
@@ -202,7 +213,7 @@ export default function SportEntryPage() {
             raceName={info.name}
             trackName={info.venue}
             trackPhoto={heroSrc}
-            cityPhoto={f1Image}
+            cityPhoto="https://images.unsplash.com/photo-1753808407728-dc870ab1d450?w=1200&q=80&auto=format&fit=crop"
             onEnquire={enquire}
           />
         </>

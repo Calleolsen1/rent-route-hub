@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { usePublicPricesEnabled } from "@/hooks/usePublicPrices";
@@ -94,6 +94,8 @@ type Props = {
   /** Lopp-sidorna visar bara förfrågningsknappen, ingen förklarande rad. */
   hideEmptyMessage?: boolean;
   inquiryDestination?: string;
+  /** Rendered instead of the built-in empty state when nothing is listed. */
+  emptyContent?: ReactNode;
 };
 
 /** Svenska månadsnamn för filterknapparna. */
@@ -124,6 +126,7 @@ export default function UpcomingEventsList({
   emptyMessage,
   hideEmptyMessage,
   inquiryDestination,
+  emptyContent,
 }: Props) {
   // A filtered list needs the whole season in hand to build its month chips;
   // an unfiltered teaser keeps the old six-card default.
@@ -205,6 +208,8 @@ export default function UpcomingEventsList({
       </div>
     );
   }
+
+  if (!events.length && emptyContent) return <>{emptyContent}</>;
 
   if (!events.length) {
     return (
