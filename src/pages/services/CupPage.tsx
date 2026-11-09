@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 import Footer from "@/components/Footer";
 import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
-import fotbollImage from "@/assets/sport-fotboll.jpg";
+const fotbollImage = PHOTO["sport-fotboll"];
 import { useSport, useEntry } from "@/hooks/useNavigation";
 import UpcomingEventsList from "@/components/UpcomingEventsList";
 import { CUPS, getCup } from "@/data/cups";
@@ -12,6 +12,7 @@ import { usePageMeta } from "@/lib/usePageMeta";
 import PageHero from "@/components/site/PageHero";
 import CtaBand from "@/components/site/CtaBand";
 import { cupLogos } from "@/data/leagueLogos";
+import { PHOTO } from "@/data/photos";
 
 /**
  * Landing page for a football cup (Champions League, Europa League, FA Cup,

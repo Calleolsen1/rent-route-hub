@@ -5,7 +5,8 @@ import Navbar from "@/components/Navbar";
 import PageHero from "@/components/site/PageHero";
 import CtaBand from "@/components/site/CtaBand";
 import heroImage from "@/assets/kaisen-hero.jpg";
-import businessImage from "@/assets/affarsresor-hero.jpg";
+import { PHOTO } from "@/data/photos";
+const businessImage = PHOTO["affarsresor-hero"];
 
 const tailored = [
  "Individuell reseplanering utifrån ditt schema och dina preferenser",

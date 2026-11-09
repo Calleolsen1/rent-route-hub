@@ -4,8 +4,8 @@ import { ArrowRight, CalendarDays, MapPin, Trophy } from "lucide-react";
 import Footer from "@/components/Footer";
 import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
-import fotbollImage from "@/assets/sport-fotboll.jpg";
-import f1Image from "@/assets/sport-f1.jpg";
+const fotbollImage = PHOTO["sport-fotboll"];
+const f1Image = PHOTO["sport-f1"];
 import PageHero from "@/components/site/PageHero";
 import CtaBand from "@/components/site/CtaBand";
 import { leagueLogos, cupLogos } from "@/data/leagueLogos";
@@ -21,6 +21,7 @@ import { usePageMeta } from "@/lib/usePageMeta";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
+import { PHOTO } from "@/data/photos";
 
 
 export default function SportPage() {

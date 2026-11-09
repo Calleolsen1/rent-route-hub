@@ -1,5 +1,6 @@
-import fotbollImage from "@/assets/sport-fotboll.jpg";
+const fotbollImage = PHOTO["sport-fotboll"];
 import { noBreakHyphen } from "@/lib/noBreakHyphen";
+import { PHOTO } from "@/data/photos";
 
 // Real photography (Unsplash, free for commercial use, no credit required).
 const unsplash = (id: string) => `https://images.unsplash.com/${id}?w=900&q=75&auto=format&fit=crop`;

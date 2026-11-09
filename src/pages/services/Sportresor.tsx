@@ -5,11 +5,12 @@ import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
 import sportsImage from "@/assets/kaisen-sports.jpg";
 import luxuryImage from "@/assets/kaisen-luxury.jpg";
-import f1Image from "@/assets/sport-f1.jpg";
-import fotbollImage from "@/assets/sport-fotboll.jpg";
+const f1Image = PHOTO["sport-f1"];
+const fotbollImage = PHOTO["sport-fotboll"];
 import { usePageMeta } from "@/lib/usePageMeta";
 import PageHero from "@/components/site/PageHero";
 import CtaBand from "@/components/site/CtaBand";
+import { PHOTO } from "@/data/photos";
 
 const sports = [
  {

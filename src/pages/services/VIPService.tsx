@@ -5,9 +5,10 @@ import Navbar from "@/components/Navbar";
 import PageHero from "@/components/site/PageHero";
 import InquiryForm from "@/components/InquiryForm";
 import vipImage from "@/assets/kaisen-vip.jpg";
-import vipConcierge from "@/assets/vip-concierge.jpg";
-import vipJet from "@/assets/vip-jet.jpg";
-import vipTransfer from "@/assets/vip-transfer.jpg";
+import { PHOTO } from "@/data/photos";
+const vipConcierge = PHOTO["vip-concierge"];
+const vipJet = PHOTO["vip-jet"];
+const vipTransfer = PHOTO["vip-transfer"];
 
 const services = [
  {

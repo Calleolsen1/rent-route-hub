@@ -4,11 +4,12 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import RequestCta from "@/components/RequestCta";
 import { usePageMeta } from "@/lib/usePageMeta";
-import fotbollImage from "@/assets/sport-fotboll.jpg";
-import f1Image from "@/assets/sport-f1.jpg";
+const fotbollImage = PHOTO["sport-fotboll"];
+const f1Image = PHOTO["sport-f1"];
 import groupImageAsset from "@/assets/kaisen-group-europe-skyline.jpg.asset.json";
 const groupImage = groupImageAsset.url;
 import valenciaImage from "@/assets/camp-valencia-pitch.jpg.asset.json";
+import { PHOTO } from "@/data/photos";
 
 const choices = [
   {

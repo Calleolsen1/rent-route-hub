@@ -6,9 +6,10 @@ import Navbar from "@/components/Navbar";
 import PageHero from "@/components/site/PageHero";
 import FloatingInquiryButton from "@/components/FloatingInquiryButton";
 import { useInquiryDialog } from "@/components/InquiryDialog";
-import konferensHero from "@/assets/konferens-hero.jpg";
-import konferens1 from "@/assets/konferens-dinner.jpg";
-import konferens2 from "@/assets/konferens-event.jpg";
+import { PHOTO } from "@/data/photos";
+const konferensHero = PHOTO["konferens-hero"];
+const konferens1 = PHOTO["konferens-dinner"];
+const konferens2 = PHOTO["konferens-event"];
 
 const packages = [
   {

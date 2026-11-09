@@ -7,12 +7,13 @@ import FloatingInquiryButton from "@/components/FloatingInquiryButton";
 import { useInquiryDialog } from "@/components/InquiryDialog";
 import groupImageAsset from "@/assets/kaisen-group-europe-skyline.jpg.asset.json";
 const groupImage = groupImageAsset.url;
-import groupCorporate from "@/assets/group-corporate.jpg";
-import groupAdventure from "@/assets/group-adventure.jpg";
+const groupCorporate = PHOTO["group-corporate"];
+const groupAdventure = PHOTO["group-adventure"];
 
 import { usePageMeta } from "@/lib/usePageMeta";
 import PageHero from "@/components/site/PageHero";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { PHOTO } from "@/data/photos";
 
 const GROUP_KEYS = ["group_hero_eyebrow", "group_hero_title", "group_hero_tagline", "group_activities"];
 

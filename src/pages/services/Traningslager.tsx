@@ -5,7 +5,7 @@ import Navbar from "@/components/Navbar";
 import PageHero from "@/components/site/PageHero";
 import FloatingInquiryButton from "@/components/FloatingInquiryButton";
 import { useInquiryDialog } from "@/components/InquiryDialog";
-import heroImage from "@/assets/camps-hero.jpg";
+const heroImage = PHOTO["camps-hero"];
 import valenciaImg from "@/assets/camp-valencia-pitch.jpg.asset.json";
 import antalyaImg from "@/assets/camp-antalya-hotel.jpg.asset.json";
 import ayiaNapaImg from "@/assets/camp-ayianapa-pitch.jpg.asset.json";
@@ -75,6 +75,7 @@ const features = [
 ];
 
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { PHOTO } from "@/data/photos";
 
 const TRAINING_KEYS = ["training_hero_eyebrow", "training_hero_title", "training_hero_tagline", "training_features"];
 

@@ -5,12 +5,13 @@ import Navbar from "@/components/Navbar";
 import PageHero from "@/components/site/PageHero";
 import CtaBand from "@/components/site/CtaBand";
 import weekendImage from "@/assets/kaisen-weekend.jpg";
-import parisImage from "@/assets/city-paris.jpg";
-import amsterdamImage from "@/assets/city-amsterdam.jpg";
-import barcelonaImage from "@/assets/city-barcelona.jpg";
-import copenhagenImage from "@/assets/city-copenhagen.jpg";
-import pragueImage from "@/assets/city-prague.jpg";
-import veniceImage from "@/assets/city-venice.jpg";
+import { PHOTO } from "@/data/photos";
+const parisImage = PHOTO["city-paris"];
+const amsterdamImage = PHOTO["city-amsterdam"];
+const barcelonaImage = PHOTO["city-barcelona"];
+const copenhagenImage = PHOTO["city-copenhagen"];
+const pragueImage = PHOTO["city-prague"];
+const veniceImage = PHOTO["city-venice"];
 
 const destinations = [
  {

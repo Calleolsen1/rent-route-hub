@@ -1,7 +1,8 @@
 import { useMemo } from "react";
-import fotbollImage from "@/assets/sport-fotboll.jpg";
-import f1Image from "@/assets/sport-f1.jpg";
+const fotbollImage = PHOTO["sport-fotboll"];
+const f1Image = PHOTO["sport-f1"];
 import { resizedImage, responsiveSrcSet } from "@/lib/imageUrl";
+import { PHOTO } from "@/data/photos";
 
 /**
  * The image for an event card, resolved in order:

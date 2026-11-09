@@ -2,10 +2,11 @@ import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import InquiryForm from "@/components/InquiryForm";
-import heroImage from "@/assets/contact-hero.jpg";
+const heroImage = PHOTO["contact-hero"];
 import { usePageMeta } from "@/lib/usePageMeta";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import PageHero from "@/components/site/PageHero";
+import { PHOTO } from "@/data/photos";
 
 const CONTACT_KEYS = [
   "contact_hero_eyebrow",

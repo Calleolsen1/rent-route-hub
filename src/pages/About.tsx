@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
 import TeamSection from "@/components/TeamSection";
-import heroImage from "@/assets/about-hero.jpg";
+const heroImage = PHOTO["about-hero"];
 import PageHero from "@/components/site/PageHero";
 import CtaBand from "@/components/site/CtaBand";
 
@@ -33,6 +33,7 @@ const values = [
 
 
 import { usePageMeta } from "@/lib/usePageMeta";
+import { PHOTO } from "@/data/photos";
 
 export default function About() {
   const { open: openInquiry } = useInquiryDialog();

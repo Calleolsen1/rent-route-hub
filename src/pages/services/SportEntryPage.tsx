@@ -5,8 +5,8 @@ import { ArrowRight, Check, Calendar, MapPin, Trophy, Flag } from "lucide-react"
 import Footer from "@/components/Footer";
 import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
-import fotbollImage from "@/assets/sport-fotboll.jpg";
-import f1Image from "@/assets/sport-f1.jpg";
+const fotbollImage = PHOTO["sport-fotboll"];
+const f1Image = PHOTO["sport-f1"];
 import { useSport, useEntry } from "@/hooks/useNavigation";
 import UpcomingEventsList from "@/components/UpcomingEventsList";
 import { useInquiryDialog } from "@/components/InquiryDialog";
@@ -24,6 +24,7 @@ import { cityBreakFor } from "@/data/cityBreaks";
 import { RACE_FACTS, weekendLabel } from "@/data/raceFacts";
 import { RaceFactsGrid, RaceSchedule, RaceTextSections } from "@/components/site/RaceDetails";
 import RaceTripFlow from "@/components/trip/RaceTripFlow";
+import { PHOTO } from "@/data/photos";
 
 /**
  * Unified landing page for any sport entry - replaces the old TeamPage +

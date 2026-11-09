@@ -22,19 +22,20 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import heroImage from "@/assets/kaisen-hero.jpg";
-import groupImageAsset from "@/assets/kaisen-group-europe-skyline.jpg.asset.json";
-const groupImage = groupImageAsset.url;
+
 import sportsImage from "@/assets/kaisen-sports.jpg";
 import incomingImage from "@/assets/kaisen-incoming.jpg";
-import f1Image from "@/assets/sport-f1.jpg";
-import fotbollImage from "@/assets/sport-fotboll.jpg";
+const f1Image = PHOTO["sport-f1"];
+const fotbollImage = PHOTO["sport-fotboll"];
 import valenciaImage from "@/assets/camp-valencia-pitch.jpg.asset.json";
 import luxuryImage from "@/assets/kaisen-luxury.jpg";
-import offerF1Monza from "@/assets/offer-f1-monza.jpg";
+const offerF1Monza = PHOTO["offer-f1-monza"];
 import offerLisbon from "@/assets/offer-lisbon.jpg";
 
 import offerLiverpool from "@/assets/offer-liverpool.jpg";
 import offerMallorca from "@/assets/offer-mallorca.jpg";
+import { PHOTO } from "@/data/photos";
+const groupImage = PHOTO["kaisen-group"];
 
 /** Time each hero slide stays before the next one slides in. */
 const HERO_AUTOPLAY_MS = 3000;

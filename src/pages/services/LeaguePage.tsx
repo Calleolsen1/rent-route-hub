@@ -4,7 +4,7 @@ import { ArrowRight, MapPin, Trophy } from "lucide-react";
 import Footer from "@/components/Footer";
 import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
-import fotbollImage from "@/assets/sport-fotboll.jpg";
+const fotbollImage = PHOTO["sport-fotboll"];
 import PageHero from "@/components/site/PageHero";
 import CtaBand from "@/components/site/CtaBand";
 import { leagueLogos } from "@/data/leagueLogos";
@@ -14,6 +14,7 @@ import { useSiteContent } from "@/hooks/useSiteContent";
 import { usePageMeta } from "@/lib/usePageMeta";
 import { useTeamCrests } from "@/hooks/useTeamCrests";
 import { useVenuePhotos, venuePhotoFor } from "@/hooks/useVenuePhotos";
+import { PHOTO } from "@/data/photos";
 
 const DEFAULT_LEAGUE_INTRO =
   "Välj ett lag så tar vi fram en komplett resa med biljetter, hotell, flyg och transfer.";
