@@ -7,10 +7,15 @@
    All colors MUST be HSL.
 */
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Jost:wght@300;400;500;600&family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;1,600;1,700&family=Inter:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
+    /* Fonts: admin + Mitt KAISEN keep the original pair; public pages swap
+       them via html[data-area="public"] (see SiteArea in App.tsx). */
+    --font-sans: 'Jost', sans-serif;
+    --font-display: 'Cormorant Garamond', serif;
+
     /* Deep navy background */
     --background: 210 20% 97%;
     --foreground: 222 35% 15%;
@@ -138,17 +143,56 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Jost', sans-serif;
+    font-family: var(--font-sans);
     font-feature-settings: "rlig" 1, "calt" 1;
     overflow-x: hidden;
     -webkit-tap-highlight-color: transparent;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font-display);
     font-weight: 400;
     letter-spacing: -0.01em;
     overflow-wrap: break-word;
+  }
+
+  /* ── Public site (sportsbreaks-style) ─────────────────────────────
+     Condensed, bold, uppercase headlines; clean sans body; white page
+     background. Text content is untouched - only presentation. */
+  html[data-area="public"] {
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+    --background: 0 0% 100%;
+    --foreground: 220 20% 18%;
+    --muted: 220 14% 96%;
+    --cream: 220 14% 96%;
+    --cream-dark: 220 13% 91%;
+    --border: 220 13% 88%;
+  }
+  html[data-area="public"] body {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  html[data-area="public"] h1,
+  html[data-area="public"] h2 {
+    font-weight: 700;
+    font-style: italic;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    line-height: 1.05;
+  }
+  html[data-area="public"] h3,
+  html[data-area="public"] h4,
+  html[data-area="public"] h5,
+  html[data-area="public"] h6 {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    line-height: 1.15;
+  }
+  /* Italic emphasis inside headlines stays bold so it doesn't look thin */
+  html[data-area="public"] :is(h1, h2) :is(em, .italic) {
+    font-weight: inherit;
   }
 
   /* Prevent iOS zoom-on-focus for form fields on phones */
@@ -186,6 +230,40 @@
   /* Small uppercase labels: tighter tracking on phones so they don't wrap */
   .eyebrow {
     @apply tracking-[0.16em] sm:tracking-[0.3em];
+  }
+  /* Public eyebrow: condensed italic caps (the small label above titles) */
+  html[data-area="public"] .eyebrow {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    font-size: 0.95rem;
+  }
+
+  /* Public shared building blocks */
+  .sb-container {
+    @apply w-full max-w-[1120px] mx-auto px-4 sm:px-6;
+  }
+  .sb-section {
+    @apply py-12 md:py-16;
+  }
+  .sb-section-alt {
+    @apply py-12 md:py-16 bg-cream;
+  }
+  .sb-card {
+    @apply bg-card border border-border rounded-lg;
+  }
+  .sb-btn {
+    @apply inline-flex items-center justify-center gap-2 h-10 px-6 rounded-lg font-display not-italic font-semibold uppercase tracking-wide text-[15px] transition-colors whitespace-nowrap disabled:opacity-50 disabled:pointer-events-none;
+  }
+  .sb-btn-primary {
+    @apply sb-btn bg-primary text-primary-foreground hover:bg-navy-deep;
+  }
+  .sb-btn-light {
+    @apply sb-btn bg-white text-primary hover:bg-white/85;
+  }
+  .sb-btn-outline {
+    @apply sb-btn border border-primary text-primary bg-transparent hover:bg-primary hover:text-primary-foreground;
   }
 
   .kaisen-navy {

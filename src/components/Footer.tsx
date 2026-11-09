@@ -6,7 +6,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import amadeusLogo from "@/assets/amadeus-logo.svg";
 import kammarkollegietLogo from "@/assets/kammarkollegiet-logo.svg";
-import { Button } from "@/components/ui/button";
 import brandLogo from "@/assets/kaisen-brand-logo-white.png.asset.json";
 
 const Footer = () => {
@@ -48,21 +47,18 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-navy-deep text-white border-t border-white/15">
-      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10 pt-10 md:pt-14 pb-24 md:pb-10">
-        {/* Newsletter */}
-        <div className="grid md:grid-cols-2 gap-6 md:gap-16 items-end pb-10 md:pb-16">
-          <div>
-            <p className="text-[11px] eyebrow text-white/60 uppercase mb-4 font-sans">Nyhetsbrev</p>
-            <h2 className="font-display text-2xl sm:text-3xl md:text-5xl text-white leading-[1.05]">
+    <footer className="bg-background">
+      {/* Newsletter - dark rounded box on white, like the reference */}
+      <div className="sb-container pt-10 md:pt-16 pb-10 md:pb-16">
+        <div className="relative overflow-hidden rounded-lg bg-primary text-white">
+          <div aria-hidden className="pointer-events-none absolute -right-24 -top-24 h-[420px] w-[420px] rotate-12 rounded-[64px] bg-white/[0.06]" />
+          <div aria-hidden className="pointer-events-none absolute -left-32 bottom-[-180px] h-[360px] w-[360px] -rotate-12 rounded-[64px] bg-white/[0.04]" />
+          <div className="relative px-6 py-10 sm:px-10 md:px-16 md:py-14 max-w-[680px] mx-auto">
+            <p className="eyebrow text-white/70 uppercase mb-2">Nyhetsbrev</p>
+            <h2 className="font-display text-3xl sm:text-4xl text-white">
               Anmäl dig och håll dig <em className="italic font-light">uppdaterad</em>
             </h2>
-          </div>
-          <div>
-            <form
-              onSubmit={handleSubscribe}
-              className="flex items-end gap-3 border-b border-white/40 pb-2"
-            >
+            <form onSubmit={handleSubscribe} className="mt-6 flex flex-col sm:flex-row gap-3">
               <input
                 type="email"
                 required
@@ -71,19 +67,14 @@ const Footer = () => {
                 placeholder="Ange din e-postadress...*"
                 aria-label="E-postadress för nyhetsbrev"
                 autoComplete="email"
-                className="min-w-0 w-0 flex-1 bg-transparent text-primary-foreground placeholder:text-primary-foreground/50 text-base focus:outline-none py-2"
+                className="min-w-0 flex-1 h-11 rounded-md bg-white text-foreground placeholder:text-muted-foreground px-4 text-base focus:outline-none focus:ring-2 focus:ring-white/60"
                 disabled={submitting}
               />
-              <Button
-                type="submit"
-                disabled={submitting}
-                variant="outline"
-                className="shrink-0 h-11 border-primary-foreground bg-transparent text-primary-foreground text-xs uppercase font-sans px-4 sm:px-6 rounded-full hover:bg-primary-foreground hover:text-primary transition-colors disabled:opacity-50"
-              >
+              <button type="submit" disabled={submitting} className="sb-btn-light h-11 shrink-0">
                 {submitting ? "Skickar..." : "Anmäl"}
-              </Button>
+              </button>
             </form>
-            <p className="text-xs text-white/60 mt-3 leading-relaxed">
+            <p className="text-xs text-white/70 mt-4 leading-relaxed">
               Genom att skicka in detta formulär godkänner jag att KAISEN TRAVEL GROUP lagrar och behandlar mina personuppgifter enligt våra{" "}
               <Link to="/anvandarvillkor" className="underline hover:text-white">Användarvillkor</Link>{" "}
               &amp;{" "}
@@ -91,14 +82,15 @@ const Footer = () => {
             </p>
           </div>
         </div>
+      </div>
 
-        <div className="border-t border-white/15" />
-
+      <div className="bg-navy-deep text-white">
+      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10 pt-2 md:pt-4 pb-24 md:pb-8">
         {/* Logo + link columns */}
-        <div className="grid grid-cols-2 md:grid-cols-12 gap-8 md:gap-12 py-10 md:py-16">
+        <div className="grid grid-cols-2 md:grid-cols-12 gap-8 md:gap-12 py-10 md:py-12">
           <div className="col-span-2 md:col-span-4">
             <Link to="/" className="inline-block">
-              <img src={brandLogo.url} alt="KAISEN TRAVEL GROUP" width={238} height={90} className="block w-[190px] h-auto object-contain" loading="lazy" />
+              <img src={brandLogo.url} alt="KAISEN TRAVEL GROUP" width={238} height={90} className="block w-[150px] h-auto object-contain" loading="lazy" />
             </Link>
             <p className="text-sm text-white/60 leading-relaxed mt-6 max-w-xs">
               Vi skapar minnesvärda sportresor, träningsläger och gruppresor med gedigen erfarenhet, hög kompetens och personlig service.
@@ -107,8 +99,8 @@ const Footer = () => {
           </div>
 
           <div className="md:col-span-3">
-            <h3 className="text-[11px] eyebrow text-white/60 uppercase font-sans mb-5">Våra resor</h3>
-            <ul className="space-y-3 text-sm text-white/85">
+            <h3 className="font-display text-lg font-semibold text-white mb-4">Våra resor</h3>
+            <ul className="space-y-2.5 text-sm text-white/75">
               <li><Link to="/services/sportresor/fotboll" className="hover:text-white transition-colors">Fotbollsresor</Link></li>
               <li><Link to="/services/sportresor/f1" className="hover:text-white transition-colors">Formel 1-resor</Link></li>
               <li><Link to="/group-travel" className="hover:text-white transition-colors">Grupp- och konferensresor</Link></li>
@@ -118,8 +110,8 @@ const Footer = () => {
           </div>
 
           <div className="md:col-span-2">
-            <h3 className="text-[11px] eyebrow text-white/60 uppercase font-sans mb-5">Företaget</h3>
-            <ul className="space-y-3 text-sm text-white/85">
+            <h3 className="font-display text-lg font-semibold text-white mb-4">Företaget</h3>
+            <ul className="space-y-2.5 text-sm text-white/75">
               <li><Link to="/about" className="hover:text-white transition-colors">Om oss</Link></li>
               <li><Link to="/contact" className="hover:text-white transition-colors">Planera din resa</Link></li>
               <li><Link to="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
@@ -129,8 +121,8 @@ const Footer = () => {
           </div>
 
           <div className="md:col-span-3">
-            <h3 className="text-[11px] eyebrow text-white/60 uppercase font-sans mb-5">Kontakt</h3>
-            <ul className="space-y-3 text-sm text-white/85">
+            <h3 className="font-display text-lg font-semibold text-white mb-4">Kontakt</h3>
+            <ul className="space-y-2.5 text-sm text-white/75">
               <li>KAISEN TRAVEL GROUP AB</li>
               <li><a href="mailto:info@kaisengroup.se" className="hover:text-white transition-colors">info@kaisengroup.se</a></li>
               <li><a href="tel:+46418350200" className="hover:text-white transition-colors">+46 418 350 200</a></li>
@@ -157,6 +149,7 @@ const Footer = () => {
             <button onClick={clearCookieConsent} className="hover:text-white transition-colors">Cookie-inställningar</button>
           </div>
         </div>
+      </div>
       </div>
     </footer>
   );

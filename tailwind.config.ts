@@ -17,8 +17,8 @@ export default {
         '3xl': '1680px',
       },
       fontFamily: {
-        sans: ['Jost', 'sans-serif'],
-        display: ['Cormorant Garamond', 'serif'],
+        sans: ['var(--font-sans)'],
+        display: ['var(--font-display)'],
       },
       colors: {
         border: "hsl(var(--border))",

@@ -8,6 +8,10 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
+    // Local dev only: Lovable-hosted image assets live on the production host.
+    proxy: {
+      "/__l5e": { target: "https://kaisentravel.se", changeOrigin: true },
+    },
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {

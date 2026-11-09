@@ -7,6 +7,7 @@ import { AuthProvider } from "./hooks/useAuth";
 import { DemoProvider } from "./contexts/DemoContext";
 import { SuspendedUserListener } from "./components/SuspendedUserListener";
 import ScrollToTop from "./components/ScrollToTop";
+import SiteArea from "./components/SiteArea";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -84,6 +85,7 @@ const App = () => (
           <DemoProvider>
             <SuspendedUserListener />
             <ScrollToTop />
+            <SiteArea />
             <InquiryDialogProvider>
             <Routes>
               <Route path="/" element={<Home />} />
