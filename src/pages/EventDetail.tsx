@@ -222,7 +222,7 @@ export default function EventDetail() {
               </div>
               <div className="min-w-0">
                 <p className="eyebrow text-primary uppercase mb-1">{event.tournament_name}</p>
-                <h1 className="sb-title-sm font-display leading-[1.05]">{noBreakHyphen(headline)}</h1>
+                <h1 className="font-display text-3xl md:text-[32px] lg:text-4xl leading-[1.08]">{noBreakHyphen(headline)}</h1>
               </div>
             </div>
             <div className="mt-5 space-y-2 text-sm text-foreground/80">

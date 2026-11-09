@@ -520,7 +520,7 @@ const Home = () => {
       <section className="relative bg-background pb-4 md:pb-6">
         <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-4 sm:px-6 md:px-10">
           <div
-            className="relative rounded-lg overflow-hidden"
+            className="relative rounded-2xl md:rounded-3xl overflow-hidden"
             onMouseEnter={() => setHeroPaused(true)}
             onMouseLeave={() => setHeroPaused(false)}
           >
@@ -536,7 +536,7 @@ const Home = () => {
               <CarouselContent>
                 {heroSlides.map((slide, idx) => (
                   <CarouselItem key={idx}>
-                    <div className={`relative h-[44vh] min-h-[300px] max-h-[640px] md:h-[58vh] md:min-h-[420px] overflow-hidden bg-navy ${slidesLoaded ? "" : "[&>*]:invisible"}`}>
+                    <div className={`relative h-[50vh] min-h-[340px] max-h-[640px] md:h-[58vh] md:min-h-[420px] overflow-hidden bg-navy ${slidesLoaded ? "" : "[&>*]:invisible"}`}>
                       {slidesLoaded && nearHero(idx) && (
                         <img
                           src={resizedImage(slide.image, 1400)}
@@ -549,22 +549,22 @@ const Home = () => {
                           fetchPriority={idx === 0 ? "high" : "low"}
                         />
                       )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/95 via-navy-deep/45 to-transparent" />
-                      <div className="absolute inset-0 bg-gradient-to-r from-navy-deep/60 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/40 to-transparent" />
                       {/* Side padding clears the prev/next arrows (shown from sm). */}
-                      <div className="relative h-full flex items-end p-4 pb-10 sm:p-8 sm:pl-20 md:p-14 md:pl-24">
-                        <div className="max-w-4xl">
-                          <p className="eyebrow text-sky-300 uppercase mb-2 sm:mb-3">
+                      <div className="relative h-full flex items-end p-5 pb-12 sm:p-8 sm:pl-20 md:p-14 md:pl-24">
+                        <div className="max-w-2xl">
+                          <p className="text-[11px] eyebrow text-white uppercase mb-2 sm:mb-4 font-sans">
                             {slide.eyebrow}
                           </p>
-                          <h1 className="font-display text-[34px] sm:text-5xl md:text-6xl lg:text-7xl text-white leading-[0.98] mb-4 sm:mb-7 [overflow-wrap:normal]">
-                            {slide.title}{" "}
-                            <em className="italic text-sky-200">{slide.italic}</em>
+                          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl !font-light text-white !leading-tight mb-4 sm:mb-6 [overflow-wrap:normal]">
+                            {slide.title}
+                            <br />
+                            <em className="font-light italic text-white">{slide.italic}</em>
                           </h1>
                           <Link to={slide.primary.to}>
                             <Button
                               size="lg"
-                              className="rounded-lg bg-white hover:bg-white/85 text-primary px-7 h-11 sm:h-12 font-display uppercase font-semibold tracking-wide text-base"
+                              className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-6 sm:px-7 h-11 sm:h-12 text-sm font-medium"
                             >
                               {slide.primary.label}
                             </Button>
@@ -584,7 +584,7 @@ const Home = () => {
               {heroSlides.map((_, i) => (
                 <div
                   key={i}
-                  className={`h-1.5 rounded-full transition-all ${
+                  className={`h-1.5 transition-all ${
                     i === activeHero ? "w-8 bg-white" : "w-1.5 bg-white/50"
                   }`}
                 />
@@ -615,12 +615,12 @@ const Home = () => {
       <section className="pt-4 pb-8 md:pb-10 bg-background">
         <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
-            <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground">
+            <h2 className="!font-sans !font-semibold text-xl md:text-2xl text-foreground relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-16 after:h-[2px] after:bg-primary">
               Populära resor
             </h2>
             <Link
               to="/resor"
-              className="self-start md:self-auto sb-btn-outline"
+              className="self-start md:self-auto inline-flex items-center justify-center text-sm font-semibold text-foreground border border-border px-5 py-2.5 rounded-full hover:bg-foreground hover:text-background transition-colors"
             >
               Utforska alla resor
             </Link>
@@ -635,7 +635,7 @@ const Home = () => {
                 >
                   <Link
                     to={offer.href}
-                    className="group block h-full sb-card overflow-hidden hover:border-primary/50 hover:shadow-md transition-all"
+                    className="group block h-full bg-card rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.10)] transition-shadow"
                   >
                     <div className="relative aspect-[16/10] sm:aspect-[4/3] overflow-hidden">
                       <img
@@ -647,13 +647,13 @@ const Home = () => {
                         decoding="async"
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/85 via-navy-deep/15 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
                       {offer.isNew && (
-                        <span className="absolute top-2 right-2 sm:top-3 sm:right-3 bg-white text-primary font-display uppercase font-bold text-xs sm:text-sm px-2 py-0.5 sm:px-2.5 rounded">
+                        <span className="absolute top-2 right-2 sm:top-3 sm:right-3 bg-white text-foreground text-[10px] sm:text-[11px] font-semibold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded">
                           Ny
                         </span>
                       )}
-                      <h3 className="absolute inset-x-0 bottom-0 p-3 sm:p-4 font-display italic font-bold text-white text-lg sm:text-xl leading-tight">
+                      <h3 className="absolute inset-x-0 bottom-0 p-3 sm:p-4 font-sans !font-bold text-white text-base sm:text-lg md:text-xl leading-tight">
                         {offer.title}
                       </h3>
                     </div>
@@ -677,7 +677,7 @@ const Home = () => {
                         ) : (
                           <span className="text-sm text-muted-foreground">Pris på förfrågan</span>
                         )}
-                        <Button asChild className="mt-3 sm:mt-5 h-10 sm:h-11 w-full rounded-lg font-display uppercase font-semibold tracking-wide text-base">
+                        <Button asChild className="mt-3 sm:mt-5 h-10 sm:h-12 w-full rounded-full text-sm sm:text-base font-semibold">
                           <span>
                             Se erbjudanden
                             <ArrowRight className="ml-auto" />
@@ -700,10 +700,10 @@ const Home = () => {
       <section className="pt-4 pb-12 md:pb-16 bg-background">
         <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
           <div className="flex items-center justify-between mb-8 gap-6">
-            <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground">
+            <h2 className="!font-sans !font-semibold text-xl md:text-2xl text-foreground relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-16 after:h-[2px] after:bg-primary">
               Upplevelser. På riktigt.
             </h2>
-            <Link to="/resor" className="hidden md:inline-flex sb-btn-outline">
+            <Link to="/resor" className="hidden md:inline-flex items-center gap-2 text-sm font-semibold text-primary border border-primary/30 px-5 py-2.5 rounded-full hover:bg-primary hover:text-primary-foreground transition-colors">
               Se alla
             </Link>
           </div>
@@ -723,21 +723,21 @@ const Home = () => {
                         decoding="async"
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/90 via-navy-deep/20 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/20 to-transparent" />
                       {service.tag ? (
                         <div className="absolute top-2 left-2 sm:top-3 sm:left-3">
-                          <span className="rounded bg-white text-primary font-display uppercase font-bold text-xs sm:text-sm px-2 py-0.5">
+                          <span className="text-[8px] sm:text-[9px] tracking-[0.2em] uppercase bg-primary text-primary-foreground px-2 py-0.5 sm:px-2.5 sm:py-1 font-sans">
                             {service.tag}
                           </span>
                         </div>
                       ) : null}
                       <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
-                        <h3 className="font-display italic font-bold text-lg sm:text-xl text-white mb-0.5 leading-tight">{service.title}</h3>
-                        <p className="text-[11px] sm:text-xs tracking-wide text-white/85 uppercase">{service.subtitle}</p>
+                        <h3 className="font-display !font-normal text-base sm:text-lg text-white mb-0.5 leading-tight">{service.title}</h3>
+                        <p className="text-[9px] sm:text-[10px] tracking-wider text-white uppercase font-sans">{service.subtitle}</p>
                       </div>
                     </div>
                     <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed mb-2 line-clamp-3">{service.description}</p>
-                    <span className="text-primary font-display uppercase font-semibold tracking-wide text-sm sm:text-[15px] flex items-center gap-2 transition-all group-hover:gap-3">
+                    <span className="text-primary text-[11px] sm:text-xs font-medium tracking-wide flex items-center gap-2 transition-all group-hover:gap-3">
                       {service.ctaLabel ?? "Läs mer"} <ArrowRight className="h-3 w-3" />
                     </span>
                   </Link>
@@ -751,13 +751,13 @@ const Home = () => {
       {/* Om oss */}
       <section className="py-12 md:py-16 bg-background">
         <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10">
-          <h2 className="font-display text-3xl md:text-5xl text-foreground mb-10 md:mb-14">
+          <h2 className="!font-sans !font-semibold text-3xl md:text-5xl text-foreground text-center mb-16 md:mb-20">
             Erfarenhet som gör skillnad
           </h2>
 
           <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div className="max-w-xl">
-              <h3 className="font-display italic font-bold text-2xl md:text-[28px] lg:text-[32px] text-primary mb-5 leading-[1.08] whitespace-pre-line">
+              <h3 className="font-sans !font-bold text-2xl md:text-4xl text-foreground mb-6 leading-tight whitespace-pre-line">
                 {"Personlig service\nSenior kompetens"}
               </h3>
               <p className="text-foreground/80 text-[15px] md:text-base leading-relaxed mb-8 whitespace-pre-line">
@@ -766,13 +766,13 @@ const Home = () => {
               </p>
               <Link
                 to="/about"
-                className="sb-btn-primary h-11 px-7"
+                className="inline-flex items-center gap-2 bg-primary text-primary-foreground text-sm font-semibold px-7 py-3 rounded-full hover:bg-primary/90 transition-colors"
               >
                 Läs mer om oss
               </Link>
             </div>
 
-            <div className="relative rounded-lg overflow-hidden aspect-[5/4] md:aspect-[4/3]">
+            <div className="relative rounded-2xl overflow-hidden aspect-[5/4] md:aspect-[4/3]">
               <img
                 src={luxuryImage}
                 alt="Glad resenär i vackert landskap"
@@ -795,7 +795,7 @@ const Home = () => {
                 <p className="eyebrow text-primary uppercase mb-1">Våra kunder</p>
                 <h2 className="font-display text-3xl md:text-5xl text-foreground">
                   Berättelser från{" "}
-                  <em className="italic text-primary">resan</em>
+                  <em className="italic font-light">resan</em>
                 </h2>
               </div>
               {/* Arrows sit with the heading instead of over the cards */}
@@ -848,15 +848,15 @@ const Home = () => {
       {/* Kontakta oss CTA */}
       <section className="py-12 sm:py-16 md:py-24 bg-background">
         <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
-          <div className="relative overflow-hidden rounded-lg bg-primary p-8 sm:p-10 md:p-16 grid md:grid-cols-[1fr_auto] gap-8 md:gap-10 items-center">
+          <div className="relative overflow-hidden rounded-3xl bg-navy p-8 sm:p-10 md:p-16 grid md:grid-cols-[1fr_auto] gap-8 md:gap-10 items-center">
             {/* Decorative blurred orbs */}
-            <div className="pointer-events-none absolute -top-32 -right-16 h-[380px] w-[380px] rotate-12 rounded-[64px] bg-white/[0.06]" />
-            <div className="pointer-events-none absolute -bottom-40 -left-24 h-[380px] w-[380px] -rotate-12 rounded-[64px] bg-white/[0.04]" />
+            <div className="pointer-events-none absolute -top-24 -right-16 w-80 h-80 rounded-full bg-primary/30 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-32 -left-20 w-96 h-96 rounded-full bg-primary/40 blur-3xl" />
 
             <div className="relative max-w-2xl">
-              <p className="eyebrow text-sky-200 uppercase mb-2">Kontakta oss</p>
-              <h2 className="font-display text-3xl md:text-5xl text-white mb-4">
-                Ditt nästa äventyr börjar med ett <em className="italic text-sky-200">samtal</em>
+              <p className="text-[11px] eyebrow text-white/70 uppercase mb-4 font-sans font-semibold">Kontakta oss</p>
+              <h2 className="!font-sans !font-bold text-3xl md:text-5xl text-white mb-4 leading-tight">
+                Ditt nästa äventyr börjar med ett <em className="italic font-light text-white">samtal</em>
               </h2>
               <p className="text-[15px] text-white/80 leading-relaxed">
                 Prata med en av våra resespecialister. Inga mallar, inga algoritmer – bara erfarenhet, expertis och personlig rådgivning för att skapa en resa utifrån just dina önskemål.
@@ -864,7 +864,7 @@ const Home = () => {
 
             </div>
             <Link to="/contact" className="relative md:justify-self-end">
-              <Button size="lg" className="rounded-lg bg-white hover:bg-white/85 text-primary h-12 px-8 font-display uppercase font-semibold tracking-wide text-base">
+              <Button size="lg" className="rounded-full bg-white hover:bg-white/90 text-navy font-semibold px-10 py-7 text-base shadow-lg">
                 Börja planera nu
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>

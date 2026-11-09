@@ -7,7 +7,7 @@
    All colors MUST be HSL.
 */
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Jost:wght@300;400;500;600&family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;1,600;1,700&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap');
 
 @layer base {
   :root {
@@ -156,58 +156,40 @@
     overflow-wrap: break-word;
   }
 
-  /* ── Public site (sportsbreaks-style) ─────────────────────────────
-     Condensed, bold, uppercase headlines; clean sans body; white page
-     background. Text content is untouched - only presentation. */
-  html[data-area="public"] {
-    --font-sans: 'Inter', system-ui, sans-serif;
-    --font-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
-    --background: 0 0% 100%;
-    --foreground: 220 20% 18%;
-    --muted: 220 14% 96%;
-    --cream: 220 14% 96%;
-    --cream-dark: 220 13% 91%;
-    --border: 220 13% 88%;
-  }
-  html[data-area="public"] body {
-    font-size: 15px;
-    line-height: 1.6;
-  }
+  /* ── Public site ───────────────────────────────────────────────
+     The original KAISEN look: Cormorant Garamond serif headlines in
+     normal case, Jost for everything else, light grey page, rounded pill
+     buttons. Layout pieces from the redesign (rows, cards, sections) keep
+     their structure; these rules give them the soft original styling. */
   html[data-area="public"] h1,
   html[data-area="public"] h2 {
-    font-weight: 600;
-    font-style: italic;
-    text-transform: uppercase;
-    letter-spacing: 0.005em;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-style: normal;
+    text-transform: none;
+    letter-spacing: -0.01em;
     line-height: 1.08;
     text-wrap: balance;
-  }
-  /* One calm scale for every public headline (overrides the per-page
-     size utilities): smaller and softer than the first redesign pass, and
-     sized so most headlines fit on one line. */
-  html[data-area="public"] h1 {
-    font-size: clamp(25px, 3vw, 44px);
-  }
-  html[data-area="public"] h2 {
-    font-size: clamp(19px, 1.85vw, 28px);
-  }
-  /* Smaller headline variant (match header beside the picture) */
-  html[data-area="public"] h1.sb-title-sm {
-    font-size: clamp(24px, 2.3vw, 32px);
   }
   html[data-area="public"] h3,
   html[data-area="public"] h4,
   html[data-area="public"] h5,
   html[data-area="public"] h6 {
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.015em;
-    line-height: 1.15;
+    font-style: normal;
+    text-transform: none;
+    letter-spacing: 0;
+    line-height: 1.2;
     text-wrap: balance;
   }
-  /* Italic emphasis inside headlines stays bold so it doesn't look thin */
-  html[data-area="public"] :is(h1, h2) :is(em, .italic) {
-    font-weight: inherit;
+  /* Small labels/buttons that the redesign set in condensed caps read as
+     the original's calm sans-serif in normal case. */
+  html[data-area="public"] .font-display.uppercase {
+    font-family: var(--font-sans);
+    text-transform: none;
+    font-style: normal;
+    letter-spacing: 0.01em;
+    font-weight: 500;
   }
 
   /* Prevent iOS zoom-on-focus for form fields on phones */
@@ -246,13 +228,13 @@
   .eyebrow {
     @apply tracking-[0.16em] sm:tracking-[0.3em];
   }
-  /* Public eyebrow: condensed italic caps (the small label above titles) */
+  /* Public eyebrow: small tracked caps (the label above titles) */
   html[data-area="public"] .eyebrow {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    font-size: 0.85rem;
+    font-family: var(--font-sans);
+    font-style: normal;
+    font-weight: 500;
+    font-size: 11px !important;
+    letter-spacing: 0.28em !important;
   }
 
   /* Public shared building blocks */
@@ -271,19 +253,21 @@
     scrollbar-width: none;
   }
   .sb-scroll-row::-webkit-scrollbar { display: none; }
-  /* Hyphenate only genuinely long words (narrow phone cards) */
-  .sb-hyphen-long {
-    hyphens: auto;
-    -webkit-hyphens: auto;
-    hyphenate-limit-chars: 12 5 5;
-    -webkit-hyphenate-limit-before: 5;
-    -webkit-hyphenate-limit-after: 5;
+  /* Hyphenate only genuinely long words, and only in narrow phone cards */
+  @media (max-width: 639px) {
+    .sb-hyphen-long {
+      hyphens: auto;
+      -webkit-hyphens: auto;
+      hyphenate-limit-chars: 12 5 5;
+      -webkit-hyphenate-limit-before: 5;
+      -webkit-hyphenate-limit-after: 5;
+    }
   }
   .sb-card {
-    @apply bg-card border border-border rounded-lg;
+    @apply bg-card border border-border/70 rounded-xl;
   }
   .sb-btn {
-    @apply inline-flex items-center justify-center gap-2 h-10 px-6 rounded-lg font-display not-italic font-semibold uppercase tracking-wide text-[15px] transition-colors whitespace-nowrap disabled:opacity-50 disabled:pointer-events-none;
+    @apply inline-flex items-center justify-center gap-2 h-11 px-7 rounded-full font-sans font-medium text-sm tracking-wide transition-colors whitespace-nowrap disabled:opacity-50 disabled:pointer-events-none;
   }
   .sb-btn-primary {
     @apply sb-btn bg-primary text-primary-foreground hover:bg-navy-deep;
