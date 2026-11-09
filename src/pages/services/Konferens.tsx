@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, Users, Projector, Utensils, Wifi, Car, Award, Mic2, Coffee, Palette, MessageSquare } from "lucide-react";
 import Footer from "@/components/Footer";
 import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
+import PageHero from "@/components/site/PageHero";
 import FloatingInquiryButton from "@/components/FloatingInquiryButton";
 import { useInquiryDialog } from "@/components/InquiryDialog";
 import konferensHero from "@/assets/konferens-hero.jpg";
@@ -69,45 +69,34 @@ export default function Konferens() {
     <div className="min-h-screen">
       <Navbar />
 
-      {/* Hero */}
-      <section className="relative h-[42vh] min-h-[320px] flex items-end">
-        <div className="absolute inset-0">
-          <img src={konferensHero} alt="Konferensresor utomlands" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-navy/72" />
-        </div>
-        <div className="relative container mx-auto px-4 pb-14">
-          <p className="text-[11px] sm:text-xs eyebrow text-white/75 uppercase mb-3 font-sans">Konferens & Event</p>
-          <h1 className="font-display text-4xl md:text-6xl text-white">
-            Event som <em className="italic font-light text-white">imponerar</em>
-          </h1>
-          <p className="text-white/70 mt-4 text-lg font-light max-w-lg">
-            Vi sköter detaljerna. Du fokuserar på innehållet.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Button onClick={openKonferensInquiry} className="rounded-full bg-primary hover:bg-primary/90 px-7 py-6 text-sm tracking-wider">
-                <MessageSquare className="mr-2 h-4 w-4" />
-                Begär offert
-              </Button>
-          </div>
-        </div>
-      </section>
+      <PageHero
+        image={konferensHero}
+        imageAlt="Konferensresor utomlands"
+        eyebrow="Konferens & Event"
+        title={<>Event som <em className="italic text-white">imponerar</em></>}
+        action={
+          <button type="button" onClick={openKonferensInquiry} className="sb-btn-light">
+            <MessageSquare className="h-4 w-4" />
+            Begär offert
+          </button>
+        }
+      >
+        Vi sköter detaljerna. Du fokuserar på innehållet.
+      </PageHero>
 
       {/* Packages Grid - SALES FIRST */}
-      <section className="py-10 sm:py-14 md:py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">Vad Vi Fixar</p>
-            <h2 className="font-display text-3xl md:text-4xl text-foreground">
-              Helheten - <em className="italic font-light">från idé till avslut</em>
-            </h2>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <section className="sb-section">
+        <div className="sb-container">
+          <p className="eyebrow text-primary uppercase mb-1">Vad Vi Fixar</p>
+          <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-8 md:mb-10">
+            Helheten - <em className="italic">från idé till avslut</em>
+          </h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {packages.map((pkg) => (
-              <div key={pkg.title} className="group bg-cream border border-border p-8 hover:border-primary transition-all duration-300">
-                <pkg.icon className="h-6 w-6 text-primary mb-4" />
+              <div key={pkg.title} className="group sb-card p-6 hover:border-primary/50 hover:shadow-md transition-all duration-300">
+                <span className="mb-4 flex h-10 w-10 items-center justify-center rounded-md bg-primary text-white"><pkg.icon className="h-5 w-5" /></span>
                 <h3 className="font-display text-xl text-foreground mb-1">{pkg.title}</h3>
-                <p className="text-xs tracking-wider text-primary uppercase font-sans mb-3">{pkg.tagline}</p>
-                <div className="w-6 h-px bg-primary mb-4" />
+                <p className="eyebrow !text-[13px] !tracking-[0.04em] text-primary uppercase mb-3">{pkg.tagline}</p>
                 <p className="text-muted-foreground text-sm leading-relaxed">{pkg.desc}</p>
               </div>
             ))}
@@ -116,75 +105,65 @@ export default function Konferens() {
       </section>
 
       {/* Formats - compact cards */}
-      <section className="py-12 md:py-16 bg-cream">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
-            <div>
-              <span className="text-[10px] tracking-[0.25em] uppercase bg-accent text-accent-foreground px-3 py-1 font-sans">
-                Format
-              </span>
-              <h2 className="font-display text-3xl md:text-4xl text-foreground mt-4 mb-2">
-                Anpassat efter er
-              </h2>
-              <div className="w-10 h-px bg-primary mb-8" />
-              <div className="space-y-4">
-                {formats.map((f) => (
-                  <div key={f.title} className="border border-border bg-background p-6 hover:border-primary transition-colors">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-display text-lg text-foreground">{f.title}</h3>
-                      <span className="text-xs tracking-[0.15em] text-primary uppercase font-sans bg-primary/10 px-2 py-1">{f.guests} deltagare</span>
-                    </div>
-                    <p className="text-muted-foreground text-sm">{f.desc}</p>
+      <section className="sb-section-alt">
+        <div className="sb-container grid md:grid-cols-2 gap-8 lg:gap-14 items-center">
+          <div>
+            <p className="eyebrow text-primary uppercase mb-1">Format</p>
+            <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-6">
+              Anpassat efter er
+            </h2>
+            <div className="space-y-3">
+              {formats.map((f) => (
+                <div key={f.title} className="sb-card p-5 hover:border-primary/50 transition-colors">
+                  <div className="flex items-center justify-between gap-3 mb-1.5">
+                    <h3 className="font-display text-xl text-foreground">{f.title}</h3>
+                    <span className="shrink-0 rounded-md bg-primary/10 px-2 py-1 font-display text-sm font-semibold uppercase tracking-wide text-primary">{f.guests} deltagare</span>
                   </div>
-                ))}
-              </div>
+                  <p className="text-muted-foreground text-sm">{f.desc}</p>
+                </div>
+              ))}
             </div>
-            <div className="aspect-[4/3] overflow-hidden">
-              <img
-                src={konferens2}
-                alt="Konferens utomlands"
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
-              />
-            </div>
+          </div>
+          <div className="aspect-[4/3] overflow-hidden rounded-lg">
+            <img
+              src={konferens2}
+              alt="Konferens utomlands"
+              className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+            />
           </div>
         </div>
       </section>
 
       {/* Full Service - short pitch */}
-      <section className="py-12 md:py-16 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
-            <div className="aspect-[4/3] overflow-hidden md:order-1">
-              <img
-                src={konferens1}
-                alt="Konferensmiddag"
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
-              />
+      <section className="sb-section">
+        <div className="sb-container grid md:grid-cols-2 gap-8 lg:gap-14 items-center">
+          <div className="aspect-[4/3] overflow-hidden rounded-lg md:order-1">
+            <img
+              src={konferens1}
+              alt="Konferensmiddag"
+              className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+            />
+          </div>
+          <div>
+            <p className="eyebrow text-primary uppercase mb-1">Komplett service</p>
+            <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-4">
+              En kontaktpunkt. Allt löst.
+            </h2>
+            <p className="text-foreground/80 leading-relaxed mb-6 text-[15px]">
+              Istället för att ringa hotell, lokal, catering och teknik separat - pratar du med oss. Vi koordinerar hela kedjan och ser till att inget glöms.
+            </p>
+            <div className="grid grid-cols-2 gap-3 mb-8">
+              {["Lokalbokning", "AV & teknik", "Catering", "Logistik", "Aktiviteter", "Support på plats"].map((item) => (
+                <div key={item} className="flex items-center gap-2 text-sm text-foreground/85">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded bg-primary text-white"><Check className="h-3.5 w-3.5" /></span>
+                  {item}
+                </div>
+              ))}
             </div>
-            <div>
-              <span className="text-[10px] tracking-[0.25em] uppercase bg-accent text-accent-foreground px-3 py-1 font-sans">
-                Komplett service
-              </span>
-              <h2 className="font-display text-3xl md:text-4xl text-foreground mt-4 mb-2">
-                En kontaktpunkt. Allt löst.
-              </h2>
-              <div className="w-10 h-px bg-primary mb-6" />
-              <p className="text-muted-foreground leading-relaxed mb-6">
-                Istället för att ringa hotell, lokal, catering och teknik separat - pratar du med oss. Vi koordinerar hela kedjan och ser till att inget glöms.
-              </p>
-              <div className="grid grid-cols-2 gap-3 mb-8">
-                {["Lokalbokning", "AV & teknik", "Catering", "Logistik", "Aktiviteter", "Support på plats"].map((item) => (
-                  <div key={item} className="flex items-center gap-2 text-sm text-foreground/80">
-                    <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                    {item}
-                  </div>
-                ))}
-              </div>
-              <Button onClick={openKonferensInquiry} className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
-                  Begär offert
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-            </div>
+            <button type="button" onClick={openKonferensInquiry} className="sb-btn-primary">
+              Begär offert
+              <ArrowRight className="h-4 w-4" />
+            </button>
           </div>
         </div>
       </section>

@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, Clock, Shield, Globe, HeadphonesIcon } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import PageHero from "@/components/site/PageHero";
+import CtaBand from "@/components/site/CtaBand";
 import heroImage from "@/assets/kaisen-hero.jpg";
 import businessImage from "@/assets/affarsresor-hero.jpg";
 
@@ -52,37 +53,27 @@ export default function Affarsresor() {
  <div className="min-h-screen">
  <Navbar />
 
- {/* Hero */}
- <section className="relative h-[38vh] min-h-[280px] flex items-end">
- <div className="absolute inset-0">
- <img src={heroImage} alt="Affärsresor" className="w-full h-full object-cover" />
- <div className="absolute inset-0 bg-navy/75" />
- </div>
- <div className="relative container mx-auto px-4 pb-14">
- <p className="text-[11px] sm:text-xs eyebrow text-white/75 uppercase mb-3 font-sans">
- Tjänster - Affärsresor
- </p>
- <h1 className="font-display text-4xl md:text-6xl text-white">
- Skräddarsydda <em className="italic font-light text-white">Affärsresor</em>
- </h1>
- </div>
- </section>
+ <PageHero
+ image={heroImage}
+ imageAlt="Affärsresor"
+ eyebrow="Tjänster - Affärsresor"
+ title={<>Skräddarsydda <em className="italic text-white">Affärsresor</em></>}
+ action={null}
+ />
 
  {/* Intro quote */}
- <section className="bg-cream py-14">
- <div className="container mx-auto px-4 max-w-3xl text-center">
- <p className="font-display text-2xl md:text-3xl text-foreground italic font-light leading-relaxed">
+ <section className="sb-section-alt">
+ <div className="sb-container max-w-3xl text-center">
+ <p className="font-display text-2xl md:text-3xl text-foreground italic font-semibold uppercase leading-snug">
  "Din tid är värdefull. Vi ser till att varje minut av din affärsresa är optimerad."
  </p>
- <div className="w-8 h-px bg-primary mx-auto mt-8" />
  </div>
  </section>
 
  {/* Main section: image + tailored list */}
- <section className="py-12 md:py-16 bg-background">
- <div className="container mx-auto px-4">
- <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
- <div className="aspect-[4/3] overflow-hidden">
+ <section className="sb-section">
+ <div className="sb-container grid md:grid-cols-2 gap-8 lg:gap-14 items-center">
+ <div className="aspect-[4/3] overflow-hidden rounded-lg">
  <img
  src={businessImage}
  alt="Affärsresenärer på flygplats"
@@ -90,43 +81,37 @@ export default function Affarsresor() {
  />
  </div>
  <div>
- <span className="text-[10px] tracking-[0.25em] uppercase bg-accent text-accent-foreground px-3 py-1 font-sans">
- Skräddarsytt för dig
- </span>
- <h2 className="font-display text-3xl md:text-4xl text-foreground mt-4 mb-2">
+ <p className="eyebrow text-primary uppercase mb-1">Skräddarsytt för dig</p>
+ <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-4">
  Inga mallar - bara din resa
  </h2>
- <div className="w-10 h-px bg-primary mb-6" />
- <p className="text-muted-foreground leading-relaxed mb-8 text-base">
+ <p className="text-foreground/80 leading-relaxed mb-6 text-[15px]">
  Varje affärsresa är unik. Vi lyssnar på dina behov och skapar ett upplägg som passar ditt schema, din budget och dina förväntningar - från enklare dagsresor till komplexa flerstadsturer.
  </p>
- <ul className="space-y-3 mb-10">
+ <ul className="space-y-2.5 mb-8">
  {tailored.map((f) => (
  <li key={f} className="flex items-start gap-3 text-sm">
- <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
- <span className="text-foreground/80">{f}</span>
+ <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded bg-primary text-white"><Check className="h-3.5 w-3.5" /></span>
+ <span className="text-foreground/85">{f}</span>
  </li>
  ))}
  </ul>
- <Link to="/contact">
- <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
+ <Link to="/contact" className="sb-btn-primary">
  Boka nu
- <ArrowRight className="ml-2 h-4 w-4" />
- </Button>
+ <ArrowRight className="h-4 w-4" />
  </Link>
- </div>
  </div>
  </div>
  </section>
 
  {/* Benefits */}
- <section className="py-10 md:py-14 bg-cream">
- <div className="container mx-auto px-4">
- <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+ <section className="sb-section-alt">
+ <div className="sb-container">
+ <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
  {benefits.map((b) => (
- <div key={b.title} className="bg-background p-7 border border-border hover:border-primary transition-colors">
- <b.icon className="h-5 w-5 text-primary mb-3" />
- <h3 className="font-display text-lg text-foreground mb-2">{b.title}</h3>
+ <div key={b.title} className="sb-card p-6 hover:border-primary/50 hover:shadow-md transition-all">
+ <span className="mb-4 flex h-10 w-10 items-center justify-center rounded-md bg-primary text-white"><b.icon className="h-5 w-5" /></span>
+ <h3 className="font-display text-xl text-foreground mb-1.5">{b.title}</h3>
  <p className="text-muted-foreground text-sm leading-relaxed">{b.description}</p>
  </div>
  ))}
@@ -135,42 +120,32 @@ export default function Affarsresor() {
  </section>
 
  {/* Destinations */}
- <section className="py-12 md:py-16 bg-background">
- <div className="container mx-auto px-4">
- <div className="text-center mb-14">
- <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">Populära destinationer</p>
- <h2 className="font-display text-3xl md:text-4xl text-foreground">
+ <section className="sb-section">
+ <div className="sb-container">
+ <p className="eyebrow text-primary uppercase mb-1">Populära destinationer</p>
+ <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-8 md:mb-10">
  Världens ledande affärsstäder
  </h2>
- </div>
  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
  {destinations.map((d) => (
- <div key={d.city} className="p-6 border border-border text-center hover:border-primary transition-colors">
- <h3 className="font-display text-2xl text-foreground mb-1">{d.city}</h3>
- <p className="text-xs text-muted-foreground tracking-wide">{d.desc}</p>
+ <div key={d.city} className="sb-card p-5 md:p-6 hover:border-primary/50 hover:shadow-md transition-all">
+ <h3 className="font-display text-2xl md:text-[28px] italic font-bold text-foreground mb-1">{d.city}</h3>
+ <p className="text-xs text-muted-foreground">{d.desc}</p>
  </div>
  ))}
  </div>
  </div>
  </section>
 
- {/* CTA */}
- <section className="bg-navy py-12 sm:py-20">
- <div className="container mx-auto px-4 text-center">
- <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Kom igång</p>
- <h2 className="font-display text-3xl md:text-5xl text-white mb-6">
- Låt oss ta hand om dina affärsresor
- </h2>
- <p className="text-white/60 max-w-lg mx-auto mb-10 leading-relaxed">
- Kontakta oss för en kostnadsfri genomgång av hur vi kan effektivisera era företagsresor.
- </p>
- <Link to="/contact">
- <Button size="lg" className="rounded-full bg-primary hover:bg-primary/90 px-10 tracking-wider text-sm">
- Kontakta oss <ArrowRight className="ml-2 h-4 w-4" />
- </Button>
+ <CtaBand
+ eyebrow="Kom igång"
+ title="Låt oss ta hand om dina affärsresor"
+ text="Kontakta oss för en kostnadsfri genomgång av hur vi kan effektivisera era företagsresor."
+ >
+ <Link to="/contact" className="sb-btn-light">
+ Kontakta oss <ArrowRight className="h-4 w-4" />
  </Link>
- </div>
- </section>
+ </CtaBand>
 
  <Footer />
  </div>

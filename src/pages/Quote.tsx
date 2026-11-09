@@ -133,7 +133,7 @@ export default function QuotePage() {
             Länken kan vara felaktig eller offerten är inte längre aktiv. Kontakta oss om du tror att det är fel.
           </p>
           <Link to="/">
-            <Button className="rounded-full">Till startsidan</Button>
+            <Button className="rounded-lg font-display uppercase font-semibold tracking-wide text-[15px]">Till startsidan</Button>
           </Link>
         </div>
         <Footer />
@@ -149,7 +149,7 @@ export default function QuotePage() {
       {/* Hero */}
       <section className="bg-cream py-12">
         <div className="container mx-auto px-4 max-w-2xl">
-          <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans text-center">
+          <p className="eyebrow text-primary uppercase mb-3 text-center">
             Offert från KAISEN TRAVEL GROUP
           </p>
           <h1 className="font-display text-4xl md:text-5xl text-center mb-4">{quote.title}</h1>
@@ -166,7 +166,7 @@ export default function QuotePage() {
         <div className="container mx-auto px-4 max-w-2xl space-y-6">
           {/* Status banner */}
           {isAccepted && (
-            <div className="rounded-xl border border-green-200 bg-green-50 p-5 flex items-start gap-3">
+            <div className="rounded-lg border border-green-200 bg-green-50 p-5 flex items-start gap-3">
               <CheckCircle2 className="h-5 w-5 text-green-700 flex-shrink-0 mt-0.5" />
               <div className="text-sm text-green-900">
                 <p className="font-medium mb-1">Offerten är betald.</p>
@@ -186,7 +186,7 @@ export default function QuotePage() {
             </div>
           )}
           {isExpired && !isAccepted && (
-            <div className="rounded-xl border border-amber-200 bg-amber-50 p-5 flex items-start gap-3">
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-5 flex items-start gap-3">
               <AlertTriangle className="h-5 w-5 text-amber-700 flex-shrink-0 mt-0.5" />
               <div className="text-sm text-amber-900">
                 <p className="font-medium mb-1">Offerten har gått ut.</p>
@@ -201,14 +201,14 @@ export default function QuotePage() {
             </div>
           )}
           {isCancelled && (
-            <div className="rounded-xl border border-border bg-muted/40 p-5 text-sm">
+            <div className="rounded-lg border border-border bg-muted/40 p-5 text-sm">
               Den här offerten är avbruten.
             </div>
           )}
 
           {/* Items */}
           {!showCheckout && (
-            <div className="rounded-xl border border-border bg-card p-6 space-y-4">
+            <div className="sb-card p-6 space-y-4">
               {quote.items.map((it) => (
                 <div key={it.id} className="flex items-start justify-between gap-4 text-sm">
                   <div className="min-w-0">
@@ -240,7 +240,7 @@ export default function QuotePage() {
 
           {/* Pay button */}
           {isPayable && !showCheckout && (
-            <div className="rounded-xl border border-border bg-card p-6">
+            <div className="sb-card p-6">
               <h2 className="font-display text-xl mb-2">Acceptera och betala</h2>
               <p className="text-xs text-muted-foreground mb-5">
                 Säker betalning hanteras av Stripe. KAISEN TRAVEL GROUP är säljare och fakturautställare.
@@ -252,7 +252,7 @@ export default function QuotePage() {
               <Button
                 onClick={handlePay}
                 disabled={starting}
-                className="w-full rounded-full bg-primary hover:bg-primary/90 tracking-wider text-sm"
+                className="w-full rounded-lg bg-primary hover:bg-primary/90 font-display uppercase font-semibold tracking-wide text-[15px]"
               >
                 <CreditCard className="mr-2 h-4 w-4" />
                 {starting ? "Förbereder..." : `Betala ${formatSek(Number(quote.total_sek))}`}
@@ -262,7 +262,7 @@ export default function QuotePage() {
 
           {/* Embedded Stripe */}
           {showCheckout && (
-            <div className="rounded-xl border border-border bg-card p-6">
+            <div className="sb-card p-6">
               <h2 className="font-display text-xl mb-4">Betala säkert med Stripe</h2>
               <div id="checkout">
                 <EmbeddedCheckoutProvider stripe={getStripe()} options={{ fetchClientSecret }}>

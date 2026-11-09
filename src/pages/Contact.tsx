@@ -5,6 +5,7 @@ import InquiryForm from "@/components/InquiryForm";
 import heroImage from "@/assets/contact-hero.jpg";
 import { usePageMeta } from "@/lib/usePageMeta";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import PageHero from "@/components/site/PageHero";
 
 const CONTACT_KEYS = [
   "contact_hero_eyebrow",
@@ -36,25 +37,19 @@ export default function Contact() {
     <div className="min-h-screen">
       <Navbar />
 
-      {/* Hero */}
-      <section className="relative h-[32vh] min-h-[220px] flex items-end">
-        <div className="absolute inset-0">
-          <img src={heroImage} alt="Kontakta KAISEN" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-navy/70" />
-        </div>
-        <div className="relative container mx-auto px-4 pb-14">
-          <p className="text-[11px] sm:text-xs eyebrow text-white uppercase mb-3 font-sans">{get("contact_hero_eyebrow", "Kom i kontakt")}</p>
-          <h1 className="font-display text-4xl md:text-6xl text-white">
-            {get("contact_hero_title", "Planera Er Resa")}
-          </h1>
-        </div>
-      </section>
+      <PageHero
+        image={heroImage}
+        imageAlt="Kontakta KAISEN"
+        eyebrow={get("contact_hero_eyebrow", "Kom i kontakt")}
+        title={get("contact_hero_title", "Planera Er Resa")}
+        action={null}
+      />
 
-      <section className="py-12 md:py-16 bg-cream">
-        <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-3 gap-12 lg:gap-16">
+      <section className="sb-section">
+        <div className="sb-container">
+          <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
             {/* Contact details precede the form on phones and desktop. */}
-            <div id="contact-inquiry" className="lg:col-span-2 order-2 scroll-mt-24">
+            <div id="contact-inquiry" className="lg:col-span-2 order-2 scroll-mt-24 sb-card p-5 sm:p-8">
               <InquiryForm
                 type="contact"
                 eyebrow="Reseförfrågan"
@@ -66,28 +61,27 @@ export default function Contact() {
 
             {/* Contact Info */}
             <div className="lg:col-span-1 order-1">
-              <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">{get("contact_section_eyebrow", "Tala med oss")}</p>
-              <h2 className="font-display text-3xl text-foreground mb-2">
+              <p className="eyebrow text-primary uppercase mb-1">{get("contact_section_eyebrow", "Tala med oss")}</p>
+              <h2 className="font-display text-3xl md:text-[40px] text-foreground mb-4">
                 {get("contact_section_title", "Vi startar med ett Samtal")}
               </h2>
-              <div className="w-8 h-px bg-primary mb-4 lg:mb-8" />
-              <p className="text-muted-foreground leading-relaxed mb-5 lg:mb-10 text-sm whitespace-pre-line">
+              <p className="text-foreground/80 leading-relaxed mb-6 lg:mb-8 text-[15px] whitespace-pre-line">
                 {get("contact_intro", "Föredrar du att ringa eller mejla direkt? Ingen mall - bara ett riktigt samtal. En dedikerad rådgivare återkommer normalt inom 24 timmar på vardagar.")}
               </p>
-              <div className="space-y-4 lg:space-y-6">
+              <div className="space-y-3">
                 {contactInfo.map((info) => (
-                  <div key={info.label} className="flex items-start gap-4">
-                    <div className="w-9 h-9 flex-shrink-0 bg-primary/10 rounded-full flex items-center justify-center">
-                      <info.icon className="h-4 w-4 text-primary" />
+                  <div key={info.label} className="sb-card flex items-center gap-4 p-4">
+                    <div className="w-10 h-10 flex-shrink-0 bg-primary rounded-md flex items-center justify-center">
+                      <info.icon className="h-4 w-4 text-white" />
                     </div>
                     <div>
-                      <div className="text-xs tracking-wider text-muted-foreground uppercase mb-0.5 font-sans">{info.label}</div>
+                      <div className="eyebrow !text-[13px] !tracking-[0.04em] text-muted-foreground uppercase mb-0.5">{info.label}</div>
                       {info.href ? (
-                        <a href={info.href} className="text-sm text-foreground hover:text-primary transition-colors">
+                        <a href={info.href} className="text-sm font-medium text-foreground hover:text-primary transition-colors">
                           {info.value}
                         </a>
                       ) : (
-                        <span className="text-sm text-foreground">{info.value}</span>
+                        <span className="text-sm font-medium text-foreground">{info.value}</span>
                       )}
                     </div>
                   </div>

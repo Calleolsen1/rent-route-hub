@@ -7,6 +7,8 @@ import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
 import TeamSection from "@/components/TeamSection";
 import heroImage from "@/assets/about-hero.jpg";
+import PageHero from "@/components/site/PageHero";
+import CtaBand from "@/components/site/CtaBand";
 
 const values = [
   {
@@ -42,33 +44,26 @@ export default function About() {
   <div className="min-h-screen">
   <Navbar />
 
-  {/* Hero */}
-  <section className="relative h-[38vh] min-h-[280px] flex items-end">
-  <div className="absolute inset-0">
-  <img src={heroImage} alt="Om KAISEN TRAVEL GROUP" className="w-full h-full object-cover" />
-  <div className="absolute inset-0 bg-navy/70" />
-  </div>
-  <div className="relative container mx-auto px-4 pb-14">
-  <p className="text-[11px] sm:text-xs eyebrow text-white/75 uppercase mb-3 font-sans">Om oss</p>
-  <h1 className="font-display text-4xl md:text-6xl text-white">
-  Resespecialister på <em className="italic font-light text-white">en annan nivå</em>
-  </h1>
-  </div>
-  </section>
+  <PageHero
+  image={heroImage}
+  imageAlt="Om KAISEN TRAVEL GROUP"
+  eyebrow="Om oss"
+  title={<>Resespecialister på <em className="italic font-light text-white">en annan nivå</em></>}
+  action={null}
+  />
 
   {/* Intro */}
-  <section className="py-12 md:py-16 bg-cream">
-  <div className="container mx-auto px-4 max-w-3xl">
+  <section className="sb-section-alt">
+  <div className="sb-container max-w-[880px]">
   <div>
-  <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Vilka vi är</p>
-  <h2 className="font-display text-3xl md:text-4xl text-foreground mb-2 leading-tight">
+  <p className="eyebrow text-primary uppercase mb-1">Vilka vi är</p>
+  <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-5">
    Vi tillhör eliten inom resor
   </h2>
-  <div className="w-10 h-px bg-primary mb-8" />
-  <p className="text-foreground leading-relaxed italic mb-6">
+  <p className="text-foreground text-lg leading-relaxed italic mb-5">
   Vi tillhör eliten inom resor - precis som reseupplevelsen, matchen eller loppet du ska uppleva.
   </p>
-  <div className="space-y-5 text-muted-foreground leading-relaxed">
+  <div className="space-y-4 text-foreground/80 text-[15px] leading-relaxed">
   <p>
   KAISEN TRAVEL GROUP är en resebyrå för dig som uppskattar personlig service, gedigen erfarenhet och någon som verkligen bryr sig om hela resan. Vi är ett mindre team av seniora resespecialister med över 50 års samlad erfarenhet från resebranschen.
   </p>
@@ -78,14 +73,13 @@ export default function About() {
   </section>
 
   {/* Vi bryr oss */}
-  <section className="py-12 md:py-16 bg-background">
-  <div className="container mx-auto px-4 max-w-3xl">
-  <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Vår filosofi</p>
-  <h2 className="font-display text-3xl md:text-4xl text-foreground mb-2 leading-tight">
+  <section className="sb-section">
+  <div className="sb-container max-w-[880px]">
+  <p className="eyebrow text-primary uppercase mb-1">Vår filosofi</p>
+  <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-5">
   Vi bryr oss. <em className="italic font-light">Hela vägen.</em>
   </h2>
-  <div className="w-10 h-px bg-primary mb-8" />
-  <div className="space-y-5 text-muted-foreground leading-relaxed">
+  <div className="space-y-4 text-foreground/80 text-[15px] leading-relaxed">
   <p>
   För oss handlar en riktigt bra resa om mer än att hitta flyg, hotell och biljetter. Det handlar om detaljerna, tryggheten och känslan av att ha någon kunnig vid sin sida.
   </p>
@@ -97,14 +91,13 @@ export default function About() {
   </section>
 
   {/* Senior kompetens */}
-  <section className="py-12 md:py-16 bg-cream">
-  <div className="container mx-auto px-4 max-w-3xl">
-  <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Vårt Team</p>
-  <h2 className="font-display text-3xl md:text-4xl text-foreground mb-2 leading-tight">
+  <section className="sb-section-alt">
+  <div className="sb-container max-w-[880px]">
+  <p className="eyebrow text-primary uppercase mb-1">Vårt Team</p>
+  <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-5">
   Senior kompetens. <em className="italic font-light">Personlig service.</em>
   </h2>
-  <div className="w-10 h-px bg-primary mb-8" />
-  <div className="space-y-5 text-muted-foreground leading-relaxed">
+  <div className="space-y-4 text-foreground/80 text-[15px] leading-relaxed">
   <p>
   KAISEN består av resespecialister med lång erfarenhet och djup kunskap om de resor och upplevelser vi erbjuder. Det kombinerar vi med starka relationer och konkurrenskraftiga avtal med våra leverantörer.
   </p>
@@ -116,14 +109,13 @@ export default function About() {
   </section>
 
   {/* Mer än det du ser på hemsidan */}
-  <section className="py-12 md:py-16 bg-background">
-  <div className="container mx-auto px-4 max-w-3xl">
-  <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Upplevelser & Tjänster</p>
-  <h2 className="font-display text-3xl md:text-4xl text-foreground mb-2 leading-tight">
+  <section className="sb-section">
+  <div className="sb-container max-w-[880px]">
+  <p className="eyebrow text-primary uppercase mb-1">Upplevelser & Tjänster</p>
+  <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-5">
   Mer än det du ser <em className="italic font-light">på hemsidan</em>
   </h2>
-  <div className="w-10 h-px bg-primary mb-8" />
-  <div className="space-y-5 text-muted-foreground leading-relaxed">
+  <div className="space-y-4 text-foreground/80 text-[15px] leading-relaxed">
   <p>
   Se inte vår hemsida som en katalog över allt vi kan erbjuda - utan som en dörröppnare till vår resevärld.
   </p>
@@ -131,13 +123,13 @@ export default function About() {
   Har du en idé, ett evenemang eller en resa som du inte hittar här? Hör av dig. Vi välkomnar en dialog och hjälper gärna till att hitta rätt lösning, även när den inte finns färdigpaketerad på hemsidan.
   </p>
   </div>
-   <p className="font-display text-xl md:text-2xl text-foreground mt-10">
+   <p className="font-display text-2xl md:text-[28px] font-semibold uppercase text-foreground mt-10">
    Berätta vart du vill - så hjälper vi dig hela vägen.
    </p>
    <div className="mt-6">
    <Button
    size="lg"
-   className="rounded-full bg-navy text-white hover:bg-navy/90 px-10 tracking-wider text-sm font-semibold border-0"
+   className="h-11 rounded-lg bg-primary text-white hover:bg-navy-deep px-8 font-display uppercase font-semibold tracking-wide text-base border-0"
    onClick={() =>
    openInquiry({
    type: "contact",
@@ -156,18 +148,18 @@ export default function About() {
   </section>
 
   {/* Trygg partner strip */}
-  <section className="bg-navy py-16 border-t border-primary/20">
-  <div className="container mx-auto px-4">
-  <p className="text-center text-[11px] sm:text-xs eyebrow text-white uppercase mb-10 font-sans">En erfaren partner – en tryggare upplevelse</p>
-  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 text-center">
+  <section className="bg-navy-deep py-12 md:py-16">
+  <div className="sb-container">
+  <p className="eyebrow text-sky-300 uppercase mb-6 md:mb-8 text-center">En erfaren partner – en tryggare upplevelse</p>
+  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
   {[
   { label: "OFFICIELLA BILJETTER", detail: "Genom utvalda, officiella biljettleverantörer" },
   { label: "RESEGARANTI", detail: "Resegaranti ställd hos Kammarkollegiet" },
   { label: "IATA & AMADEUS", detail: "IATA-certifierade med Amadeus-licens och tillgång till flygbolag världen över" }].
   map((ref) =>
-  <div key={ref.label} className="border-t border-white/10 pt-6">
-  <h3 className="font-display text-lg text-white mb-2">{ref.label}</h3>
-  <p className="text-white/50 text-xs leading-relaxed font-sans">{ref.detail}</p>
+  <div key={ref.label} className="rounded-lg border border-white/15 bg-white/[0.04] p-6 text-center">
+  <h3 className="font-display text-xl italic font-bold text-white mb-2">{ref.label}</h3>
+  <p className="text-white/70 text-sm leading-relaxed">{ref.detail}</p>
   </div>
   )}
   </div>
@@ -175,19 +167,18 @@ export default function About() {
   </section>
 
   {/* Values */}
-  <section className="py-12 md:py-16 bg-background">
-  <div className="container mx-auto px-4">
-  <div className="text-center mb-14">
-  <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Varför resa med KAISEN TRAVEL GROUP?</p>
-  <h2 className="font-display text-3xl md:text-4xl text-foreground">
+  <section className="sb-section">
+  <div className="sb-container">
+  <div className="mb-8 md:mb-10">
+  <p className="eyebrow text-primary uppercase mb-1">Varför resa med KAISEN TRAVEL GROUP?</p>
+  <h2 className="font-display text-3xl md:text-[44px] text-foreground">
   Erfarenhet som märks. Engagemang som känns.
   </h2>
   </div>
-  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
   {values.map((v) =>
-  <div key={v.title} className="border-t border-border pt-6">
+  <div key={v.title} className="sb-card p-5 border-t-4 border-t-primary">
   <h3 className="font-display text-xl text-foreground mb-3">{v.title}</h3>
-  <div className="w-6 h-px bg-primary mb-4" />
   <p className="text-muted-foreground text-sm leading-relaxed">{v.desc}</p>
   </div>
   )}
@@ -197,23 +188,15 @@ export default function About() {
 
   <TeamSection />
 
-  {/* CTA */}
-  <section className="bg-cream py-12 sm:py-20 border-t border-border">
-  <div className="container mx-auto px-4 text-center">
-  <h2 className="font-display text-3xl md:text-4xl text-foreground mb-6">
-  Redo att Planera Er Resa?
-  </h2>
-  <p className="text-muted-foreground max-w-md mx-auto mb-10 leading-relaxed">
-  En personlig konversation är alltid startpunkten för en bra resa. Kontakta oss idag.
-  </p>
-  <Link to="/contact">
-  <Button size="lg" className="rounded-full bg-navy text-white hover:bg-navy/90 px-10 tracking-wider text-sm font-semibold border-0">
+  <CtaBand
+  title="Redo att Planera Er Resa?"
+  text="En personlig konversation är alltid startpunkten för en bra resa. Kontakta oss idag."
+  >
+  <Link to="/contact" className="sb-btn-light">
   Kom i kontakt
-  <ArrowRight className="ml-2 h-4 w-4" />
-  </Button>
+  <ArrowRight className="h-4 w-4" />
   </Link>
-  </div>
-  </section>
+  </CtaBand>
 
   <RequestCta />
       <Footer />

@@ -150,7 +150,7 @@ export default function Checkout() {
             med pris och tillgänglighet för hotell, biljett och flyg.
           </p>
           <Link to="/contact">
-            <Button className="rounded-full">Skicka förfrågan</Button>
+            <Button className="rounded-lg font-display uppercase font-semibold tracking-wide text-[15px]">Skicka förfrågan</Button>
           </Link>
         </div>
         <Footer />
@@ -176,7 +176,7 @@ export default function Checkout() {
         <div className="container mx-auto px-4 py-32 text-center">
           <h1 className="font-display text-4xl mb-4">Beställningen hittades inte</h1>
           <Link to="/services/sportresor">
-            <Button className="rounded-full">Tillbaka</Button>
+            <Button className="rounded-lg font-display uppercase font-semibold tracking-wide text-[15px]">Tillbaka</Button>
           </Link>
         </div>
         <Footer />
@@ -190,7 +190,7 @@ export default function Checkout() {
       <Navbar />
       <section className="bg-cream py-12">
         <div className="container mx-auto px-4 max-w-2xl text-center">
-          <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">
+          <p className="eyebrow text-primary uppercase mb-3">
             Kassan
           </p>
           <h1 className="font-display text-4xl md:text-5xl">Slutför din beställning</h1>
@@ -201,7 +201,7 @@ export default function Checkout() {
         <div className="container mx-auto px-4 max-w-5xl grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
             {paymentError && (
-              <div className="rounded-xl border border-red-300 bg-red-50 p-4 text-sm text-red-900">
+              <div className="rounded-lg border border-red-300 bg-red-50 p-4 text-sm text-red-900">
                 <p>{paymentError}</p>
                 {items[0]?.events?.id && (
                   <Link to={`/sport/event/${items[0].events.id}`} className="mt-2 inline-block underline">
@@ -212,7 +212,7 @@ export default function Checkout() {
             )}
             {!showCheckout ? (
               <form onSubmit={handleStartPayment} className="space-y-6">
-                <div className="rounded-xl border border-border bg-card p-6">
+                <div className="sb-card p-6">
                   <h2 className="font-display text-2xl mb-1">Kontaktuppgifter</h2>
                   <p className="text-sm text-muted-foreground mb-6">
                     Vi skickar biljetter och kvitto till din e-post.
@@ -233,7 +233,7 @@ export default function Checkout() {
                   </div>
                 </div>
 
-                <div className="rounded-xl border border-border bg-card p-6">
+                <div className="sb-card p-6">
                   <h2 className="font-display text-2xl mb-1">Betalning</h2>
                   <p className="text-sm text-muted-foreground mb-6">
                     Säker betalning hanteras av Stripe. Du kan betala med kort eller annan tillgänglig betalmetod.
@@ -245,7 +245,7 @@ export default function Checkout() {
                   <Button
                     type="submit"
                     disabled={submitting}
-                    className="w-full mt-6 rounded-full bg-primary hover:bg-primary/90 tracking-wider text-sm"
+                    className="w-full mt-6 rounded-lg bg-primary hover:bg-primary/90 font-display uppercase font-semibold tracking-wide text-[15px]"
                   >
                     <CreditCard className="mr-2 h-4 w-4" />
                     {submitting ? "Förbereder..." : `Gå till betalning (${formatSek(order.total_sek)})`}
@@ -260,7 +260,7 @@ export default function Checkout() {
                 </Link>
               </form>
             ) : (
-              <div className="rounded-xl border border-border bg-card p-6">
+              <div className="sb-card p-6">
                 <h2 className="font-display text-2xl mb-4">Betala säkert med Stripe</h2>
                 <div id="checkout">
                   <EmbeddedCheckoutProvider stripe={getStripe()} options={{ fetchClientSecret }}>
@@ -272,8 +272,8 @@ export default function Checkout() {
           </div>
 
           {/* Summary */}
-          <aside className="rounded-xl border border-border bg-card p-6 h-fit">
-            <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">
+          <aside className="sb-card p-6 h-fit">
+            <p className="eyebrow text-primary uppercase mb-4">
               Sammanfattning
             </p>
             <div className="space-y-5">

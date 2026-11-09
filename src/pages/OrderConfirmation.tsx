@@ -181,7 +181,7 @@ export default function OrderConfirmation() {
             Är du inloggad med samma konto som lade beställningen? Annars - kontrollera länken i orderbekräftelsen i din e-post.
           </p>
           <Link to="/">
-            <Button className="rounded-full">Till startsidan</Button>
+            <Button className="rounded-lg font-display uppercase font-semibold tracking-wide text-[15px]">Till startsidan</Button>
           </Link>
         </div>
         <Footer />
@@ -210,7 +210,7 @@ export default function OrderConfirmation() {
           ) : (
             <Clock className="h-14 w-14 text-primary mx-auto mb-4" />
           )}
-          <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">
+          <p className="eyebrow text-primary uppercase mb-3">
             {confirmFailed
               ? "Betalningen mottagen"
               : isPaid
@@ -240,7 +240,7 @@ export default function OrderConfirmation() {
       <section className="py-12 bg-background">
         <div className="container mx-auto px-4 max-w-2xl space-y-6">
           {/* Items + total */}
-          <div className="rounded-xl border border-border bg-card p-6 space-y-5">
+          <div className="sb-card p-6 space-y-5">
             {isQuote
               ? quoteItems.map((qi) => <QuoteItemBlock key={qi.id} qi={qi} />)
               : items.map((it) => (
@@ -260,7 +260,7 @@ export default function OrderConfirmation() {
 
           {/* Guest signup CTA */}
           {isGuest && isPaid && (
-            <div className="rounded-xl border border-border bg-accent/30 p-5 text-sm">
+            <div className="rounded-lg border border-border bg-accent/30 p-5 text-sm">
               <div className="flex items-start gap-3">
                 <Mail className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                 <div>
@@ -274,7 +274,7 @@ export default function OrderConfirmation() {
           )}
 
           {/* Reference info */}
-          <div className="rounded-xl border border-border bg-card p-5 text-sm">
+          <div className="sb-card p-5 text-sm">
             <p className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground mb-3">
               Vid kontakt med support
             </p>
@@ -290,13 +290,13 @@ export default function OrderConfirmation() {
           <div className="flex flex-wrap gap-3 justify-center pt-2">
             {!isGuest && !isQuote && (
               <Link to="/mitt-kaisen/biljetter">
-                <Button className="rounded-full bg-primary hover:bg-primary/90">
+                <Button className="rounded-lg bg-primary hover:bg-primary/90 font-display uppercase font-semibold tracking-wide text-[15px]">
                   <Download className="mr-2 h-4 w-4" /> Mina biljetter
                 </Button>
               </Link>
             )}
             <Link to={isQuote ? "/" : "/services/sportresor"}>
-              <Button variant="outline" className="rounded-full">
+              <Button variant="outline" className="rounded-lg font-display uppercase font-semibold tracking-wide text-[15px]">
                 {isQuote ? "Till startsidan" : "Fler evenemang"} <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>

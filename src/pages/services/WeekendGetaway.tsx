@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import PageHero from "@/components/site/PageHero";
+import CtaBand from "@/components/site/CtaBand";
 import weekendImage from "@/assets/kaisen-weekend.jpg";
 import parisImage from "@/assets/city-paris.jpg";
 import amsterdamImage from "@/assets/city-amsterdam.jpg";
@@ -67,44 +68,33 @@ export default function WeekendGetaway() {
  <div className="min-h-screen">
  <Navbar />
 
- {/* Hero */}
- <section className="relative h-[38vh] min-h-[280px] flex items-end">
- <div className="absolute inset-0">
- <img src={weekendImage} alt="Weekend Getaway" className="w-full h-full object-cover" />
- <div className="absolute inset-0 bg-navy/65" />
- </div>
- <div className="relative container mx-auto px-4 pb-14">
- <p className="text-[11px] sm:text-xs eyebrow text-white/75 uppercase mb-3 font-sans">
- Tjänster - Weekend Getaway
- </p>
- <h1 className="font-display text-4xl md:text-6xl text-white">
- Europas Mysigaste <em className="italic font-light text-white">Helgresmål</em>
- </h1>
- </div>
- </section>
+ <PageHero
+ image={weekendImage}
+ imageAlt="Weekend Getaway"
+ eyebrow="Tjänster - Weekend Getaway"
+ title={<>Europas Mysigaste <em className="italic text-white">Helgresmål</em></>}
+ action={null}
+ />
 
  {/* Intro */}
- <section className="bg-cream py-14">
- <div className="container mx-auto px-4 max-w-3xl text-center">
- <p className="font-display text-2xl md:text-3xl text-foreground italic font-light leading-relaxed">
+ <section className="sb-section-alt">
+ <div className="sb-container max-w-3xl text-center">
+ <p className="font-display text-2xl md:text-3xl text-foreground italic font-semibold uppercase leading-snug">
  "Tre dagar kan förändra allt. Vi ser till att de tre dagarna blir minnesvärda."
  </p>
- <div className="w-8 h-px bg-primary mx-auto mt-8" />
  </div>
  </section>
 
- {/* City Sections */}
- <section className="py-12 md:py-16 bg-background">
- <div className="container mx-auto px-4 space-y-24">
+ {/* City Sections - alternating media/text bands */}
  {destinations.map((dest, index) => (
+ <section key={dest.city} className={index % 2 === 1 ? "sb-section-alt" : "sb-section"}>
  <div
- key={dest.city}
- className={`grid md:grid-cols-2 gap-10 lg:gap-16 items-center ${
+ className={`sb-container grid md:grid-cols-2 gap-8 lg:gap-14 items-center ${
  index % 2 === 1 ? "md:[&>*:first-child]:order-2" : ""
  }`}
  >
  {/* Image */}
- <div className="aspect-[4/3] overflow-hidden">
+ <div className="aspect-[4/3] overflow-hidden rounded-lg">
  <img
  src={dest.image}
  alt={dest.city}
@@ -114,46 +104,32 @@ export default function WeekendGetaway() {
 
  {/* Content */}
  <div>
- <div className="flex items-baseline gap-3 mb-1">
- <h2 className="font-display text-4xl md:text-5xl text-foreground">{dest.city}</h2>
+ <p className="eyebrow text-primary uppercase mb-1">{dest.tagline}</p>
+ <div className="flex items-baseline gap-3 mb-4">
+ <h2 className="font-display text-3xl md:text-[44px] text-foreground">{dest.city}</h2>
  <span className="text-sm text-muted-foreground">{dest.country}</span>
  </div>
- <p className="text-[10px] tracking-[0.25em] uppercase text-primary font-sans mb-4">
- {dest.tagline}
- </p>
- <div className="w-10 h-px bg-primary mb-6" />
- <p className="text-muted-foreground leading-relaxed text-base mb-10">
+ <p className="text-foreground/80 leading-relaxed text-[15px] mb-8">
  {dest.description}
  </p>
- <Link to="/contact">
- <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
+ <Link to="/contact" className="sb-btn-primary">
  Boka helgresa till {dest.city}
- <ArrowRight className="ml-2 h-4 w-4" />
- </Button>
+ <ArrowRight className="h-4 w-4" />
  </Link>
  </div>
  </div>
+ </section>
  ))}
- </div>
- </section>
 
- {/* CTA */}
- <section className="bg-navy py-12 sm:py-20">
- <div className="container mx-auto px-4 text-center">
- <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Boka din helg</p>
- <h2 className="font-display text-3xl md:text-5xl text-white mb-6">
- Vilken stad lockar dig mest?
- </h2>
- <p className="text-white/60 max-w-lg mx-auto mb-10 leading-relaxed">
- Berätta vart du vill och vi skräddarsyr ett helgpaket som passar dig perfekt.
- </p>
- <Link to="/contact">
- <Button size="lg" className="rounded-full bg-primary hover:bg-primary/90 px-10 tracking-wider text-sm">
- Planera din helg <ArrowRight className="ml-2 h-4 w-4" />
- </Button>
+ <CtaBand
+ eyebrow="Boka din helg"
+ title="Vilken stad lockar dig mest?"
+ text="Berätta vart du vill och vi skräddarsyr ett helgpaket som passar dig perfekt."
+ >
+ <Link to="/contact" className="sb-btn-light">
+ Planera din helg <ArrowRight className="h-4 w-4" />
  </Link>
- </div>
- </section>
+ </CtaBand>
 
  <Footer />
  </div>

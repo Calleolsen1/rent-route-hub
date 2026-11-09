@@ -237,7 +237,7 @@ export default function InquiryForm({
     >
       <div className="mb-1">
         {eyebrow && (
-          <p className={`text-[11px] tracking-[0.2em] text-primary uppercase font-sans font-semibold ${compact ? "mb-2" : "mb-3"}`}>
+          <p className={`eyebrow text-primary uppercase ${compact ? "mb-1" : "mb-2"}`}>
             {eyebrow}
           </p>
         )}
@@ -352,7 +352,7 @@ export default function InquiryForm({
                   type="button"
                   aria-pressed={active}
                   onClick={() => toggleTripPart(part.id)}
-                  className={`relative flex items-center justify-center gap-2 rounded-full border px-3 text-sm transition-all ${compact ? "py-2.5" : "py-3"} ${
+                  className={`relative flex items-center justify-center gap-2 rounded-md border px-3 text-sm transition-all ${compact ? "py-2.5" : "py-3"} ${
                     active
                       ? "border-primary bg-primary text-primary-foreground font-semibold shadow-lg shadow-primary/25"
                       : "border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground"
@@ -400,7 +400,7 @@ export default function InquiryForm({
         <Button
           type="submit"
           disabled={submitting}
-          className="rounded-lg px-8 tracking-wide text-sm font-semibold bg-primary hover:bg-primary/90 h-12 shadow-md shadow-primary/20 active:scale-[0.98] transition-all w-full md:w-auto"
+          className="rounded-lg px-8 font-display uppercase font-semibold tracking-wide text-base bg-primary hover:bg-navy-deep h-12 active:scale-[0.98] transition-all w-full md:w-auto"
         >
           {submitting ? (
             <>

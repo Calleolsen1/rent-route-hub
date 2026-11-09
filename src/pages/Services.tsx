@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { ArrowRight, Check } from "lucide-react";
 import Footer from "@/components/Footer";
 import RequestCta from "@/components/RequestCta";
@@ -9,6 +8,8 @@ import luxuryImage from "@/assets/kaisen-luxury.jpg";
 import groupImageAsset from "@/assets/kaisen-group-europe-skyline.jpg.asset.json";
 const groupImage = groupImageAsset.url;
 import heroImage from "@/assets/kaisen-hero.jpg";
+import PageHero from "@/components/site/PageHero";
+import CtaBand from "@/components/site/CtaBand";
 
 const categories = [
  {
@@ -68,36 +69,29 @@ export default function Services() {
   <div className="min-h-screen">
   <Navbar />
 
-  {/* Hero */}
-  <section className="relative h-[38vh] min-h-[280px] flex items-end">
-  <div className="absolute inset-0">
-   <img src={heroImage} alt="KAISEN TRAVEL GROUP" className="w-full h-full object-cover" />
-   <div className="absolute inset-0 bg-navy/70" />
-  </div>
-  <div className="relative container mx-auto px-4 pb-14">
-   <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">Våra specialiteter</p>
-   <h1 className="font-display text-4xl md:text-6xl text-white">
-   Upplevelser & <em className="italic font-light text-white">Tjänster</em>
-   </h1>
-  </div>
-  </section>
+  <PageHero
+  image={heroImage}
+  imageAlt="KAISEN TRAVEL GROUP"
+  eyebrow="Våra specialiteter"
+  title={<>Upplevelser & <em className="italic font-light text-white">Tjänster</em></>}
+  action={null}
+  />
 
   {/* Intro */}
-  <section className="bg-cream py-16">
-  <div className="container mx-auto px-4 max-w-3xl text-center">
-   <p className="font-display text-2xl md:text-3xl text-foreground italic font-light leading-relaxed">
+  <section className="sb-section-alt">
+  <div className="sb-container max-w-[880px] text-center">
+   <p className="font-display text-2xl md:text-[34px] text-foreground italic font-semibold uppercase leading-tight">
    "Varje resa börjar med ett samtal. Vi lyssnar först - sen bygger vi något extraordinärt."
    </p>
-   <div className="w-8 h-px bg-primary mx-auto mt-8" />
   </div>
   </section>
 
   {/* Tjänster */}
   {categories.map((cat, index) => (
-  <section key={cat.id} id={cat.id} className="py-10 md:py-14 bg-background">
-   <div className="container mx-auto px-4">
-   <div className={`grid md:grid-cols-2 gap-12 lg:gap-20 items-center ${index % 2 === 1 ? "md:[&>*:first-child]:order-2" : ""}`}>
-    <div className="aspect-[4/3] overflow-hidden">
+  <section key={cat.id} id={cat.id} className={index % 2 === 1 ? "sb-section-alt" : "sb-section"}>
+   <div className="sb-container">
+   <div className={`grid md:grid-cols-2 gap-8 lg:gap-14 items-center ${index % 2 === 1 ? "md:[&>*:first-child]:order-2" : ""}`}>
+    <div className="aspect-[4/3] overflow-hidden rounded-lg">
     <img
      src={cat.image}
      alt={cat.title}
@@ -105,25 +99,22 @@ export default function Services() {
     />
     </div>
     <div>
-    <span className="text-[10px] tracking-[0.25em] uppercase bg-accent text-accent-foreground px-3 py-1 font-sans">
+    <p className="eyebrow text-primary uppercase mb-1">
      {cat.tag}
-    </span>
-    <h2 className="font-display text-3xl md:text-4xl text-foreground mt-4 mb-2">{cat.title}</h2>
-    <div className="w-10 h-px bg-primary mb-6" />
-    <p className="text-muted-foreground leading-relaxed mb-8 text-base">{cat.description}</p>
-    <ul className="space-y-3 mb-10">
+    </p>
+    <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-4">{cat.title}</h2>
+    <p className="text-foreground/80 leading-relaxed mb-6 text-[15px]">{cat.description}</p>
+    <ul className="space-y-2.5 mb-8">
      {cat.features.map((f) => (
      <li key={f} className="flex items-start gap-3 text-sm">
-      <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-      <span className="text-foreground/80">{f}</span>
+      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded bg-primary text-white"><Check className="h-3.5 w-3.5" /></span>
+      <span className="text-foreground/85">{f}</span>
      </li>
      ))}
     </ul>
-    <Link to={cat.cta}>
-     <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
+    <Link to={cat.cta} className="sb-btn-primary">
      {cat.ctaLabel}
-     <ArrowRight className="ml-2 h-4 w-4" />
-     </Button>
+     <ArrowRight className="h-4 w-4" />
     </Link>
     </div>
    </div>
@@ -131,23 +122,15 @@ export default function Services() {
   </section>
   ))}
 
-  {/* CTA */}
-  <section className="bg-navy py-12 sm:py-20">
-  <div className="container mx-auto px-4 text-center">
-   <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Skräddarsytt av naturen</p>
-   <h2 className="font-display text-3xl md:text-5xl text-white mb-6">
-   Hittar du inte det du söker?
-   </h2>
-   <p className="text-white/60 max-w-lg mx-auto mb-10 leading-relaxed">
-   Vår expertis sträcker sig längre än kategorierna. Berätta om din vision så gör vi den till verklighet.
-   </p>
-   <Link to="/contact">
-   <Button size="lg" className="rounded-full bg-primary hover:bg-primary/90 px-10 tracking-wider text-sm">
-    Prata med en rådgivare
-   </Button>
-   </Link>
-  </div>
-  </section>
+  <CtaBand
+  eyebrow="Skräddarsytt av naturen"
+  title="Hittar du inte det du söker?"
+  text="Vår expertis sträcker sig längre än kategorierna. Berätta om din vision så gör vi den till verklighet."
+  >
+  <Link to="/contact" className="sb-btn-light">
+   Prata med en rådgivare
+  </Link>
+  </CtaBand>
 
   <RequestCta />
       <Footer />

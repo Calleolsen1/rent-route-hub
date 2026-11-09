@@ -4,6 +4,7 @@ import { ArrowRight, LogIn, MapPin, Calendar, CreditCard, Users, Headphones, Fil
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import CtaBand from "@/components/site/CtaBand";
 
 type Article = {
  question: string;
@@ -209,44 +210,46 @@ export default function HelpCenter() {
  <Navbar />
 
  {/* Hero */}
- <section className="bg-navy py-12 sm:py-20 border-b border-white/10">
- <div className="container mx-auto px-4 text-center">
- <p className="text-[11px] sm:text-xs eyebrow text-white/75 uppercase mb-4 font-sans">Hjälpcenter</p>
- <h1 className="font-display text-4xl md:text-6xl text-white mb-4">
+ <section className="relative overflow-hidden bg-navy-deep">
+ <div aria-hidden className="pointer-events-none absolute -right-20 -top-40 h-[420px] w-[520px] rotate-[18deg] rounded-[80px] bg-white/[0.05]" />
+ <div aria-hidden className="pointer-events-none absolute right-[30%] -bottom-56 h-[360px] w-[420px] -rotate-[24deg] rounded-[80px] bg-white/[0.035]" />
+ <div className="relative w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10 py-8 md:py-12">
+ <p className="eyebrow text-sky-300 uppercase mb-1.5">Hjälpcenter</p>
+ <h1 className="font-display text-[34px] sm:text-5xl md:text-6xl text-white mb-3">
  Hur kan vi <em className="italic font-light text-white">hjälpa dig?</em>
  </h1>
- <p className="text-white/60 max-w-xl mx-auto leading-relaxed mb-8">
+ <p className="text-white/85 max-w-2xl text-sm md:text-base leading-relaxed mb-6">
  Hitta svar på dina frågor eller kontakta oss direkt - vi svarar alltid inom en timme.
  </p>
  {/* Search */}
- <div className="max-w-md mx-auto relative">
- <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
+ <div className="max-w-md relative">
+ <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
  <input
  type="text"
  placeholder="Sök efter svar..."
  value={search}
  onChange={(e) => setSearch(e.target.value)}
- className="w-full bg-white/10 border border-white/20 text-white placeholder-white/40 pl-11 pr-4 py-3 text-sm focus:outline-none focus:border-primary/60 transition-colors"
+ className="w-full h-11 rounded-md bg-white text-foreground placeholder:text-muted-foreground pl-11 pr-4 text-base focus:outline-none focus:ring-2 focus:ring-white/60 transition-colors"
  />
  </div>
  </div>
  </section>
 
  {/* Coming soon: login portal teaser */}
- <section className="bg-primary/10 border-b border-primary/20 py-4">
- <div className="container mx-auto px-4">
+ <section className="bg-cream border-b border-border py-4">
+ <div className="sb-container">
  <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
  <div className="flex items-center gap-3">
- <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0">
- <LogIn className="h-4 w-4 text-primary" />
+ <div className="w-9 h-9 bg-primary rounded-md flex items-center justify-center flex-shrink-0">
+ <LogIn className="h-4 w-4 text-white" />
  </div>
  <div>
- <p className="text-sm font-medium text-foreground">Mitt KAISEN - Lanseras snart</p>
+ <p className="font-display uppercase font-semibold text-base text-foreground">Mitt KAISEN - Lanseras snart</p>
  <p className="text-xs text-muted-foreground">Logga in och håll koll på din resa, fakturor och uppdateringar i realtid.</p>
  </div>
  </div>
  <Link to="/contact">
- <Button size="sm" variant="outline" className="rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground text-xs tracking-wider whitespace-nowrap">
+ <Button size="sm" variant="outline" className="h-9 rounded-lg border-primary text-primary hover:bg-primary hover:text-primary-foreground font-display uppercase font-semibold tracking-wide text-[15px] whitespace-nowrap">
  Få tidig åtkomst <ChevronRight className="h-3 w-3 ml-1" />
  </Button>
  </Link>
@@ -255,8 +258,8 @@ export default function HelpCenter() {
  </section>
 
  {/* Topics with expandable articles */}
- <section className="py-10 md:py-14 bg-background">
- <div className="container mx-auto px-4 max-w-3xl">
+ <section className="sb-section bg-background">
+ <div className="sb-container max-w-3xl">
  {search && filtered.length === 0 && (
  <div className="text-center py-16 text-muted-foreground">
  <p className="text-lg mb-2">Inga resultat för "{search}"</p>
@@ -264,26 +267,26 @@ export default function HelpCenter() {
  </div>
  )}
 
- <div className="space-y-4">
+ <div className="space-y-3">
  {filtered.map((topic) => (
- <div key={topic.slug} className="border border-border bg-card">
+ <div key={topic.slug} className={`sb-card overflow-hidden transition-colors ${openTopic === topic.slug ? "border-primary/50" : ""}`}>
  {/* Topic header */}
  <button
- className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-accent/20 transition-colors"
+ className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-cream transition-colors"
  onClick={() => {
  setOpenTopic(openTopic === topic.slug ? null : topic.slug);
  setOpenArticle(null);
  }}
  >
  <div className="flex items-center gap-4">
- <div className="w-10 h-10 bg-primary/10 flex items-center justify-center flex-shrink-0">
+ <div className="w-10 h-10 rounded-md bg-primary/10 flex items-center justify-center flex-shrink-0">
  <topic.icon className="h-5 w-5 text-primary" />
  </div>
  <div className="text-left">
  <div className="flex items-center gap-2">
- <span className="font-display text-lg text-foreground">{topic.title}</span>
+ <span className="font-display text-lg md:text-xl uppercase font-semibold text-foreground">{topic.title}</span>
  {topic.comingSoon && (
- <span className="text-[10px] tracking-wider uppercase bg-primary/10 text-primary px-2 py-0.5 font-sans">Kommer snart</span>
+ <span className="rounded bg-primary/10 text-primary px-2 py-0.5 font-display text-xs uppercase font-semibold tracking-wide">Kommer snart</span>
  )}
  </div>
  <span className="text-xs text-muted-foreground">{topic.articles.length} artiklar</span>
@@ -303,12 +306,12 @@ export default function HelpCenter() {
  return (
  <div key={key}>
  <button
- className="w-full flex items-center justify-between text-left px-6 py-4 hover:bg-accent/10 transition-colors gap-4"
+ className="w-full flex items-center justify-between text-left px-5 py-3.5 hover:bg-cream transition-colors gap-4"
  onClick={() => setOpenArticle(openArticle === key ? null : key)}
  >
  <div className="flex items-center gap-3">
  <ChevronRight className="h-3 w-3 text-primary flex-shrink-0" />
- <span className="text-sm text-foreground">{article.question}</span>
+ <span className="text-[15px] font-medium text-foreground">{article.question}</span>
  </div>
  {openArticle === key
  ? <ChevronUp className="h-3 w-3 text-primary flex-shrink-0" />
@@ -316,8 +319,8 @@ export default function HelpCenter() {
  }
  </button>
  {openArticle === key && (
- <div className="px-6 pb-5 pt-1 ml-6 bg-accent/5">
- <p className="text-sm text-muted-foreground leading-relaxed">{article.answer}</p>
+ <div className="px-5 pb-5 pt-1 ml-6">
+ <p className="text-[15px] text-foreground/80 leading-relaxed">{article.answer}</p>
  </div>
  )}
  </div>
@@ -332,16 +335,15 @@ export default function HelpCenter() {
  </section>
 
  {/* How updates work */}
- <section className="py-10 md:py-14 bg-cream">
- <div className="container mx-auto px-4">
- <div className="text-center mb-12">
- <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Transparens</p>
- <h2 className="font-display text-3xl text-foreground mb-2">
+ <section className="sb-section-alt">
+ <div className="sb-container">
+ <div className="mb-8 md:mb-10">
+ <p className="eyebrow text-primary uppercase mb-1">Transparens</p>
+ <h2 className="font-display text-3xl md:text-[44px] text-foreground">
  Alltid uppdaterad - <em className="italic font-light">utan ansträngning</em>
  </h2>
- <div className="w-10 h-px bg-primary mx-auto" />
  </div>
- <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+ <div className="grid md:grid-cols-3 gap-4">
  {[
  {
  icon: FileText,
@@ -359,11 +361,11 @@ export default function HelpCenter() {
  desc: "Snart lanserar vi 'Mitt KAISEN' - en inloggningssida där du ser alla dina resor, fakturor och uppdateringar på ett ställe.",
  },
  ].map((item) => (
- <div key={item.title} className="text-center">
- <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
- <item.icon className="h-5 w-5 text-primary" />
+ <div key={item.title} className="sb-card p-5">
+ <div className="w-10 h-10 bg-primary rounded-md flex items-center justify-center mb-4">
+ <item.icon className="h-5 w-5 text-white" />
  </div>
- <h3 className="font-display text-xl text-foreground mb-2">{item.title}</h3>
+ <h3 className="font-display text-xl text-foreground mb-1.5">{item.title}</h3>
  <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
  </div>
  ))}
@@ -371,27 +373,17 @@ export default function HelpCenter() {
  </div>
  </section>
 
- {/* CTA */}
- <section className="bg-primary py-16">
- <div className="container mx-auto px-4 text-center">
- <h2 className="font-display text-3xl text-primary-foreground mb-4">Hittade du inte svaret?</h2>
- <p className="text-primary-foreground/70 mb-8 max-w-md mx-auto">
- Vårt team svarar alltid inom en timme under kontorstid.
- </p>
- <div className="flex flex-col sm:flex-row gap-4 justify-center">
- <Link to="/support">
- <Button className="rounded-full bg-white text-primary hover:bg-white/90 px-10 tracking-wider text-sm font-semibold">
- Gå till Support <ArrowRight className="h-4 w-4 ml-2" />
- </Button>
+ <CtaBand
+ title="Hittade du inte svaret?"
+ text="Vårt team svarar alltid inom en timme under kontorstid."
+ >
+ <Link to="/support" className="sb-btn-light">
+ Gå till Support <ArrowRight className="h-4 w-4" />
  </Link>
- <Link to="/contact">
- <Button variant="outline" className="rounded-full border-white text-white hover:bg-white hover:text-primary px-10 tracking-wider text-sm font-semibold">
+ <Link to="/contact" className="sb-btn border border-white text-white hover:bg-white hover:text-primary">
  Kontaktformulär
- </Button>
  </Link>
- </div>
- </div>
- </section>
+ </CtaBand>
 
  <Footer />
  </div>

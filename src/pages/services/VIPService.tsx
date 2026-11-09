@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { ArrowRight, Star, Shield, Clock, Phone, Plane, Car } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import PageHero from "@/components/site/PageHero";
 import InquiryForm from "@/components/InquiryForm";
 import vipImage from "@/assets/kaisen-vip.jpg";
 import vipConcierge from "@/assets/vip-concierge.jpg";
@@ -74,40 +74,29 @@ export default function VIPService() {
  <div className="min-h-screen">
  <Navbar />
 
- {/* Hero */}
- <section className="relative h-[42vh] min-h-[320px] flex items-end">
- <div className="absolute inset-0">
- <img src={vipImage} alt="VIP Service" className="w-full h-full object-cover" />
- <div className="absolute inset-0 bg-navy/65" />
- </div>
- <div className="relative container mx-auto px-4 pb-16">
- <p className="text-[11px] sm:text-xs eyebrow text-white/75 uppercase mb-3 font-sans">
- Tjänster - VIP Service
- </p>
- <h1 className="font-display text-4xl md:text-6xl text-white">
- Resor på <em className="italic font-light text-white">Dina Villkor</em>
- </h1>
- <p className="text-white/70 mt-4 text-lg font-light max-w-lg">
+ <PageHero
+ image={vipImage}
+ imageAlt="VIP Service"
+ eyebrow="Tjänster - VIP Service"
+ title={<>Resor på <em className="italic text-white">Dina Villkor</em></>}
+ action={null}
+ >
  White glove service för privat- och affärsresenären som värdesätter tid, komfort och omsorg om detaljerna.
- </p>
- </div>
- </section>
+ </PageHero>
 
  {/* Intro quote */}
- <section className="bg-navy py-16 border-t border-primary/20">
- <div className="container mx-auto px-4 max-w-3xl text-center">
- <p className="font-display text-2xl md:text-3xl text-white italic font-light leading-relaxed">
+ <section className="sb-section-alt">
+ <div className="sb-container max-w-3xl text-center">
+ <p className="font-display text-2xl md:text-3xl text-foreground italic font-semibold uppercase leading-snug">
  "Vi tar hand om varje detalj - så att du kan fokusera på det som verkligen spelar roll."
  </p>
- <div className="w-8 h-px bg-primary mx-auto mt-8" />
  </div>
  </section>
 
  {/* Concierge image + intro text */}
- <section className="py-12 md:py-16 bg-background">
- <div className="container mx-auto px-4">
- <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
- <div className="aspect-[4/3] overflow-hidden">
+ <section className="sb-section">
+ <div className="sb-container grid md:grid-cols-2 gap-8 lg:gap-14 items-center">
+ <div className="aspect-[4/3] overflow-hidden rounded-lg">
  <img
  src={vipConcierge}
  alt="Personlig concierge service"
@@ -115,52 +104,38 @@ export default function VIPService() {
  />
  </div>
  <div>
- <span className="text-[10px] tracking-[0.25em] uppercase bg-accent text-accent-foreground px-3 py-1 font-sans">
- Privat & Affärsresor
- </span>
- <h2 className="font-display text-3xl md:text-4xl text-foreground mt-4 mb-2">
+ <p className="eyebrow text-primary uppercase mb-1">Privat & Affärsresor</p>
+ <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-4">
  En Service Som Anpassar Sig Efter Dig
  </h2>
- <div className="w-10 h-px bg-primary mb-6" />
- <p className="text-muted-foreground leading-relaxed mb-4 text-base">
+ <p className="text-foreground/80 leading-relaxed mb-4 text-[15px]">
  Oavsett om du planerar en privat familjesemester, ett romantiskt citybreak eller en intensiv affärsresa med tight schema - vi levererar samma höga servicenivå.
  </p>
- <p className="text-muted-foreground leading-relaxed mb-8 text-base">
+ <p className="text-foreground/80 leading-relaxed mb-8 text-[15px]">
  Vår white glove service innebär att inget lämnas åt slumpen. Från first contact till hemkomst finns vi alltid ett samtal bort.
  </p>
- <Link to="/contact">
- <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
+ <Link to="/contact" className="sb-btn-primary">
  Kom i kontakt
- <ArrowRight className="ml-2 h-4 w-4" />
- </Button>
+ <ArrowRight className="h-4 w-4" />
  </Link>
- </div>
  </div>
  </div>
  </section>
 
  {/* Services grid */}
- <section className="py-12 md:py-16 bg-cream">
- <div className="container mx-auto px-4">
- <div className="text-center mb-14">
- <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">Vad Ingår</p>
- <h2 className="font-display text-3xl md:text-4xl text-foreground">
+ <section className="sb-section-alt">
+ <div className="sb-container">
+ <p className="eyebrow text-primary uppercase mb-1">Vad Ingår</p>
+ <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-8 md:mb-10">
  Komplett White Glove Service
  </h2>
- </div>
- <div className="grid md:grid-cols-2 gap-0 border border-border bg-background">
- {services.map((s, i) => {
+ <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+ {services.map((s) => {
  const Icon = s.icon;
  return (
- <div
- key={s.title}
- className={`p-10 hover:bg-accent/30 transition-colors border-border ${
- i % 2 === 0 ? "border-r" : ""
- } ${i < services.length - 2 ? "border-b" : ""}`}
- >
- <Icon className="h-5 w-5 text-primary mb-4" />
- <h3 className="font-display text-xl text-foreground mb-3">{s.title}</h3>
- <div className="w-8 h-px bg-primary mb-4" />
+ <div key={s.title} className="sb-card p-6 hover:border-primary/50 hover:shadow-md transition-all">
+ <span className="mb-4 flex h-10 w-10 items-center justify-center rounded-md bg-primary text-white"><Icon className="h-5 w-5" /></span>
+ <h3 className="font-display text-xl text-foreground mb-2">{s.title}</h3>
  <p className="text-muted-foreground text-sm leading-relaxed">{s.description}</p>
  </div>
  );
@@ -170,32 +145,28 @@ export default function VIPService() {
  </section>
 
  {/* Jet image + how it works */}
- <section className="py-12 md:py-16 bg-background">
- <div className="container mx-auto px-4">
- <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
+ <section className="sb-section">
+ <div className="sb-container grid md:grid-cols-2 gap-8 lg:gap-14 items-center">
  <div>
- <span className="text-[10px] tracking-[0.25em] uppercase bg-accent text-accent-foreground px-3 py-1 font-sans">
- Så här fungerar det
- </span>
- <h2 className="font-display text-3xl md:text-4xl text-foreground mt-4 mb-2">
+ <p className="eyebrow text-primary uppercase mb-1">Så här fungerar det</p>
+ <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-6">
  Enkelt för Dig - Detaljerat för Oss
  </h2>
- <div className="w-10 h-px bg-primary mb-8" />
- <div className="space-y-8">
+ <div className="space-y-3">
  {howItWorks.map((step) => (
- <div key={step.step} className="flex gap-6">
- <span className="font-display text-3xl text-primary/25 leading-none shrink-0 w-10">
+ <div key={step.step} className="sb-card flex gap-4 p-5">
+ <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-primary font-display text-lg font-bold italic text-white">
  {step.step}
  </span>
  <div>
- <h3 className="font-display text-lg text-foreground mb-1">{step.title}</h3>
+ <h3 className="font-display text-xl text-foreground mb-1">{step.title}</h3>
  <p className="text-muted-foreground text-sm leading-relaxed">{step.description}</p>
  </div>
  </div>
  ))}
  </div>
  </div>
- <div className="aspect-[4/3] overflow-hidden">
+ <div className="aspect-[4/3] overflow-hidden rounded-lg">
  <img
  src={vipJet}
  alt="Privatjet interiör"
@@ -203,31 +174,34 @@ export default function VIPService() {
  />
  </div>
  </div>
- </div>
  </section>
 
  {/* Transfer image strip */}
- <section className="relative h-72 overflow-hidden">
+ <section className="sb-container pb-12 md:pb-16">
+ <div className="relative h-64 md:h-72 overflow-hidden rounded-lg">
  <img src={vipTransfer} alt="VIP transfer service" className="w-full h-full object-cover object-center" />
- <div className="absolute inset-0 bg-navy/60 flex items-center justify-center">
+ <div className="absolute inset-0 bg-navy-deep/65 flex items-center justify-center px-6">
  <div className="text-center">
- <p className="text-primary text-[11px] sm:text-xs eyebrow uppercase font-sans mb-3">Varje detalj räknas</p>
- <p className="font-display text-2xl md:text-3xl text-white italic font-light">
+ <p className="eyebrow text-sky-300 uppercase mb-2">Varje detalj räknas</p>
+ <p className="font-display text-3xl md:text-[44px] text-white italic font-bold uppercase leading-tight">
  Från avresa till ankomst - sömlöst.
  </p>
+ </div>
  </div>
  </div>
  </section>
 
  {/* Inquiry form */}
- <section id="forfragan" className="bg-cream py-12 sm:py-16 md:py-24">
- <div className="container mx-auto px-4 max-w-3xl">
+ <section id="forfragan" className="sb-section-alt">
+ <div className="sb-container max-w-3xl">
+ <div className="sb-card p-5 sm:p-8">
  <InquiryForm
  type="vip"
  eyebrow="Privat konsultation"
  heading="Berätta om din resa"
  intro="Vi lyssnar, vi planerar - och sedan levererar vi. En personlig rådgivare återkommer för en privat konsultation."
  />
+ </div>
  </div>
  </section>
 

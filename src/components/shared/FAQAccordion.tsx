@@ -29,21 +29,20 @@ export function FAQAccordion({ faqs, className }: FAQAccordionProps) {
 
   return (
     <Accordion type="single" collapsible className={className}>
-      <div className="space-y-4">
+      <div className="space-y-3">
         {faqs.map((faq) => (
           <AccordionItem 
             key={faq.id} 
             value={faq.id}
-            className="bg-white rounded-lg px-4 py-1 border-0"
-            style={{ border: '1px solid #D5DAE7' }}
+            className="sb-card px-5 py-1 data-[state=open]:border-primary/50 transition-colors"
           >
-            <AccordionTrigger className="py-3 text-left hover:no-underline">
-              <span className="text-lg font-semibold text-foreground pr-4">
+            <AccordionTrigger className="py-4 text-left hover:no-underline hover:text-primary">
+              <span className="font-display text-lg md:text-xl uppercase font-semibold leading-snug text-foreground pr-4">
                 {faq.question}
               </span>
             </AccordionTrigger>
-            <AccordionContent className="pb-3 pt-0">
-              <p className="text-base text-foreground leading-relaxed">
+            <AccordionContent className="pb-4 pt-0">
+              <p className="text-[15px] text-foreground/80 leading-relaxed">
                 {faq.answer}
               </p>
             </AccordionContent>

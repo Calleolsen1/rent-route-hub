@@ -119,30 +119,32 @@ export default function FAQ() {
  <Navbar />
 
  {/* Hero */}
- <section className="bg-navy py-12 sm:py-20 border-b border-white/10">
- <div className="container mx-auto px-4 text-center">
- <p className="text-[11px] sm:text-xs eyebrow text-white/75 uppercase mb-4 font-sans">Vanliga frågor</p>
- <h1 className="font-display text-4xl md:text-6xl text-white mb-4">
+ <section className="relative overflow-hidden bg-navy-deep">
+ <div aria-hidden className="pointer-events-none absolute -right-20 -top-40 h-[420px] w-[520px] rotate-[18deg] rounded-[80px] bg-white/[0.05]" />
+ <div aria-hidden className="pointer-events-none absolute right-[30%] -bottom-56 h-[360px] w-[420px] -rotate-[24deg] rounded-[80px] bg-white/[0.035]" />
+ <div className="relative w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10 py-8 md:py-12">
+ <p className="eyebrow text-sky-300 uppercase mb-1.5">Vanliga frågor</p>
+ <h1 className="font-display text-[34px] sm:text-5xl md:text-6xl text-white mb-3">
  Här svarar vi på <em className="italic font-light text-white">Dina Frågor</em>
  </h1>
- <p className="text-white/60 max-w-xl mx-auto leading-relaxed">
+ <p className="text-white/85 max-w-2xl text-sm md:text-base leading-relaxed">
  Hittar du inte svaret? Kontakta oss direkt - vi svarar alltid inom en timme under kontorstid.
  </p>
  </div>
  </section>
 
  {/* Category filter */}
- <section className="bg-cream border-b border-border sticky top-[64px] md:top-[80px] z-40">
- <div className="container mx-auto px-4">
- <div className="flex gap-1 overflow-x-auto py-4 scrollbar-hide">
+ <section className="bg-background/95 backdrop-blur-sm border-b border-border sticky top-16 md:top-[72px] z-30">
+ <div className="sb-container">
+ <div className="flex gap-2 overflow-x-auto py-3 scrollbar-hide">
  {categories.map((cat) => (
  <button
  key={cat.value}
  onClick={() => { setActiveCategory(cat.value); setOpenIndex(null); }}
- className={`whitespace-nowrap px-5 py-2 text-xs tracking-wider font-sans uppercase transition-colors flex-shrink-0 ${
+ className={`whitespace-nowrap rounded-md border px-4 py-1.5 font-display uppercase font-semibold tracking-wide text-[15px] transition-colors flex-shrink-0 ${
  activeCategory === cat.value
- ? "bg-primary text-primary-foreground"
- : "bg-card border border-border text-muted-foreground hover:text-foreground"
+ ? "border-primary bg-primary text-primary-foreground"
+ : "border-border bg-card text-foreground/75 hover:border-primary/40 hover:text-primary"
  }`}
  >
  {cat.label}
@@ -153,23 +155,23 @@ export default function FAQ() {
  </section>
 
  {/* FAQ list */}
- <section className="py-10 md:py-14 bg-background">
- <div className="container mx-auto px-4 max-w-3xl">
- <div className="divide-y divide-border border border-border">
+ <section className="sb-section bg-background">
+ <div className="sb-container max-w-3xl">
+ <div className="space-y-3">
  {filtered.map((faq, i) => (
- <div key={i}>
+ <div key={i} className={`sb-card overflow-hidden transition-colors ${openIndex === i ? "border-primary/50" : ""}`}>
  <button
- className="w-full flex items-center justify-between text-left px-6 py-5 hover:bg-accent/30 transition-colors gap-4"
+ className="w-full flex items-center justify-between text-left px-5 py-4 hover:text-primary transition-colors gap-4"
  onClick={() => setOpenIndex(openIndex === i ? null : i)}
  >
- <span className="font-display text-lg text-foreground leading-snug">{faq.question}</span>
+ <span className="font-display text-lg md:text-xl uppercase font-semibold leading-snug">{faq.question}</span>
  {openIndex === i
  ? <ChevronUp className="h-4 w-4 text-primary flex-shrink-0" />
  : <ChevronDown className="h-4 w-4 text-muted-foreground flex-shrink-0" />
  }
  </button>
  {openIndex === i && (
- <div className="px-6 pb-6 text-muted-foreground leading-relaxed text-sm bg-accent/10">
+ <div className="px-5 pb-5 text-foreground/80 leading-relaxed text-[15px]">
  {faq.answer}
  </div>
  )}
@@ -180,20 +182,20 @@ export default function FAQ() {
  </section>
 
  {/* Still have questions CTA */}
- <section className="py-10 md:py-14 bg-cream">
- <div className="container mx-auto px-4 text-center max-w-2xl">
- <h2 className="font-display text-3xl text-foreground mb-4">Hittar du inte svaret?</h2>
- <p className="text-muted-foreground leading-relaxed mb-8">
+ <section className="sb-section-alt">
+ <div className="sb-container text-center max-w-2xl">
+ <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-4">Hittar du inte svaret?</h2>
+ <p className="text-foreground/80 leading-relaxed mb-8">
  Vi är alltid tillgängliga för ett personligt samtal. Ring, maila eller fyll i kontaktformuläret - vi svarar snabbt.
  </p>
  <div className="flex flex-col sm:flex-row gap-4 justify-center">
  <a href="tel:+442012345678">
- <Button variant="outline" className="rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground px-8 tracking-wider text-sm w-full sm:w-auto">
+ <Button variant="outline" className="h-10 rounded-lg border-primary text-primary hover:bg-primary hover:text-primary-foreground px-6 font-display uppercase font-semibold tracking-wide text-[15px] w-full sm:w-auto">
  <Phone className="h-4 w-4 mr-2" /> Ring oss
  </Button>
  </a>
  <Link to="/contact">
- <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm w-full sm:w-auto">
+ <Button className="h-10 rounded-lg bg-primary hover:bg-navy-deep px-6 font-display uppercase font-semibold tracking-wide text-[15px] w-full sm:w-auto">
  Kontaktformulär <ArrowRight className="h-4 w-4 ml-2" />
  </Button>
  </Link>

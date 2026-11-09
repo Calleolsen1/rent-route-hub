@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, MapPin, MessageSquare } from "lucide-react";
 import Footer from "@/components/Footer";
 import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
+import PageHero from "@/components/site/PageHero";
 import FloatingInquiryButton from "@/components/FloatingInquiryButton";
 import { useInquiryDialog } from "@/components/InquiryDialog";
 import heroImage from "@/assets/camps-hero.jpg";
@@ -104,52 +104,40 @@ export default function Traningslager() {
  <div className="min-h-screen">
  <Navbar />
 
- {/* Hero */}
- <section className="relative h-[45vh] min-h-[340px] flex items-end">
- <div className="absolute inset-0">
- <img src={heroImage} alt="Träningsläger" className="w-full h-full object-cover" width={1920} height={1024} />
- <div className="absolute inset-0 bg-navy/65" />
- </div>
- <div className="relative container mx-auto px-4 pb-14">
- <p className="text-[11px] sm:text-xs eyebrow text-white uppercase mb-3 font-sans">
- {get("training_hero_eyebrow", "Tjänster - Träningsläger")}
- </p>
- <h1 className="font-display text-4xl md:text-6xl text-white leading-tight">
- {get("training_hero_title", "En värld där idrott och resor möts")}
- </h1>
- <p className="text-white/70 mt-4 text-lg font-light max-w-xl">
+ <PageHero
+ image={heroImage}
+ imageAlt="Träningsläger"
+ eyebrow={get("training_hero_eyebrow", "Tjänster - Träningsläger")}
+ title={get("training_hero_title", "En värld där idrott och resor möts")}
+ action={
+ <button type="button" onClick={() => openCampInquiry()} className="sb-btn-light">
+ <MessageSquare className="h-4 w-4" />
+ Skicka förfrågan
+ </button>
+ }
+ >
  {get("training_hero_tagline", "Träningsläger för fotboll, simning och friidrott - för föreningar, lag och grupper som vill ta träningen till nästa nivå.")}
- </p>
- <div className="mt-6 flex flex-wrap gap-3">
-  <Button onClick={() => openCampInquiry()} className="rounded-full bg-primary hover:bg-primary/90 px-7 py-6 text-sm tracking-wider">
-  <MessageSquare className="mr-2 h-4 w-4" />
-  Skicka förfrågan
-  </Button>
- </div>
- </div>
- </section>
+ </PageHero>
 
  {/* Camps grid */}
- <section className="py-12 md:py-16 bg-cream">
- <div className="container mx-auto px-4">
- <div className="text-center mb-14">
- <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">Utvalda Träningsläger</p>
- <h2 className="font-display text-3xl md:text-4xl text-foreground">
- Ett axplock av <em className="italic font-light">våra läger</em>
+ <section className="sb-section">
+ <div className="sb-container">
+ <p className="eyebrow text-primary uppercase mb-1">Utvalda Träningsläger</p>
+ <h2 className="font-display text-3xl md:text-[44px] text-foreground">
+ Ett axplock av <em className="italic">våra läger</em>
  </h2>
- <p className="text-muted-foreground mt-4 max-w-xl mx-auto">
+ <p className="text-foreground/80 text-[15px] mt-3 mb-8 md:mb-10 max-w-2xl">
  Detta är ett urval ur vårt kompletta program. Hör av er så hittar vi rätt destination för just ert lag.
  </p>
- </div>
 
- <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+ <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
   {camps.map((camp) => (
   <article
     key={camp.title}
     onClick={() => chooseCamp(camp.location, camp.sport)}
-    className="group bg-background overflow-hidden flex flex-col cursor-pointer transition-shadow hover:shadow-lg"
+    className="group sb-card overflow-hidden flex flex-col cursor-pointer transition-all hover:border-primary/50 hover:shadow-md"
   >
- <div className="aspect-[4/3] overflow-hidden">
+ <div className="relative aspect-[4/3] overflow-hidden">
  <img
  src={camp.image}
  alt={`${camp.sport}läger i ${camp.location}`}
@@ -159,102 +147,93 @@ export default function Traningslager() {
  width={1280}
  height={896}
  />
- </div>
- <div className="p-6 flex flex-col flex-1">
- <div className="flex items-center justify-between mb-3">
- <span className="text-[10px] tracking-[0.25em] uppercase bg-accent text-accent-foreground px-2.5 py-1 font-sans">
+ <span className="absolute top-3 left-3 rounded-md bg-navy-deep/90 px-2.5 py-1 font-display text-sm font-semibold uppercase italic tracking-wide text-white">
  {camp.sport}
  </span>
- <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+ </div>
+ <div className="p-5 flex flex-col flex-1">
+ <span className="flex items-center gap-1.5 text-xs text-muted-foreground mb-2">
  <MapPin className="h-3.5 w-3.5" />
  {camp.location}
  </span>
- </div>
  <h3 className="font-display text-xl text-foreground mb-2">{camp.title}</h3>
- <div className="w-8 h-px bg-primary mb-3" />
  <p className="text-muted-foreground text-sm leading-relaxed flex-1">{camp.desc}</p>
-  <p className="mt-4 pt-4 border-t border-border text-sm font-sans text-navy font-medium">{camp.price}</p>
-  <span className="mt-3 inline-flex items-center gap-1.5 text-xs tracking-[0.15em] uppercase font-sans text-primary group-hover:gap-2.5 transition-all">
-    Skicka förfrågan <ArrowRight className="h-3.5 w-3.5" />
+  <div className="mt-4 pt-4 border-t border-border flex items-center justify-between gap-3">
+  <p className="font-display text-lg font-semibold text-foreground">{camp.price}</p>
+  <span className="inline-flex items-center gap-1.5 font-display uppercase font-semibold tracking-wide text-[15px] text-primary group-hover:gap-2.5 transition-all whitespace-nowrap">
+    Skicka förfrågan <ArrowRight className="h-4 w-4" />
   </span>
+  </div>
  </div>
  </article>
  ))}
  </div>
- <div className="mt-12 text-center">
-  <Button onClick={() => openCampInquiry()} className="rounded-full bg-primary hover:bg-primary/90 px-8 py-6 text-sm tracking-wider">
-  <MessageSquare className="mr-2 h-4 w-4" />
+ <div className="mt-10 text-center">
+  <button type="button" onClick={() => openCampInquiry()} className="sb-btn-primary h-11">
+  <MessageSquare className="h-4 w-4" />
   Få offert för ert träningsläger
-  <ArrowRight className="ml-2 h-4 w-4" />
-  </Button>
+  <ArrowRight className="h-4 w-4" />
+  </button>
  </div>
  </div>
  </section>
 
  {/* Intro */}
- <section className="bg-background py-16">
- <div className="container mx-auto px-4 max-w-3xl text-center">
- <p className="font-display text-2xl md:text-3xl text-foreground italic font-light leading-relaxed">
+ <section className="sb-section-alt">
+ <div className="sb-container max-w-3xl text-center">
+ <p className="font-display text-2xl md:text-3xl text-foreground italic font-semibold uppercase leading-snug">
  "Hos oss handlar det inte bara om träning - det handlar om att skapa energi, laganda och motivation som varar långt efter lägret är slut."
  </p>
- <div className="w-8 h-px bg-primary mx-auto mt-8" />
  </div>
  </section>
 
  {/* Pillar text blocks */}
- <section className="py-12 md:py-16 bg-cream">
- <div className="container mx-auto px-4 max-w-5xl">
- <div className="grid md:grid-cols-2 gap-12 lg:gap-20">
- <div>
- <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">Noggrant Utvalda Destinationer</p>
- <h2 className="font-display text-2xl md:text-3xl text-foreground mb-4">
+ <section className="sb-section">
+ <div className="sb-container grid md:grid-cols-2 gap-5">
+ <div className="sb-card p-6 md:p-8">
+ <p className="eyebrow text-primary uppercase mb-1">Noggrant Utvalda Destinationer</p>
+ <h2 className="font-display text-3xl md:text-[36px] text-foreground mb-4">
  Europas bästa träningsmiljöer
  </h2>
- <div className="w-10 h-px bg-primary mb-6" />
- <p className="text-muted-foreground leading-relaxed">
+ <p className="text-foreground/80 leading-relaxed text-[15px]">
  Våra destinationer i Europa är noggrant utvalda för att ge bästa förutsättningarna för träning, vila och inspiration. Spanien, Turkiet, Italien, Portugal, Polen, Holland, Tyskland, Danmark och Sverige - soliga kustorter, moderna anläggningar och klassiska idrottsstäder.
  </p>
  </div>
- <div>
- <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">Vi Tar Hand Om Helheten</p>
- <h2 className="font-display text-2xl md:text-3xl text-foreground mb-4">
+ <div className="sb-card p-6 md:p-8">
+ <p className="eyebrow text-primary uppercase mb-1">Vi Tar Hand Om Helheten</p>
+ <h2 className="font-display text-3xl md:text-[36px] text-foreground mb-4">
  Ni fokuserar på träningen
  </h2>
- <div className="w-10 h-px bg-primary mb-6" />
- <p className="text-muted-foreground leading-relaxed">
+ <p className="text-foreground/80 leading-relaxed text-[15px]">
  Att planera ett träningsläger kan vara komplext - men vi gör det enkelt. Transport, boende, träningstider och praktiska detaljer hanterar vi. Varje upplägg skräddarsys efter era mål och förväntningar.
  </p>
- </div>
  </div>
  </div>
  </section>
 
  {/* Stronger together + features */}
- <section className="py-12 md:py-16 bg-background">
- <div className="container mx-auto px-4 max-w-5xl">
- <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
+ <section className="sb-section-alt">
+ <div className="sb-container grid md:grid-cols-2 gap-8 lg:gap-14 items-center">
  <div>
- <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">En Resa Som Stärker Laget</p>
- <h2 className="font-display text-3xl md:text-4xl text-foreground mb-4">
+ <p className="eyebrow text-primary uppercase mb-1">En Resa Som Stärker Laget</p>
+ <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-4">
  Mer än bara träning
  </h2>
- <div className="w-10 h-px bg-primary mb-6" />
- <p className="text-muted-foreground leading-relaxed mb-6">
+ <p className="text-foreground/80 leading-relaxed mb-4 text-[15px]">
  Ett framgångsrikt träningsläger handlar om gemenskap, glädje och att skapa minnen tillsammans. Vi planerar varje del med omtanke - från träning till fritid, från logistik till upplevelser.
  </p>
- <p className="text-muted-foreground leading-relaxed">
+ <p className="text-foreground/80 leading-relaxed text-[15px]">
  Målet är att varje deltagare ska känna sig motiverad, inspirerad och delaktig.
  </p>
  </div>
- <ul className="space-y-3">
+ <ul className="sb-card p-5 md:p-6 space-y-3">
  {editableFeatures.map((f, i) => (
  <li key={i} className="flex items-start gap-3 text-sm">
- <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
- <span className="text-foreground/80">{f}</span>
+ <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded bg-primary text-white"><Check className="h-3.5 w-3.5" /></span>
+ <span className="text-foreground/85">{f}</span>
  </li>
  ))}
  </ul>
- </div>
  </div>
  </section>
 

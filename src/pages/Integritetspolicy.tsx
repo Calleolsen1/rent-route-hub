@@ -6,18 +6,19 @@ export default function Integritetspolicy() {
     <div className="min-h-screen">
       <Navbar />
 
-      <section className="bg-cream py-16">
-        <div className="container mx-auto px-4 max-w-3xl">
-          <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">
+      <section className="relative overflow-hidden bg-navy-deep text-white">
+        <div aria-hidden className="pointer-events-none absolute -right-20 -top-40 h-[420px] w-[520px] rotate-[18deg] rounded-[80px] bg-white/[0.05]" />
+        <div className="relative sb-container max-w-3xl py-8 md:py-12">
+          <p className="eyebrow text-sky-300 uppercase mb-1.5">
             Juridiskt
           </p>
-          <h1 className="font-display text-4xl md:text-5xl mb-2">Integritetspolicy</h1>
-          <p className="text-sm text-muted-foreground">Senast uppdaterad: {new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" })}</p>
+          <h1 className="font-display text-[34px] sm:text-5xl text-white mb-2">Integritetspolicy</h1>
+          <p className="text-sm text-white/75">Senast uppdaterad: {new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" })}</p>
         </div>
       </section>
 
-      <section className="py-12 bg-background">
-        <div className="container mx-auto px-4 max-w-3xl space-y-10">
+      <section className="sb-section bg-background">
+        <div className="sb-container max-w-3xl space-y-10">
           <Section title="1. Personuppgiftsansvarig">
             <p>
               KAISEN TRAVEL GROUP AB ("KAISEN", "vi") är personuppgiftsansvarig för behandlingen av personuppgifter på{" "}
@@ -118,8 +119,8 @@ export default function Integritetspolicy() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h2 className="font-display text-2xl mb-3">{title}</h2>
-      <div className="space-y-3 text-sm leading-relaxed text-foreground/85 [&_ul]:list-disc [&_ul]:ml-5 [&_ul]:space-y-1.5 [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-xs">
+      <h2 className="font-display text-2xl md:text-[28px] mb-3 pb-2 border-b border-border">{title}</h2>
+      <div className="space-y-3 text-[15px] leading-relaxed text-foreground/85 [&_ul]:list-disc [&_ul]:ml-5 [&_ul]:space-y-1.5 [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-xs">
         {children}
       </div>
     </div>
