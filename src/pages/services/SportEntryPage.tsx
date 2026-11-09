@@ -225,19 +225,19 @@ export default function SportEntryPage() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-px overflow-hidden rounded-xl border border-border/70 bg-border/70 [&>*]:bg-card">
               {info.city && (
                 <div className="px-5 py-4">
-                  <p className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground mb-1">Stad</p>
+                  <p className="text-[13px] text-muted-foreground mb-1">Stad</p>
                   <p className="font-display text-xl leading-tight">{info.city}</p>
                 </div>
               )}
               {groupOrDate && (
                 <div className="px-5 py-4">
-                  <p className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground mb-1">{labels.groupLabel}</p>
+                  <p className="text-[13px] text-muted-foreground mb-1">{labels.groupLabel}</p>
                   <p className="font-display text-xl leading-tight">{groupOrDate}</p>
                 </div>
               )}
               {info.venue && (
                 <div className="px-5 py-4">
-                  <p className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground mb-1">{labels.venueLabel}</p>
+                  <p className="text-[13px] text-muted-foreground mb-1">{labels.venueLabel}</p>
                   <p className="font-display text-xl leading-tight">{noBreakHyphen(info.venue)}</p>
                 </div>
               )}

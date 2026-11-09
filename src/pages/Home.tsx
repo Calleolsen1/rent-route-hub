@@ -557,10 +557,10 @@ const Home = () => {
                           <p className="text-[11px] eyebrow text-white uppercase mb-2 sm:mb-4 font-sans">
                             {slide.eyebrow}
                           </p>
-                          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl !font-light text-white !leading-tight mb-4 sm:mb-6 [overflow-wrap:normal]">
+                          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl !font-medium text-white !leading-tight mb-4 sm:mb-6 [overflow-wrap:normal]">
                             {slide.title}
                             <br />
-                            <em data-keep-italic className="font-light italic text-white">{slide.italic}</em>
+                            <em className="text-white">{slide.italic}</em>
                           </h1>
                           <Link to={slide.primary.to}>
                             <Button

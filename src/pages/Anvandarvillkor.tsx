@@ -9,7 +9,7 @@ export default function Anvandarvillkor() {
       <section className="relative overflow-hidden bg-navy-deep text-white">
         <div aria-hidden className="pointer-events-none absolute -right-20 -top-40 h-[420px] w-[520px] rotate-[18deg] rounded-[80px] bg-white/[0.05]" />
         <div className="relative sb-container max-w-3xl py-8 md:py-12">
-          <p className="eyebrow text-sky-300 uppercase mb-1.5">
+          <p className="eyebrow text-white/75 uppercase mb-1.5">
             Juridiskt
           </p>
           <h1 className="font-display text-[34px] sm:text-5xl text-white mb-2">Användarvillkor</h1>

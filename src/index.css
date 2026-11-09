@@ -161,14 +161,18 @@
      normal case, Jost for everything else, light grey page, rounded pill
      buttons. Layout pieces from the redesign (rows, cards, sections) keep
      their structure; these rules give them the soft original styling. */
+  /* One font family for the whole public site: Jost for headlines too. */
+  html[data-area="public"] {
+    --font-display: 'Jost', sans-serif;
+  }
   html[data-area="public"] h1,
   html[data-area="public"] h2 {
     font-family: var(--font-display);
-    font-weight: 400;
+    font-weight: 500;
     font-style: normal;
     text-transform: none;
-    letter-spacing: -0.01em;
-    line-height: 1.08;
+    letter-spacing: -0.015em;
+    line-height: 1.12;
     text-wrap: balance;
   }
   html[data-area="public"] h3,
@@ -182,10 +186,18 @@
     line-height: 1.2;
     text-wrap: balance;
   }
-  /* No italic words in the middle of headlines: emphasis reads as normal
-     text in the same weight (the home slides' own italic line opts out). */
-  html[data-area="public"] :is(h1, h2, h3, h4) em:not([data-keep-italic]) {
+  /* Tiny wide-tracked caps labels read as template decoration: show them
+     as small normal-case text instead. */
+  html[data-area="public"] .uppercase:is([class*="tracking-[0."], .tracking-widest, .tracking-wider) {
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  /* No italics anywhere on the public site; emphasis inside headlines
+     takes the headline's own weight. */
+  html[data-area="public"] :is(em, i, .italic) {
     font-style: normal;
+  }
+  html[data-area="public"] :is(h1, h2, h3, h4) em {
     font-weight: inherit;
     font-family: inherit;
   }
@@ -236,12 +248,16 @@
     @apply tracking-[0.16em] sm:tracking-[0.3em];
   }
   /* Public eyebrow: small tracked caps (the label above titles) */
+  /* The label above a headline: quiet, normal case, no wide tracking -
+     reads like a breadcrumb, not a decoration. */
   html[data-area="public"] .eyebrow {
     font-family: var(--font-sans);
     font-style: normal;
     font-weight: 500;
-    font-size: 11px !important;
-    letter-spacing: 0.28em !important;
+    font-size: 13px !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+    opacity: 0.85;
   }
 
   /* Public shared building blocks */

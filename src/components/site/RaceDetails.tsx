@@ -6,7 +6,7 @@ import { noBreakHyphen } from "@/lib/noBreakHyphen";
 function Fact({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
     <div className="px-4 py-3.5 sm:px-5 sm:py-4">
-      <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.18em] text-muted-foreground mb-1">{label}</p>
+      <p className="text-xs sm:text-[13px] text-muted-foreground mb-1">{label}</p>
       <p className="font-sans text-base sm:text-lg font-medium text-foreground leading-tight tabular-nums">{noBreakHyphen(value)}</p>
       {sub && <p className="text-[11px] sm:text-xs text-muted-foreground leading-tight mt-0.5">{sub}</p>}
     </div>

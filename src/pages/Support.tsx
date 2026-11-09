@@ -69,7 +69,7 @@ export default function Support() {
  {/* Hero */}
  <section className="relative overflow-hidden bg-navy-deep">
  <div className="relative w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10 py-8 md:py-12">
- <p className="eyebrow text-sky-300 uppercase mb-1.5">Support</p>
+ <p className="eyebrow text-white/75 uppercase mb-1.5">Support</p>
  <h1 className="font-display text-[34px] sm:text-5xl md:text-6xl text-white mb-3">
  Vi finns här för <em className="italic font-light text-white">dig</em>
  </h1>
@@ -147,7 +147,7 @@ export default function Support() {
  <section className="sb-container py-10 md:py-14">
  <div className="rounded-2xl bg-navy text-white">
  <div className="px-6 py-10 md:px-14 md:py-14 max-w-3xl">
- <p className="eyebrow text-sky-200 uppercase mb-2">Vårt löfte</p>
+ <p className="eyebrow text-white/75 uppercase mb-2">Vårt löfte</p>
  <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-white mb-5">
  Du pratar alltid med <em className="italic font-light text-white">en människa</em>
  </h2>

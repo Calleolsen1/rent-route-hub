@@ -121,7 +121,7 @@ export default function FAQ() {
  {/* Hero */}
  <section className="relative overflow-hidden bg-navy-deep">
  <div className="relative w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10 py-8 md:py-12">
- <p className="eyebrow text-sky-300 uppercase mb-1.5">Vanliga frågor</p>
+ <p className="eyebrow text-white/75 uppercase mb-1.5">Vanliga frågor</p>
  <h1 className="font-display text-[34px] sm:text-5xl md:text-6xl text-white mb-3">
  Här svarar vi på <em className="italic font-light text-white">dina frågor</em>
  </h1>
