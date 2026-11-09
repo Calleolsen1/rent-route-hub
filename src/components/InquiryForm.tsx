@@ -45,6 +45,11 @@ type Props = {
    * exactly that; the visitor's own message then becomes optional.
    */
   selection?: string[];
+  /**
+   * For KAISEN only: which supplier each picked ticket comes from. Appended
+   * to the message KAISEN receives, never shown in the form.
+   */
+  supplierNote?: string[];
   /** Tighter layout that fits a dialog without scrolling. */
   compact?: boolean;
 };
@@ -96,6 +101,7 @@ export default function InquiryForm({
   showTripParts = false,
   defaultTripParts,
   selection,
+  supplierNote,
   compact = false,
 }: Props) {
   const [submitting, setSubmitting] = useState(false);
@@ -186,7 +192,9 @@ export default function InquiryForm({
             : null,
         ].filter(Boolean).join(" · ") || undefined,
         message: hasSelection
-          ? `${parsed.data.message}\n\nValt på matchsidan:\n${selection!.map((l) => `- ${l}`).join("\n")}`
+          ? `${parsed.data.message}\n\nValt på matchsidan:\n${selection!.map((l) => `- ${l}`).join("\n")}${
+              supplierNote?.length ? `\n\nLeverantör (internt):\n${supplierNote.map((l) => `- ${l}`).join("\n")}` : ""
+            }`
           : parsed.data.message,
         source_page:
           typeof window !== "undefined" ? window.location.pathname : undefined,
