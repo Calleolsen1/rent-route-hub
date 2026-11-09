@@ -125,7 +125,9 @@ export class P1Client {
 
   /** All events in a window (paged through), optionally only specific ids. */
   async searchEvents(opts: { from?: string; till?: string; eventIds?: string[]; currency?: P1Currency }): Promise<P1Event[]> {
-    const out: P1Event[] = [];
+    // Keyed by id: pages can overlap (the same event on two pages), which
+    // would otherwise reach the upsert twice and fail it.
+    const byId = new Map<string, P1Event>();
     const pageSize = 100;
     for (let page = 1; page < 200; page++) {
       const p = new URLSearchParams();
@@ -136,10 +138,12 @@ export class P1Client {
       p.set("page[number]", String(page));
       p.set("page[size]", String(pageSize));
       const res = await this.get<P1Page>("/events/search", p);
-      out.push(...(res.data ?? []));
-      if (!res.data?.length || out.length >= (res.totalCount ?? 0)) break;
+      const before = byId.size;
+      for (const e of res.data ?? []) byId.set(e.id, e);
+      // Stop when the page is empty, brought nothing new, or we have them all.
+      if (!res.data?.length || byId.size === before || byId.size >= (res.totalCount ?? 0)) break;
     }
-    return out;
+    return [...byId.values()];
   }
 }
 
