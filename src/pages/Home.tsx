@@ -455,7 +455,7 @@ const Home = () => {
     })();
   }, []);
 
-  // Admin-curated experience cards ("Det vi arrangerar").
+  // Admin-curated experience cards ("Upplevelser. På riktigt.").
   useEffect(() => {
     (async () => {
       const { data } = await (supabase as any)
@@ -702,7 +702,7 @@ const Home = () => {
         <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
           <div className="flex items-center justify-between mb-8 gap-6">
             <h2 className="!font-sans !font-semibold text-xl md:text-2xl text-foreground relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-16 after:h-[2px] after:bg-primary">
-              Det vi arrangerar
+              Upplevelser. På riktigt.
             </h2>
             <Link to="/resor" className="hidden md:inline-flex items-center gap-2 text-sm font-semibold text-primary border border-primary/30 px-5 py-2.5 rounded-full hover:bg-primary hover:text-primary-foreground transition-colors">
               Se alla
