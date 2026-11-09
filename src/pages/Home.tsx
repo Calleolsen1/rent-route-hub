@@ -855,10 +855,10 @@ const Home = () => {
             <div className="relative max-w-2xl">
               <p className="text-[11px] eyebrow text-white/70 uppercase mb-4 font-sans font-semibold">Kontakta oss</p>
               <h2 className="!font-sans !font-bold text-3xl md:text-5xl text-white mb-4 leading-tight">
-                Planera resan <em className="italic font-light text-white">tillsammans</em> med oss
+                Ditt nästa äventyr börjar med ett <em className="italic font-light text-white">samtal</em>
               </h2>
               <p className="text-[15px] text-white/80 leading-relaxed">
-                Ring eller skriv till en av våra resespecialister. Berätta vad du vill se och när, så tar vi fram ett förslag med pris.
+                Prata med en av våra resespecialister. Inga mallar, inga algoritmer – bara erfarenhet, expertis och personlig rådgivning för att skapa en resa utifrån just dina önskemål.
               </p>
 
             </div>
