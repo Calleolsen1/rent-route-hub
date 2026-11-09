@@ -182,6 +182,13 @@
     line-height: 1.2;
     text-wrap: balance;
   }
+  /* No italic words in the middle of headlines: emphasis reads as normal
+     text in the same weight (the home slides' own italic line opts out). */
+  html[data-area="public"] :is(h1, h2, h3, h4) em:not([data-keep-italic]) {
+    font-style: normal;
+    font-weight: inherit;
+    font-family: inherit;
+  }
   /* Small labels/buttons that the redesign set in condensed caps read as
      the original's calm sans-serif in normal case. */
   html[data-area="public"] .font-display.uppercase {

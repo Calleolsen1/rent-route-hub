@@ -560,7 +560,7 @@ const Home = () => {
                           <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl !font-light text-white !leading-tight mb-4 sm:mb-6 [overflow-wrap:normal]">
                             {slide.title}
                             <br />
-                            <em className="font-light italic text-white">{slide.italic}</em>
+                            <em data-keep-italic className="font-light italic text-white">{slide.italic}</em>
                           </h1>
                           <Link to={slide.primary.to}>
                             <Button
