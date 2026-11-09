@@ -197,16 +197,28 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Release event ids first so a re-match can't trip the unique index.
-    const autoIds = rows.filter((r) => r.match_method !== "manual" && r.match_method !== "ignored").map((r) => r.p1_event_id as string);
-    for (let i = 0; i < autoIds.length; i += 200) {
-      const { error } = await admin.from("p1_event_links").update({ event_id: null }).in("p1_event_id", autoIds.slice(i, i + 200));
+    // Release every automatic link first — also of P1 events not in this run
+    // (gone from P1, or from the other environment after a sandbox/live
+    // switch) — so a re-match can't trip the one-P1-event-per-fixture index.
+    // Admin decisions (manual/ignored) keep theirs.
+    {
+      const { error } = await admin
+        .from("p1_event_links")
+        .update({ event_id: null })
+        .not("match_method", "in", "(manual,ignored)")
+        .not("event_id", "is", null);
       if (error) throw new Error(`release links: ${error.message}`);
     }
     for (let i = 0; i < rows.length; i += 200) {
       const { error } = await admin.from("p1_event_links").upsert(rows.slice(i, i + 200), { onConflict: "p1_event_id" });
       if (error) throw new Error(`p1_event_links upsert: ${error.message}`);
     }
+    // Not seen this run (sold out of P1, or the other environment's ids).
+    await admin
+      .from("p1_event_links")
+      .update({ match_method: "none", match_note: "Finns inte längre hos P1" })
+      .lt("last_seen_at", now.toISOString())
+      .not("match_method", "in", "(manual,ignored)");
 
     if (logId) {
       await admin.from("supplier_sync_log").update({
