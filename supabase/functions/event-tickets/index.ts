@@ -137,9 +137,11 @@ Deno.serve(async (req) => {
           last_seen_at: new Date().toISOString(),
         });
       }
-      background("category links", db.from("supplier_category_links").upsert([...seen.values()], { onConflict: "supplier,supplier_category_id,venue_key" }).then(({ error }: { error: { message: string } | null }) => {
+      // Promise.resolve: the query builder's .then() is a PromiseLike, and
+      // background() needs a real Promise to attach its catch/waitUntil to.
+      background("category links", Promise.resolve(db.from("supplier_category_links").upsert([...seen.values()], { onConflict: "supplier,supplier_category_id,venue_key" }).then(({ error }: { error: { message: string } | null }) => {
         if (error) console.error("[event-tickets] links upsert:", error.message);
-      }));
+      })));
     }
 
     const merged = mergeOffers(offers, links, seats);
