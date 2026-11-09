@@ -4,7 +4,7 @@ import fotbollImage from "@/assets/sport-fotboll.jpg";
 const unsplash = (id: string) => `https://images.unsplash.com/${id}?w=900&q=75&auto=format&fit=crop`;
 const hotelImage = unsplash("photo-1618773928121-c32242e63f39");
 const flightImage = unsplash("photo-1593182440709-4b7b56482c55");
-const transferImage = unsplash("photo-1677844458243-f9e506d918ad");
+const transferImage = unsplash("photo-1772466669620-310c35f9deb2");
 
 type Props = {
   eyebrow: string;
