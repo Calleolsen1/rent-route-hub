@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, RefreshCw, Link2, EyeOff, Ticket, ExternalLink, X } from "lucide-react";
 import { formatEventDateTime, formatSek } from "@/lib/formatSek";
 import MarkupRulesPanel from "@/components/admin/MarkupRulesPanel";
+import SeatCategoryMapping from "@/components/admin/SeatCategoryMapping";
 
 // Travel Connection — the ticket supplier.
 //
@@ -347,6 +348,7 @@ export default function AdminTravelConnection() {
           <TabsTrigger value="linked">Kopplade ({linked.length})</TabsTrigger>
           <TabsTrigger value="ignored">Ignorerade ({ignored.length})</TabsTrigger>
           <TabsTrigger value="bookings">Bokningar ({bookings.length})</TabsTrigger>
+          <TabsTrigger value="categories">Kategorier</TabsTrigger>
           <TabsTrigger value="markup">Påslag</TabsTrigger>
         </TabsList>
 
@@ -402,6 +404,10 @@ export default function AdminTravelConnection() {
               </Button>
             )}
           />
+        </TabsContent>
+
+        <TabsContent value="categories">
+          <SeatCategoryMapping />
         </TabsContent>
 
         <TabsContent value="markup">
