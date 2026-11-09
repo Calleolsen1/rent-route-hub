@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { ArrowRight, Check } from "lucide-react";
 import Footer from "@/components/Footer";
 import RequestCta from "@/components/RequestCta";
@@ -9,6 +8,8 @@ import luxuryImage from "@/assets/kaisen-luxury.jpg";
 import f1Image from "@/assets/sport-f1.jpg";
 import fotbollImage from "@/assets/sport-fotboll.jpg";
 import { usePageMeta } from "@/lib/usePageMeta";
+import PageHero from "@/components/site/PageHero";
+import CtaBand from "@/components/site/CtaBand";
 
 const sports = [
  {
@@ -51,53 +52,23 @@ export default function Sportresor() {
  <div className="min-h-screen">
  <Navbar />
 
- {/* Hero with search bar - search is the first thing visible (above the fold) */}
- <section className="relative flex flex-col">
- <div className="absolute inset-0">
- <img src={sportsImage} alt="Sportresor" className="w-full h-full object-cover" />
- <div className="absolute inset-0 bg-navy/70" />
- </div>
- <div className="relative container mx-auto px-4 pt-16 sm:pt-24 md:pt-28 flex flex-col">
- <div className="max-w-3xl flex flex-col">
- <p className="text-[11px] sm:text-xs eyebrow text-white/75 uppercase mb-2 font-sans">
- Tjänster - Sportresor
- </p>
- <h1 className="font-display text-3xl md:text-5xl text-white mb-2">
- Sportresor
- </h1>
- <p className="font-display text-xl md:text-2xl italic font-light text-white mb-3">
+ <PageHero image={sportsImage} imageAlt="Sportresor" eyebrow="Tjänster - Sportresor" title="Sportresor">
+ <p className="font-display text-xl md:text-2xl italic font-semibold uppercase text-white mb-2">
  Sport upplevs bäst LIVE
  </p>
- <p className="text-white/80 text-sm max-w-xl">
  Upplev Formel 1 och Europas bästa fotbollsmatcher på plats. Vi skräddarsyr din sportresa efter dina önskemål – boka allt från matchbiljett och hotell till flyg och transfer, eller välj bara de delar du behöver.
- </p>
- {/* Knappen hålls mitt i utrymmet mellan texten och rutans nedre kant. */}
- <div className="flex flex-1 min-h-[96px] items-center">
- <Link
- to="/contact"
- className="inline-flex items-center rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 text-sm font-medium tracking-wide shadow-lg shadow-navy/30 transition-all hover:scale-105"
- >
- Kontakta oss
- <ArrowRight className="ml-2 h-4 w-4" />
- </Link>
- </div>
- </div>
- </div>
- </section>
+ </PageHero>
 
-  {/* Sport Sections */}
-  <section className="py-12 md:py-16 bg-cream">
-  <div className="container mx-auto px-4 space-y-24">
+ {/* Sport Sections - alternating media/text bands */}
  {sports.map((sport, index) => (
+ <section key={sport.id} id={sport.id} className={index % 2 === 1 ? "sb-section-alt" : "sb-section"}>
  <div
- key={sport.id}
- id={sport.id}
- className={`grid md:grid-cols-2 gap-10 lg:gap-16 items-center ${
+ className={`sb-container grid md:grid-cols-2 gap-8 lg:gap-14 items-center ${
  index % 2 === 1 ? "md:[&>*:first-child]:order-2" : ""
  }`}
  >
  {/* Image */}
- <div className="aspect-[4/3] overflow-hidden">
+ <div className="aspect-[4/3] overflow-hidden rounded-lg">
  <img
  src={sport.image}
  alt={sport.title}
@@ -107,61 +78,41 @@ export default function Sportresor() {
 
  {/* Content */}
  <div>
- <span className="text-[10px] tracking-[0.25em] uppercase bg-accent text-accent-foreground px-3 py-1 font-sans">
- {sport.title}
- </span>
- <h2 className="font-display text-3xl md:text-4xl text-foreground mt-4 mb-2">
+ <p className="eyebrow text-primary uppercase mb-1">{sport.title}</p>
+ <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-4">
  {sport.heading}
  </h2>
- <div className="w-10 h-px bg-primary mb-6" />
- <p className="text-muted-foreground leading-relaxed mb-8 text-base">
+ <p className="text-foreground/80 leading-relaxed mb-6 text-[15px]">
  {sport.description}
  </p>
- <ul className="space-y-3 mb-10">
+ <ul className="space-y-2.5 mb-8">
  {sport.features.map((f) => (
  <li key={f} className="flex items-start gap-3 text-sm">
- <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
- <span className="text-foreground/80">{f}</span>
+ <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded bg-primary text-white"><Check className="h-3.5 w-3.5" /></span>
+ <span className="text-foreground/85">{f}</span>
  </li>
  ))}
  </ul>
- <Link to="/contact">
- <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 tracking-wider text-sm">
+ <Link to="/contact" className="sb-btn-primary">
  Boka nu
- <ArrowRight className="ml-2 h-4 w-4" />
- </Button>
+ <ArrowRight className="h-4 w-4" />
  </Link>
  </div>
  </div>
- ))}
- </div>
  </section>
+ ))}
 
-  {/* CTA */}
-  <section className="relative bg-navy border-b border-white/15 overflow-hidden">
-    <div className="absolute inset-0">
-      <img src={luxuryImage} alt="" aria-hidden="true" className="w-full h-full object-cover" />
-      <div className="absolute inset-0 bg-navy/85" />
-    </div>
-    <div className="relative container mx-auto px-4 py-10 sm:py-16 md:py-20 text-center">
-      <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Boka din sportresa</p>
-      <h2 className="font-display text-3xl md:text-5xl text-white mb-5">
-        Vilken sportupplevelse drömmer du om?
-      </h2>
-      <p className="text-white/70 max-w-lg mx-auto mb-8 leading-relaxed">
-        Berätta vilken match eller tävling du vill uppleva på plats. Vi hjälper dig att skapa en sportresa anpassad efter dina önskemål.
-      </p>
-      <Link to="/contact">
-        <Button
-          size="lg"
-          className="rounded-full bg-primary hover:bg-primary/90 px-10 tracking-wider text-sm"
-        >
-          Kontakta oss
-          <ArrowRight className="ml-2 h-4 w-4" />
-        </Button>
-      </Link>
-    </div>
-  </section>
+ <CtaBand
+ image={luxuryImage}
+ eyebrow="Boka din sportresa"
+ title="Vilken sportupplevelse drömmer du om?"
+ text="Berätta vilken match eller tävling du vill uppleva på plats. Vi hjälper dig att skapa en sportresa anpassad efter dina önskemål."
+ >
+ <Link to="/contact" className="sb-btn-light">
+ Kontakta oss
+ <ArrowRight className="h-4 w-4" />
+ </Link>
+ </CtaBand>
 
  <RequestCta />
       <Footer />

@@ -5,6 +5,9 @@ import Footer from "@/components/Footer";
 import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
 import fotbollImage from "@/assets/sport-fotboll.jpg";
+import PageHero from "@/components/site/PageHero";
+import CtaBand from "@/components/site/CtaBand";
+import { leagueLogos } from "@/data/leagueLogos";
 import { useSport, useEntriesForSport } from "@/hooks/useNavigation";
 import { slugify } from "@/data/sports";
 import { useSiteContent } from "@/hooks/useSiteContent";
@@ -45,7 +48,7 @@ export default function LeaguePage() {
         <div className="container mx-auto px-4 py-32 text-center">
           <h1 className="font-display text-4xl mb-4">Sidan hittades inte</h1>
           <Link to="/services/sportresor">
-            <Button className="rounded-full">Tillbaka till Sportresor</Button>
+            <Button className="rounded-lg">Tillbaka till Sportresor</Button>
           </Link>
         </div>
       <Footer />
@@ -57,41 +60,25 @@ export default function LeaguePage() {
     <div className="min-h-screen">
       <Navbar />
 
-      {/* Hero */}
-      <section className="relative min-h-[160px] md:min-h-[200px] flex pt-6 md:pt-8">
-        <div className="absolute inset-0">
-          <img src={fotbollImage} alt={leagueName} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-navy/75" />
-        </div>
-        <div className="relative container mx-auto px-4 flex flex-col justify-end">
-          <p className="text-[10px] tracking-[0.28em] text-primary uppercase mb-1 md:mb-1.5 font-sans">
-            {sport.label}sresor - Liga
-          </p>
-          <h1 className="font-display text-2xl md:text-5xl text-white mb-1">{leagueName}</h1>
-          <p className="text-white/80 text-sm max-w-xl whitespace-pre-line">
-            {get(introKey, DEFAULT_LEAGUE_INTRO)}
-          </p>
-          {/* Knappen hålls mitt i utrymmet mellan texten och rutans nedre kant. */}
-          <div className="flex flex-1 min-h-[96px] md:min-h-[112px] items-center">
-            <Link
-              to="/contact"
-              className="inline-flex items-center rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-7 py-2.5 text-sm font-medium tracking-wide shadow-lg shadow-navy/30 transition-all hover:scale-105"
-            >
-              Kontakta oss
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
+      <PageHero
+        image={fotbollImage}
+        imageAlt={leagueName}
+        eyebrow={`${sport.label}sresor - Liga`}
+        title={leagueName}
+        logo={leagueLogos[leagueSlug ?? ""]}
+        logoAlt={`${leagueName} logotyp`}
+      >
+        {get(introKey, DEFAULT_LEAGUE_INTRO)}
+      </PageHero>
 
       {/* Teams */}
-      <section className="py-10 sm:py-14 md:py-20 bg-cream">
-        <div className="container mx-auto px-4">
-          <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans text-center">
+      <section className="sb-section">
+        <div className="sb-container">
+          <p className="eyebrow text-primary uppercase mb-1">
             Klubbar i {leagueName}
           </p>
-          <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-center mb-5 sm:mb-12">Vilket lag vill du se live?</h2>
-          <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3 max-w-5xl mx-auto">
+          <h2 className="font-display text-2xl sm:text-3xl md:text-[44px] mb-6 sm:mb-10">Vilket lag vill du se live?</h2>
+          <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
             {teams.map((team) => {
               const venueImage =
                 venuePhotoFor(venuePhotos, team.venue, team.name) || team.hero_image_url || null;
@@ -99,9 +86,9 @@ export default function LeaguePage() {
               <Link
                 key={team.id}
                 to={`/services/sportresor/${sport.slug}/${team.slug}`}
-                className="group bg-card border border-border overflow-hidden hover:shadow-xl transition-shadow"
+                className="group sb-card overflow-hidden hover:border-primary/50 hover:shadow-md transition-all"
               >
-                <div className="aspect-[4/3] overflow-hidden bg-navy flex items-center justify-center">
+                <div className="relative aspect-[4/3] overflow-hidden bg-navy-deep flex items-center justify-center">
                   {venueImage ? (
                     <img
                       src={venueImage}
@@ -112,18 +99,16 @@ export default function LeaguePage() {
                     <img
                       src={crests[team.name]}
                       alt={`${team.name} klubbmärke`}
-                      className="w-full h-full object-contain drop-shadow-lg p-3 sm:p-10 group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-contain drop-shadow-lg p-6 sm:p-12 group-hover:scale-105 transition-transform duration-500"
                     />
-                  ) : (
-                    <span className="font-display text-sm sm:text-2xl text-primary-foreground text-center">
-                      {team.name}
-                    </span>
-                  )}
+                  ) : null}
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy-deep/95 via-navy-deep/40 to-transparent px-3 sm:px-4 pt-10 pb-2.5 sm:pb-3">
+                    <h3 className="font-display text-base sm:text-2xl italic font-bold leading-tight text-white">{team.name}</h3>
+                  </div>
                 </div>
-                <div className="p-2.5 sm:p-5">
-                  <h3 className="font-display text-sm sm:text-xl leading-snug text-foreground mb-0.5 sm:mb-1">{team.name}</h3>
+                <div className="p-2.5 sm:p-4">
                   {team.tagline && (
-                    <p className="hidden sm:block text-sm text-muted-foreground italic mb-3">{team.tagline}</p>
+                    <p className="hidden sm:block text-sm text-muted-foreground italic mb-3 line-clamp-2">{team.tagline}</p>
                   )}
                   <div className="space-y-0.5 text-[11px] sm:space-y-1.5 sm:text-xs text-muted-foreground">
                     {team.city && (
@@ -139,7 +124,7 @@ export default function LeaguePage() {
                       </p>
                     )}
                   </div>
-                  <span className="mt-2 sm:mt-4 inline-flex items-center text-xs sm:text-sm text-primary font-medium">
+                  <span className="mt-2 sm:mt-3 inline-flex items-center font-display uppercase font-semibold tracking-wide text-sm sm:text-[15px] text-primary">
                     Se resor
                     <ArrowRight className="ml-1.5 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </span>
@@ -151,23 +136,15 @@ export default function LeaguePage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="bg-navy py-16">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">Boka din {leagueName}-resa</p>
-          <h2 className="font-display text-3xl md:text-4xl text-white mb-6">
-            Hittar du inte laget eller matchen?
-          </h2>
-          <p className="text-white/70 max-w-lg mx-auto mb-8 leading-relaxed">
-            Hör av dig till oss så undersöker vi möjligheterna via vårt nätverk av leverantörer.
-          </p>
-          <Link to="/contact">
-            <Button size="lg" className="rounded-full bg-primary hover:bg-primary/90 px-10 tracking-wider text-sm">
-              Kontakta oss <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
-      </section>
+      <CtaBand
+        eyebrow={`Boka din ${leagueName}-resa`}
+        title="Hittar du inte laget eller matchen?"
+        text="Hör av dig till oss så undersöker vi möjligheterna via vårt nätverk av leverantörer."
+      >
+        <Link to="/contact" className="sb-btn-light">
+          Kontakta oss <ArrowRight className="h-4 w-4" />
+        </Link>
+      </CtaBand>
 
       <RequestCta />
       <Footer />

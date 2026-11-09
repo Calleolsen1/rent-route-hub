@@ -12,6 +12,10 @@ import UpcomingEventsList from "@/components/UpcomingEventsList";
 import { useInquiryDialog } from "@/components/InquiryDialog";
 import { useVenuePhotos, venuePhotoFor } from "@/hooks/useVenuePhotos";
 import { raceSeasonBounds } from "@/lib/raceSeason";
+import PageHero from "@/components/site/PageHero";
+import CtaBand from "@/components/site/CtaBand";
+import { leagueLogos } from "@/data/leagueLogos";
+import { slugify } from "@/data/sports";
 
 /**
  * Unified landing page for any sport entry - replaces the old TeamPage +
@@ -83,7 +87,7 @@ export default function SportEntryPage() {
         <div className="container mx-auto px-4 py-32 text-center">
           <h1 className="font-display text-4xl mb-4">Sidan hittades inte</h1>
           <Link to="/services/sportresor">
-            <Button className="rounded-full">Tillbaka till Sportresor</Button>
+            <Button className="rounded-lg">Tillbaka till Sportresor</Button>
           </Link>
         </div>
       <Footer />
@@ -104,138 +108,137 @@ export default function SportEntryPage() {
   const groupOrDate = sport.entry_kind === "race" ? info.date_text : info.group_label;
   const raceSeason = sport.entry_kind === "race" ? raceSeasonBounds(info.date_text) : {};
 
+  const leagueLogo =
+    sport.entry_kind === "team" && info.group_label ? leagueLogos[slugify(info.group_label)] : undefined;
+  // The intro text (description) sits under the fixtures heading, like the
+  // reference layout; tagline is still the fallback when no intro is saved.
+  const intro = info.description || info.tagline;
+
   return (
     <div className="min-h-screen">
       <Navbar />
 
-      {/* Hero */}
-      <section className="relative min-h-[24vh] md:min-h-[28vh] flex pt-6 md:pt-8">
-        <div className="absolute inset-0">
-          <img src={heroSrc} alt={info.name} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-navy/75" />
-        </div>
-        <div className="relative container mx-auto px-4 flex flex-col justify-end">
-          <p className="text-[10px] tracking-[0.28em] text-primary uppercase mb-1 md:mb-1.5 font-sans">
-            {labels.eyebrow(sport.label, info.group_label)}
-          </p>
-          <h1 className="font-display text-2xl md:text-4xl text-white mb-1">{info.name}</h1>
-          {/* Texten under namnet är introtexten (description); tagline används
-              bara som reserv när ingen introtext finns sparad. */}
-          {(info.description || info.tagline) && (
-            <p className="font-display italic font-light text-white/90 text-sm sm:text-base md:text-lg max-w-2xl leading-relaxed whitespace-pre-line">
-              {info.description || info.tagline}
+      <PageHero
+        image={heroSrc}
+        imageAlt={info.name}
+        eyebrow={labels.eyebrow(sport.label, info.group_label)}
+        title={info.name}
+        logo={leagueLogo}
+        logoAlt={info.group_label ? `${info.group_label} logotyp` : undefined}
+      />
+
+      {/* Fixtures */}
+      <section className="pt-10 md:pt-14 pb-10 md:pb-14 bg-background">
+        <div className="sb-container">
+          {sport.entry_kind === "race" && (
+            <p className="eyebrow text-primary uppercase mb-1">Köp biljett direkt</p>
+          )}
+          <h2 className="font-display text-3xl md:text-[44px]">{labels.upcomingTitle(info.name)}</h2>
+          {intro && (
+            <p className="mt-4 max-w-4xl text-[15px] leading-relaxed text-foreground/80 whitespace-pre-line">
+              {intro}
             </p>
           )}
-          {/* Knappen hålls mitt i utrymmet mellan texten och rutans nedre kant. */}
-          <div className="flex flex-1 min-h-[92px] md:min-h-[108px] items-center">
-            <Link
-              to="/contact"
-              className="inline-flex items-center rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-7 py-2.5 text-sm font-medium tracking-wide shadow-lg shadow-navy/30 transition-all hover:scale-105"
-            >
-              Kontakta oss
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
+          <div className="mt-8">
+            <UpcomingEventsList
+              {...{ [labels.queryField]: info.name }}
+              {...raceSeason}
+              sport={sport.entry_kind === "race" ? "formula1" : undefined}
+              emptyMessage={sport.entry_kind === "race" ? "Biljetter för detta lopp finns ännu inte i listan. Skicka en förfrågan så undersöker vi möjligheterna." : undefined}
+              hideEmptyMessage={sport.entry_kind === "race"}
+              inquiryDestination={sport.entry_kind === "race" ? `${info.name}${info.date_text ? ` – ${info.date_text}` : ""}` : undefined}
+              showFilters
+              eyebrow=""
+              title=""
+              compact
+              onEmptyChange={setEventsEmpty}
+            />
           </div>
-        </div>
-      </section>
-
-      {/* Live tickets */}
-      <section className="py-4 md:py-5 bg-background">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <UpcomingEventsList
-            {...{ [labels.queryField]: info.name }}
-            {...raceSeason}
-            sport={sport.entry_kind === "race" ? "formula1" : undefined}
-            emptyMessage={sport.entry_kind === "race" ? "Biljetter för detta lopp finns ännu inte i listan. Skicka en förfrågan så undersöker vi möjligheterna." : undefined}
-            hideEmptyMessage={sport.entry_kind === "race"}
-            inquiryDestination={sport.entry_kind === "race" ? `${info.name}${info.date_text ? ` – ${info.date_text}` : ""}` : undefined}
-            showFilters
-            eyebrow={sport.entry_kind === "race" ? "Köp biljett direkt" : ""}
-            title={labels.upcomingTitle(info.name)}
-            compact
-            onEmptyChange={setEventsEmpty}
-          />
           {!eventsEmpty && (
-            <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3 text-center">
-              <p className="text-sm text-muted-foreground">
+            <div className="mt-6 sb-card bg-cream border-transparent flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-4 text-center sm:text-left">
+              <p className="text-sm text-foreground/80">
                 Hittar du inte matchen du letar efter? Vi kan säkert fixa det ändå.
               </p>
-            <Button
-              className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
-              onClick={() =>
-                openInquiry({
-                  type: "contact",
-                  presetTopic: `Förfrågan: ${info.name}`,
-                  defaultDestination: info.name,
-                  heading: "Skicka en förfrågan",
-                  intro: "Berätta vilken match du vill se så återkommer vi med ett förslag.",
-                  showTripParts: true,
-                })
-              }
-            >
-              Skicka förfrågan <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+              <button
+                type="button"
+                className="sb-btn-outline shrink-0"
+                onClick={() =>
+                  openInquiry({
+                    type: "contact",
+                    presetTopic: `Förfrågan: ${info.name}`,
+                    defaultDestination: info.name,
+                    heading: "Skicka en förfrågan",
+                    intro: "Berätta vilken match du vill se så återkommer vi med ett förslag.",
+                    showTripParts: true,
+                  })
+                }
+              >
+                Skicka förfrågan <ArrowRight className="h-4 w-4" />
+              </button>
             </div>
           )}
         </div>
       </section>
 
-      {/* Intro */}
-      <section className="bg-cream py-16">
-        <div className="container mx-auto px-4 max-w-3xl">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {info.city && (
-              <div className="flex items-start gap-3">
-                <MapPin className="h-5 w-5 text-primary mt-1" />
-                <div>
-                  <p className="text-xs uppercase tracking-wider text-muted-foreground">Stad</p>
-                  <p className="font-medium">{info.city}</p>
+      {/* Facts */}
+      {(info.city || groupOrDate || info.venue) && (
+        <section className="sb-section-alt">
+          <div className="sb-container">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {info.city && (
+                <div className="sb-card flex items-center gap-4 p-5">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-primary text-white"><MapPin className="h-5 w-5" /></span>
+                  <div>
+                    <p className="eyebrow !text-[13px] !tracking-[0.04em] text-muted-foreground uppercase">Stad</p>
+                    <p className="font-display text-xl font-semibold uppercase leading-tight">{info.city}</p>
+                  </div>
                 </div>
-              </div>
-            )}
-            {groupOrDate && (
-              <div className="flex items-start gap-3">
-                <Calendar className="h-5 w-5 text-primary mt-1" />
-                <div>
-                  <p className="text-xs uppercase tracking-wider text-muted-foreground">{labels.groupLabel}</p>
-                  <p className="font-medium">{groupOrDate}</p>
+              )}
+              {groupOrDate && (
+                <div className="sb-card flex items-center gap-4 p-5">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-primary text-white"><Calendar className="h-5 w-5" /></span>
+                  <div>
+                    <p className="eyebrow !text-[13px] !tracking-[0.04em] text-muted-foreground uppercase">{labels.groupLabel}</p>
+                    <p className="font-display text-xl font-semibold uppercase leading-tight">{groupOrDate}</p>
+                  </div>
                 </div>
-              </div>
-            )}
-            {info.venue && (
-              <div className="flex items-start gap-3">
-                <VenueIcon className="h-5 w-5 text-primary mt-1" />
-                <div>
-                  <p className="text-xs uppercase tracking-wider text-muted-foreground">{labels.venueLabel}</p>
-                  <p className="font-medium">{info.venue}</p>
+              )}
+              {info.venue && (
+                <div className="sb-card flex items-center gap-4 p-5">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-primary text-white"><VenueIcon className="h-5 w-5" /></span>
+                  <div>
+                    <p className="eyebrow !text-[13px] !tracking-[0.04em] text-muted-foreground uppercase">{labels.venueLabel}</p>
+                    <p className="font-display text-xl font-semibold uppercase leading-tight">{info.venue}</p>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Package */}
-      <section className="bg-cream py-12 md:py-16">
-        <div className="container mx-auto px-4 max-w-4xl">
-          <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans text-center">{labels.whatsIncluded}</p>
-          <h2 className="font-display text-3xl md:text-4xl text-center mb-12">
+      <section className="sb-section">
+        <div className="sb-container">
+          <p className="eyebrow text-primary uppercase mb-1 text-center">{labels.whatsIncluded}</p>
+          <h2 className="font-display text-3xl md:text-[44px] text-center mb-8 md:mb-10">
             {labels.packageTitle(sport.label, info.venue)}
           </h2>
-          <ul className="grid md:grid-cols-2 gap-4 max-w-2xl mx-auto">
+          <ul className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {features.map((f, i) => {
-              // Första ordet är fetstilt i rutorna på både fotboll och racen
+              // Första ordet är rubrik i rutorna på både fotboll och racen
               // (Matchbiljetter, Hotell, Flyg, Transfers ...).
               const space = f.indexOf(" ");
               const lead = space > 0 ? f.slice(0, space) : f;
-              const rest = space > 0 ? f.slice(space) : "";
+              // The " - " joining title and text is a separator, not text.
+              const rest = space > 0 ? f.slice(space).replace(/^\s*[-–]\s*/, "") : "";
               return (
-                <li key={i} className="flex items-start gap-3 bg-card p-4 rounded-lg">
-                  <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">
-                    <span className={space > 0 ? "font-semibold" : undefined}>{lead}</span>
-                    {rest}
+                <li key={i} className="sb-card p-5">
+                  <span className="mb-4 flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary">
+                    <Check className="h-5 w-5" />
                   </span>
+                  <h3 className="font-display text-xl text-foreground">{lead}</h3>
+                  {rest && <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">{rest}</p>}
                 </li>
               );
             })}
@@ -243,22 +246,11 @@ export default function SportEntryPage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="bg-cream py-16 border-t border-border">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">
-            Boka din {info.name}-resa
-          </p>
-          <h2 className="font-display text-3xl md:text-5xl text-foreground mb-6">
-            Redo för {info.name}?
-          </h2>
-          <Link to="/contact">
-            <Button size="lg" className="rounded-full bg-navy hover:bg-navy/90 text-white px-10 tracking-wider text-sm">
-              Kontakta oss <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
-      </section>
+      <CtaBand eyebrow={`Boka din ${info.name}-resa`} title={`Redo för ${info.name}?`}>
+        <Link to="/contact" className="sb-btn-light">
+          Kontakta oss <ArrowRight className="h-4 w-4" />
+        </Link>
+      </CtaBand>
 
       <RequestCta />
       <Footer />

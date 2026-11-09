@@ -9,6 +9,9 @@ import { useSport, useEntry } from "@/hooks/useNavigation";
 import UpcomingEventsList from "@/components/UpcomingEventsList";
 import { CUPS, getCup } from "@/data/cups";
 import { usePageMeta } from "@/lib/usePageMeta";
+import PageHero from "@/components/site/PageHero";
+import CtaBand from "@/components/site/CtaBand";
+import { cupLogos } from "@/data/leagueLogos";
 
 /**
  * Landing page for a football cup (Champions League, Europa League, FA Cup,
@@ -42,7 +45,7 @@ export default function CupPage() {
         <div className="container mx-auto px-4 py-32 text-center">
           <h1 className="font-display text-4xl mb-4">Sidan hittades inte</h1>
           <Link to="/services/sportresor">
-            <Button className="rounded-full">Tillbaka till Sportresor</Button>
+            <Button className="rounded-lg">Tillbaka till Sportresor</Button>
           </Link>
         </div>
         <Footer />
@@ -54,64 +57,44 @@ export default function CupPage() {
     <div className="min-h-screen">
       <Navbar />
 
-      {/* Hero */}
-      <section className="relative min-h-[160px] md:min-h-[200px] flex pt-6 md:pt-8">
-        <div className="absolute inset-0">
-          <img src={fotbollImage} alt={name} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-navy/75" />
-        </div>
-        <div className="relative container mx-auto px-4 flex flex-col justify-end">
-          <p className="text-[10px] tracking-[0.28em] text-primary uppercase mb-1 md:mb-1.5 font-sans">
-            {sport.label}sresor - Cup
-          </p>
-          <h1 className="font-display text-2xl md:text-5xl text-white mb-1">{name}</h1>
-          <p className="text-white/80 text-sm max-w-xl whitespace-pre-line">{description}</p>
-          {/* Knappen hålls mitt i utrymmet mellan texten och rutans nedre kant. */}
-          <div className="flex flex-1 min-h-[96px] md:min-h-[112px] items-center">
-            <Link
-              to="/contact"
-              className="inline-flex items-center rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-7 py-2.5 text-sm font-medium tracking-wide shadow-lg shadow-navy/30 transition-all hover:scale-105"
-            >
-              Kontakta oss
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
+      <PageHero
+        image={fotbollImage}
+        imageAlt={name}
+        eyebrow={`${sport.label}sresor - Cup`}
+        title={name}
+        logo={cupLogos[cup.slug]}
+        logoAlt={`${name} logotyp`}
+      />
+
+      {/* Matches */}
+      <section className="pt-10 md:pt-14 pb-6 bg-background">
+        <div className="sb-container">
+          <h2 className="font-display text-3xl md:text-[44px]">{`Matcher i ${name}`}</h2>
+          {description && (
+            <p className="mt-4 max-w-4xl text-[15px] leading-relaxed text-foreground/80 whitespace-pre-line">{description}</p>
+          )}
+          <div className="mt-8">
+            <UpcomingEventsList
+              sport="soccer"
+              tournaments={cup.tournaments}
+              showFilters
+              eyebrow=""
+              title=""
+              compact
+            />
           </div>
         </div>
       </section>
 
-      {/* Matches */}
-      <section className="py-10 sm:py-14 md:py-16 bg-cream">
-        <div className="container mx-auto px-4">
-          <UpcomingEventsList
-            sport="soccer"
-            tournaments={cup.tournaments}
-            showFilters
-            eyebrow=""
-            title={`Matcher i ${name}`}
-            compact
-          />
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="bg-navy py-16">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">
-            Boka din {name}-resa
-          </p>
-          <h2 className="font-display text-3xl md:text-4xl text-white mb-6">
-            Hittar du inte laget eller matchen?
-          </h2>
-          <p className="text-white/70 max-w-lg mx-auto mb-8 leading-relaxed">
-            Hör av dig till oss så undersöker vi möjligheterna via vårt nätverk av leverantörer.
-          </p>
-          <Link to="/contact">
-            <Button size="lg" className="rounded-full bg-primary hover:bg-primary/90 px-10 tracking-wider text-sm">
-              Kontakta oss <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
-      </section>
+      <CtaBand
+        eyebrow={`Boka din ${name}-resa`}
+        title="Hittar du inte laget eller matchen?"
+        text="Hör av dig till oss så undersöker vi möjligheterna via vårt nätverk av leverantörer."
+      >
+        <Link to="/contact" className="sb-btn-light">
+          Kontakta oss <ArrowRight className="h-4 w-4" />
+        </Link>
+      </CtaBand>
 
       <RequestCta />
       <Footer />

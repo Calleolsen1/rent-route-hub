@@ -22,10 +22,10 @@ const RequestCta = ({
   const { open } = useInquiryDialog();
 
   return (
-    <section className="container mx-auto px-4 py-10 md:py-14 text-center">
+    <section className="sb-container pt-2 pb-0 text-center">
       <Button
         size="lg"
-        className="rounded-full bg-primary hover:bg-primary/90 px-10 tracking-wider text-sm h-11"
+        className="h-11 rounded-lg bg-primary hover:bg-navy-deep px-8 font-display uppercase font-semibold text-base tracking-wide"
         onClick={() =>
           open({
             type,

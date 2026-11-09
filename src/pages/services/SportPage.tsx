@@ -6,15 +6,9 @@ import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
 import fotbollImage from "@/assets/sport-fotboll.jpg";
 import f1Image from "@/assets/sport-f1.jpg";
-import bundesligaLogo from "@/assets/league-bundesliga.png.asset.json";
-import laLigaLogo from "@/assets/league-la-liga.png.asset.json";
-import premierLeagueLogo from "@/assets/league-premier-league.png.asset.json";
-import serieALogo from "@/assets/league-serie-a.png.asset.json";
-import scottishPremiershipLogo from "@/assets/league-scottish-premiership.png.asset.json";
-import championsLeagueLogo from "@/assets/cup-champions-league.png.asset.json";
-import europaLeagueLogo from "@/assets/cup-europa-league.png.asset.json";
-import faCupLogo from "@/assets/cup-fa-cup.png.asset.json";
-import carabaoCupLogo from "@/assets/cup-carabao-cup.png.asset.json";
+import PageHero from "@/components/site/PageHero";
+import CtaBand from "@/components/site/CtaBand";
+import { leagueLogos, cupLogos } from "@/data/leagueLogos";
 import { useSport, useEntriesForSport } from "@/hooks/useNavigation";
 import { useVenuePhotos, venuePhotoFor } from "@/hooks/useVenuePhotos";
 import { slugify } from "@/data/sports";
@@ -24,21 +18,6 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 
-const leagueLogos: Record<string, string> = {
-  bundesliga: bundesligaLogo.url,
-  "la-liga": laLigaLogo.url,
-  "premier-league": premierLeagueLogo.url,
-  "serie-a": serieALogo.url,
-  "scottish-premiership": scottishPremiershipLogo.url,
-};
-
-/** Cup logos shown in the "Cuper" chips, keyed by cup slug (src/data/cups.ts). */
-const cupLogos: Record<string, string> = {
-  "champions-league": championsLeagueLogo.url,
-  "europa-league": europaLeagueLogo.url,
-  "fa-cup": faCupLogo.url,
-  "carabao-cup": carabaoCupLogo.url,
-};
 
 export default function SportPage() {
   const { sport: sportSlug } = useParams<{ sport: string }>();
@@ -101,7 +80,7 @@ export default function SportPage() {
         <div className="container mx-auto px-4 py-32 text-center">
           <h1 className="font-display text-4xl mb-4">Sidan hittades inte</h1>
           <Link to="/services/sportresor">
-            <Button className="rounded-full">Tillbaka till Sportresor</Button>
+            <Button className="rounded-lg">Tillbaka till Sportresor</Button>
           </Link>
         </div>
       <Footer />
@@ -122,53 +101,29 @@ export default function SportPage() {
     <div className="min-h-screen">
       <Navbar />
 
-      {/* Hero */}
-      <section className="relative h-[26vh] min-h-[200px] md:h-[38vh] md:min-h-[280px] flex">
-        <div className="absolute inset-0">
-          <img src={heroImage} alt={sport.label} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-navy/75" />
-        </div>
-        <div className="relative container mx-auto px-4 flex flex-col justify-end">
-          <p className="text-[10px] tracking-[0.28em] text-primary uppercase mb-1.5 md:mb-2 font-sans">
-            Sportresor
-          </p>
-          <h1 className="font-display text-3xl md:text-6xl text-white mb-1.5 md:mb-3">{heroTitle}</h1>
-          <p className="text-white/80 max-w-xl leading-relaxed text-sm sm:text-base">
-            {isRace
-              ? "Välj ett race så bygger vi resan - bra platser vid banan, hotell nära action och all logistik ordnad."
-              : "Upplev världens bästa fotbollsmatcher LIVE. Välj liga, lag och vad din resa ska innehålla så tar vi fram bästa möjliga reseupplägg. Vi hjälper dig med officiella matchbiljetter eller en komplett resa med flyg och hotell."}
-          </p>
-
-          {/* Knappen hålls mitt i utrymmet mellan texten och rutans nedre kant. */}
-          <div className="flex flex-1 min-h-[84px] md:min-h-[104px] items-center">
-            <Link
-              to="/contact"
-              className="inline-flex items-center rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 text-sm font-medium tracking-wide shadow-lg shadow-navy/30 transition-all hover:scale-105"
-            >
-              Kontakta oss
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
+      <PageHero image={heroImage} imageAlt={sport.label} eyebrow="Sportresor" title={heroTitle}>
+        {isRace
+          ? "Välj ett race så bygger vi resan - bra platser vid banan, hotell nära action och all logistik ordnad."
+          : "Upplev världens bästa fotbollsmatcher LIVE. Välj liga, lag och vad din resa ska innehålla så tar vi fram bästa möjliga reseupplägg. Vi hjälper dig med officiella matchbiljetter eller en komplett resa med flyg och hotell."}
+      </PageHero>
 
       {isRace ? (
         /* Races */
-        <section className="py-10 sm:py-14 md:py-20 bg-cream">
-          <div className="container mx-auto px-4">
-            <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans text-center">
+        <section className="sb-section">
+          <div className="sb-container">
+            <p className="eyebrow text-primary uppercase mb-1">
               Kalendern
             </p>
-            <h2 className="font-display text-3xl md:text-4xl text-center mb-6 sm:mb-12">Vilket race vill du uppleva?</h2>
+            <h2 className="font-display text-3xl md:text-[44px] mb-6 sm:mb-10">Vilket race vill du uppleva?</h2>
             <div className="sm:hidden mb-4">
               <Input type="search" aria-label="Sök lopp" placeholder="Sök lopp, stad eller bana" value={raceSearch} onChange={(event) => setRaceSearch(event.target.value)} className="h-12 bg-card" />
             </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 max-w-5xl mx-auto">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
               {entries.map((race) => (
                 <Link
                   key={race.id}
                   to={raceEventIds[race.name] ? `/sport/event/${raceEventIds[race.name]}` : `/services/sportresor/${sport.slug}/${race.slug}`}
-                  className={`group bg-card border border-border overflow-hidden hover:shadow-xl transition-shadow grid grid-cols-[6rem_minmax(0,1fr)] sm:block ${raceSearch.trim() && ![race.name, race.city, race.venue, race.date_text].join(" ").toLocaleLowerCase("sv").includes(raceSearch.trim().toLocaleLowerCase("sv")) ? "hidden sm:block" : ""}`}
+                  className={`group sb-card overflow-hidden hover:border-primary/50 hover:shadow-md transition-all grid grid-cols-[6rem_minmax(0,1fr)] sm:block ${raceSearch.trim() && ![race.name, race.city, race.venue, race.date_text].join(" ").toLocaleLowerCase("sv").includes(raceSearch.trim().toLocaleLowerCase("sv")) ? "hidden sm:block" : ""}`}
                 >
                   <div className="relative h-full min-h-40 sm:min-h-0 sm:aspect-[4/3] overflow-hidden">
                     <img
@@ -181,8 +136,8 @@ export default function SportPage() {
                       loading="lazy"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                     />
-                    <div className="hidden sm:block absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy/90 via-navy/50 to-transparent px-4 pt-10 pb-3">
-                      <p className="font-display text-xl text-primary-foreground leading-tight">{race.name}</p>
+                    <div className="hidden sm:block absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy-deep/95 via-navy-deep/50 to-transparent px-4 pt-12 pb-3">
+                      <p className="font-display text-2xl font-bold italic uppercase text-primary-foreground leading-tight">{race.name}</p>
                       {race.date_text && <p className="text-xs text-primary-foreground/80 mt-0.5">{race.date_text}</p>}
                     </div>
                   </div>
@@ -211,7 +166,7 @@ export default function SportPage() {
                         </p>
                       )}
                     </div>
-                    <span className="mt-2 sm:mt-4 inline-flex min-h-8 items-center text-sm text-primary font-medium">
+                    <span className="mt-2 sm:mt-4 inline-flex min-h-8 items-center font-display uppercase font-semibold tracking-wide text-[15px] text-primary">
                       Se resan
                       <ArrowRight className="ml-1.5 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                     </span>
@@ -224,29 +179,29 @@ export default function SportPage() {
         </section>
       ) : (
         /* Leagues + teams */
-        <section className="py-10 sm:py-14 md:py-20 bg-cream">
-          <div className="container mx-auto px-4">
-            <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans text-center">
+        <section className="sb-section">
+          <div className="sb-container">
+            <p className="eyebrow text-primary uppercase mb-1">
               Ligor & klubbar
             </p>
-            <h2 className="font-display text-3xl md:text-4xl text-center mb-12">Välj liga och lag</h2>
-            <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+            <h2 className="font-display text-3xl md:text-[44px] mb-8 md:mb-10">Välj liga och lag</h2>
+            <div className="grid md:grid-cols-2 gap-5">
               {leagues.map(([league, teams]) => {
                 // "Cuper" lists cups instead of clubs - chips link to the cup
                 // pages (matches), so there is no league page or logo for it.
                 const isCupGroup = league === CUP_GROUP_LABEL;
                 return (
-                <div key={league} className="bg-card border border-border rounded-lg p-5 sm:p-6 hover:border-primary/40 hover:shadow-lg transition-all motion-reduce:transition-none">
+                <div key={league} className="sb-card p-5 sm:p-6 hover:border-primary/50 hover:shadow-md transition-all motion-reduce:transition-none">
                   <div className="flex items-start justify-between gap-4 mb-5 min-h-[80px]">
                     <div className="min-w-0">
-                      <h3 className="font-display text-2xl text-foreground">{league}</h3>
+                      <h3 className="font-display text-[28px] italic font-bold text-foreground">{league}</h3>
                       <p className="text-xs text-muted-foreground mt-1">
                         {teams.length} {isCupGroup ? "cuper" : "lag"}
                       </p>
                       {!isCupGroup && (
                       <Link
                       to={`/services/sportresor/${sport.slug}/liga/${slugify(league)}`}
-                      className="mt-3 text-sm text-primary font-medium inline-flex items-center whitespace-nowrap hover:underline"
+                      className="mt-3 font-display uppercase font-semibold tracking-wide text-[15px] text-primary inline-flex items-center whitespace-nowrap hover:text-navy-deep"
                     >
                       Se ligan
                       <ArrowRight className="ml-1.5 h-4 w-4" />
@@ -274,7 +229,7 @@ export default function SportPage() {
                       <Link
                         key={team.id}
                         to={isCupGroup ? cupHref(sport.slug, team.slug) : `/services/sportresor/${sport.slug}/${team.slug}`}
-                        className="inline-flex items-center gap-2 text-sm border border-border rounded-md px-3 py-1.5 text-foreground/80 hover:border-primary hover:text-primary hover:bg-primary/5 transition-colors"
+                        className="inline-flex items-center gap-2 text-sm border border-border rounded-md px-3 py-1.5 text-foreground/85 hover:border-primary hover:bg-primary hover:text-primary-foreground transition-colors"
                       >
                         {cupLogo && (
                           <img
@@ -297,25 +252,15 @@ export default function SportPage() {
         </section>
       )}
 
-      {/* CTA */}
-      <section className="bg-navy py-16">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-4 font-sans">
-            Boka din {sport.label.toLowerCase()}resa
-          </p>
-          <h2 className="font-display text-3xl md:text-4xl text-white mb-6">
-            Hittar du inte laget eller matchen?
-          </h2>
-          <p className="text-white/70 max-w-lg mx-auto mb-8 leading-relaxed">
-            Hör av dig till oss så undersöker vi möjligheterna via vårt nätverk av leverantörer.
-          </p>
-          <Link to="/contact">
-            <Button size="lg" className="rounded-full bg-primary hover:bg-primary/90 px-10 tracking-wider text-sm">
-              Kontakta oss <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
-      </section>
+      <CtaBand
+        eyebrow={`Boka din ${sport.label.toLowerCase()}resa`}
+        title="Hittar du inte laget eller matchen?"
+        text="Hör av dig till oss så undersöker vi möjligheterna via vårt nätverk av leverantörer."
+      >
+        <Link to="/contact" className="sb-btn-light">
+          Kontakta oss <ArrowRight className="h-4 w-4" />
+        </Link>
+      </CtaBand>
 
       <RequestCta />
       <Footer />

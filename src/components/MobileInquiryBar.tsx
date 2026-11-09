@@ -32,7 +32,7 @@ export default function MobileInquiryBar() {
             : "Berätta vad du är ute efter - vi återkommer inom 24h.",
         });
       }}
-      className="md:hidden fixed bottom-0 inset-x-0 z-40 rounded-none bg-primary text-primary-foreground min-h-14 h-auto pt-4 pb-[max(1rem,env(safe-area-inset-bottom))] flex items-center justify-center gap-2 text-sm font-semibold shadow-lg border-t border-primary-foreground/50 active:bg-primary/90 transition-colors"
+      className="md:hidden fixed bottom-0 inset-x-0 z-40 rounded-none bg-primary text-primary-foreground min-h-14 h-auto pt-4 pb-[max(1rem,env(safe-area-inset-bottom))] flex items-center justify-center gap-2 font-display uppercase text-base font-semibold tracking-wide shadow-lg border-t border-primary-foreground/50 active:bg-navy-deep transition-colors"
       aria-label="Skicka en förfrågan"
     >
       <MessageSquare className="h-4 w-4" />

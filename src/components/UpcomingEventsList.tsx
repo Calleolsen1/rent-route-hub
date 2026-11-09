@@ -2,13 +2,11 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { usePublicPricesEnabled } from "@/hooks/usePublicPrices";
-import { useTeamPhotos } from "@/hooks/useTeamPhotos";
 import { useTeamCrests } from "@/hooks/useTeamCrests";
-import EventImage from "@/components/EventImage";
-import { ArrowRight, Calendar, MapPin } from "lucide-react";
+import { ArrowRight, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useInquiryDialog } from "@/components/InquiryDialog";
-import { formatEventDate } from "@/lib/formatSek";
+import { formatEventDate, TZ } from "@/lib/formatSek";
 import { PriceTag } from "@/components/PriceTag";
 import { Input } from "@/components/ui/input";
 
@@ -106,6 +104,20 @@ const MONTHS_SV = [
 
 const monthKey = (iso: string) => iso.slice(0, 7); // YYYY-MM
 
+/** Date block parts in Swedish time: "21", "NOV", "Lördag", "2026". */
+function dateParts(iso: string) {
+  const dt = new Date(iso);
+  const get = (o: Intl.DateTimeFormatOptions) =>
+    dt.toLocaleDateString("sv-SE", { ...o, timeZone: TZ });
+  const weekday = get({ weekday: "long" });
+  return {
+    day: get({ day: "numeric" }),
+    month: get({ month: "short" }).replace(".", "").toUpperCase(),
+    weekday: weekday.charAt(0).toUpperCase() + weekday.slice(1),
+    year: get({ year: "numeric" }),
+  };
+}
+
 export default function UpcomingEventsList({
   sport,
   team,
@@ -136,7 +148,6 @@ export default function UpcomingEventsList({
   const [loading, setLoading] = useState(true);
   const [defaultPct, setDefaultPct] = useState<number>(0);
   const { enabled: showPrices } = usePublicPricesEnabled();
-  const teamPhotos = useTeamPhotos();
   const teamCrests = useTeamCrests();
 
   useEffect(() => {
@@ -220,7 +231,7 @@ export default function UpcomingEventsList({
           Hittar du inte det du letar efter? Vi kan säkert fixa det ändå.
         </p>}
         <Button
-          className="gap-2"
+          className="gap-2 h-10 rounded-lg px-6 font-display uppercase font-semibold text-[15px] tracking-wide"
           onClick={() =>
             openInquiry({
               type: "contact",
@@ -241,21 +252,21 @@ export default function UpcomingEventsList({
   return (
     <div>
       {eyebrow && (
-        <p className={`text-[11px] sm:text-xs eyebrow text-primary uppercase font-sans text-center ${compact ? "mb-2" : "mb-3"}`}>
+        <p className={`eyebrow text-primary uppercase ${compact ? "mb-1" : "mb-2"}`}>
           {eyebrow}
         </p>
       )}
       {title && (
-        <h2 className={`font-display text-center ${compact ? "text-2xl md:text-3xl mb-5" : "text-3xl md:text-4xl mb-10"}`}>
+        <h2 className={`font-display ${compact ? "text-3xl md:text-[44px] mb-6" : "text-3xl md:text-5xl mb-8"}`}>
           {title}
         </h2>
       )}
       {showFilters && months.length > 1 && (
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
+        <div className="flex flex-wrap items-center gap-2 mb-5">
           <button
             type="button"
             onClick={() => setMonth(null)}
-            className={`rounded-full border px-3.5 py-1.5 text-xs transition-colors ${
+            className={`rounded-md border px-3.5 py-1.5 font-display uppercase font-semibold text-sm tracking-wide transition-colors ${
               month === null
                 ? "border-primary bg-primary text-primary-foreground"
                 : "border-border bg-background text-muted-foreground hover:border-primary/40"
@@ -272,7 +283,7 @@ export default function UpcomingEventsList({
                 key={m}
                 type="button"
                 onClick={() => setMonth(m === month ? null : m)}
-                className={`rounded-full border px-3.5 py-1.5 text-xs transition-colors ${
+                className={`rounded-md border px-3.5 py-1.5 font-display uppercase font-semibold text-sm tracking-wide transition-colors ${
                   month === m
                     ? "border-primary bg-primary text-primary-foreground"
                     : "border-border bg-background text-muted-foreground hover:border-primary/40"
@@ -291,7 +302,8 @@ export default function UpcomingEventsList({
         </div>
       )}
 
-      <div className={`grid md:grid-cols-2 lg:grid-cols-3 ${compact ? "gap-4" : "gap-6"}`}>
+      {/* Fixture rows (sportsbreaks-style): date block | match | crests | price + CTA */}
+      <div className={`flex flex-col ${compact ? "gap-3" : "gap-4"}`}>
         {visible.map((e) => {
           const headline =
             e.sport === "soccer"
@@ -307,77 +319,81 @@ export default function UpcomingEventsList({
           const displayPrice = e.min_price_sek != null && e.min_price_sek > 0
             ? e.min_price_sek
             : categoryMin;
+          const d = dateParts(e.starts_at);
+          const homeCrest = e.sport === "soccer" && e.home_team ? teamCrests[e.home_team] : undefined;
+          const awayCrest = e.sport === "soccer" && e.away_team ? teamCrests[e.away_team] : undefined;
+          const hiddenByMobileSearch =
+            showFilters &&
+            mobileSearch.trim() &&
+            ![e.home_team, e.away_team, e.race_name, e.venue_name, e.tournament_name]
+              .join(" ")
+              .toLocaleLowerCase("sv")
+              .includes(mobileSearch.trim().toLocaleLowerCase("sv"));
           return (
             <Link
               key={e.id}
               to={`/sport/event/${e.id}`}
-              className={`group bg-card border border-border rounded-lg overflow-hidden hover:shadow-xl hover:-translate-y-0.5 transition-all flex flex-col ${showFilters && mobileSearch.trim() && ![e.home_team, e.away_team, e.race_name, e.venue_name, e.tournament_name].join(" ").toLocaleLowerCase("sv").includes(mobileSearch.trim().toLocaleLowerCase("sv")) ? "hidden md:flex" : ""}`}
+              aria-label={`${headline}, ${formatEventDate(e.starts_at)}`}
+              className={`group sb-card grid grid-cols-[72px_1fr] md:grid-cols-[110px_1fr_auto_auto] items-center gap-x-4 md:gap-x-6 gap-y-3 p-4 md:px-5 md:py-4 hover:border-primary/50 hover:shadow-md transition-all ${hiddenByMobileSearch ? "hidden md:grid" : ""}`}
             >
-              {/* Always render an image block. Without a stadium photo the
-                  card falls back to a generated plate, so listings look
-                  consistent whether or not the team has been photographed. */}
-              <div className={`aspect-[16/6] ${compact ? "md:aspect-[16/8]" : "md:aspect-[16/10]"} overflow-hidden relative`}>
-                  <EventImage
-                    sport={e.sport}
-                    homeTeam={e.home_team}
-                    awayTeam={e.away_team}
-                    raceName={e.race_name}
-                    venueName={e.venue_name}
-                    coverUrl={e.cover_image_url}
-                    photos={teamPhotos}
-                    crests={teamCrests}
-                    className="group-hover:scale-105 transition-transform duration-700"
-                  />
-                  {showPrices && displayPrice != null && displayPrice > 0 && (
-                    <div className="absolute top-3 right-3 bg-background/95 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-lg border border-border">
-                      <PriceTag
-                        currentSek={displayPrice}
-                        compareAt={{
-                          eventSek: e.compare_at_price_sek,
-                          eventPct: e.compare_at_pct,
-                          defaultPct,
-                        }}
-                        variant="card"
-                        showFrom={true}
-                        className="!text-sm"
-                      />
-                    </div>
-                  )}
+              {/* Date block */}
+              <div className="self-stretch flex flex-col justify-center border-r border-border pr-4 md:pr-6">
+                <span className="font-display font-bold text-2xl md:text-[28px] leading-none text-foreground whitespace-nowrap">
+                  {d.day} {d.month}
+                </span>
+                <span className="mt-1.5 text-xs text-muted-foreground leading-tight">{d.weekday}</span>
+                <span className="text-xs text-muted-foreground leading-tight">{d.year}</span>
               </div>
-              <div className={`p-3 ${compact ? "md:p-4" : "md:p-5"} flex flex-col flex-1`}>
-                <p className="text-[10px] tracking-[0.25em] uppercase text-primary font-sans mb-2">
+
+              {/* Match */}
+              <div className="min-w-0">
+                <p className="eyebrow !tracking-[0.04em] !text-[13px] text-primary uppercase leading-none mb-1.5 truncate">
                   {e.tournament_name}
                 </p>
-                <h3 className={`font-display text-lg mb-2 ${compact ? "" : "md:text-xl md:mb-3"}`}>{headline}</h3>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
-                  <Calendar className="h-3.5 w-3.5" />
-                  <span>{formatEventDate(e.starts_at)}</span>
-                </div>
-                <div className={`flex items-center gap-2 text-xs text-muted-foreground ${compact ? "mb-3" : "mb-4"}`}>
-                  <MapPin className="h-3.5 w-3.5" />
-                  <span>
-                    {e.venue_name}
-                    {e.city ? `, ${e.city}` : ""}
-                  </span>
-                </div>
-                <div className={`mt-auto border-t border-border flex items-end justify-between gap-3 ${compact ? "pt-3" : "pt-4"}`}>
-                  {showPrices ? (
-                    <PriceTag
-                      currentSek={displayPrice}
-                      compareAt={{
-                        eventSek: e.compare_at_price_sek,
-                        eventPct: e.compare_at_pct,
-                        defaultPct,
-                      }}
-                      variant="large"
-                    />
-                  ) : (
-                    <span className="text-sm text-muted-foreground">Pris på förfrågan</span>
-                  )}
-                  <Button size="sm" className="rounded-full text-xs bg-primary hover:bg-primary/90 shrink-0">
-                    {showPrices ? "Köp" : "Se erbjudanden"} <ArrowRight className="ml-1 h-3 w-3" />
-                  </Button>
-                </div>
+                <h3 className="font-display text-lg md:text-[22px] leading-tight text-foreground group-hover:text-primary transition-colors">
+                  {headline}
+                </h3>
+                {(e.venue_name || e.city) && (
+                  <p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <MapPin className="h-3.5 w-3.5 shrink-0" />
+                    <span className="truncate">
+                      {e.venue_name}
+                      {e.city ? `, ${e.city}` : ""}
+                    </span>
+                  </p>
+                )}
+              </div>
+
+              {/* Crests (soccer) */}
+              <div className="hidden md:flex items-center gap-2 pl-2">
+                {homeCrest && awayCrest ? (
+                  <>
+                    <img src={homeCrest} alt={e.home_team ?? ""} loading="lazy" className="h-10 w-10 object-contain" />
+                    <span className="font-display text-xs font-semibold text-muted-foreground">VS</span>
+                    <img src={awayCrest} alt={e.away_team ?? ""} loading="lazy" className="h-10 w-10 object-contain" />
+                  </>
+                ) : null}
+              </div>
+
+              {/* Price + CTA */}
+              <div className="col-span-2 md:col-span-1 flex items-center justify-between md:justify-end gap-4 border-t border-border pt-3 md:border-0 md:pt-0">
+                {showPrices ? (
+                  <PriceTag
+                    currentSek={displayPrice}
+                    compareAt={{
+                      eventSek: e.compare_at_price_sek,
+                      eventPct: e.compare_at_pct,
+                      defaultPct,
+                    }}
+                    variant="card"
+                    showFrom={true}
+                  />
+                ) : (
+                  <span className="text-sm text-muted-foreground whitespace-nowrap">Pris på förfrågan</span>
+                )}
+                <span className="sb-btn-primary h-10 min-w-[150px] shrink-0">
+                  {showPrices ? "Köp" : "Se erbjudanden"}
+                </span>
               </div>
             </Link>
           );
