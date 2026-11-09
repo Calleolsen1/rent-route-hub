@@ -17,39 +17,11 @@ export default function TicketList({ t, sport = "soccer" }: { t: EventTickets; s
   const football = sport !== "formula1";
   const label = football ? "Matchbiljetter" : "Biljetter";
 
-  return (
-    <div id="biljetter" className="scroll-mt-24">
-      <StepHeader
-        n={1}
-        eyebrow={label}
-        title={
-          t.canBuy && t.fromPrice != null
-            ? `${label} från ${formatSek(t.fromPrice)}`
-            : football
-              ? "Välj dina officiella matchbiljetter"
-              : "Välj dina biljetter"
-        }
-      >
-        {t.hasPlan && t.onPlanColors && t.onPlanColors.size > 0 ? (
-          <>
-            <span className="hidden lg:inline">För muspekaren över en biljettkategori för att se dess placering på arenan.</span>
-            <span className="lg:hidden">Tryck på "Visa på kartan" för att se var biljetten ligger.</span>
-          </>
-        ) : null}
-      </StepHeader>
-
-      {t.preview && (
-        <div className="mb-4 rounded-lg border border-amber-300 bg-amber-50 px-4 py-2.5 text-xs text-amber-900 flex items-center gap-2">
-          <Eye className="h-4 w-4 flex-shrink-0" />
-          Förhandsvisning - bara synlig för admin. Kunder ser inte priser förrän de slås på under Påslag.
-        </div>
-      )}
-
-      <div className="rounded-xl border border-border bg-card divide-y divide-border overflow-hidden">
-        {t.groups.map((g) => {
+  const renderRow = (g: EventTickets["groups"][number]) => {
           const key = rowKey(g);
           const n = g.category_id ? t.qty[g.category_id] ?? 0 : 0;
           const open = expanded[key];
+          const hasMore = g.description.length > 1 || !!g.image_url;
           const lit = t.rowLit(g);
           const locatable = t.onMap(g);
           return (
@@ -73,7 +45,14 @@ export default function TicketList({ t, sport = "soccer" }: { t: EventTickets; s
                 )}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-start justify-between gap-3">
-                    <p className="font-medium leading-snug">{g.name}</p>
+                    <p className="font-medium leading-snug">
+                      {g.name}
+                      {g.supplier && (
+                        <span className="ml-2 align-middle rounded border border-amber-300 bg-amber-50 px-1 text-[10px] font-normal text-amber-900">
+                          {g.supplier === "p1" ? "P1" : "TC"}
+                        </span>
+                      )}
+                    </p>
                     {t.canBuy && (
                       <p className="font-display text-lg leading-snug whitespace-nowrap">
                         {g.final_sek != null ? formatSek(g.final_sek) : "-"}
@@ -85,6 +64,14 @@ export default function TicketList({ t, sport = "soccer" }: { t: EventTickets; s
                       {g.description[0]}
                     </p>
                   )}
+                  {open && g.image_url && (
+                    <img
+                      src={g.image_url}
+                      alt={`Utsikt från ${g.name}`}
+                      loading="lazy"
+                      className="mt-2 w-full max-w-sm rounded-md border border-border object-cover"
+                    />
+                  )}
                   {open && g.description.length > 1 && (
                     <ul className="mt-1.5 space-y-1 text-xs text-muted-foreground list-disc pl-4">
                       {g.description.slice(1).map((l, i) => (
@@ -95,7 +82,7 @@ export default function TicketList({ t, sport = "soccer" }: { t: EventTickets; s
 
                   <div className="mt-2 flex items-center justify-between gap-3">
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
-                      {g.description.length > 1 && (
+                      {hasMore && (
                         <button
                           type="button"
                           onClick={() => setExpanded((p) => ({ ...p, [key]: !open }))}
@@ -160,8 +147,55 @@ export default function TicketList({ t, sport = "soccer" }: { t: EventTickets; s
               </div>
             </div>
           );
-        })}
-      </div>
+  };
+
+  // Match tickets and hospitality as two short lists instead of one long
+  // one (two suppliers easily make 10+ rows). Generic tiers stay one list.
+  const hosp = t.isGeneric ? [] : t.groups.filter((g) => g.tier === "hospitality");
+  const plain = t.isGeneric ? t.groups : t.groups.filter((g) => g.tier !== "hospitality");
+  const sections = [
+    { key: "match", label, groups: plain },
+    { key: "hospitality", label: "Hospitality", groups: hosp },
+  ].filter((sec) => sec.groups.length);
+
+  return (
+    <div id="biljetter" className="scroll-mt-24">
+      <StepHeader
+        n={1}
+        eyebrow={label}
+        title={
+          t.canBuy && t.fromPrice != null
+            ? `${label} från ${formatSek(t.fromPrice)}`
+            : football
+              ? "Välj dina officiella matchbiljetter"
+              : "Välj dina biljetter"
+        }
+      >
+        {t.hasPlan && t.onPlanColors && t.onPlanColors.size > 0 ? (
+          <>
+            <span className="hidden lg:inline">För muspekaren över en biljettkategori för att se dess placering på arenan.</span>
+            <span className="lg:hidden">Tryck på "Visa på kartan" för att se var biljetten ligger.</span>
+          </>
+        ) : null}
+      </StepHeader>
+
+      {t.preview && (
+        <div className="mb-4 rounded-lg border border-amber-300 bg-amber-50 px-4 py-2.5 text-xs text-amber-900 flex items-center gap-2">
+          <Eye className="h-4 w-4 flex-shrink-0" />
+          Förhandsvisning - bara synlig för admin. Kunder ser inte priser förrän de slås på under Påslag.
+        </div>
+      )}
+
+      {sections.map((sec) => (
+        <div key={sec.key} className={sec.key === "hospitality" && sections.length > 1 ? "mt-6" : ""}>
+          {sections.length > 1 && (
+            <p className="mb-2 text-sm font-medium text-foreground">{sec.label}</p>
+          )}
+          <div className="rounded-xl border border-border bg-card divide-y divide-border overflow-hidden">
+            {sec.groups.map(renderRow)}
+          </div>
+        </div>
+      ))}
 
       <p className="mt-3 text-xs text-muted-foreground leading-relaxed">
         {t.canBuy ? (

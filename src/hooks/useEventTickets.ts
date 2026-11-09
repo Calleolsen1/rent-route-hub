@@ -30,6 +30,11 @@ export type TicketGroup = {
   final_sek?: number;
   /** P1 Travel rows: shown with price but only bookable via request. */
   request_only?: boolean;
+  /** Plain match ticket or hospitality (lounge, dining, box) — the list is split on it. */
+  tier?: "match" | "hospitality";
+  image_url?: string | null;
+  /** Admin only: which supplier sells this row ("travelconnection" | "p1"). */
+  supplier?: string;
 };
 
 type TicketsResponse = {
@@ -52,7 +57,7 @@ const GENERIC_TIERS: Record<string, TicketGroup[]> = {
   soccer: [
     { category_id: "generic:standard", name: "Standardbiljett", description: ["Bra platser på läktarna - sällskap placeras ihop i mån av plats."], color: null, available: true, max_qty: 20 },
     { category_id: "generic:premium", name: "Premium", description: ["De bästa platserna på långsidan, nära mittlinjen."], color: null, available: true, max_qty: 20 },
-    { category_id: "generic:vip", name: "VIP & Hospitality", description: ["Lounge med mat och dryck och premiumstolar."], color: null, available: true, max_qty: 20 },
+    { category_id: "generic:vip", name: "VIP & Hospitality", description: ["Lounge med mat och dryck och premiumstolar."], color: null, available: true, max_qty: 20, tier: "hospitality" },
   ],
   formula1: [
     { category_id: "generic:grandstand", name: "Tribunplats", description: ["Sittplats på en av tribunerna längs banan."], color: null, available: true, max_qty: 20 },
@@ -91,6 +96,20 @@ export function useEventTickets(eventId: string | undefined, sport: string | nul
     let cancelled = false;
     setLoading(true);
     (async () => {
+      // Both suppliers, merged on the server (one row per seat, best offer).
+      const merged = await supabase.functions
+        .invoke("event-tickets", { body: { event_id: eventId } })
+        .then(({ data: d, error: e }) => (e ? null : (d as TicketsResponse)))
+        .catch(() => null);
+      if (cancelled) return;
+      if (merged) {
+        setData(merged);
+        setLoading(false);
+        return;
+      }
+
+      // Fallback (event-tickets not deployed yet, or down): the two
+      // suppliers separately, simply listed together.
       const load = () =>
         supabase.functions.invoke("travelconnection-tickets", { body: { event_id: eventId } });
       // P1 Travel runs alongside; a P1 failure never hides Travel Connection.
@@ -108,7 +127,6 @@ export function useEventTickets(eventId: string | undefined, sport: string | nul
       const tc = error ? null : (res as TicketsResponse);
       const p1Groups = p1?.groups ?? [];
       if (tc && p1Groups.length) {
-        // Both suppliers: one list, Travel Connection first, then P1 by price.
         setData({ ...tc, prices_visible: tc.prices_visible || p1?.prices_visible, groups: [...(tc.groups ?? []), ...p1Groups] });
       } else {
         setData(tc?.groups?.length ? tc : p1Groups.length ? p1 : tc);

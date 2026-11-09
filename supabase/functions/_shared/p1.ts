@@ -123,6 +123,12 @@ export class P1Client {
     throw new P1Error(`P1 ${path}: no answer after retries`, 503);
   }
 
+  /** Marketing content for a seating-plan category (a product's categoryId). Shape is loosely typed on purpose. */
+  async categoryContent(categoryId: string, locale = "en"): Promise<Record<string, unknown>> {
+    const p = new URLSearchParams({ locale });
+    return await this.get<Record<string, unknown>>(`/content/seating-plan-categories/${encodeURIComponent(categoryId)}`, p);
+  }
+
   /** All events in a window (paged through), optionally only specific ids. */
   async searchEvents(opts: { from?: string; till?: string; eventIds?: string[]; currency?: P1Currency }): Promise<P1Event[]> {
     // Keyed by id: pages can overlap (the same event on two pages), which
