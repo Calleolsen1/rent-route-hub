@@ -332,9 +332,9 @@ export default function UpcomingEventsList({
             >
               {/* Date block */}
               <div className="self-stretch flex flex-col justify-center border-r border-border pr-3 lg:pr-6">
-                <span className="font-display font-bold text-[22px] lg:text-[28px] leading-none text-foreground">
-                  <span className="lg:hidden">{d.day}<br />{d.month}</span>
-                  <span className="hidden lg:inline whitespace-nowrap">{d.day} {d.month}</span>
+                <span className="font-display font-semibold text-lg lg:text-[22px] leading-none text-foreground">
+                  <span className="lg:hidden">{d.day}<br />{d.month.toLowerCase()}</span>
+                  <span className="hidden lg:inline whitespace-nowrap">{d.day} {d.month.toLowerCase()}</span>
                 </span>
                 <span className="mt-1 lg:mt-1.5 text-[11px] lg:text-xs text-muted-foreground leading-tight">
                   <span className="lg:hidden">{d.weekday.slice(0, 3)}</span>
