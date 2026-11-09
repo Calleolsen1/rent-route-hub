@@ -19,7 +19,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { ArrowDown, ArrowLeft, Calendar, MapPin } from "lucide-react";
+import { ArrowDown, ArrowLeft } from "lucide-react";
 import Footer from "@/components/Footer";
 import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
@@ -210,32 +210,17 @@ export default function EventDetail() {
             />
           </div>
           <div className="min-w-0">
-            <div className="flex items-stretch gap-4 md:gap-5">
-              <div className="flex flex-col justify-center border-r border-border pr-4 md:pr-5 shrink-0">
-                <span className="font-display font-bold text-3xl leading-none whitespace-nowrap">
-                  {dateBlock.day} {dateBlock.month}
-                </span>
-                <span className="mt-1.5 text-xs text-muted-foreground leading-tight">
-                  {dateBlock.weekday}{dateBlock.time ? ` ${dateBlock.time}` : ""}
-                </span>
-                <span className="text-xs text-muted-foreground leading-tight">{dateBlock.year}</span>
-              </div>
-              <div className="min-w-0">
-                <p className="eyebrow text-primary uppercase mb-1">{event.tournament_name}</p>
-                <h1 className="font-display text-3xl md:text-[32px] lg:text-4xl leading-[1.08]">{noBreakHyphen(headline)}</h1>
-              </div>
-            </div>
-            <div className="mt-5 space-y-2 text-sm text-foreground/80">
-              <p className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-primary shrink-0" /> {formatEventDateTime(event.starts_at)}
+            <p className="eyebrow text-primary mb-2">{event.tournament_name}</p>
+            <h1 className="font-display text-3xl md:text-[34px] lg:text-[40px] leading-[1.1]">{noBreakHyphen(headline)}</h1>
+            <p className="mt-4 text-[15px] text-foreground/80">
+              {dateBlock.weekday} {formatEventDateTime(event.starts_at)}
+            </p>
+            {event.venue_name && (
+              <p className="mt-1 text-[15px] text-foreground/80">
+                {event.venue_name}
+                {event.city ? `, ${event.city}` : ""}
               </p>
-              {event.venue_name && (
-                <p className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-primary shrink-0" /> {event.venue_name}
-                  {event.city ? `, ${event.city}` : ""}
-                </p>
-              )}
-            </div>
+            )}
           </div>
         </div>
       </section>
@@ -304,31 +289,6 @@ export default function EventDetail() {
               onFrom={setFlightFrom}
             />
 
-            <div>
-              <p className="eyebrow text-primary uppercase mb-3">
-                Matchen
-              </p>
-              <div className="sb-card p-5 grid sm:grid-cols-3 gap-4">
-                <div>
-                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Datum</p>
-                  <p className="text-sm font-medium">{formatEventDateTime(event.starts_at)}</p>
-                </div>
-                {event.venue_name && (
-                  <div>
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Arena</p>
-                    <p className="text-sm font-medium">{event.venue_name}</p>
-                  </div>
-                )}
-                {(event.city || event.country) && (
-                  <div>
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Plats</p>
-                    <p className="text-sm font-medium">
-                      {[event.city, event.country].filter(Boolean).join(", ")}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
 
             {seatmapUrl && !t.hasPlan && (
               <div>

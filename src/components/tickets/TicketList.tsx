@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, Eye, MapPin, Minus, Plus, Ticket } from "lucide-react";
+import { ChevronDown, Eye, MapPin, Minus, Plus } from "lucide-react";
 import { formatSek } from "@/lib/formatSek";
 import { normColor } from "@/lib/planColor";
 import { rowKey, type EventTickets } from "@/hooks/useEventTickets";
@@ -68,9 +68,7 @@ export default function TicketList({ t, sport = "soccer" }: { t: EventTickets; s
                     style={{ backgroundColor: g.color }}
                     aria-hidden
                   />
-                ) : (
-                  <Ticket className="mt-1 h-3.5 w-3.5 flex-shrink-0 text-primary" aria-hidden />
-                )}
+                ) : null}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-start justify-between gap-3">
                     <p className="font-medium leading-snug">{g.name}</p>
@@ -127,8 +125,7 @@ export default function TicketList({ t, sport = "soccer" }: { t: EventTickets; s
                         <span className="text-muted-foreground">Ordnas på förfrågan</span>
                       ) : g.available ? (
                         <span className="text-muted-foreground inline-flex items-center gap-1">
-                          {!t.canBuy && <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden />}
-                          {t.canBuy ? `Max ${g.max_qty}` : "Tillgänglig"}
+                                                    {t.canBuy ? `Max ${g.max_qty}` : "Tillgänglig"}
                         </span>
                       ) : (
                         <span className="text-muted-foreground">Slutsålt just nu</span>
@@ -200,10 +197,9 @@ function QtyStepper({
       <button
         type="button"
         onClick={onAdd}
-        className="flex-shrink-0 inline-flex items-center gap-1.5 rounded-full bg-primary px-4 h-9 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 active:scale-[0.97] transition"
+        className="flex-shrink-0 inline-flex items-center rounded-full border border-primary/40 px-4 h-9 text-sm font-medium text-primary hover:bg-primary hover:text-primary-foreground active:scale-[0.97] transition"
         aria-label={`Lägg till en biljett ${name}`}
       >
-        <Plus className="h-4 w-4" strokeWidth={2.5} />
         Lägg till
       </button>
     );

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { ArrowDown, ArrowRight, Hotel, Loader2, MapPin, Plane, Ticket, type LucideIcon } from "lucide-react";
+import { ArrowDown, ArrowRight, Hotel, Loader2, Plane, Ticket, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatSek } from "@/lib/formatSek";
 import type { EventTickets } from "@/hooks/useEventTickets";
@@ -52,12 +52,7 @@ export default function BookingCard({
       {/* Match */}
       <div className="px-5 pt-5 pb-4 border-b border-border">
         <div className="flex items-center justify-between gap-2 mb-2">
-          <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-foreground/70 font-sans">Din resa</p>
-          {!checkout && (
-            <span className="shrink-0 bg-muted text-muted-foreground text-[10px] font-semibold uppercase tracking-wide px-2 py-1 rounded">
-              Förfrågan
-            </span>
-          )}
+          <p className="text-sm font-medium text-muted-foreground">Din resa</p>
         </div>
         <p className="font-display text-xl leading-tight">{headline}</p>
         <p className="mt-1 text-xs text-muted-foreground flex items-center gap-1.5">
@@ -65,7 +60,6 @@ export default function BookingCard({
           {venue && (
             <>
               <span aria-hidden>·</span>
-              <MapPin className="h-3 w-3 shrink-0" />
               <span className="truncate">{venue}</span>
             </>
           )}
@@ -183,11 +177,10 @@ function Row({
   children: ReactNode;
 }) {
   return (
-    <div className="px-5 py-3.5 flex gap-3 text-sm">
-      <Icon className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-      <div className="min-w-0 flex-1">
+    <div className="px-5 py-3.5 text-sm">
+      <div className="min-w-0">
         <div className="flex items-center justify-between gap-2 mb-1">
-          <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground font-sans">{label}</p>
+          <p className="text-[13px] font-medium text-foreground">{label}</p>
           {action && (
             <button type="button" onClick={action.onClick} className="text-xs text-primary hover:underline">
               {action.text}
@@ -205,7 +198,7 @@ function Empty({ text, link, onClick }: { text: string; link: string; onClick: (
     <p className="flex items-center justify-between gap-2 text-muted-foreground">
       <span>{text}</span>
       <button type="button" onClick={onClick} className="text-xs font-semibold text-primary hover:underline">
-        + {link}
+        {link}
       </button>
     </p>
   );

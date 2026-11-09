@@ -16,13 +16,7 @@ export function StepHeader({
   children?: ReactNode;
 }) {
   return (
-    <div className="flex items-start gap-3 mb-4">
-      <span
-        className="mt-0.5 h-8 w-8 sm:h-9 sm:w-9 flex-shrink-0 rounded-md bg-primary text-primary-foreground flex items-center justify-center font-display text-xl font-bold italic tabular-nums"
-        aria-hidden
-      >
-        {n}
-      </span>
+    <div className="mb-4">
       <div className="min-w-0">
         <p className="eyebrow text-primary uppercase mb-0.5">
           Steg {n} · {eyebrow}
@@ -58,7 +52,6 @@ export function OnOffChoice({
         { opt: onOpt, value: true },
       ].map(({ opt, value }) => {
         const selected = on === value;
-        const Icon = opt.icon;
         return (
           <button
             key={String(value)}
@@ -77,7 +70,6 @@ export function OnOffChoice({
                 <Check className="h-3 w-3" strokeWidth={3} />
               </span>
             )}
-            <Icon className={`h-5 w-5 mb-2 ${selected ? "text-primary" : "text-muted-foreground"}`} />
             <p className="font-display uppercase font-semibold text-base leading-snug">{opt.label}</p>
             <p className="mt-0.5 text-xs text-muted-foreground leading-snug">{opt.hint}</p>
           </button>
