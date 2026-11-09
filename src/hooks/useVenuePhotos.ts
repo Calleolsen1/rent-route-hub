@@ -1,5 +1,14 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { STADIUM_PHOTOS } from "@/data/stadiumPhotos";
+
+/** Built-in stadium photos keyed by venue and team; admin uploads override. */
+const BUILT_IN: Record<string, string> = Object.fromEntries(
+  Object.entries(STADIUM_PHOTOS).flatMap(([team, p]) => [
+    [p.venue.toLowerCase(), p.url],
+    [team.toLowerCase(), p.url],
+  ]),
+);
 
 /**
  * Stadium/circuit photos keyed by lowercased venue label.
@@ -9,7 +18,7 @@ import { supabase } from "@/integrations/supabase/client";
  * ("Italiens GP"), so the venue label ("Monza") is the reliable join.
  */
 export function useVenuePhotos(): Record<string, string> {
-  const [photos, setPhotos] = useState<Record<string, string>>({});
+  const [photos, setPhotos] = useState<Record<string, string>>(BUILT_IN);
 
   useEffect(() => {
     let cancelled = false;
@@ -19,7 +28,7 @@ export function useVenuePhotos(): Record<string, string> {
           .from("team_venue_photos")
           .select("match_key, venue_label, image_url");
         if (cancelled || !data) return;
-        const map: Record<string, string> = {};
+        const map: Record<string, string> = { ...BUILT_IN };
         for (const r of data as {
           match_key: string;
           venue_label: string | null;

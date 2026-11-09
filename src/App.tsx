@@ -48,6 +48,7 @@ import BackofficeInvoices from "./pages/admin/backoffice/Invoices";
 import BackofficeReports from "./pages/admin/backoffice/Reports";
 import Integritetspolicy from "./pages/Integritetspolicy";
 import Anvandarvillkor from "./pages/Anvandarvillkor";
+import Bildkallor from "./pages/Bildkallor";
 import CookieConsent from "./components/CookieConsent";
 import NotFound from "./pages/NotFound";
 import Services from "./pages/Services";
@@ -111,6 +112,7 @@ const App = () => (
               <Route path="/support" element={<Support />} />
               <Route path="/integritetspolicy" element={<Integritetspolicy />} />
               <Route path="/anvandarvillkor" element={<Anvandarvillkor />} />
+              <Route path="/bildkallor" element={<Bildkallor />} />
               <Route path="/forgot-password" element={<><Navbar /><ForgotPassword /></>} />
 
               {/* Ticket flow */}

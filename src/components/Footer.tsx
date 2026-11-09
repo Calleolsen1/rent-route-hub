@@ -146,6 +146,8 @@ const Footer = () => {
             <span className="text-white/25">|</span>
             <Link to="/anvandarvillkor" className="hover:text-white transition-colors">Användarvillkor</Link>
             <span className="text-white/25">|</span>
+            <Link to="/bildkallor" className="hover:text-white transition-colors">Bildkällor</Link>
+            <span className="text-white/25">|</span>
             <button onClick={clearCookieConsent} className="hover:text-white transition-colors">Cookie-inställningar</button>
           </div>
         </div>
