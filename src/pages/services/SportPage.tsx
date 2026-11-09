@@ -118,7 +118,7 @@ export default function SportPage() {
             <p className="eyebrow text-primary uppercase mb-1">
               Kalendern
             </p>
-            <h2 className="font-display text-3xl md:text-[44px] mb-6 sm:mb-10">Vilket race vill du uppleva?</h2>
+            <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] mb-6 sm:mb-10">Vilket race vill du uppleva?</h2>
             <div className="sm:hidden mb-4">
               <Input type="search" aria-label="Sök lopp" placeholder="Sök lopp, stad eller bana" value={raceSearch} onChange={(event) => setRaceSearch(event.target.value)} className="h-12 bg-card" />
             </div>
@@ -188,7 +188,7 @@ export default function SportPage() {
             <p className="eyebrow text-primary uppercase mb-1">
               Ligor & klubbar
             </p>
-            <h2 className="font-display text-3xl md:text-[44px] mb-5 md:mb-10">Välj liga och lag</h2>
+            <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] mb-5 md:mb-10">Välj liga och lag</h2>
             <div className="grid md:grid-cols-2 gap-3 sm:gap-5">
               {leagues.map(([league, teams]) => {
                 // "Cuper" lists cups instead of clubs - chips link to the cup

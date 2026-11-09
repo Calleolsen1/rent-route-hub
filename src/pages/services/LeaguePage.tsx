@@ -77,7 +77,7 @@ export default function LeaguePage() {
           <p className="eyebrow text-primary uppercase mb-1">
             Klubbar i {leagueName}
           </p>
-          <h2 className="font-display text-[26px] sm:text-3xl md:text-[44px] mb-5 sm:mb-10">Vilket lag vill du se live?</h2>
+          <h2 className="font-display text-[26px] sm:text-3xl md:text-[36px] lg:text-[44px] mb-5 sm:mb-10">Vilket lag vill du se live?</h2>
           <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
             {teams.map((team) => {
               const venueImage =
@@ -103,7 +103,7 @@ export default function LeaguePage() {
                     />
                   ) : null}
                   <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy-deep/95 via-navy-deep/40 to-transparent px-3 sm:px-4 pt-10 pb-2.5 sm:pb-3">
-                    <h3 className="font-display text-base sm:text-2xl italic font-bold leading-tight text-white">{team.name}</h3>
+                    <h3 className="font-display text-[13px] min-[400px]:text-[15px] sm:text-2xl italic font-bold leading-tight text-white">{team.name}</h3>
                   </div>
                 </div>
                 <div className="p-2.5 sm:p-4">

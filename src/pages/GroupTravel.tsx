@@ -50,7 +50,7 @@ export default function GroupTravel() {
         <div className="sb-container">
           <div className="grid md:grid-cols-2 gap-8 lg:gap-14 items-center">
             <div>
-              <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-5">
+              <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-5">
                 Erfarenhet som <em className="italic font-light">gör skillnad</em>
               </h2>
               <p className="text-foreground/80 text-[15px] leading-relaxed mb-5">
@@ -83,7 +83,7 @@ export default function GroupTravel() {
               />
             </div>
             <div>
-              <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-5">
+              <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-5">
                 Vi kan resan - <em className="italic font-light">och logistiken</em>
               </h2>
               <p className="text-foreground/80 text-[15px] leading-relaxed mb-5">
@@ -107,7 +107,7 @@ export default function GroupTravel() {
       <section className="sb-section">
         <div className="sb-container">
           <div className="max-w-[880px]">
-            <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-5">
+            <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-5">
               Professionell <em className="italic font-light">reseledarservice</em> på plats
             </h2>
             <p className="text-foreground/80 text-[15px] leading-relaxed mb-5">
@@ -127,7 +127,7 @@ export default function GroupTravel() {
       <section className="sb-section-alt">
         <div className="sb-container">
           <div className="max-w-[880px]">
-            <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-5">
+            <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-5">
               Erfarna på att skapa <em className="italic font-light">resor tillsammans</em>
             </h2>
             <p className="text-foreground/80 text-[15px] leading-relaxed mb-5">

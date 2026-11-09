@@ -123,7 +123,7 @@ export default function Traningslager() {
  <section className="sb-section">
  <div className="sb-container">
  <p className="eyebrow text-primary uppercase mb-1">Utvalda Träningsläger</p>
- <h2 className="font-display text-3xl md:text-[44px] text-foreground">
+ <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground">
  Ett axplock av <em className="italic">våra läger</em>
  </h2>
  <p className="text-foreground/80 text-[15px] mt-3 mb-8 md:mb-10 max-w-2xl">
@@ -192,7 +192,7 @@ export default function Traningslager() {
  <div className="sb-container grid md:grid-cols-2 gap-5">
  <div className="sb-card p-6 md:p-8">
  <p className="eyebrow text-primary uppercase mb-1">Noggrant Utvalda Destinationer</p>
- <h2 className="font-display text-3xl md:text-[36px] text-foreground mb-4">
+ <h2 className="font-display text-3xl md:text-[30px] lg:text-[36px] text-foreground mb-4">
  Europas bästa träningsmiljöer
  </h2>
  <p className="text-foreground/80 leading-relaxed text-[15px]">
@@ -201,7 +201,7 @@ export default function Traningslager() {
  </div>
  <div className="sb-card p-6 md:p-8">
  <p className="eyebrow text-primary uppercase mb-1">Vi Tar Hand Om Helheten</p>
- <h2 className="font-display text-3xl md:text-[36px] text-foreground mb-4">
+ <h2 className="font-display text-3xl md:text-[30px] lg:text-[36px] text-foreground mb-4">
  Ni fokuserar på träningen
  </h2>
  <p className="text-foreground/80 leading-relaxed text-[15px]">
@@ -216,7 +216,7 @@ export default function Traningslager() {
  <div className="sb-container grid md:grid-cols-2 gap-8 lg:gap-14 items-center">
  <div>
  <p className="eyebrow text-primary uppercase mb-1">En Resa Som Stärker Laget</p>
- <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-4">
+ <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-4">
  Mer än bara träning
  </h2>
  <p className="text-foreground/80 leading-relaxed mb-4 text-[15px]">

@@ -57,7 +57,7 @@ export default function About() {
   <div className="sb-container max-w-[880px]">
   <div>
   <p className="eyebrow text-primary uppercase mb-1">Vilka vi är</p>
-  <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-5">
+  <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-5">
    Vi tillhör eliten inom resor
   </h2>
   <p className="text-foreground text-lg leading-relaxed italic mb-5">
@@ -76,7 +76,7 @@ export default function About() {
   <section className="sb-section">
   <div className="sb-container max-w-[880px]">
   <p className="eyebrow text-primary uppercase mb-1">Vår filosofi</p>
-  <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-5">
+  <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-5">
   Vi bryr oss. <em className="italic font-light">Hela vägen.</em>
   </h2>
   <div className="space-y-4 text-foreground/80 text-[15px] leading-relaxed">
@@ -94,7 +94,7 @@ export default function About() {
   <section className="sb-section-alt">
   <div className="sb-container max-w-[880px]">
   <p className="eyebrow text-primary uppercase mb-1">Vårt Team</p>
-  <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-5">
+  <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-5">
   Senior kompetens. <em className="italic font-light">Personlig service.</em>
   </h2>
   <div className="space-y-4 text-foreground/80 text-[15px] leading-relaxed">
@@ -112,7 +112,7 @@ export default function About() {
   <section className="sb-section">
   <div className="sb-container max-w-[880px]">
   <p className="eyebrow text-primary uppercase mb-1">Upplevelser & Tjänster</p>
-  <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-5">
+  <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-5">
   Mer än det du ser <em className="italic font-light">på hemsidan</em>
   </h2>
   <div className="space-y-4 text-foreground/80 text-[15px] leading-relaxed">
@@ -171,7 +171,7 @@ export default function About() {
   <div className="sb-container">
   <div className="mb-8 md:mb-10">
   <p className="eyebrow text-primary uppercase mb-1">Varför resa med KAISEN TRAVEL GROUP?</p>
-  <h2 className="font-display text-3xl md:text-[44px] text-foreground">
+  <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground">
   Erfarenhet som märks. Engagemang som känns.
   </h2>
   </div>

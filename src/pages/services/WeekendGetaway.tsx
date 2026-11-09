@@ -106,7 +106,7 @@ export default function WeekendGetaway() {
  <div>
  <p className="eyebrow text-primary uppercase mb-1">{dest.tagline}</p>
  <div className="flex items-baseline gap-3 mb-4">
- <h2 className="font-display text-3xl md:text-[44px] text-foreground">{dest.city}</h2>
+ <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground">{dest.city}</h2>
  <span className="text-sm text-muted-foreground">{dest.country}</span>
  </div>
  <p className="text-foreground/80 leading-relaxed text-[15px] mb-8">

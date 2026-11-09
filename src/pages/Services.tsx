@@ -102,7 +102,7 @@ export default function Services() {
     <p className="eyebrow text-primary uppercase mb-1">
      {cat.tag}
     </p>
-    <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-4">{cat.title}</h2>
+    <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-4">{cat.title}</h2>
     <p className="text-foreground/80 leading-relaxed mb-6 text-[15px]">{cat.description}</p>
     <ul className="space-y-2.5 mb-8">
      {cat.features.map((f) => (

@@ -184,7 +184,7 @@ export default function FAQ() {
  {/* Still have questions CTA */}
  <section className="sb-section-alt">
  <div className="sb-container text-center max-w-2xl">
- <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-4">Hittar du inte svaret?</h2>
+ <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-4">Hittar du inte svaret?</h2>
  <p className="text-foreground/80 leading-relaxed mb-8">
  Vi är alltid tillgängliga för ett personligt samtal. Ring, maila eller fyll i kontaktformuläret - vi svarar snabbt.
  </p>

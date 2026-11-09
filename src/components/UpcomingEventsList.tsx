@@ -7,6 +7,7 @@ import { ArrowRight, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useInquiryDialog } from "@/components/InquiryDialog";
 import { formatEventDate, eventDateParts } from "@/lib/formatSek";
+import { noBreakHyphen } from "@/lib/noBreakHyphen";
 import { PriceTag } from "@/components/PriceTag";
 import { Input } from "@/components/ui/input";
 
@@ -249,7 +250,7 @@ export default function UpcomingEventsList({
         </p>
       )}
       {title && (
-        <h2 className={`font-display ${compact ? "text-3xl md:text-[44px] mb-6" : "text-3xl md:text-5xl mb-8"}`}>
+        <h2 className={`font-display ${compact ? "text-3xl md:text-[36px] lg:text-[44px] mb-6" : "text-3xl md:text-5xl mb-8"}`}>
           {title}
         </h2>
       )}
@@ -297,10 +298,11 @@ export default function UpcomingEventsList({
       {/* Fixture rows (sportsbreaks-style): date block | match | crests | price + CTA */}
       <div className={`flex flex-col ${compact ? "gap-2.5 md:gap-3" : "gap-3 md:gap-4"}`}>
         {visible.map((e) => {
-          const headline =
+          const headline = noBreakHyphen(
             e.sport === "soccer"
               ? `${e.home_team} vs ${e.away_team}`
-              : e.race_name;
+              : e.race_name,
+          );
           // Fall back to cheapest ticket_categories.unit_price_sek when the
           // events.min_price_sek column is null (e.g. the supplier sync hasn't run yet
           // since the price columns were added).
@@ -326,34 +328,34 @@ export default function UpcomingEventsList({
               key={e.id}
               to={`/sport/event/${e.id}`}
               aria-label={`${headline}, ${formatEventDate(e.starts_at)}`}
-              className={`group sb-card grid grid-cols-[58px_1fr] md:grid-cols-[110px_1fr_auto_auto] items-center gap-x-3 md:gap-x-6 gap-y-2.5 p-3 md:px-5 md:py-4 hover:border-primary/50 hover:shadow-md transition-all ${hiddenByMobileSearch ? "hidden md:grid" : ""}`}
+              className={`group sb-card grid grid-cols-[58px_1fr] lg:grid-cols-[110px_1fr_auto_auto] items-center gap-x-3 lg:gap-x-6 gap-y-2.5 p-3 lg:px-5 lg:py-4 hover:border-primary/50 hover:shadow-md transition-all ${hiddenByMobileSearch ? "hidden lg:grid" : ""}`}
             >
               {/* Date block */}
-              <div className="self-stretch flex flex-col justify-center border-r border-border pr-3 md:pr-6">
-                <span className="font-display font-bold text-[22px] md:text-[28px] leading-none text-foreground">
-                  <span className="md:hidden">{d.day}<br />{d.month}</span>
-                  <span className="hidden md:inline whitespace-nowrap">{d.day} {d.month}</span>
+              <div className="self-stretch flex flex-col justify-center border-r border-border pr-3 lg:pr-6">
+                <span className="font-display font-bold text-[22px] lg:text-[28px] leading-none text-foreground">
+                  <span className="lg:hidden">{d.day}<br />{d.month}</span>
+                  <span className="hidden lg:inline whitespace-nowrap">{d.day} {d.month}</span>
                 </span>
-                <span className="mt-1 md:mt-1.5 text-[11px] md:text-xs text-muted-foreground leading-tight">
-                  <span className="md:hidden">{d.weekday.slice(0, 3)}</span>
-                  <span className="hidden md:inline">{d.weekday}</span>
+                <span className="mt-1 lg:mt-1.5 text-[11px] lg:text-xs text-muted-foreground leading-tight">
+                  <span className="lg:hidden">{d.weekday.slice(0, 3)}</span>
+                  <span className="hidden lg:inline">{d.weekday}</span>
                 </span>
-                <span className="text-[11px] md:text-xs text-muted-foreground leading-tight">{d.year}</span>
+                <span className="text-[11px] lg:text-xs text-muted-foreground leading-tight">{d.year}</span>
               </div>
 
               {/* Match */}
               <div className="min-w-0">
-                <p className="eyebrow !tracking-[0.04em] !text-[12px] md:!text-[13px] text-primary uppercase leading-none mb-1 md:mb-1.5 truncate">
+                <p className="eyebrow !tracking-[0.04em] !text-[12px] lg:!text-[13px] text-primary uppercase leading-none mb-1 lg:mb-1.5 truncate">
                   {e.tournament_name}
                 </p>
-                <h3 className="font-display text-[17px] md:text-[22px] leading-[1.1] text-foreground group-hover:text-primary transition-colors">
+                <h3 className="font-display text-[17px] lg:text-[22px] leading-[1.1] text-foreground group-hover:text-primary transition-colors">
                   {headline}
                 </h3>
                 {(e.venue_name || e.city) && (
                   <p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
                     <MapPin className="h-3.5 w-3.5 shrink-0" />
                     <span className="truncate">
-                      {e.venue_name}
+                      {noBreakHyphen(e.venue_name)}
                       {e.city ? `, ${e.city}` : ""}
                     </span>
                   </p>
@@ -361,7 +363,7 @@ export default function UpcomingEventsList({
               </div>
 
               {/* Crests (soccer) */}
-              <div className="hidden md:flex items-center gap-2 pl-2">
+              <div className="hidden lg:flex items-center gap-2 pl-2">
                 {homeCrest && awayCrest ? (
                   <>
                     <img src={homeCrest} alt={e.home_team ?? ""} loading="lazy" className="h-10 w-10 object-contain" />
@@ -372,7 +374,7 @@ export default function UpcomingEventsList({
               </div>
 
               {/* Price + CTA */}
-              <div className="col-span-2 md:col-span-1 flex items-center justify-between md:justify-end gap-3 md:gap-4 border-t border-border pt-2.5 md:border-0 md:pt-0">
+              <div className="col-span-2 lg:col-span-1 flex items-center justify-between lg:justify-end gap-3 lg:gap-4 border-t border-border pt-2.5 lg:border-0 lg:pt-0">
                 {showPrices ? (
                   <PriceTag
                     currentSek={displayPrice}
@@ -385,9 +387,9 @@ export default function UpcomingEventsList({
                     showFrom={true}
                   />
                 ) : (
-                  <span className="text-[13px] md:text-sm text-muted-foreground whitespace-nowrap">Pris på förfrågan</span>
+                  <span className="text-[13px] lg:text-sm text-muted-foreground whitespace-nowrap">Pris på förfrågan</span>
                 )}
-                <span className="sb-btn-primary h-8 md:h-10 px-3.5 md:px-6 text-[13px] md:text-[15px] md:min-w-[150px] shrink-0">
+                <span className="sb-btn-primary h-8 lg:h-10 px-3.5 lg:px-6 text-[13px] lg:text-[15px] lg:min-w-[150px] shrink-0">
                   {showPrices ? "Köp" : "Se erbjudanden"}
                 </span>
               </div>

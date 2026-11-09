@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
+import { noBreakHyphen } from "@/lib/noBreakHyphen";
 
 type Props = {
   image: string;
@@ -43,7 +44,7 @@ export default function PageHero({ image, imageAlt, eyebrow, title, logo, logoAl
       <div className="relative w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10 py-6 md:py-12 flex items-end justify-between gap-6">
         <div className="min-w-0 max-w-3xl">
           {eyebrow && <p className="eyebrow text-sky-300 uppercase mb-1.5">{eyebrow}</p>}
-          <h1 className="font-display text-[32px] sm:text-5xl md:text-6xl text-white">{title}</h1>
+          <h1 className="font-display text-[32px] sm:text-5xl md:text-6xl text-white">{typeof title === "string" ? noBreakHyphen(title) : title}</h1>
           {children && (
             <div
               className={`mt-2 md:mt-3 text-white/85 text-sm md:text-base leading-relaxed max-w-2xl whitespace-pre-line ${

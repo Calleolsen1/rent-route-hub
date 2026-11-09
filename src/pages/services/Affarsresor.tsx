@@ -82,7 +82,7 @@ export default function Affarsresor() {
  </div>
  <div>
  <p className="eyebrow text-primary uppercase mb-1">Skräddarsytt för dig</p>
- <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-4">
+ <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-4">
  Inga mallar - bara din resa
  </h2>
  <p className="text-foreground/80 leading-relaxed mb-6 text-[15px]">
@@ -123,13 +123,13 @@ export default function Affarsresor() {
  <section className="sb-section">
  <div className="sb-container">
  <p className="eyebrow text-primary uppercase mb-1">Populära destinationer</p>
- <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-8 md:mb-10">
+ <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-8 md:mb-10">
  Världens ledande affärsstäder
  </h2>
  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
  {destinations.map((d) => (
  <div key={d.city} className="sb-card p-5 md:p-6 hover:border-primary/50 hover:shadow-md transition-all">
- <h3 className="font-display text-2xl md:text-[28px] italic font-bold text-foreground mb-1">{d.city}</h3>
+ <h3 className="font-display text-xl sm:text-2xl md:text-[28px] italic font-bold text-foreground mb-1">{d.city}</h3>
  <p className="text-xs text-muted-foreground">{d.desc}</p>
  </div>
  ))}

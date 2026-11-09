@@ -94,7 +94,7 @@ export default function Support() {
  <section className="sb-section bg-background">
  <div className="sb-container">
  <div className="mb-8 md:mb-10">
-              <h2 className="font-display text-3xl md:text-[44px] text-foreground">Kontakta oss</h2>
+              <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground">Kontakta oss</h2>
 
  </div>
  <div className="grid md:grid-cols-3 gap-4">
@@ -132,7 +132,7 @@ export default function Support() {
  <div className="sb-container">
  <div className="mb-8 md:mb-10">
  <p className="eyebrow text-primary uppercase mb-1">Typ av ärende</p>
- <h2 className="font-display text-3xl md:text-[44px] text-foreground">Hur kan vi hjälpa till?</h2>
+ <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground">Hur kan vi hjälpa till?</h2>
  </div>
  <div className="grid md:grid-cols-3 gap-4">
  {supportTypes.map((st) => (
@@ -155,7 +155,7 @@ export default function Support() {
  <div aria-hidden className="pointer-events-none absolute -right-28 -bottom-40 h-[380px] w-[380px] -rotate-12 rounded-[64px] bg-white/[0.04]" />
  <div className="relative px-6 py-10 md:px-16 md:py-14 text-center max-w-3xl mx-auto">
  <p className="eyebrow text-sky-200 uppercase mb-2">Vårt löfte</p>
- <h2 className="font-display text-3xl md:text-[44px] text-white mb-5">
+ <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-white mb-5">
  Vi svarar alltid - <em className="italic font-light text-white">på riktigt</em>
  </h2>
  <p className="text-white/80 leading-relaxed mb-8">

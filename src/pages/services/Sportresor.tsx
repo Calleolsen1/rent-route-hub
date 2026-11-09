@@ -79,7 +79,7 @@ export default function Sportresor() {
  {/* Content */}
  <div>
  <p className="eyebrow text-primary uppercase mb-1">{sport.title}</p>
- <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-4">
+ <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-4">
  {sport.heading}
  </h2>
  <p className="text-foreground/80 leading-relaxed mb-6 text-[15px]">

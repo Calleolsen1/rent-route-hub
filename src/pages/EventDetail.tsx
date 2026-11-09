@@ -26,6 +26,7 @@ import Navbar from "@/components/Navbar";
 import { eventDateParts, formatEventDateTime, formatSek } from "@/lib/formatSek";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { usePageMeta } from "@/lib/usePageMeta";
+import { noBreakHyphen } from "@/lib/noBreakHyphen";
 import PackageCards from "@/components/site/PackageCards";
 import CityBreak from "@/components/site/CityBreak";
 import { cityBreakFor } from "@/data/cityBreaks";
@@ -221,7 +222,7 @@ export default function EventDetail() {
               </div>
               <div className="min-w-0">
                 <p className="eyebrow text-primary uppercase mb-1">{event.tournament_name}</p>
-                <h1 className="font-display text-3xl md:text-[40px] leading-[1.02]">{headline}</h1>
+                <h1 className="font-display text-3xl md:text-[30px] lg:text-[40px] leading-[1.02]">{noBreakHyphen(headline)}</h1>
               </div>
             </div>
             <div className="mt-5 space-y-2 text-sm text-foreground/80">

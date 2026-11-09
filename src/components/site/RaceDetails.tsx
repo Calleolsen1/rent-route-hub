@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { ArrowRight, Calendar, Clock, Flag, Gauge, MapPin, RotateCw, Timer, Trophy } from "lucide-react";
 import type { RaceFacts } from "@/data/raceFacts";
+import { noBreakHyphen } from "@/lib/noBreakHyphen";
 
 /** Fact tile: navy icon square + small label + big condensed value. */
 function Fact({ icon, label, value, sub }: { icon: ReactNode; label: string; value: string; sub?: string }) {
@@ -9,7 +10,7 @@ function Fact({ icon, label, value, sub }: { icon: ReactNode; label: string; val
       <span className="hidden min-[400px]:flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-md bg-primary text-white [&>svg]:h-4 [&>svg]:w-4 sm:[&>svg]:h-5 sm:[&>svg]:w-5">{icon}</span>
       <div className="min-w-0">
         <p className="eyebrow !text-[11px] sm:!text-[12px] !tracking-[0.04em] text-muted-foreground uppercase leading-none mb-1">{label}</p>
-        <p className="font-display text-base sm:text-lg md:text-xl font-semibold uppercase leading-tight break-words">{value}</p>
+        <p className="font-display text-[15px] sm:text-lg md:text-xl font-semibold uppercase leading-tight">{noBreakHyphen(value)}</p>
         {sub && <p className="text-[11px] sm:text-xs text-muted-foreground leading-tight mt-0.5">{sub}</p>}
       </div>
     </div>
@@ -54,7 +55,7 @@ export function RaceSchedule({ facts }: { facts: RaceFacts }) {
     <section className="sb-section-alt">
       <div className="sb-container">
         <p className="eyebrow text-primary uppercase mb-1">Helgens program</p>
-        <h2 className="font-display text-3xl md:text-[44px] mb-5 md:mb-8">Tre dagar med Formel 1</h2>
+        <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] mb-5 md:mb-8">Tre dagar med Formel 1</h2>
         <ol className={`grid gap-2 sm:gap-4 sm:grid-cols-2 ${facts.schedule.length >= 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}>
           {facts.schedule.map((s) => {
             const d = new Date(`${s.date}T12:00:00Z`);
@@ -126,7 +127,7 @@ export function RaceTextSections({
             </div>
             <div>
               <p className="eyebrow text-primary uppercase mb-1">Om banan</p>
-              <h2 className="font-display text-3xl md:text-[44px] mb-4">{trackName || raceName}</h2>
+              <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] mb-4">{noBreakHyphen(trackName || raceName)}</h2>
               <TextOrPlaceholder text={facts.aboutTrack} what="banan" />
             </div>
           </div>
@@ -141,7 +142,7 @@ export function RaceTextSections({
             </div>
             <div>
               <p className="eyebrow text-primary uppercase mb-1">Varför se loppet</p>
-              <h2 className="font-display text-3xl md:text-[44px] mb-4">{raceName} på plats</h2>
+              <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] mb-4">{raceName} på plats</h2>
               <TextOrPlaceholder text={facts.whyVisit} what="varför man ska se loppet" />
             </div>
           </div>

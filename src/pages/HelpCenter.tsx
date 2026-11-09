@@ -339,7 +339,7 @@ export default function HelpCenter() {
  <div className="sb-container">
  <div className="mb-8 md:mb-10">
  <p className="eyebrow text-primary uppercase mb-1">Transparens</p>
- <h2 className="font-display text-3xl md:text-[44px] text-foreground">
+ <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground">
  Alltid uppdaterad - <em className="italic font-light">utan ansträngning</em>
  </h2>
  </div>

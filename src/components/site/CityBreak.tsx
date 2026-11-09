@@ -9,7 +9,7 @@ export default function CityBreak({ data, alt }: { data: CityBreakData; alt?: bo
           <img src={data.image} alt={data.title} loading="lazy" className="h-full w-full object-cover" />
         </div>
         <div>
-          <h2 className="font-display text-3xl md:text-[44px] mb-4">{data.title}</h2>
+          <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] mb-4">{data.title}</h2>
           <div className="space-y-4 text-[15px] leading-relaxed text-foreground/80">
             {data.text.split(/\n\s*\n/).map((p, i) => (
               <p key={i}>{p}</p>

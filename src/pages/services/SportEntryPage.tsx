@@ -16,6 +16,7 @@ import PageHero from "@/components/site/PageHero";
 import CtaBand from "@/components/site/CtaBand";
 import { leagueLogos } from "@/data/leagueLogos";
 import { slugify } from "@/data/sports";
+import { noBreakHyphen } from "@/lib/noBreakHyphen";
 import { DEFAULT_FEATURES_BY_KIND } from "@/data/packageFeatures";
 import PackageCards from "@/components/site/PackageCards";
 import CityBreak from "@/components/site/CityBreak";
@@ -148,7 +149,7 @@ export default function SportEntryPage() {
           {sport.entry_kind === "race" && (
             <p className="eyebrow text-primary uppercase mb-1">Köp biljett direkt</p>
           )}
-          <h2 className="font-display text-3xl md:text-[44px]">{labels.upcomingTitle(info.name)}</h2>
+          <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px]">{labels.upcomingTitle(info.name)}</h2>
           {intro && (
             <p className="mt-3 md:mt-4 max-w-4xl text-sm md:text-[15px] leading-relaxed text-foreground/80 whitespace-pre-line">
               {intro}
@@ -247,7 +248,7 @@ export default function SportEntryPage() {
                   <span className="flex h-9 w-9 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-md bg-primary text-white"><VenueIcon className="h-5 w-5" /></span>
                   <div>
                     <p className="eyebrow !text-[13px] !tracking-[0.04em] text-muted-foreground uppercase">{labels.venueLabel}</p>
-                    <p className="font-display text-lg sm:text-xl font-semibold uppercase leading-tight">{info.venue}</p>
+                    <p className="font-display text-lg sm:text-xl font-semibold uppercase leading-tight">{noBreakHyphen(info.venue)}</p>
                   </div>
                 </div>
               )}

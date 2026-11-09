@@ -535,11 +535,11 @@ const Home = () => {
                       <div className="absolute inset-0 bg-gradient-to-r from-navy-deep/60 to-transparent" />
                       {/* Side padding clears the prev/next arrows (shown from sm). */}
                       <div className="relative h-full flex items-end p-4 pb-10 sm:p-8 sm:pl-20 md:p-14 md:pl-24">
-                        <div className="max-w-xl">
+                        <div className="max-w-3xl">
                           <p className="eyebrow text-sky-300 uppercase mb-2 sm:mb-3">
                             {slide.eyebrow}
                           </p>
-                          <h1 className="font-display text-[34px] sm:text-5xl md:text-6xl lg:text-7xl text-white leading-[0.98] mb-4 sm:mb-7">
+                          <h1 className="font-display text-[34px] sm:text-5xl md:text-6xl lg:text-7xl text-white leading-[0.98] mb-4 sm:mb-7 [overflow-wrap:normal]">
                             {slide.title}
                             <br />
                             <em className="italic text-sky-200">{slide.italic}</em>
@@ -598,7 +598,7 @@ const Home = () => {
       <section className="pt-4 pb-8 md:pb-10 bg-background">
         <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
-            <h2 className="font-display text-3xl md:text-[44px] text-foreground">
+            <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground">
               Populära resor
             </h2>
             <Link
@@ -680,7 +680,7 @@ const Home = () => {
       <section className="pt-4 pb-12 md:pb-16 bg-background">
         <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
           <div className="flex items-center justify-between mb-8 gap-6">
-            <h2 className="font-display text-3xl md:text-[44px] text-foreground">
+            <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground">
               Upplevelser. På riktigt.
             </h2>
             <Link to="/resor" className="hidden md:inline-flex sb-btn-outline">
@@ -734,7 +734,7 @@ const Home = () => {
 
           <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div className="max-w-xl">
-              <h3 className="font-display italic font-bold text-3xl md:text-[44px] text-primary mb-6 leading-[1.02] whitespace-pre-line">
+              <h3 className="font-display italic font-bold text-3xl md:text-[36px] lg:text-[44px] text-primary mb-6 leading-[1.02] whitespace-pre-line">
                 {"Personlig service\nSenior kompetens"}
               </h3>
               <p className="text-foreground/80 text-[15px] md:text-base leading-relaxed mb-8 whitespace-pre-line">

@@ -105,7 +105,7 @@ export default function VIPService() {
  </div>
  <div>
  <p className="eyebrow text-primary uppercase mb-1">Privat & Affärsresor</p>
- <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-4">
+ <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-4">
  En Service Som Anpassar Sig Efter Dig
  </h2>
  <p className="text-foreground/80 leading-relaxed mb-4 text-[15px]">
@@ -126,7 +126,7 @@ export default function VIPService() {
  <section className="sb-section-alt">
  <div className="sb-container">
  <p className="eyebrow text-primary uppercase mb-1">Vad Ingår</p>
- <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-8 md:mb-10">
+ <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-8 md:mb-10">
  Komplett White Glove Service
  </h2>
  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -149,7 +149,7 @@ export default function VIPService() {
  <div className="sb-container grid md:grid-cols-2 gap-8 lg:gap-14 items-center">
  <div>
  <p className="eyebrow text-primary uppercase mb-1">Så här fungerar det</p>
- <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-6">
+ <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-6">
  Enkelt för Dig - Detaljerat för Oss
  </h2>
  <div className="space-y-3">
@@ -183,7 +183,7 @@ export default function VIPService() {
  <div className="absolute inset-0 bg-navy-deep/65 flex items-center justify-center px-6">
  <div className="text-center">
  <p className="eyebrow text-sky-300 uppercase mb-2">Varje detalj räknas</p>
- <p className="font-display text-3xl md:text-[44px] text-white italic font-bold uppercase leading-tight">
+ <p className="font-display text-3xl md:text-[36px] lg:text-[44px] text-white italic font-bold uppercase leading-tight">
  Från avresa till ankomst - sömlöst.
  </p>
  </div>

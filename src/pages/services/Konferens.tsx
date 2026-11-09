@@ -88,7 +88,7 @@ export default function Konferens() {
       <section className="sb-section">
         <div className="sb-container">
           <p className="eyebrow text-primary uppercase mb-1">Vad Vi Fixar</p>
-          <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-8 md:mb-10">
+          <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-8 md:mb-10">
             Helheten - <em className="italic">från idé till avslut</em>
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -109,7 +109,7 @@ export default function Konferens() {
         <div className="sb-container grid md:grid-cols-2 gap-8 lg:gap-14 items-center">
           <div>
             <p className="eyebrow text-primary uppercase mb-1">Format</p>
-            <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-6">
+            <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-6">
               Anpassat efter er
             </h2>
             <div className="space-y-3">
@@ -146,7 +146,7 @@ export default function Konferens() {
           </div>
           <div>
             <p className="eyebrow text-primary uppercase mb-1">Komplett service</p>
-            <h2 className="font-display text-3xl md:text-[44px] text-foreground mb-4">
+            <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] text-foreground mb-4">
               En kontaktpunkt. Allt löst.
             </h2>
             <p className="text-foreground/80 leading-relaxed mb-6 text-[15px]">

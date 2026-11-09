@@ -1,4 +1,5 @@
 import fotbollImage from "@/assets/sport-fotboll.jpg";
+import { noBreakHyphen } from "@/lib/noBreakHyphen";
 
 // Real photography (Unsplash, free for commercial use, no credit required).
 const unsplash = (id: string) => `https://images.unsplash.com/${id}?w=900&q=75&auto=format&fit=crop`;
@@ -35,7 +36,7 @@ export default function PackageCards({ eyebrow, title, features, venuePhoto, alt
     <section className={alt ? "sb-section-alt" : "sb-section"}>
       <div className="sb-container">
         <p className="eyebrow text-primary uppercase mb-1">{eyebrow}</p>
-        <h2 className="font-display text-3xl md:text-[44px] mb-5 md:mb-10">{title}</h2>
+        <h2 className="font-display text-3xl md:text-[36px] lg:text-[44px] mb-5 md:mb-10">{noBreakHyphen(title)}</h2>
         <ul className={`grid grid-cols-2 gap-x-3 gap-y-5 sm:gap-5 ${features.length >= 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}>
           {features.map((f, i) => {
             const space = f.indexOf(" ");

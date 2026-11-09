@@ -87,8 +87,8 @@ const Footer = () => {
       <div className="bg-navy-deep text-white">
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10 pt-2 md:pt-4 pb-24 md:pb-8">
         {/* Logo + link columns */}
-        <div className="grid grid-cols-2 md:grid-cols-12 gap-8 md:gap-12 py-10 md:py-12">
-          <div className="col-span-2 md:col-span-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-12 gap-8 lg:gap-12 py-10 md:py-12">
+          <div className="col-span-2 sm:col-span-3 lg:col-span-4">
             <Link to="/" className="inline-block">
               <img src={brandLogo.url} alt="KAISEN TRAVEL GROUP" width={238} height={90} className="block w-[150px] h-auto object-contain" loading="lazy" />
             </Link>
@@ -98,7 +98,7 @@ const Footer = () => {
 
           </div>
 
-          <div className="md:col-span-3">
+          <div className="lg:col-span-3">
             <h3 className="font-display text-lg font-semibold text-white mb-4">Våra resor</h3>
             <ul className="space-y-2.5 text-sm text-white/75">
               <li><Link to="/services/sportresor/fotboll" className="hover:text-white transition-colors">Fotbollsresor</Link></li>
@@ -109,7 +109,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          <div className="md:col-span-2">
+          <div className="lg:col-span-2">
             <h3 className="font-display text-lg font-semibold text-white mb-4">Företaget</h3>
             <ul className="space-y-2.5 text-sm text-white/75">
               <li><Link to="/about" className="hover:text-white transition-colors">Om oss</Link></li>
@@ -120,7 +120,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          <div className="md:col-span-3">
+          <div className="lg:col-span-3">
             <h3 className="font-display text-lg font-semibold text-white mb-4">Kontakt</h3>
             <ul className="space-y-2.5 text-sm text-white/75">
               <li>KAISEN TRAVEL GROUP AB</li>
