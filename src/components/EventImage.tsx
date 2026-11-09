@@ -112,7 +112,7 @@ export default function EventImage({
         aria-label={`${homeTeam} mot ${awayTeam}`}
       >
         <img src={backdrop} alt="" aria-hidden="true" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0" style={{ background: `linear-gradient(115deg, ${c1}e6 0%, ${c2}cc 100%)` }} />
+        <div className="absolute inset-0" style={{ background: `linear-gradient(115deg, ${c1}b3 0%, ${c2}99 100%)` }} />
         <div className="absolute inset-0 flex items-center justify-center gap-[8%] px-[8%]">
           <img
             src={homeCrest}
@@ -148,7 +148,7 @@ export default function EventImage({
       aria-label={isRace ? (raceName ?? "") : `${homeTeam} mot ${awayTeam}`}
     >
       <img src={backdrop} alt="" aria-hidden="true" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
-      <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${c1}e6 0%, ${c2}cc 100%)` }} />
+      <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${c1}b3 0%, ${c2}99 100%)` }} />
       {/* Faint pitch/track arc so the plate reads as sport, not a colour swatch */}
       <svg
         className="absolute inset-0 w-full h-full opacity-[0.14]"
