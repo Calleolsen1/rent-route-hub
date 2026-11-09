@@ -752,18 +752,18 @@ const Home = () => {
       {/* Om oss */}
       <section className="py-12 md:py-16 bg-background">
         <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10">
-          <h2 className="!font-sans !font-semibold text-3xl md:text-5xl text-foreground mb-10 md:mb-14">
-            Varför resa med oss
+          <h2 className="!font-sans !font-semibold text-3xl md:text-5xl text-foreground text-center mb-16 md:mb-20">
+            Erfarenhet som gör skillnad
           </h2>
 
           <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div className="max-w-xl">
               <h3 className="font-sans !font-bold text-2xl md:text-4xl text-foreground mb-6 leading-tight whitespace-pre-line">
-                {"En rådgivare\nfrån start till hemresa"}
+                {"Personlig service\nSenior kompetens"}
               </h3>
               <p className="text-foreground/80 text-[15px] md:text-base leading-relaxed mb-8 whitespace-pre-line">
 
-                {"De flesta resor bokas i dag på egen hand online. Vi jobbar tvärtom: du får en egen rådgivare som du kan ringa, som känner till arenorna och hotellen och som följer resan tills du är hemma igen.\n\nHos KAISEN arbetar resespecialister med många år i branschen. Vi lyssnar på vad du vill uppleva, föreslår det vi själva tror på och ser till att biljetter, hotell, flyg och transfer passar ihop.\n\nDen personliga kontakten är inget tillägg, den ingår i varje resa."}
+                {"I en värld där allt fler resor bokas online går vi åt andra hållet. Vi tror på den personliga kontakten, den erfarna rådgivaren och värdet av att ha någon som verkligen bryr sig om hela resan.\n\nHos KAISEN möter du seniora Resespecialister med erfarenheten, kunskapen och nätverket att skapa resor utöver det vanliga. Vi lyssnar på dina önskemål, delar med oss av vår expertis och ser till att varje detalj hänger ihop.\n\nFör oss är personlig service inte ett tillval utan en självklar del av varje resa vi skapar."}
               </p>
               <Link
                 to="/about"
