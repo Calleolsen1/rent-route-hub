@@ -1584,6 +1584,71 @@ export type Database = {
           },
         ]
       }
+      p1_event_links: {
+        Row: {
+          created_at: string
+          event_id: string | null
+          in_scope: boolean
+          last_seen_at: string
+          match_method: string
+          match_note: string | null
+          p1_away_team: string | null
+          p1_date_confirmed: boolean
+          p1_event_id: string
+          p1_home_team: string | null
+          p1_kind: string
+          p1_series: string | null
+          p1_starts_at: string | null
+          p1_title: string
+          p1_venue: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          event_id?: string | null
+          in_scope?: boolean
+          last_seen_at?: string
+          match_method?: string
+          match_note?: string | null
+          p1_away_team?: string | null
+          p1_date_confirmed?: boolean
+          p1_event_id: string
+          p1_home_team?: string | null
+          p1_kind: string
+          p1_series?: string | null
+          p1_starts_at?: string | null
+          p1_title: string
+          p1_venue?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string | null
+          in_scope?: boolean
+          last_seen_at?: string
+          match_method?: string
+          match_note?: string | null
+          p1_away_team?: string | null
+          p1_date_confirmed?: boolean
+          p1_event_id?: string
+          p1_home_team?: string | null
+          p1_kind?: string
+          p1_series?: string | null
+          p1_starts_at?: string | null
+          p1_title?: string
+          p1_venue?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "p1_event_links_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       platform_settings: {
         Row: {
           created_at: string

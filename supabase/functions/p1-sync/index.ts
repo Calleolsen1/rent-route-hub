@@ -106,8 +106,12 @@ Deno.serve(async (req) => {
     const matcher = new FootballMatcher(ourEvents);
     const stats = { fetched: p1Events.length, football: 0, f1: 0, other: 0, matched: 0, created: 0, unmatched: 0, kept_manual: 0 };
     const rows: Record<string, unknown>[] = [];
+    const seen = new Set<string>();
+    const navUsed = new Set<string>(); // one created race per F1 menu entry
 
     for (const e of p1Events) {
+      if (seen.has(e.id)) continue;
+      seen.add(e.id);
       const kind = isP1Football(e) ? "football" : isP1F1(e) ? "f1" : "other";
       stats[kind]++;
       const base = {
@@ -146,7 +150,10 @@ Deno.serve(async (req) => {
           // No race row yet: create it from our F1 menu when the weekend lines up.
           const day = raceDay(e).getTime();
           const nav = navRaces.find((r) => Math.abs(r.date.getTime() - day) / DAY_MS <= F1_WINDOW_DAYS);
-          if (nav) {
+          if (nav && navUsed.has(nav.name)) {
+            result = { eventId: null, note: `Dubblett av ${nav.name} hos P1 - koppla manuellt vid behov` };
+          } else if (nav) {
+            navUsed.add(nav.name);
             const [city, country] = (nav.city ?? "").split(",").map((s) => s.trim());
             const year = new Date(day).getUTCFullYear();
             const { data: created, error } = await admin
