@@ -9,7 +9,7 @@ import { usePublicPricesEnabled } from "@/hooks/usePublicPrices";
 import { SearchTypeahead } from "@/components/SearchTypeahead";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowRight, Users, Trophy, Star, Shield, Globe, Calendar, MapPin, Flag, Search } from "lucide-react";
+import { ArrowRight, Users, Trophy, Star, Shield, Globe, Calendar, MapPin, Flag, Search, Quote } from "lucide-react";
 import Footer from "@/components/Footer";
 import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
@@ -749,7 +749,7 @@ const Home = () => {
       </section>
 
       {/* Om oss */}
-      <section className="py-12 md:py-16 bg-cream">
+      <section className="py-12 md:py-16 bg-background">
         <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10">
           <h2 className="font-display text-3xl md:text-5xl text-foreground mb-10 md:mb-14">
             Erfarenhet som gör skillnad
@@ -787,39 +787,60 @@ const Home = () => {
 
 
       {/* Våra kunder - testimonials carousel */}
-      <section className="py-12 md:py-16 bg-background">
+      <section className="py-12 md:py-16 bg-cream">
         <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
-          <div className="mb-10">
-            <p className="eyebrow text-primary uppercase mb-1">Våra kunder</p>
-            <h2 className="font-display text-3xl md:text-5xl text-foreground">
-              Berättelser från{" "}
-              <em className="italic text-primary">resan</em>
-            </h2>
-          </div>
-
           <Carousel opts={{ align: "start", loop: true }}>
-            <CarouselContent className="-ml-6">
-              {(testimonialsRows ?? testimonials).map((t) => (
-                <CarouselItem key={t.author} className="pl-6 basis-[88%] md:basis-1/2 lg:basis-1/3">
-                  <div className="sb-card p-6 md:p-8 h-full flex flex-col">
-                    <div className="flex gap-1 mb-6">
-                      {Array.from({ length: t.rating }).map((_, i) => (
-                        <Star key={i} className="h-3.5 w-3.5 fill-primary text-primary" />
-                      ))}
-                    </div>
-                    <blockquote className="text-[15px] text-foreground/85 leading-relaxed mb-6 italic flex-1">
-                      "{t.quote.replace(/^["“”]+|["“”]+$/g, "")}"
-                    </blockquote>
-                    <div>
-                      <div className="font-display uppercase font-semibold text-base text-foreground">{t.author}</div>
-                      <div className="text-xs text-muted-foreground tracking-wide mt-1">{t.role}</div>
-                    </div>
-                  </div>
-                </CarouselItem>
-              ))}
+            <div className="mb-6 md:mb-8 flex items-end justify-between gap-6">
+              <div>
+                <p className="eyebrow text-primary uppercase mb-1">Våra kunder</p>
+                <h2 className="font-display text-3xl md:text-5xl text-foreground">
+                  Berättelser från{" "}
+                  <em className="italic text-primary">resan</em>
+                </h2>
+              </div>
+              {/* Arrows sit with the heading instead of over the cards */}
+              <div className={`hidden md:flex items-center gap-2 shrink-0 ${(testimonialsRows ?? testimonials).length <= 3 ? "lg:hidden" : ""}`}>
+                <CarouselPrevious className="static translate-y-0 h-10 w-10 border-border bg-white hover:bg-primary hover:text-primary-foreground" />
+                <CarouselNext className="static translate-y-0 h-10 w-10 border-border bg-white hover:bg-primary hover:text-primary-foreground" />
+              </div>
+            </div>
+            <CarouselContent className="-ml-4 md:-ml-5">
+              {(testimonialsRows ?? testimonials).map((t) => {
+                const initials = t.author
+                  .split(/[\s&]+/)
+                  .filter(Boolean)
+                  .slice(0, 2)
+                  .map((w) => w[0])
+                  .join("")
+                  .toUpperCase();
+                return (
+                  <CarouselItem key={t.author} className="pl-4 md:pl-5 basis-[86%] md:basis-1/2 lg:basis-1/3">
+                    <figure className="h-full flex flex-col rounded-lg bg-white p-6 md:p-7 shadow-[0_1px_2px_rgba(16,24,40,0.04),0_8px_24px_-12px_rgba(16,24,40,0.12)]">
+                      <div className="flex items-center justify-between mb-4">
+                        <Quote className="h-7 w-7 text-primary/20 fill-primary/10" aria-hidden />
+                        <div className="flex gap-0.5" aria-label={`${t.rating} av 5`}>
+                          {Array.from({ length: t.rating }).map((_, i) => (
+                            <Star key={i} className="h-3.5 w-3.5 fill-primary text-primary" />
+                          ))}
+                        </div>
+                      </div>
+                      <blockquote className="flex-1 text-[15px] leading-relaxed text-foreground/80">
+                        {t.quote.replace(/^["“”\s]+|["“”\s]+$/g, "")}
+                      </blockquote>
+                      <figcaption className="mt-6 pt-5 border-t border-border flex items-center gap-3">
+                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-[13px] font-semibold text-white">
+                          {initials}
+                        </span>
+                        <span className="min-w-0">
+                          <span className="block font-display uppercase font-semibold text-[15px] leading-tight text-foreground">{t.author}</span>
+                          <span className="block text-xs text-muted-foreground mt-0.5">{t.role}</span>
+                        </span>
+                      </figcaption>
+                    </figure>
+                  </CarouselItem>
+                );
+              })}
             </CarouselContent>
-            <CarouselPrevious className="hidden md:flex -left-5 h-10 w-10" />
-            <CarouselNext className="hidden md:flex -right-5 h-10 w-10" />
           </Carousel>
         </div>
       </section>
