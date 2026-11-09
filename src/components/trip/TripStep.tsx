@@ -18,16 +18,16 @@ export function StepHeader({
   return (
     <div className="flex items-start gap-3 mb-4">
       <span
-        className="mt-0.5 h-8 w-8 flex-shrink-0 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-sans text-sm font-bold tabular-nums"
+        className="mt-0.5 h-9 w-9 flex-shrink-0 rounded-md bg-primary text-primary-foreground flex items-center justify-center font-display text-xl font-bold italic tabular-nums"
         aria-hidden
       >
         {n}
       </span>
       <div className="min-w-0">
-        <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-0.5 font-sans">
+        <p className="eyebrow text-primary uppercase mb-0.5">
           Steg {n} · {eyebrow}
         </p>
-        <h2 className="font-display text-2xl md:text-3xl leading-tight">{title}</h2>
+        <h2 className="font-display text-[28px] md:text-[34px] leading-tight">{title}</h2>
         {children && <div className="mt-1 text-xs text-muted-foreground">{children}</div>}
       </div>
     </div>
@@ -66,7 +66,7 @@ export function OnOffChoice({
             role="radio"
             aria-checked={selected}
             onClick={() => onChange(value)}
-            className={`relative text-left rounded-xl p-3.5 sm:p-4 transition-all ${
+            className={`relative text-left rounded-lg p-3.5 sm:p-4 transition-all ${
               selected
                 ? "border-2 border-primary bg-primary/5"
                 : "border border-border bg-card hover:border-primary/40"
@@ -78,7 +78,7 @@ export function OnOffChoice({
               </span>
             )}
             <Icon className={`h-5 w-5 mb-2 ${selected ? "text-primary" : "text-muted-foreground"}`} />
-            <p className="font-semibold text-sm leading-snug">{opt.label}</p>
+            <p className="font-display uppercase font-semibold text-base leading-snug">{opt.label}</p>
             <p className="mt-0.5 text-xs text-muted-foreground leading-snug">{opt.hint}</p>
           </button>
         );

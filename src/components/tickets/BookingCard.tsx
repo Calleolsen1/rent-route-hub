@@ -48,7 +48,7 @@ export default function BookingCard({
   };
 
   return (
-    <div className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+    <div className="rounded-lg border border-border bg-card shadow-sm overflow-hidden">
       {/* Match */}
       <div className="px-5 pt-5 pb-4 border-b border-border">
         <div className="flex items-center justify-between gap-2 mb-2">
@@ -134,7 +134,7 @@ export default function BookingCard({
       <div className="px-5 pt-4 pb-5 border-t border-border">
         {next ? (
           <>
-            <Button onClick={() => goToStep(next.id)} className="w-full rounded-xl h-12 tracking-wider text-sm">
+            <Button onClick={() => goToStep(next.id)} className="w-full rounded-lg h-12 tracking-wider text-sm">
               Nästa: {next.label}
               <ArrowDown className="ml-2 h-4 w-4" />
             </Button>
@@ -148,7 +148,7 @@ export default function BookingCard({
               <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Totalt</span>
               <span className="font-display text-2xl tabular-nums">{t.count ? formatSek(t.total) : "-"}</span>
             </div>
-            <Button onClick={t.checkout} disabled={!t.count || t.busy} className="w-full rounded-xl h-12 tracking-wider text-sm">
+            <Button onClick={t.checkout} disabled={!t.count || t.busy} className="w-full rounded-lg h-12 tracking-wider text-sm">
               {t.busy ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
               Till kassan
               {!t.busy && <ArrowRight className="ml-2 h-4 w-4" />}
@@ -156,7 +156,7 @@ export default function BookingCard({
           </>
         ) : (
           <>
-            <Button onClick={onEnquire} className="w-full rounded-xl h-12 tracking-wider text-sm">
+            <Button onClick={onEnquire} className="w-full rounded-lg h-12 tracking-wider text-sm">
               Skicka förfrågan
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>

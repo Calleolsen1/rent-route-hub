@@ -23,7 +23,7 @@ import { ArrowDown, ArrowLeft, Calendar, MapPin } from "lucide-react";
 import Footer from "@/components/Footer";
 import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
-import { formatEventDateTime, formatSek } from "@/lib/formatSek";
+import { eventDateParts, formatEventDateTime, formatSek } from "@/lib/formatSek";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { usePageMeta } from "@/lib/usePageMeta";
 import { PriceTag, resolveCompareAt } from "@/components/PriceTag";
@@ -159,7 +159,7 @@ export default function EventDetail() {
         <div className="container mx-auto px-4 py-32 text-center">
           <h1 className="font-display text-4xl mb-4">Evenemanget hittades inte</h1>
           <Link to="/services/sportresor">
-            <Button className="rounded-full">Tillbaka till Sportresor</Button>
+            <Button className="rounded-lg">Tillbaka till Sportresor</Button>
           </Link>
         </div>
       <Footer />
@@ -171,53 +171,86 @@ export default function EventDetail() {
     event.sport === "soccer"
       ? `${event.home_team} vs ${event.away_team}`
       : event.race_name;
+  const dateBlock = eventDateParts(event.starts_at);
 
   return (
     <div className="min-h-screen">
       <Navbar />
 
-      {/* Hero */}
-      <section className="relative h-[36vh] min-h-[300px] md:h-[28vh] md:min-h-[200px] flex items-end">
-        <div className="absolute inset-0">
-          <EventImage
-            sport={event.sport}
-            homeTeam={event.home_team}
-            awayTeam={event.away_team}
-            raceName={event.race_name}
-            venueName={event.venue_name}
-            coverUrl={event.cover_image_url}
-            photos={teamPhotos}
-                    crests={teamCrests}
-          />
-          <div className="absolute inset-0 bg-navy/75" />
-          {/* Extra shading at the bottom so the headline stays readable over crests */}
-          <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-navy via-navy/80 to-transparent" />
-        </div>
-        <div className="relative container mx-auto px-4 pb-5 md:pb-6">
-          <p className="text-[11px] sm:text-xs eyebrow text-white/70 uppercase mb-2 font-sans">
-            {event.tournament_name}
-          </p>
-          <h1 className="font-display text-2xl sm:text-3xl md:text-4xl text-white mb-2 leading-tight">
-            {headline}
-          </h1>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-white/80 text-sm">
-            <span className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" /> {formatEventDateTime(event.starts_at)}
-            </span>
-            <span className="flex items-center gap-2">
-              <MapPin className="h-4 w-4" /> {event.venue_name}
-              {event.city ? `, ${event.city}` : ""}
-            </span>
+      {/* Match header (reference layout): picture left, facts right */}
+      <section className="bg-background pt-6 md:pt-10 pb-6 md:pb-8">
+        <div className="sb-container grid md:grid-cols-2 gap-6 md:gap-10 items-center">
+          <div className="relative aspect-[16/10] overflow-hidden rounded-lg bg-navy-deep">
+            <EventImage
+              sport={event.sport}
+              homeTeam={event.home_team}
+              awayTeam={event.away_team}
+              raceName={event.race_name}
+              venueName={event.venue_name}
+              coverUrl={event.cover_image_url}
+              photos={teamPhotos}
+              crests={teamCrests}
+            />
+          </div>
+          <div className="min-w-0">
+            <div className="flex items-stretch gap-4 md:gap-5">
+              <div className="flex flex-col justify-center border-r border-border pr-4 md:pr-5 shrink-0">
+                <span className="font-display font-bold text-3xl leading-none whitespace-nowrap">
+                  {dateBlock.day} {dateBlock.month}
+                </span>
+                <span className="mt-1.5 text-xs text-muted-foreground leading-tight">
+                  {dateBlock.weekday}{dateBlock.time ? ` ${dateBlock.time}` : ""}
+                </span>
+                <span className="text-xs text-muted-foreground leading-tight">{dateBlock.year}</span>
+              </div>
+              <div className="min-w-0">
+                <p className="eyebrow text-primary uppercase mb-1">{event.tournament_name}</p>
+                <h1 className="font-display text-3xl md:text-[40px] leading-[1.02]">{headline}</h1>
+              </div>
+            </div>
+            <div className="mt-5 space-y-2 text-sm text-foreground/80">
+              <p className="flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-primary shrink-0" /> {formatEventDateTime(event.starts_at)}
+              </p>
+              {event.venue_name && (
+                <p className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4 text-primary shrink-0" /> {event.venue_name}
+                  {event.city ? `, ${event.city}` : ""}
+                </p>
+              )}
+            </div>
           </div>
         </div>
       </section>
+
+      {/* Step tabs - jump to tickets / hotel / flight; sticks under the header */}
+      <div className="sticky top-16 md:top-[72px] z-30 bg-background/95 backdrop-blur-sm border-y border-border">
+        <div className="sb-container flex justify-center">
+          <div className="flex gap-1 overflow-x-auto py-2">
+            {[
+              ...(t.hasTickets ? [{ id: "biljetter", label: event.sport === "formula1" ? "Biljetter" : "Matchbiljetter" }] : []),
+              { id: "hotell", label: "Hotell" },
+              { id: "flyg", label: "Flyg" },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => goToStep(tab.id)}
+                className="whitespace-nowrap rounded-md px-4 py-1.5 font-display uppercase font-semibold tracking-wide text-[15px] text-foreground/75 hover:bg-cream hover:text-primary transition-colors"
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
 
       {/* Body. Desktop: tickets on the left; on the right the official
           seating plan above the booking card. Phones: plan,
           then tickets, then the booking card (the aside becomes `contents`
           so its two cards can be ordered around the list). */}
-      <section className="py-6 md:py-8 bg-background">
-        <div className="container mx-auto px-4 grid lg:grid-cols-3 gap-8 lg:gap-10 max-w-6xl">
+      <section className="pt-8 md:pt-10 pb-6 bg-background">
+        <div className="sb-container grid lg:grid-cols-3 gap-8 lg:gap-10">
           {/* Left */}
           <div className="lg:col-span-2 space-y-10 order-2 lg:order-none min-w-0">
             {/* Live supplier tickets. Buyable when prices are public or an
@@ -228,7 +261,7 @@ export default function EventDetail() {
               <Button
                 variant="outline"
                 onClick={() => goToStep("hotell")}
-                className="-mt-6 w-full rounded-xl h-12 border-primary text-primary hover:bg-primary/5 tracking-wider text-sm"
+                className="-mt-6 w-full rounded-lg h-12 border-primary text-primary hover:bg-primary hover:text-primary-foreground font-display uppercase font-semibold tracking-wide text-base"
               >
                 Fortsätt till hotell
                 <ArrowDown className="ml-2 h-4 w-4" />
@@ -255,10 +288,10 @@ export default function EventDetail() {
             />
 
             <div>
-              <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">
+              <p className="eyebrow text-primary uppercase mb-3">
                 Matchen
               </p>
-              <div className="rounded-xl border border-border bg-card p-5 grid sm:grid-cols-3 gap-4">
+              <div className="sb-card p-5 grid sm:grid-cols-3 gap-4">
                 <div>
                   <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Datum</p>
                   <p className="text-sm font-medium">{formatEventDateTime(event.starts_at)}</p>
@@ -282,10 +315,10 @@ export default function EventDetail() {
 
             {seatmapUrl && !t.hasPlan && (
               <div>
-                <p className="text-[11px] sm:text-xs eyebrow text-primary uppercase mb-3 font-sans">
+                <p className="eyebrow text-primary uppercase mb-3">
                   Läktarkarta
                 </p>
-                <div className="rounded-xl border border-border bg-card overflow-hidden">
+                <div className="sb-card overflow-hidden">
                   <img
                     src={seatmapUrl}
                     alt={`Läktarkarta ${event.venue_name ?? ""}`}

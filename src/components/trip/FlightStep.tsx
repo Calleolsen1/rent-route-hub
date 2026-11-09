@@ -26,7 +26,7 @@ export default function FlightStep({
   const otherText = other && from !== "Annan ort" ? from : "";
 
   return (
-    <div id="flyg" className="scroll-mt-24">
+    <div id="flyg" className="scroll-mt-36">
       <StepHeader n={3} eyebrow="Flyg" title="Välj om ni önskar hjälp med flyg">
         Vi har egen IATA-licens och har därmed tillgång till och kan boka de flesta flygbolag.
       </StepHeader>
@@ -40,7 +40,7 @@ export default function FlightStep({
       />
 
       {on && (
-        <div className="mt-4 rounded-xl border border-border bg-card p-4">
+        <div className="mt-4 rounded-lg border border-border bg-card p-4">
           <span className="block text-[10px] uppercase tracking-wider text-muted-foreground mb-2">Avresa från</span>
           <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Avresa från">
             {DEPARTURES.map((d) => {

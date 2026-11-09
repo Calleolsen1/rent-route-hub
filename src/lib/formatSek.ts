@@ -34,6 +34,23 @@ export const isTimeUnconfirmed = (iso: string): boolean => {
   return d.getUTCHours() === 0 && d.getUTCMinutes() === 0;
 };
 
+/** Date block parts in Swedish time: "21", "NOV", "Lördag", "2026", "15:00"|null. */
+export function eventDateParts(iso: string) {
+  const dt = new Date(iso);
+  const get = (o: Intl.DateTimeFormatOptions) =>
+    dt.toLocaleDateString("sv-SE", { ...o, timeZone: TZ });
+  const weekday = get({ weekday: "long" });
+  return {
+    day: get({ day: "numeric" }),
+    month: get({ month: "short" }).replace(".", "").toUpperCase(),
+    weekday: weekday.charAt(0).toUpperCase() + weekday.slice(1),
+    year: get({ year: "numeric" }),
+    time: isTimeUnconfirmed(iso)
+      ? null
+      : dt.toLocaleTimeString("sv-SE", { hour: "2-digit", minute: "2-digit", timeZone: TZ }),
+  };
+}
+
 /** Datum utan tid, t.ex. "25 oktober 2026". */
 export const formatEventDateOnly = (iso: string) =>
   new Date(iso).toLocaleDateString("sv-SE", {

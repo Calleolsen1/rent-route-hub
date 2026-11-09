@@ -18,7 +18,7 @@ export default function TicketList({ t, sport = "soccer" }: { t: EventTickets; s
   const label = football ? "Matchbiljetter" : "Biljetter";
 
   return (
-    <div id="biljetter" className="scroll-mt-24">
+    <div id="biljetter" className="scroll-mt-36">
       <StepHeader
         n={1}
         eyebrow={label}
@@ -45,7 +45,7 @@ export default function TicketList({ t, sport = "soccer" }: { t: EventTickets; s
         </div>
       )}
 
-      <div className="rounded-xl border border-border bg-card divide-y divide-border overflow-hidden">
+      <div className="rounded-lg border border-border bg-card divide-y divide-border overflow-hidden">
         {t.groups.map((g) => {
           const key = rowKey(g);
           const n = g.category_id ? t.qty[g.category_id] ?? 0 : 0;
@@ -240,7 +240,7 @@ export function TicketListSkeleton() {
     <div className="animate-pulse" aria-label="Hämtar biljetter">
       <div className="h-3 w-24 rounded bg-muted mb-2" />
       <div className="h-7 w-64 rounded bg-muted mb-5" />
-      <div className="rounded-xl border border-border bg-card divide-y divide-border">
+      <div className="rounded-lg border border-border bg-card divide-y divide-border">
         {[0, 1, 2, 3].map((i) => (
           <div key={i} className="px-4 py-4 flex gap-3">
             <div className="h-3 w-3 rounded-full bg-muted mt-1" />

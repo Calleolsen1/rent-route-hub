@@ -65,7 +65,7 @@ export default function CheckoutBar({
                     key={`next-${next.id}`}
                     onClick={() => goToStep(next.id)}
                     tabIndex={visible ? 0 : -1}
-                    className="h-12 rounded-xl px-5 sm:px-8 text-sm tracking-wider animate-in fade-in zoom-in-95 duration-200"
+                    className="h-12 rounded-lg px-5 sm:px-8 text-sm tracking-wider animate-in fade-in zoom-in-95 duration-200"
                   >
                     Nästa: {next.label}
                     <ArrowDown className="ml-2 h-4 w-4" />
@@ -80,7 +80,7 @@ export default function CheckoutBar({
                   onClick={t.checkout}
                   disabled={!visible || t.busy}
                   tabIndex={visible ? 0 : -1}
-                  className="h-12 rounded-xl px-5 sm:px-8 text-sm tracking-wider animate-in fade-in zoom-in-95 duration-200"
+                  className="h-12 rounded-lg px-5 sm:px-8 text-sm tracking-wider animate-in fade-in zoom-in-95 duration-200"
                 >
                   {t.busy ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                   Till kassan
@@ -92,7 +92,7 @@ export default function CheckoutBar({
                     key="enquire"
                     onClick={onEnquire}
                     tabIndex={visible ? 0 : -1}
-                    className="h-12 rounded-xl px-5 sm:px-8 text-sm tracking-wider animate-in fade-in zoom-in-95 duration-200"
+                    className="h-12 rounded-lg px-5 sm:px-8 text-sm tracking-wider animate-in fade-in zoom-in-95 duration-200"
                   >
                     Skicka förfrågan
                     <ArrowRight className="ml-2 h-4 w-4" />

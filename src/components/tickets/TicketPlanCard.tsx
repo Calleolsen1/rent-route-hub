@@ -22,13 +22,13 @@ export default function TicketPlanCard({
   if (!t.hasPlan || !t.planUrl) {
     if (t.loading || !photoUrl) return null;
     return (
-      <div className="rounded-2xl border border-border bg-card p-3 shadow-sm">
+      <div className="rounded-lg border border-border bg-card p-3 shadow-sm">
         <p className="px-1 pb-2 text-[11px] font-bold uppercase tracking-[0.15em] text-foreground/70 font-sans">Arenan</p>
         <img
           src={photoUrl}
           alt={venueName ?? "Arenan"}
           loading="lazy"
-          className="w-full aspect-[4/3] object-cover rounded-xl"
+          className="w-full aspect-[4/3] object-cover rounded-lg"
         />
         {venueName && <p className="mt-1.5 text-[11px] text-muted-foreground text-center">{venueName}</p>}
       </div>
@@ -38,7 +38,7 @@ export default function TicketPlanCard({
   const interactive = !!t.onPlanColors && t.onPlanColors.size > 0;
 
   return (
-    <div id="arenakarta" className="rounded-2xl border border-border bg-card p-3 shadow-sm scroll-mt-24">
+    <div id="arenakarta" className="rounded-lg border border-border bg-card p-3 shadow-sm scroll-mt-36">
       <div className="flex items-center justify-between px-1 pb-2">
         <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-foreground/70 font-sans">Arenan</p>
         <button

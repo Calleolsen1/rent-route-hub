@@ -49,7 +49,7 @@ export default function HotelStep({
   const dayLabel = (d: string) => (d === h.matchDay ? `${shortDate(d)} (match)` : shortDate(d));
 
   return (
-    <div id="hotell" className="scroll-mt-24">
+    <div id="hotell" className="scroll-mt-36">
       <StepHeader n={2} eyebrow="Hotell" title="Välj om ni önskar hotellrekommendation">
         {h.covered && h.city
           ? "Vi erbjuder alltid centrala hotell inklusive frukost i kategori 3-5 stjärnigt - utvalda av våra resespecialister. Vi har avtalspriser med de flesta hotellen. Välj kategori nedan så återkommer vi med prisförslag på valt hotell samt likvärdiga alternativ."
@@ -78,7 +78,7 @@ export default function HotelStep({
           )}
 
           {/* The stay */}
-          <div className="rounded-xl border border-border bg-card p-4 mb-3 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:gap-x-4">
+          <div className="rounded-lg border border-border bg-card p-4 mb-3 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:gap-x-4">
             <label className="block min-w-0">
               <span className="block text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Ankomst</span>
               <select
@@ -138,13 +138,13 @@ export default function HotelStep({
           ) : h.loading && h.hotels.length === 0 ? (
             <HotelListSkeleton />
           ) : h.hotels.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-border bg-card px-4 py-6 text-sm text-muted-foreground text-center">
+            <div className="rounded-lg border border-dashed border-border bg-card px-4 py-6 text-sm text-muted-foreground text-center">
               Inga lediga rum hos våra hotellpartners de här datumen. Prova andra datum - eller skicka förfrågan ändå, så
               hittar vi ett hotell åt er.
             </div>
           ) : (
             <div
-              className={`rounded-xl border border-border bg-card divide-y divide-border overflow-hidden transition-opacity ${
+              className={`rounded-lg border border-border bg-card divide-y divide-border overflow-hidden transition-opacity ${
                 h.loading ? "opacity-60" : ""
               }`}
               aria-busy={h.loading}
@@ -273,7 +273,7 @@ export default function HotelStep({
               <button
                 type="button"
                 onClick={() => setShowAll((v) => !v)}
-                className="mt-3 w-full rounded-xl border border-border bg-card h-11 text-sm font-medium text-primary hover:bg-muted/50 inline-flex items-center justify-center gap-1"
+                className="mt-3 w-full rounded-lg border border-border bg-card h-11 text-sm font-medium text-primary hover:bg-muted/50 inline-flex items-center justify-center gap-1"
               >
                 {showAll ? "Visa färre hotell" : `Visa alla ${h.hotels.length} hotell`}
                 <ChevronDown className={`h-4 w-4 transition-transform ${showAll ? "rotate-180" : ""}`} />
@@ -338,7 +338,7 @@ function RoomStepper({
 
 function HotelListSkeleton() {
   return (
-    <div className="animate-pulse rounded-xl border border-border bg-card divide-y divide-border" aria-label="Hämtar hotell">
+    <div className="animate-pulse rounded-lg border border-border bg-card divide-y divide-border" aria-label="Hämtar hotell">
       {[0, 1, 2].map((i) => (
         <div key={i} className="p-4 flex gap-4">
           <div className="h-24 w-32 rounded-lg bg-muted" />

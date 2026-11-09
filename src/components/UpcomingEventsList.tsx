@@ -6,7 +6,7 @@ import { useTeamCrests } from "@/hooks/useTeamCrests";
 import { ArrowRight, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useInquiryDialog } from "@/components/InquiryDialog";
-import { formatEventDate, TZ } from "@/lib/formatSek";
+import { formatEventDate, eventDateParts } from "@/lib/formatSek";
 import { PriceTag } from "@/components/PriceTag";
 import { Input } from "@/components/ui/input";
 
@@ -104,19 +104,6 @@ const MONTHS_SV = [
 
 const monthKey = (iso: string) => iso.slice(0, 7); // YYYY-MM
 
-/** Date block parts in Swedish time: "21", "NOV", "Lördag", "2026". */
-function dateParts(iso: string) {
-  const dt = new Date(iso);
-  const get = (o: Intl.DateTimeFormatOptions) =>
-    dt.toLocaleDateString("sv-SE", { ...o, timeZone: TZ });
-  const weekday = get({ weekday: "long" });
-  return {
-    day: get({ day: "numeric" }),
-    month: get({ month: "short" }).replace(".", "").toUpperCase(),
-    weekday: weekday.charAt(0).toUpperCase() + weekday.slice(1),
-    year: get({ year: "numeric" }),
-  };
-}
 
 export default function UpcomingEventsList({
   sport,
@@ -319,7 +306,7 @@ export default function UpcomingEventsList({
           const displayPrice = e.min_price_sek != null && e.min_price_sek > 0
             ? e.min_price_sek
             : categoryMin;
-          const d = dateParts(e.starts_at);
+          const d = eventDateParts(e.starts_at);
           const homeCrest = e.sport === "soccer" && e.home_team ? teamCrests[e.home_team] : undefined;
           const awayCrest = e.sport === "soccer" && e.away_team ? teamCrests[e.away_team] : undefined;
           const hiddenByMobileSearch =
