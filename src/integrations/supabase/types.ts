@@ -1584,6 +1584,48 @@ export type Database = {
           },
         ]
       }
+      p1_category_info: {
+        Row: {
+          description: string[] | null
+          description_sv: string[] | null
+          fetched_at: string
+          image_url: string | null
+          name: string | null
+          name_sv: string | null
+          p1_category_id: string
+          raw: Json | null
+          sv_source: string | null
+          translated_at: string | null
+          translated_from: string[] | null
+        }
+        Insert: {
+          description?: string[] | null
+          description_sv?: string[] | null
+          fetched_at?: string
+          image_url?: string | null
+          name?: string | null
+          name_sv?: string | null
+          p1_category_id: string
+          raw?: Json | null
+          sv_source?: string | null
+          translated_at?: string | null
+          translated_from?: string[] | null
+        }
+        Update: {
+          description?: string[] | null
+          description_sv?: string[] | null
+          fetched_at?: string
+          image_url?: string | null
+          name?: string | null
+          name_sv?: string | null
+          p1_category_id?: string
+          raw?: Json | null
+          sv_source?: string | null
+          translated_at?: string | null
+          translated_from?: string[] | null
+        }
+        Relationships: []
+      }
       p1_event_links: {
         Row: {
           created_at: string
@@ -1917,6 +1959,42 @@ export type Database = {
           },
         ]
       }
+      seat_categories: {
+        Row: {
+          color: string | null
+          created_at: string
+          description: string[]
+          id: string
+          name: string
+          sort_order: number
+          tier: string
+          updated_at: string
+          venue_key: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          description?: string[]
+          id?: string
+          name: string
+          sort_order?: number
+          tier?: string
+          updated_at?: string
+          venue_key: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          description?: string[]
+          id?: string
+          name?: string
+          sort_order?: number
+          tier?: string
+          updated_at?: string
+          venue_key?: string
+        }
+        Relationships: []
+      }
       site_content: {
         Row: {
           description: string | null
@@ -1946,6 +2024,69 @@ export type Database = {
           value?: Json
         }
         Relationships: []
+      }
+      supplier_category_links: {
+        Row: {
+          first_seen_at: string
+          hidden: boolean
+          last_seen_at: string
+          sample_event_id: string | null
+          sample_price_sek: number | null
+          seat_category_id: string | null
+          supplier: string
+          supplier_category_id: string
+          supplier_color: string | null
+          supplier_description: string[] | null
+          supplier_name: string | null
+          tier_guess: string | null
+          venue_key: string
+        }
+        Insert: {
+          first_seen_at?: string
+          hidden?: boolean
+          last_seen_at?: string
+          sample_event_id?: string | null
+          sample_price_sek?: number | null
+          seat_category_id?: string | null
+          supplier: string
+          supplier_category_id: string
+          supplier_color?: string | null
+          supplier_description?: string[] | null
+          supplier_name?: string | null
+          tier_guess?: string | null
+          venue_key: string
+        }
+        Update: {
+          first_seen_at?: string
+          hidden?: boolean
+          last_seen_at?: string
+          sample_event_id?: string | null
+          sample_price_sek?: number | null
+          seat_category_id?: string | null
+          supplier?: string
+          supplier_category_id?: string
+          supplier_color?: string | null
+          supplier_description?: string[] | null
+          supplier_name?: string | null
+          tier_guess?: string | null
+          venue_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_category_links_sample_event_id_fkey"
+            columns: ["sample_event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_category_links_seat_category_id_fkey"
+            columns: ["seat_category_id"]
+            isOneToOne: false
+            referencedRelation: "seat_categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       supplier_sync_log: {
         Row: {
