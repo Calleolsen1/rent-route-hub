@@ -87,6 +87,19 @@ const FALLBACK_TRAINING_FEATURES = [
  "Lokal kontakt och support på plats",
 ];
 
+/** "från 12 500 kr / person": the amount stands out, "från" and "/ person" stay quiet; never wraps. */
+function PriceLine({ text }: { text: string }) {
+  const m = text.match(/^(från)\s+(.+?)(\s*\/\s*person)?$/i);
+  if (!m) return <p className="font-display text-sm sm:text-base font-semibold text-foreground whitespace-nowrap">{text}</p>;
+  return (
+    <p className="whitespace-nowrap leading-none text-foreground">
+      <span className="text-[11px] sm:text-xs text-muted-foreground mr-1">{m[1]}</span>
+      <span className="font-display text-[15px] sm:text-lg font-semibold">{m[2]}</span>
+      {m[3] && <span className="text-[11px] sm:text-xs text-muted-foreground ml-0.5">{m[3].trim()}</span>}
+    </p>
+  );
+}
+
 export default function Traningslager() {
   const { get, getArray } = useSiteContent(TRAINING_KEYS);
   const { open: openInquiry } = useInquiryDialog();
@@ -158,8 +171,8 @@ export default function Traningslager() {
  </span>
  <h3 lang="sv" className="font-display text-[15px] sm:text-xl leading-tight text-foreground mb-1.5 sm:mb-2 sb-hyphen-long">{camp.title}</h3>
  <p lang="sv" className="text-muted-foreground text-xs sm:text-sm leading-snug sm:leading-relaxed flex-1 line-clamp-3 sm:line-clamp-none sb-hyphen-long">{camp.desc}</p>
-  <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-border flex flex-col items-start sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-3">
-  <p className="font-display text-sm sm:text-lg font-semibold text-foreground leading-tight">{camp.price}</p>
+  <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-border flex flex-col items-start gap-1.5 sm:gap-2">
+  <PriceLine text={camp.price} />
   <span className="inline-flex items-center gap-1 sm:gap-1.5 font-display uppercase font-semibold tracking-wide text-[13px] sm:text-[15px] text-primary group-hover:gap-2.5 transition-all whitespace-nowrap">
     Skicka förfrågan <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
   </span>
