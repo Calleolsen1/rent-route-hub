@@ -47,9 +47,9 @@ export default function Contact() {
 
       <section className="sb-section">
         <div className="sb-container">
-          <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12">
             {/* Contact details precede the form on phones and desktop. */}
-            <div id="contact-inquiry" className="lg:col-span-2 order-2 scroll-mt-24 sb-card p-5 sm:p-8">
+            <div id="contact-inquiry" className="lg:col-span-7 order-2 scroll-mt-24 sb-card p-5 sm:p-8">
               <InquiryForm
                 type="contact"
                 eyebrow="Reseförfrågan"
@@ -60,7 +60,7 @@ export default function Contact() {
             </div>
 
             {/* Contact Info */}
-            <div className="lg:col-span-1 order-1">
+            <div className="lg:col-span-5 order-1">
               <p className="eyebrow text-primary uppercase mb-1">{get("contact_section_eyebrow", "Tala med oss")}</p>
               <h2 className="font-display text-3xl md:text-[40px] text-foreground mb-4">
                 {get("contact_section_title", "Vi startar med ett Samtal")}

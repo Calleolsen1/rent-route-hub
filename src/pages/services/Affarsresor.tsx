@@ -129,7 +129,7 @@ export default function Affarsresor() {
  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
  {destinations.map((d) => (
  <div key={d.city} className="sb-card p-5 md:p-6 hover:border-primary/50 hover:shadow-md transition-all">
- <h3 className="font-display text-xl sm:text-2xl md:text-[28px] italic font-bold text-foreground mb-1">{d.city}</h3>
+ <h3 className="font-display text-lg sm:text-xl md:text-2xl italic font-bold text-foreground mb-1">{d.city}</h3>
  <p className="text-xs text-muted-foreground">{d.desc}</p>
  </div>
  ))}

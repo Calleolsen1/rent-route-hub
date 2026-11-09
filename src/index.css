@@ -175,11 +175,25 @@
   }
   html[data-area="public"] h1,
   html[data-area="public"] h2 {
-    font-weight: 700;
+    font-weight: 600;
     font-style: italic;
     text-transform: uppercase;
-    letter-spacing: 0;
-    line-height: 1.05;
+    letter-spacing: 0.005em;
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+  /* One calm scale for every public headline (overrides the per-page
+     size utilities): smaller and softer than the first redesign pass, and
+     sized so most headlines fit on one line. */
+  html[data-area="public"] h1 {
+    font-size: clamp(25px, 3vw, 44px);
+  }
+  html[data-area="public"] h2 {
+    font-size: clamp(19px, 1.85vw, 28px);
+  }
+  /* Smaller headline variant (match header beside the picture) */
+  html[data-area="public"] h1.sb-title-sm {
+    font-size: clamp(24px, 2.3vw, 32px);
   }
   html[data-area="public"] h3,
   html[data-area="public"] h4,
@@ -187,8 +201,9 @@
   html[data-area="public"] h6 {
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.01em;
+    letter-spacing: 0.015em;
     line-height: 1.15;
+    text-wrap: balance;
   }
   /* Italic emphasis inside headlines stays bold so it doesn't look thin */
   html[data-area="public"] :is(h1, h2) :is(em, .italic) {
@@ -235,9 +250,9 @@
   html[data-area="public"] .eyebrow {
     font-family: var(--font-display);
     font-style: italic;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    font-size: 0.85rem;
   }
 
   /* Public shared building blocks */

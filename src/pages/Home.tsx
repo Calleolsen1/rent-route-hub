@@ -553,13 +553,12 @@ const Home = () => {
                       <div className="absolute inset-0 bg-gradient-to-r from-navy-deep/60 to-transparent" />
                       {/* Side padding clears the prev/next arrows (shown from sm). */}
                       <div className="relative h-full flex items-end p-4 pb-10 sm:p-8 sm:pl-20 md:p-14 md:pl-24">
-                        <div className="max-w-3xl">
+                        <div className="max-w-4xl">
                           <p className="eyebrow text-sky-300 uppercase mb-2 sm:mb-3">
                             {slide.eyebrow}
                           </p>
                           <h1 className="font-display text-[34px] sm:text-5xl md:text-6xl lg:text-7xl text-white leading-[0.98] mb-4 sm:mb-7 [overflow-wrap:normal]">
-                            {slide.title}
-                            <br />
+                            {slide.title}{" "}
                             <em className="italic text-sky-200">{slide.italic}</em>
                           </h1>
                           <Link to={slide.primary.to}>
@@ -654,7 +653,7 @@ const Home = () => {
                           Ny
                         </span>
                       )}
-                      <h3 className="absolute inset-x-0 bottom-0 p-3 sm:p-4 font-display italic font-bold text-white text-xl sm:text-2xl leading-tight">
+                      <h3 className="absolute inset-x-0 bottom-0 p-3 sm:p-4 font-display italic font-bold text-white text-lg sm:text-xl leading-tight">
                         {offer.title}
                       </h3>
                     </div>
@@ -733,7 +732,7 @@ const Home = () => {
                         </div>
                       ) : null}
                       <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
-                        <h3 className="font-display italic font-bold text-xl sm:text-2xl text-white mb-0.5 leading-tight">{service.title}</h3>
+                        <h3 className="font-display italic font-bold text-lg sm:text-xl text-white mb-0.5 leading-tight">{service.title}</h3>
                         <p className="text-[11px] sm:text-xs tracking-wide text-white/85 uppercase">{service.subtitle}</p>
                       </div>
                     </div>
@@ -758,7 +757,7 @@ const Home = () => {
 
           <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div className="max-w-xl">
-              <h3 className="font-display italic font-bold text-3xl md:text-[36px] lg:text-[44px] text-primary mb-6 leading-[1.02] whitespace-pre-line">
+              <h3 className="font-display italic font-bold text-2xl md:text-[28px] lg:text-[32px] text-primary mb-5 leading-[1.08] whitespace-pre-line">
                 {"Personlig service\nSenior kompetens"}
               </h3>
               <p className="text-foreground/80 text-[15px] md:text-base leading-relaxed mb-8 whitespace-pre-line">
@@ -793,7 +792,7 @@ const Home = () => {
           <div className="mb-10">
             <p className="eyebrow text-primary uppercase mb-1">Våra kunder</p>
             <h2 className="font-display text-3xl md:text-5xl text-foreground">
-              Berättelser från<br />
+              Berättelser från{" "}
               <em className="italic text-primary">resan</em>
             </h2>
           </div>

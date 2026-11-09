@@ -198,7 +198,7 @@ export default function SportPage() {
                 <div key={league} className="sb-card p-4 sm:p-6 hover:border-primary/50 hover:shadow-md transition-all motion-reduce:transition-none">
                   <div className="flex items-start justify-between gap-4 mb-3 sm:mb-5 sm:min-h-[80px]">
                     <div className="min-w-0">
-                      <h3 className="font-display text-2xl sm:text-[28px] italic font-bold text-foreground">{league}</h3>
+                      <h3 className="font-display text-xl sm:text-2xl italic font-bold text-foreground">{league}</h3>
                       <p className="text-xs text-muted-foreground mt-1">
                         {teams.length} {isCupGroup ? "cuper" : "lag"}
                       </p>
