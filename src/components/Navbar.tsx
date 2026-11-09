@@ -17,6 +17,10 @@ import {
 import { slugify as slug } from "@/data/sports";
 import { CUP_SLUGS, CUP_GROUP_LABEL, cupHref } from "@/data/cups";
 import { useSports, useEntries, useTopMenu, sortByRaceDate, type NavSport, type NavEntry } from "@/hooks/useNavigation";
+import { RACE_FACTS, weekendLabel } from "@/data/raceFacts";
+
+/** Race weekend ("4–6 juni 2027") when known, otherwise the entry's own short date. */
+const raceDate = (entry: NavEntry) => weekendLabel(RACE_FACTS[entry.slug], entry.date_text) ?? entry.short_date;
 
 const Navbar = () => {
   const { user, signOut } = useAuth();
@@ -146,8 +150,8 @@ const Navbar = () => {
                             <span className="font-display text-[15px] uppercase font-semibold text-foreground group-hover:text-primary">
                               {entry.name}
                             </span>
-                            {entry.short_date && (
-                              <span className="text-xs text-muted-foreground">{entry.short_date}</span>
+                            {raceDate(entry) && (
+                              <span className="text-xs text-muted-foreground">{raceDate(entry)}</span>
                             )}
                           </Link>
                         ))}
@@ -354,8 +358,8 @@ const Navbar = () => {
                           onClick={() => setMobileOpen(false)}
                         >
                           <span className="text-foreground/80">{entry.name}</span>
-                          {entry.short_date && (
-                            <span className="text-xs text-muted-foreground flex-shrink-0">{entry.short_date}</span>
+                          {raceDate(entry) && (
+                            <span className="text-xs text-muted-foreground flex-shrink-0">{raceDate(entry)}</span>
                           )}
                         </Link>
                       ))}

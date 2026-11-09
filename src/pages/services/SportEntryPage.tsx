@@ -20,6 +20,8 @@ import { DEFAULT_FEATURES_BY_KIND } from "@/data/packageFeatures";
 import PackageCards from "@/components/site/PackageCards";
 import CityBreak from "@/components/site/CityBreak";
 import { cityBreakFor } from "@/data/cityBreaks";
+import { RACE_FACTS, weekendLabel } from "@/data/raceFacts";
+import { RaceFactsGrid, RaceSchedule, RaceTextSections } from "@/components/site/RaceDetails";
 
 /**
  * Unified landing page for any sport entry - replaces the old TeamPage +
@@ -105,6 +107,18 @@ export default function SportEntryPage() {
   // The intro text (description) sits under the fixtures heading, like the
   // reference layout; tagline is still the fallback when no intro is saved.
   const intro = info.description || info.tagline;
+  const isRace = sport.entry_kind === "race";
+  const raceFacts = isRace ? RACE_FACTS[info.slug] : undefined;
+  const raceWeekend = weekendLabel(raceFacts, info.date_text);
+  const enquire = () =>
+    openInquiry({
+      type: "contact",
+      presetTopic: `Förfrågan: ${info.name}`,
+      defaultDestination: `${info.name}${raceWeekend ? ` – ${raceWeekend}` : ""}`,
+      heading: "Skicka en förfrågan",
+      intro: "Berätta vilka platser och vad du vill ska ingå i resan så återkommer vi med ett förslag.",
+      showTripParts: true,
+    });
 
   return (
     <div className="min-h-screen">
@@ -117,7 +131,15 @@ export default function SportEntryPage() {
         title={info.name}
         logo={leagueLogo}
         logoAlt={info.group_label ? `${info.group_label} logotyp` : undefined}
-      />
+      >
+        {raceFacts?.officialName && (
+          <span className="block font-display text-base md:text-lg font-semibold uppercase tracking-wide text-white/80">
+            {raceFacts.officialName}
+          </span>
+        )}
+      </PageHero>
+
+      {raceFacts && <RaceFactsGrid facts={raceFacts} weekend={raceWeekend} city={info.city} venue={info.venue} />}
 
       {/* Fixtures */}
       <section className="pt-10 md:pt-14 pb-10 md:pb-14 bg-background">
@@ -138,7 +160,7 @@ export default function SportEntryPage() {
               sport={sport.entry_kind === "race" ? "formula1" : undefined}
               emptyMessage={sport.entry_kind === "race" ? "Biljetter för detta lopp finns ännu inte i listan. Skicka en förfrågan så undersöker vi möjligheterna." : undefined}
               hideEmptyMessage={sport.entry_kind === "race"}
-              inquiryDestination={sport.entry_kind === "race" ? `${info.name}${info.date_text ? ` – ${info.date_text}` : ""}` : undefined}
+              inquiryDestination={isRace ? `${info.name}${raceWeekend ?? info.date_text ? ` – ${raceWeekend ?? info.date_text}` : ""}` : undefined}
               showFilters
               eyebrow=""
               title=""
@@ -172,8 +194,22 @@ export default function SportEntryPage() {
         </div>
       </section>
 
-      {/* Facts */}
-      {(info.city || groupOrDate || info.venue) && (
+      {raceFacts && (
+        <>
+          <RaceSchedule facts={raceFacts} />
+          <RaceTextSections
+            facts={raceFacts}
+            raceName={info.name}
+            trackName={info.venue}
+            trackPhoto={heroSrc}
+            cityPhoto={f1Image}
+            onEnquire={enquire}
+          />
+        </>
+      )}
+
+      {/* Facts (race pages show them in the facts grid instead) */}
+      {!raceFacts && (info.city || groupOrDate || info.venue) && (
         <section className="sb-section-alt">
           <div className="sb-container">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

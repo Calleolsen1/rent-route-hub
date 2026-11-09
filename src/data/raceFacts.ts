@@ -1,0 +1,341 @@
+/**
+ * Race facts for the F1 race pages, keyed by nav entry slug (nav_menu_entries.slug).
+ * Source: KAISEN's "F1 Upplägg" sheet (2027 calendar). Slugs kanada, turkiet,
+ * singapore, sao-paulo and qatar have no menu entry yet - they show as soon as
+ * an entry with that slug is added under Admin -> Navigation.
+ *
+ * aboutTrack / whyVisit / bestSeats are KAISEN's own texts; empty = section hidden.
+ */
+export type RaceFacts = {
+  officialName: string;
+  /** "30 apr–2 maj" (year comes from the entry's date_text). */
+  weekend: string;
+  length: string;
+  /** Start time of the race; "" until announced (shown as TBC). */
+  startTime: string;
+  laps: string;
+  firstRace: string;
+  lapRecord: string;
+  lapRecordBy: string;
+  schedule: { date: string; label: string }[];
+  aboutTrack: string;
+  whyVisit: string;
+  bestSeats: string;
+};
+
+export const RACE_FACTS: Record<string, RaceFacts> = {
+  "miami": {
+    officialName: "FORMULA 1 HARD ROCK MIAMI GRAND PRIX",
+    weekend: "30 apr–2 maj",
+    length: "5,412 km",
+    startTime: "",
+    laps: "54",
+    firstRace: "2022",
+    lapRecord: "1:29.708",
+    lapRecordBy: "Max Verstappen 2023",
+    schedule: [
+      { date: "2027-04-30", label: "Träning 1–2" },
+      { date: "2027-05-01", label: "Träning 3 + Kval" },
+      { date: "2027-05-02", label: "Lopp" },
+    ],
+    aboutTrack: "",
+    whyVisit: "",
+    bestSeats: "",
+  },
+  "kanada": {
+    officialName: "FORMULA 1 AWS Grand Prix Du Canada",
+    weekend: "21–23 maj",
+    length: "4,361 km",
+    startTime: "",
+    laps: "67",
+    firstRace: "1978",
+    lapRecord: "1:13.078",
+    lapRecordBy: "Valtteri Bottas 2019",
+    schedule: [
+      { date: "2027-05-21", label: "Träning 1 + Sprintkval" },
+      { date: "2027-05-22", label: "Sprint + Kval" },
+      { date: "2027-05-23", label: "Lopp" },
+    ],
+    aboutTrack: "",
+    whyVisit: "",
+    bestSeats: "",
+  },
+  "monaco": {
+    officialName: "FORMULA 1 LOUIS VUITTON GRAND PRIX DE MONACO",
+    weekend: "4–6 juni",
+    length: "3,337 km",
+    startTime: "",
+    laps: "78",
+    firstRace: "1950",
+    lapRecord: "1:12.909",
+    lapRecordBy: "Lewis Hamilton 2021",
+    schedule: [
+      { date: "2027-06-04", label: "Träning 1 + Sprintkval" },
+      { date: "2027-06-05", label: "Sprint + Kval" },
+      { date: "2027-06-06", label: "Lopp" },
+    ],
+    aboutTrack: "",
+    whyVisit: "",
+    bestSeats: "",
+  },
+  "algarve": {
+    officialName: "FORMULA 1 MSC CRUISES GRANDE PRÉMIO DE PORTUGAL",
+    weekend: "18–20 juni",
+    length: "4,653 km",
+    startTime: "",
+    laps: "63",
+    firstRace: "2020",
+    lapRecord: "1:18.750",
+    lapRecordBy: "Lewis Hamilton 2020",
+    schedule: [
+      { date: "2027-06-18", label: "Träning 1–2" },
+      { date: "2027-06-19", label: "Träning 3 + Kval" },
+      { date: "2027-06-20", label: "Lopp" },
+    ],
+    aboutTrack: "",
+    whyVisit: "",
+    bestSeats: "",
+  },
+  "storbritannien": {
+    officialName: "FORMULA 1 TAG HEUER BRITISH GRAND PRIX",
+    weekend: "2–4 juli",
+    length: "5,891 km",
+    startTime: "",
+    laps: "50",
+    firstRace: "1950",
+    lapRecord: "1:27.097",
+    lapRecordBy: "Max Verstappen 2020",
+    schedule: [
+      { date: "2027-07-02", label: "Träning 1 + Sprintkval" },
+      { date: "2027-07-03", label: "Sprint + Kval" },
+      { date: "2027-07-04", label: "Lopp" },
+    ],
+    aboutTrack: "",
+    whyVisit: "",
+    bestSeats: "",
+  },
+  "osterrike": {
+    officialName: "FORMULA 1 QATAR AIRWAYS AUSTRIAN GRAND PRIX",
+    weekend: "9–11 juli",
+    length: "4,326 km",
+    startTime: "",
+    laps: "68",
+    firstRace: "1970",
+    lapRecord: "1:07.924",
+    lapRecordBy: "Oscar Piastri 2025",
+    schedule: [
+      { date: "2027-07-09", label: "Träning 1–2" },
+      { date: "2027-07-10", label: "Träning 3 + Kval" },
+      { date: "2027-07-11", label: "Lopp" },
+    ],
+    aboutTrack: "",
+    whyVisit: "",
+    bestSeats: "",
+  },
+  "belgien": {
+    officialName: "FORMULA 1 MSC CRUISES BELGIAN GRAND PRIX",
+    weekend: "23–25 juli",
+    length: "7,004 km",
+    startTime: "",
+    laps: "42",
+    firstRace: "1950",
+    lapRecord: "1:44.701",
+    lapRecordBy: "Sergio Perez 2024",
+    schedule: [
+      { date: "2027-07-23", label: "Träning 1–2" },
+      { date: "2027-07-24", label: "Träning 3 + Kval" },
+      { date: "2027-07-25", label: "Lopp" },
+    ],
+    aboutTrack: "",
+    whyVisit: "",
+    bestSeats: "",
+  },
+  "ungern": {
+    officialName: "FORMULA 1 ARAMCO HUNGARIAN GRAND PRIX",
+    weekend: "30 juli–1 aug",
+    length: "4,381 km",
+    startTime: "",
+    laps: "67",
+    firstRace: "1986",
+    lapRecord: "1:16.627",
+    lapRecordBy: "Lewis Hamilton 2020",
+    schedule: [
+      { date: "2027-07-30", label: "Träning 1–2" },
+      { date: "2027-07-31", label: "Träning 3 + Kval" },
+      { date: "2027-08-01", label: "Lopp" },
+    ],
+    aboutTrack: "",
+    whyVisit: "",
+    bestSeats: "",
+  },
+  "italien-monza": {
+    officialName: "FORMULA 1 PIRELLI GRAN PREMIO D'ITALIA",
+    weekend: "3–5 sep",
+    length: "5,793 km",
+    startTime: "",
+    laps: "51",
+    firstRace: "1950",
+    lapRecord: "1:20.901",
+    lapRecordBy: "Lando Norris 2025",
+    schedule: [
+      { date: "2027-09-03", label: "Träning 1 + Sprintkval" },
+      { date: "2027-09-04", label: "Sprint + Kval" },
+      { date: "2027-09-05", label: "Lopp" },
+    ],
+    aboutTrack: "",
+    whyVisit: "",
+    bestSeats: "",
+  },
+  "spanien-madrid": {
+    officialName: "FORMULA 1 LENOVO GRAN PREMIO DE ESPAÑA",
+    weekend: "10–12 sep",
+    length: "5,414 km",
+    startTime: "",
+    laps: "54",
+    firstRace: "2026",
+    lapRecord: "1:35.587",
+    lapRecordBy: "George Russell",
+    schedule: [
+      { date: "2027-09-10", label: "Träning 1–2" },
+      { date: "2027-09-11", label: "Träning 3 + Kval" },
+      { date: "2027-09-12", label: "Lopp" },
+    ],
+    aboutTrack: "",
+    whyVisit: "",
+    bestSeats: "",
+  },
+  "turkiet": {
+    officialName: "FORMULA 1 MSC CRUISES TURKISH GRAND PRIX",
+    weekend: "1–3 okt",
+    length: "5,338 km",
+    startTime: "",
+    laps: "55",
+    firstRace: "2005",
+    lapRecord: "1:24.770",
+    lapRecordBy: "Juan Pablo Montoya 2005",
+    schedule: [
+      { date: "2027-10-01", label: "Träning 1–2" },
+      { date: "2027-10-02", label: "Träning 3 + Kval" },
+      { date: "2027-10-03", label: "Lopp" },
+    ],
+    aboutTrack: "",
+    whyVisit: "",
+    bestSeats: "",
+  },
+  "singapore": {
+    officialName: "FORMULA 1 SINGAPORE AIRLINES SINGAPORE GRAND PRIX",
+    weekend: "8–10 okt",
+    length: "4,927 km",
+    startTime: "",
+    laps: "59",
+    firstRace: "2008",
+    lapRecord: "1:33.808",
+    lapRecordBy: "Lewis Hamilton 2025",
+    schedule: [
+      { date: "2027-10-08", label: "Träning 1–2" },
+      { date: "2027-10-09", label: "Träning 3 + Kval" },
+      { date: "2027-10-10", label: "Lopp" },
+    ],
+    aboutTrack: "",
+    whyVisit: "",
+    bestSeats: "",
+  },
+  "usa-austin": {
+    officialName: "FORMULA 1 PIRELLI UNITED STATES GRAND PRIX",
+    weekend: "22–24 okt",
+    length: "5,513 km",
+    startTime: "",
+    laps: "53",
+    firstRace: "2012",
+    lapRecord: "1:36.169",
+    lapRecordBy: "Charles Leclerc 2019",
+    schedule: [
+      { date: "2027-10-22", label: "Träning 1–2" },
+      { date: "2027-10-23", label: "Träning 3 + Kval" },
+      { date: "2027-10-24", label: "Lopp" },
+    ],
+    aboutTrack: "",
+    whyVisit: "",
+    bestSeats: "",
+  },
+  "sao-paulo": {
+    officialName: "FORMULA 1 HEINEKEN GRANDE PRÊMIO DE SÃO PAULO",
+    weekend: "5–7 nov",
+    length: "4,309 km",
+    startTime: "",
+    laps: "68",
+    firstRace: "1973",
+    lapRecord: "1:10.540",
+    lapRecordBy: "Valtteri Bottas 2018",
+    schedule: [
+      { date: "2027-11-05", label: "Träning 1 + Sprintkval" },
+      { date: "2027-11-06", label: "Sprint + Kval" },
+      { date: "2027-11-07", label: "Lopp" },
+    ],
+    aboutTrack: "",
+    whyVisit: "",
+    bestSeats: "",
+  },
+  "las-vegas": {
+    officialName: "FORMULA 1 HEINEKEN LAS VEGAS GRAND PRIX",
+    weekend: "18–20 nov",
+    length: "6,201 km",
+    startTime: "",
+    laps: "47",
+    firstRace: "2023",
+    lapRecord: "1:33.365",
+    lapRecordBy: "Max Verstappen 2025",
+    schedule: [
+      { date: "2027-11-18", label: "Träning 1" },
+      { date: "2027-11-19", label: "Träning 2–3" },
+      { date: "2027-11-20", label: "Kval" },
+      { date: "2027-11-21", label: "Lopp" },
+    ],
+    aboutTrack: "",
+    whyVisit: "",
+    bestSeats: "",
+  },
+  "qatar": {
+    officialName: "FORMULA 1 QATAR AIRWAYS QATAR GRAND PRIX",
+    weekend: "3–5 dec",
+    length: "5,419 km",
+    startTime: "",
+    laps: "54",
+    firstRace: "2021",
+    lapRecord: "1:22.384",
+    lapRecordBy: "",
+    schedule: [
+      { date: "2027-12-03", label: "Träning 1 + Sprintkval" },
+      { date: "2027-12-04", label: "Sprint + Kval" },
+      { date: "2027-12-05", label: "Lopp" },
+    ],
+    aboutTrack: "",
+    whyVisit: "",
+    bestSeats: "",
+  },
+  "abu-dhabi": {
+    officialName: "FORMULA 1 ETIHAD AIRWAYS ABU DHABI GRAND PRIX",
+    weekend: "10–12 dec",
+    length: "5,281 km",
+    startTime: "",
+    laps: "55",
+    firstRace: "2009",
+    lapRecord: "1:25.637",
+    lapRecordBy: "Kevin Magnussen 2024",
+    schedule: [
+      { date: "2027-12-10", label: "Träning 1 + Sprintkval" },
+      { date: "2027-12-11", label: "Sprint + Kval" },
+      { date: "2027-12-12", label: "Lopp" },
+    ],
+    aboutTrack: "",
+    whyVisit: "",
+    bestSeats: "",
+  },
+};
+
+/** "4–6 juni 2027" using the year from the entry's date_text. */
+export function weekendLabel(facts: RaceFacts | undefined, dateText?: string | null): string | null {
+  if (!facts?.weekend) return null;
+  const year = dateText?.match(/\b(20\d{2})\b/)?.[1];
+  return year ? `${facts.weekend} ${year}` : facts.weekend;
+}

@@ -9,6 +9,10 @@ import f1Image from "@/assets/sport-f1.jpg";
 import PageHero from "@/components/site/PageHero";
 import CtaBand from "@/components/site/CtaBand";
 import { leagueLogos, cupLogos } from "@/data/leagueLogos";
+import { RACE_FACTS, weekendLabel } from "@/data/raceFacts";
+import type { NavEntry } from "@/hooks/useNavigation";
+
+const raceDate = (race: NavEntry) => weekendLabel(RACE_FACTS[race.slug], race.date_text) ?? race.date_text;
 import { useSport, useEntriesForSport } from "@/hooks/useNavigation";
 import { useVenuePhotos, venuePhotoFor } from "@/hooks/useVenuePhotos";
 import { slugify } from "@/data/sports";
@@ -138,7 +142,7 @@ export default function SportPage() {
                     />
                     <div className="hidden sm:block absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy-deep/95 via-navy-deep/50 to-transparent px-4 pt-12 pb-3">
                       <p className="font-display text-2xl font-bold italic uppercase text-primary-foreground leading-tight">{race.name}</p>
-                      {race.date_text && <p className="text-xs text-primary-foreground/80 mt-0.5">{race.date_text}</p>}
+                      {raceDate(race) && <p className="text-xs text-primary-foreground/80 mt-0.5">{raceDate(race)}</p>}
                     </div>
                   </div>
                   <div className="min-w-0 p-3 sm:p-5">
@@ -147,10 +151,10 @@ export default function SportPage() {
                       <p className="text-sm text-muted-foreground italic mb-2 sm:mb-3">{race.tagline}</p>
                     )}
                     <div className="space-y-1.5 text-xs text-muted-foreground">
-                      {race.date_text && (
+                      {raceDate(race) && (
                         <p className="flex items-center gap-2">
                           <CalendarDays className="h-3.5 w-3.5 text-primary" />
-                          {race.date_text}
+                          {raceDate(race)}
                         </p>
                       )}
                       {race.venue && (
