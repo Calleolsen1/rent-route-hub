@@ -256,6 +256,14 @@
     scrollbar-width: none;
   }
   .sb-scroll-row::-webkit-scrollbar { display: none; }
+  /* Hyphenate only genuinely long words (narrow phone cards) */
+  .sb-hyphen-long {
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphenate-limit-chars: 12 5 5;
+    -webkit-hyphenate-limit-before: 5;
+    -webkit-hyphenate-limit-after: 5;
+  }
   .sb-card {
     @apply bg-card border border-border rounded-lg;
   }

@@ -130,7 +130,7 @@ export default function Traningslager() {
  Detta är ett urval ur vårt kompletta program. Hör av er så hittar vi rätt destination för just ert lag.
  </p>
 
- <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+ <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
   {camps.map((camp) => (
   <article
     key={camp.title}
@@ -147,21 +147,21 @@ export default function Traningslager() {
  width={1280}
  height={896}
  />
- <span className="absolute top-3 left-3 rounded-md bg-navy-deep/90 px-2.5 py-1 font-display text-sm font-semibold uppercase italic tracking-wide text-white">
+ <span className="absolute top-2 left-2 sm:top-3 sm:left-3 rounded-md bg-navy-deep/90 px-2 sm:px-2.5 py-0.5 sm:py-1 font-display text-xs sm:text-sm font-semibold uppercase italic tracking-wide text-white">
  {camp.sport}
  </span>
  </div>
- <div className="p-5 flex flex-col flex-1">
- <span className="flex items-center gap-1.5 text-xs text-muted-foreground mb-2">
- <MapPin className="h-3.5 w-3.5" />
+ <div className="p-3 sm:p-5 flex flex-col flex-1">
+ <span className="flex items-center gap-1 sm:gap-1.5 text-[11px] sm:text-xs text-muted-foreground mb-1.5 sm:mb-2 leading-tight">
+ <MapPin className="h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0" />
  {camp.location}
  </span>
- <h3 className="font-display text-xl text-foreground mb-2">{camp.title}</h3>
- <p className="text-muted-foreground text-sm leading-relaxed flex-1">{camp.desc}</p>
-  <div className="mt-4 pt-4 border-t border-border flex items-center justify-between gap-3">
-  <p className="font-display text-lg font-semibold text-foreground">{camp.price}</p>
-  <span className="inline-flex items-center gap-1.5 font-display uppercase font-semibold tracking-wide text-[15px] text-primary group-hover:gap-2.5 transition-all whitespace-nowrap">
-    Skicka förfrågan <ArrowRight className="h-4 w-4" />
+ <h3 lang="sv" className="font-display text-[15px] sm:text-xl leading-tight text-foreground mb-1.5 sm:mb-2 sb-hyphen-long">{camp.title}</h3>
+ <p lang="sv" className="text-muted-foreground text-xs sm:text-sm leading-snug sm:leading-relaxed flex-1 line-clamp-3 sm:line-clamp-none sb-hyphen-long">{camp.desc}</p>
+  <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-border flex flex-col items-start sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-3">
+  <p className="font-display text-sm sm:text-lg font-semibold text-foreground leading-tight">{camp.price}</p>
+  <span className="inline-flex items-center gap-1 sm:gap-1.5 font-display uppercase font-semibold tracking-wide text-[13px] sm:text-[15px] text-primary group-hover:gap-2.5 transition-all whitespace-nowrap">
+    Skicka förfrågan <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
   </span>
   </div>
  </div>
