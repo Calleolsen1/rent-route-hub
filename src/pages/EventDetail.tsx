@@ -26,6 +26,12 @@ import Navbar from "@/components/Navbar";
 import { eventDateParts, formatEventDateTime, formatSek } from "@/lib/formatSek";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { usePageMeta } from "@/lib/usePageMeta";
+import PackageCards from "@/components/site/PackageCards";
+import CityBreak from "@/components/site/CityBreak";
+import { cityBreakFor } from "@/data/cityBreaks";
+import { DEFAULT_FEATURES_BY_KIND, packageTitle } from "@/data/packageFeatures";
+import { useEntries } from "@/hooks/useNavigation";
+import { useVenuePhotos, venuePhotoFor } from "@/hooks/useVenuePhotos";
 import { PriceTag, resolveCompareAt } from "@/components/PriceTag";
 
 type EventRow = {
@@ -66,6 +72,8 @@ export default function EventDetail() {
   // Hotels near the ground from DPA — only in the cities DPA covers.
   const hotels = useEventHotels(id, event?.starts_at ?? null);
   const teamPhotos = useTeamPhotos();
+  const venuePhotos = useVenuePhotos();
+  const navEntries = useEntries();
   const teamCrests = useTeamCrests();
   const { url: seatmapUrl, note: seatmapNote } = useSeatmap(
     event?.sport ?? null,
@@ -172,6 +180,13 @@ export default function EventDetail() {
       ? `${event.home_team} vs ${event.away_team}`
       : event.race_name;
   const dateBlock = eventDateParts(event.starts_at);
+  const kind = event.sport === "formula1" ? "race" : "team";
+  // The club/race menu entry carries the city and package lines.
+  const entryName = event.sport === "formula1" ? event.race_name : event.home_team;
+  const navEntry = navEntries.find((e) => e.name === entryName);
+  const venuePhoto =
+    teamPhotos[`${event.sport}|${entryName}`] ?? venuePhotoFor(venuePhotos, event.venue_name) ?? null;
+  const cityBreak = cityBreakFor(navEntry?.city ?? event.city);
 
   return (
     <div className="min-h-screen">
@@ -190,6 +205,7 @@ export default function EventDetail() {
               coverUrl={event.cover_image_url}
               photos={teamPhotos}
               crests={teamCrests}
+              variant="hero"
             />
           </div>
           <div className="min-w-0">
@@ -368,6 +384,15 @@ export default function EventDetail() {
           </aside>
         </div>
       </section>
+
+      <PackageCards
+        eyebrow="Skräddarsy din resa"
+        title={packageTitle(kind, kind === "race" ? "Formel 1" : "Fotboll", event.venue_name)}
+        features={navEntry?.features_json?.length ? navEntry.features_json : DEFAULT_FEATURES_BY_KIND[kind]}
+        venuePhoto={venuePhoto}
+        alt
+      />
+      {cityBreak && <CityBreak data={cityBreak} />}
 
       {/* Price-on-request enquiry. Carries the exact event + ticket category
           in presetTopic so ops can quote without asking the customer again. */}

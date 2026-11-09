@@ -16,6 +16,10 @@ import PageHero from "@/components/site/PageHero";
 import CtaBand from "@/components/site/CtaBand";
 import { leagueLogos } from "@/data/leagueLogos";
 import { slugify } from "@/data/sports";
+import { DEFAULT_FEATURES_BY_KIND } from "@/data/packageFeatures";
+import PackageCards from "@/components/site/PackageCards";
+import CityBreak from "@/components/site/CityBreak";
+import { cityBreakFor } from "@/data/cityBreaks";
 
 /**
  * Unified landing page for any sport entry - replaces the old TeamPage +
@@ -55,20 +59,6 @@ const KIND_LABELS = {
   },
 };
 
-const DEFAULT_FEATURES_BY_KIND: Record<string, string[]> = {
-  team: [
-    "Matchbiljetter - välj mellan olika biljettkategorier",
-    "Hotell - centralt i olika kategorier inklusive frukost",
-    "Flyg - avresa från valfri flygplats",
-    "Transfer - möjlighet att förboka transport till hotell",
-  ],
-  race: [
-    "Biljetter - weekend alt söndag i olika kategorier",
-    "Hotell - centralt inklusive frukost i olika kategorier",
-    "Flyg - avresa från valfri flygplats",
-    "Transfers - möjlighet att förboka transport till hotell",
-  ],
-};
 
 export default function SportEntryPage() {
   const { sport: sportSlug, entry: entrySlug } = useParams<{ sport: string; entry: string }>();
@@ -97,8 +87,10 @@ export default function SportEntryPage() {
 
   const labels = KIND_LABELS[sport.entry_kind] ?? KIND_LABELS.team;
   const VenueIcon = labels.venueIcon;
+  const venuePhoto = venuePhotoFor(venuePhotos, info.venue, info.name);
+  const cityBreak = cityBreakFor(info.city);
   const heroSrc =
-    venuePhotoFor(venuePhotos, info.venue, info.name) ??
+    venuePhoto ??
     info.hero_image_url ??
     FALLBACKS_BY_KIND[sport.entry_kind] ??
     fotbollImage;
@@ -217,34 +209,14 @@ export default function SportEntryPage() {
         </section>
       )}
 
-      {/* Package */}
-      <section className="sb-section">
-        <div className="sb-container">
-          <p className="eyebrow text-primary uppercase mb-1 text-center">{labels.whatsIncluded}</p>
-          <h2 className="font-display text-3xl md:text-[44px] text-center mb-8 md:mb-10">
-            {labels.packageTitle(sport.label, info.venue)}
-          </h2>
-          <ul className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {features.map((f, i) => {
-              // Första ordet är rubrik i rutorna på både fotboll och racen
-              // (Matchbiljetter, Hotell, Flyg, Transfers ...).
-              const space = f.indexOf(" ");
-              const lead = space > 0 ? f.slice(0, space) : f;
-              // The " - " joining title and text is a separator, not text.
-              const rest = space > 0 ? f.slice(space).replace(/^\s*[-–]\s*/, "") : "";
-              return (
-                <li key={i} className="sb-card p-5">
-                  <span className="mb-4 flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary">
-                    <Check className="h-5 w-5" />
-                  </span>
-                  <h3 className="font-display text-xl text-foreground">{lead}</h3>
-                  {rest && <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">{rest}</p>}
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </section>
+      <PackageCards
+        eyebrow={labels.whatsIncluded}
+        title={labels.packageTitle(sport.label, info.venue)}
+        features={features}
+        venuePhoto={venuePhoto}
+      />
+
+      {cityBreak && <CityBreak data={cityBreak} alt />}
 
       <CtaBand eyebrow={`Boka din ${info.name}-resa`} title={`Redo för ${info.name}?`}>
         <Link to="/contact" className="sb-btn-light">
