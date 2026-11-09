@@ -25,15 +25,13 @@ export default function TicketList({ t, sport = "soccer" }: { t: EventTickets; s
         title={
           t.canBuy && t.fromPrice != null
             ? `${label} från ${formatSek(t.fromPrice)}`
-            : football
-              ? "Välj dina officiella matchbiljetter"
-              : "Välj dina biljetter"
+            : label
         }
       >
         {t.hasPlan && t.onPlanColors && t.onPlanColors.size > 0 ? (
           <>
-            <span className="hidden lg:inline">För muspekaren över en biljettkategori för att se dess placering på arenan.</span>
-            <span className="lg:hidden">Tryck på "Visa på kartan" för att se var biljetten ligger.</span>
+            <span className="hidden lg:inline">Håll muspekaren över en kategori för att se den på kartan.</span>
+            <span className="lg:hidden">Tryck på "Visa på kartan" för att se platsen.</span>
           </>
         ) : null}
       </StepHeader>
@@ -125,7 +123,7 @@ export default function TicketList({ t, sport = "soccer" }: { t: EventTickets; s
                         <span className="text-muted-foreground">Ordnas på förfrågan</span>
                       ) : g.available ? (
                         <span className="text-muted-foreground inline-flex items-center gap-1">
-                                                    {t.canBuy ? `Max ${g.max_qty}` : "Tillgänglig"}
+                                                    {t.canBuy ? `Max ${g.max_qty}` : null}
                         </span>
                       ) : (
                         <span className="text-muted-foreground">Slutsålt just nu</span>
@@ -168,7 +166,7 @@ export default function TicketList({ t, sport = "soccer" }: { t: EventTickets; s
             {" "}E-biljetterna släpps närmare matchen och skickas till din e-post och Mitt KAISEN.
           </>
         ) : (
-          "Markera de biljettkategorier ni är intresserade av, så tar vi fram prisförslag. Vi säljer endast officiella biljetter direkt från klubben eller via auktoriserade återförsäljare."
+          "Välj kategorier så tar vi fram pris. Endast officiella biljetter."
         )}
       </p>
     </div>

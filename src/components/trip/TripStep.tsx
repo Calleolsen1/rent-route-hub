@@ -19,7 +19,7 @@ export function StepHeader({
     <div className="mb-4">
       <div className="min-w-0">
         <p className="eyebrow text-primary uppercase mb-0.5">
-          Steg {n} · {eyebrow}
+          Steg {n}
         </p>
         <h2 className="font-display text-[23px] sm:text-[28px] md:text-[34px] leading-[1.05]">{title}</h2>
         {children && <div className="mt-1 text-xs text-muted-foreground">{children}</div>}

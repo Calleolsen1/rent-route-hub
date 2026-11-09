@@ -27,8 +27,8 @@ export default function FlightStep({
 
   return (
     <div id="flyg" className="scroll-mt-40">
-      <StepHeader n={3} eyebrow="Flyg" title="Välj om ni önskar hjälp med flyg">
-        Vi har egen IATA-licens och har därmed tillgång till och kan boka de flesta flygbolag.
+      <StepHeader n={3} eyebrow="Flyg" title="Flyg">
+        Vi bokar de flesta flygbolag.
       </StepHeader>
 
       <OnOffChoice
@@ -36,7 +36,7 @@ export default function FlightStep({
         on={on}
         onChange={onToggle}
         off={{ icon: Car, label: "Utan flyg", hint: "Vi tar oss dit själva" }}
-        with={{ icon: Plane, label: "Med flyg", hint: "Tur och retur från samtliga svenska flygplatser, Köpenhamn och Oslo" }}
+        with={{ icon: Plane, label: "Med flyg", hint: "Från Sverige, Köpenhamn eller Oslo" }}
       />
 
       {on && (

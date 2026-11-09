@@ -133,7 +133,7 @@ export default function BookingCard({
               <ArrowDown className="ml-2 h-4 w-4" />
             </Button>
             <p className="mt-3 text-[11px] text-muted-foreground leading-relaxed text-center">
-              Steg {next.n} av 3 - välj {next.id === "hotell" ? "med eller utan hotell" : "med eller utan flyg"}, sedan skickar ni förfrågan.
+              Välj {next.id === "hotell" ? "hotell" : "flyg"}, sedan skickar ni förfrågan.
             </p>
           </>
         ) : checkout ? (
@@ -155,8 +155,7 @@ export default function BookingCard({
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
             <p className="mt-3 text-[11px] text-muted-foreground leading-relaxed text-center">
-              Vi återkommer med pris på hela resan normalt samma dag (vardagar) eller senast inom 24 timmar.
-              Inget bokas förrän ni har bekräftat reseförslaget.
+              Pris inom 24 timmar. Inget bokas förrän ni bekräftat.
             </p>
           </>
         )}
