@@ -28,6 +28,8 @@ export type TicketGroup = {
   available: boolean;
   max_qty: number;
   final_sek?: number;
+  /** P1 Travel rows: shown with price but only bookable via request. */
+  request_only?: boolean;
 };
 
 type TicketsResponse = {
@@ -91,13 +93,26 @@ export function useEventTickets(eventId: string | undefined, sport: string | nul
     (async () => {
       const load = () =>
         supabase.functions.invoke("travelconnection-tickets", { body: { event_id: eventId } });
+      // P1 Travel runs alongside; a P1 failure never hides Travel Connection.
+      const p1Call = supabase.functions
+        .invoke("p1-tickets", { body: { event_id: eventId } })
+        .then(({ data: d, error: e }) => (e ? null : (d as TicketsResponse)))
+        .catch(() => null);
       // One retry: a supplier hiccup (slow answer, token just rotated)
       // shouldn't swap the real tickets and plan for the generic tiers.
       let { data: res, error } = await load();
       if (error && !cancelled) ({ data: res, error } = await load());
+      const p1 = await p1Call;
       if (cancelled) return;
       // A failed lookup just means no tickets here; the enquiry path stays.
-      setData(error ? null : (res as TicketsResponse));
+      const tc = error ? null : (res as TicketsResponse);
+      const p1Groups = p1?.groups ?? [];
+      if (tc && p1Groups.length) {
+        // Both suppliers: one list, Travel Connection first, then P1 by price.
+        setData({ ...tc, prices_visible: tc.prices_visible || p1?.prices_visible, groups: [...(tc.groups ?? []), ...p1Groups] });
+      } else {
+        setData(tc?.groups?.length ? tc : p1Groups.length ? p1 : tc);
+      }
       setLoading(false);
     })();
     return () => {
@@ -135,6 +150,9 @@ export function useEventTickets(eventId: string | undefined, sport: string | nul
     .filter((g) => g.category_id && (qty[g.category_id] ?? 0) > 0)
     .map((g) => ({ g, n: qty[g.category_id!] }));
   const count = lines.reduce((s, l) => s + l.n, 0);
+  // Checkout only for Travel Connection tickets: a P1 row (request_only) in
+  // the selection sends the whole trip as a request instead.
+  const checkoutAllowed = canBuy && data?.supplier === "travelconnection" && !lines.some((l) => l.g.request_only);
   const total = lines.reduce((s, l) => s + (l.g.final_sek ?? 0) * l.n, 0);
   const fromPrice = (() => {
     const p = groups.filter((g) => g.available && g.final_sek != null).map((g) => g.final_sek!);
@@ -190,7 +208,7 @@ export function useEventTickets(eventId: string | undefined, sport: string | nul
   };
 
   const checkout = async () => {
-    if (!count || !eventId) return;
+    if (!count || !eventId || !checkoutAllowed) return;
     setBusy(true);
     try {
       const { data: res, error } = await supabase.functions.invoke("travelconnection-checkout", {
@@ -213,6 +231,7 @@ export function useEventTickets(eventId: string | undefined, sport: string | nul
     hasTickets,
     isGeneric,
     canBuy,
+    checkoutAllowed,
     hasPlan,
     planUrl: data?.plan_url ?? null,
     preview: !!data?.preview,

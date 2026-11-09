@@ -81,3 +81,9 @@ verify_jwt = false
 # Hourly: supplier invoices + vouchers, lapsed holds. Admin or cron secret.
 [functions.travelconnection-poll]
 verify_jwt = true
+
+[functions.p1-sync]
+verify_jwt = true
+
+[functions.p1-tickets]
+verify_jwt = false

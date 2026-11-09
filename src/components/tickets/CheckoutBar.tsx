@@ -29,7 +29,7 @@ export default function CheckoutBar({
   const trip = extras.hotel || extras.flight;
   const visible = t.count > 0 || trip;
   const next = nextStep(extras);
-  const checkout = t.canBuy && t.hasTickets && !trip && !next;
+  const checkout = t.checkoutAllowed && t.hasTickets && !trip && !next;
   const parts = [
     t.count ? `${t.count} biljett${t.count === 1 ? "" : "er"}` : null,
     extras.hotel ? "Hotell" : null,

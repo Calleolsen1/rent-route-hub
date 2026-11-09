@@ -115,14 +115,14 @@ interface Rule {
   markup_fixed_sek: number;
 }
 
-interface PricingContext {
+export interface PricingContext {
   standard: { pct: number; fixed: number };
   league: Rule | null;
   match: Rule | null;
   rounding: number;
 }
 
-async function loadContext(db: Db, eventId: string, league: string | null): Promise<PricingContext> {
+export async function loadContext(db: Db, eventId: string, league: string | null): Promise<PricingContext> {
   const [{ data: pct }, { data: fixed }, { data: rounding }, { data: rules }] = await Promise.all([
     db.rpc("get_platform_decimal", { p_key: "default_markup_pct", p_default: 15 }),
     db.rpc("get_platform_decimal", { p_key: "default_markup_fixed_sek", p_default: 0 }),
@@ -141,7 +141,7 @@ async function loadContext(db: Db, eventId: string, league: string | null): Prom
   };
 }
 
-function resolveMarkup(
+export function resolveMarkup(
   ctx: PricingContext,
   row: { markup_override: boolean; markup_pct: number; markup_fixed_sek: number } | undefined,
 ): Markup {
