@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { formatEventDateTime } from "@/lib/formatSek";
 import { resolveImageUrl } from "@/components/admin/ImageUploader";
+import { resizedImage, responsiveSrcSet } from "@/lib/imageUrl";
 import { PriceTag } from "@/components/PriceTag";
 import { usePublicPricesEnabled } from "@/hooks/usePublicPrices";
 import { SearchTypeahead } from "@/components/SearchTypeahead";
@@ -266,6 +267,13 @@ const Home = () => {
   const [activeHero, setActiveHero] = useState(0);
   const [heroApi, setHeroApi] = useState<CarouselApi>();
   const [heroPaused, setHeroPaused] = useState(false);
+  // Slides are only given their photo once they are the current one or next
+  // to it (and keep it after that) - four full-width photos decoding at once
+  // made the carousel stutter on phones.
+  const [heroSeen, setHeroSeen] = useState<Set<number>>(() => new Set([0]));
+  useEffect(() => {
+    setHeroSeen((prev) => (prev.has(activeHero) ? prev : new Set(prev).add(activeHero)));
+  }, [activeHero]);
   const [heroQuery, setHeroQuery] = useState("");
   const navigate = useNavigate();
   const [featured, setFeatured] = useState<FeaturedOffer[]>([]);
@@ -490,6 +498,12 @@ const Home = () => {
 
 
 
+  const nearHero = (idx: number) => {
+    const n = heroSlides.length;
+    const d = Math.abs(idx - activeHero);
+    return heroSeen.has(idx) || Math.min(d, n - d) <= 1;
+  };
+
   return (
     <div className="min-h-screen">
       <Navbar />
@@ -523,12 +537,16 @@ const Home = () => {
                 {heroSlides.map((slide, idx) => (
                   <CarouselItem key={idx}>
                     <div className={`relative h-[44vh] min-h-[300px] max-h-[640px] md:h-[58vh] md:min-h-[420px] overflow-hidden bg-navy ${slidesLoaded ? "" : "[&>*]:invisible"}`}>
-                      {slidesLoaded && (
+                      {slidesLoaded && nearHero(idx) && (
                         <img
-                          src={slide.image}
+                          src={resizedImage(slide.image, 1400)}
+                          srcSet={responsiveSrcSet(slide.image)}
+                          sizes="(min-width: 1600px) 1520px, 100vw"
                           alt={slide.title}
                           className="absolute inset-0 w-full h-full object-cover"
                           loading={idx === 0 ? "eager" : "lazy"}
+                          decoding="async"
+                          fetchPriority={idx === 0 ? "high" : "low"}
                         />
                       )}
                       <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/95 via-navy-deep/45 to-transparent" />
@@ -622,9 +640,12 @@ const Home = () => {
                   >
                     <div className="relative aspect-[16/10] sm:aspect-[4/3] overflow-hidden">
                       <img
-                        src={offer.image}
+                        src={resizedImage(offer.image, 800)}
+                        srcSet={responsiveSrcSet(offer.image, [480, 800, 1200])}
+                        sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 62vw"
                         alt={offer.title}
                         loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/85 via-navy-deep/15 to-transparent" />
@@ -695,9 +716,12 @@ const Home = () => {
                   <Link to={service.href} className="group block h-full">
                     <div className="relative overflow-hidden rounded-lg aspect-[16/10] sm:aspect-[4/3] mb-2 sm:mb-3">
                       <img
-                        src={service.image}
+                        src={resizedImage(service.image, 800)}
+                        srcSet={responsiveSrcSet(service.image, [480, 800, 1200])}
+                        sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 62vw"
                         alt={service.title}
                         loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/90 via-navy-deep/20 to-transparent" />

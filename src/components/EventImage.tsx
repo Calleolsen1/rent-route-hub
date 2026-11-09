@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import fotbollImage from "@/assets/sport-fotboll.jpg";
 import f1Image from "@/assets/sport-f1.jpg";
+import { resizedImage, responsiveSrcSet } from "@/lib/imageUrl";
 
 /**
  * The image for an event card, resolved in order:
@@ -87,7 +88,7 @@ export default function EventImage({
   if (photo && (!useCrests || variant === "hero")) {
     return (
       <div className={`w-full h-full relative overflow-hidden ${className}`}>
-        <img src={photo} alt={alt} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+        <img src={resizedImage(photo, 1000)} srcSet={responsiveSrcSet(photo, [480, 1000, 1600])} sizes="(min-width: 768px) 50vw, 100vw" alt={alt} loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
         {useCrests && (
           <>
             <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
@@ -111,7 +112,7 @@ export default function EventImage({
         role="img"
         aria-label={`${homeTeam} mot ${awayTeam}`}
       >
-        <img src={backdrop} alt="" aria-hidden="true" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+        <img src={resizedImage(backdrop, 1000)} alt="" aria-hidden="true" loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0" style={{ background: `linear-gradient(115deg, ${c1}b3 0%, ${c2}99 100%)` }} />
         <div className="absolute inset-0 flex items-center justify-center gap-[8%] px-[8%]">
           <img
@@ -147,7 +148,7 @@ export default function EventImage({
       role="img"
       aria-label={isRace ? (raceName ?? "") : `${homeTeam} mot ${awayTeam}`}
     >
-      <img src={backdrop} alt="" aria-hidden="true" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+      <img src={resizedImage(backdrop, 1000)} alt="" aria-hidden="true" loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
       <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${c1}b3 0%, ${c2}99 100%)` }} />
       {/* Faint pitch/track arc so the plate reads as sport, not a colour swatch */}
       <svg
