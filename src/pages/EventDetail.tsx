@@ -94,7 +94,7 @@ export default function EventDetail() {
   }, [extras.hotel, pickedHotels.length, clearHotels]);
   // What the enquiry dialog was opened with, frozen so it doesn't shift
   // under the visitor while they fill it in.
-  const [enquiry, setEnquiry] = useState<{ parts: string[]; selection: string[] }>({ parts: ["biljett"], selection: [] });
+  const [enquiry, setEnquiry] = useState<{ parts: string[]; selection: string[]; supplierNote: string[] }>({ parts: ["biljett"], selection: [], supplierNote: [] });
   const openEnquiry = () => {
     const parts = ["biljett", ...(extras.hotel ? ["hotell"] : []), ...(extras.flight ? ["flyg"] : [])];
     const selection = [
@@ -102,7 +102,18 @@ export default function EventDetail() {
       ...(extras.hotel ? [hotels.selectionLine] : []),
       ...(extras.flight ? [`Flyg: ${flightFrom ? `från ${flightFrom}` : "avreseort ej vald"}`] : []),
     ];
-    setEnquiry({ parts, selection });
+    // Where KAISEN books each ticket: P1 rows in the P1 portal, Travel
+    // Connection rows there; generic tiers are sourced by hand.
+    const supplierNote = t.lines.map(({ g, n }) => {
+      const id = g.category_id ?? "";
+      const where = id.startsWith("p1:")
+        ? `P1 Travel (produkt ${id.slice(3)})`
+        : id.startsWith("generic:")
+          ? "ingen leverantör - generell nivå"
+          : "Travel Connection";
+      return `${n} × ${g.name}: ${where}`;
+    });
+    setEnquiry({ parts, selection, supplierNote });
     setInquiryOpen(true);
   };
 
@@ -376,6 +387,7 @@ export default function EventDetail() {
             // Picked tickets are shown in the form and appended to the
             // message KAISEN receives (the topic line is capped at 160).
             selection={enquiry.selection}
+            supplierNote={enquiry.supplierNote}
             compact
           />
         </DialogContent>

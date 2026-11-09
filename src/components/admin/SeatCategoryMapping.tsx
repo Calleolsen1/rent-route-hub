@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Link2, EyeOff, Eye, Plus, Trash2, Sparkles, X } from "lucide-react";
+import { Loader2, Link2, EyeOff, Eye, Plus, Trash2, Sparkles, X, RefreshCw } from "lucide-react";
 import { formatSek } from "@/lib/formatSek";
 
 // Admin: link the suppliers' ticket categories to KAISEN's own categories
@@ -71,6 +71,7 @@ export default function SeatCategoryMapping() {
   const [venue, setVenue] = useState<string | null>(null);
   const [q, setQ] = useState("");
   const [busy, setBusy] = useState(false);
+  const [scan, setScan] = useState<{ done: number; total: number } | null>(null);
 
   const load = async () => {
     const [{ data: l, error: le }, { data: s, error: se }] = await Promise.all([
@@ -85,6 +86,43 @@ export default function SeatCategoryMapping() {
   useEffect(() => {
     load();
   }, []);
+
+  /**
+   * Fill this list without waiting for page views: one upcoming match per
+   * stadium where BOTH suppliers sell, fetched one at a time (Travel
+   * Connection allows 60 requests a minute, shared with the live site).
+   */
+  const scanVenues = async () => {
+    const now = new Date().toISOString();
+    const [{ data: tcl }, { data: p1l }] = await Promise.all([
+      db.from("tc_product_links").select("event_id").in("match_method", ["auto", "manual"]).not("event_id", "is", null),
+      db.from("p1_event_links").select("event_id").neq("match_method", "ignored").not("event_id", "is", null),
+    ]);
+    const tcSet = new Set(((tcl ?? []) as { event_id: string }[]).map((r) => r.event_id));
+    const both = ((p1l ?? []) as { event_id: string }[]).map((r) => r.event_id).filter((id) => tcSet.has(id));
+    if (!both.length) return toast.info("Inga matcher med båda leverantörerna hittades.");
+    const evs: { id: string; venue_name: string | null; race_name: string | null; home_team: string | null }[] = [];
+    for (let i = 0; i < both.length; i += 150) {
+      const { data } = await db.from("events").select("id, venue_name, race_name, home_team, starts_at")
+        .in("id", both.slice(i, i + 150)).gte("starts_at", now).order("starts_at");
+      evs.push(...(data ?? []));
+    }
+    const perVenue = new Map<string, string>();
+    for (const e of evs) {
+      const k = (e.venue_name || e.race_name || e.home_team || "").trim();
+      if (k && !perVenue.has(k)) perVenue.set(k, e.id);
+    }
+    const ids = [...perVenue.values()];
+    setScan({ done: 0, total: ids.length });
+    for (let i = 0; i < ids.length; i++) {
+      await supabase.functions.invoke("event-tickets", { body: { event_id: ids[i] } }).catch(() => null);
+      setScan({ done: i + 1, total: ids.length });
+      await new Promise((r) => setTimeout(r, 2500));
+    }
+    setScan(null);
+    toast.success(`${ids.length} arenor inlästa`);
+    await load();
+  };
 
   const venues = useMemo(() => {
     const m = new Map<string, { key: string; open: number; total: number; suppliers: Set<Supplier> }>();
@@ -164,15 +202,25 @@ export default function SeatCategoryMapping() {
   if (loading) return <div className="py-12 flex justify-center"><Loader2 className="h-5 w-5 animate-spin" /></div>;
   if (!links.length) {
     return (
-      <p className="py-8 text-sm text-muted-foreground">
-        Inga leverantörskategorier än. De dyker upp här när en matchsida med biljetter har visats.
-      </p>
+      <div className="py-8 space-y-3">
+        <p className="text-sm text-muted-foreground">
+          Inga leverantörskategorier än. De dyker upp när en matchsida med biljetter har visats - eller läs in dem direkt.
+        </p>
+        <Button size="sm" variant="outline" disabled={!!scan} onClick={scanVenues}>
+          {scan ? <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5 mr-1" />}
+          {scan ? `Läser in ${scan.done}/${scan.total}…` : "Läs in arenor med båda leverantörerna"}
+        </Button>
+      </div>
     );
   }
 
   return (
     <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
       <aside className="space-y-2">
+        <Button size="sm" variant="outline" className="w-full" disabled={!!scan} onClick={scanVenues}>
+          {scan ? <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5 mr-1" />}
+          {scan ? `Läser in ${scan.done}/${scan.total}…` : "Läs in arenor med båda"}
+        </Button>
         <Input placeholder="Sök arena…" value={q} onChange={(e) => setQ(e.target.value)} />
         <div className="max-h-[70vh] overflow-auto rounded-lg border border-border divide-y divide-border">
           {venues.map((v) => (
