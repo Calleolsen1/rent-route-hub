@@ -188,17 +188,17 @@ export default function SportPage() {
             <p className="eyebrow text-primary uppercase mb-1">
               Ligor & klubbar
             </p>
-            <h2 className="font-display text-3xl md:text-[44px] mb-8 md:mb-10">Välj liga och lag</h2>
-            <div className="grid md:grid-cols-2 gap-5">
+            <h2 className="font-display text-3xl md:text-[44px] mb-5 md:mb-10">Välj liga och lag</h2>
+            <div className="grid md:grid-cols-2 gap-3 sm:gap-5">
               {leagues.map(([league, teams]) => {
                 // "Cuper" lists cups instead of clubs - chips link to the cup
                 // pages (matches), so there is no league page or logo for it.
                 const isCupGroup = league === CUP_GROUP_LABEL;
                 return (
-                <div key={league} className="sb-card p-5 sm:p-6 hover:border-primary/50 hover:shadow-md transition-all motion-reduce:transition-none">
-                  <div className="flex items-start justify-between gap-4 mb-5 min-h-[80px]">
+                <div key={league} className="sb-card p-4 sm:p-6 hover:border-primary/50 hover:shadow-md transition-all motion-reduce:transition-none">
+                  <div className="flex items-start justify-between gap-4 mb-3 sm:mb-5 sm:min-h-[80px]">
                     <div className="min-w-0">
-                      <h3 className="font-display text-[28px] italic font-bold text-foreground">{league}</h3>
+                      <h3 className="font-display text-2xl sm:text-[28px] italic font-bold text-foreground">{league}</h3>
                       <p className="text-xs text-muted-foreground mt-1">
                         {teams.length} {isCupGroup ? "cuper" : "lag"}
                       </p>
@@ -216,7 +216,7 @@ export default function SportPage() {
                       <Link
                         to={`/services/sportresor/${sport.slug}/liga/${slugify(league)}`}
                         aria-label={`Se ${league}`}
-                        className="flex h-20 w-24 sm:w-28 shrink-0 items-center justify-center"
+                        className="flex h-14 w-16 sm:h-20 sm:w-28 shrink-0 items-center justify-center"
                       >
                         <img
                           src={leagueLogos[slugify(league)]}
@@ -226,14 +226,14 @@ export default function SportPage() {
                       </Link>
                     )}
                   </div>
-                  <div className="flex flex-wrap gap-2 border-t border-border pt-4">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2 border-t border-border pt-3 sm:pt-4">
                     {teams.map((team) => {
                       const cupLogo = isCupGroup ? cupLogos[team.slug] : undefined;
                       return (
                       <Link
                         key={team.id}
                         to={isCupGroup ? cupHref(sport.slug, team.slug) : `/services/sportresor/${sport.slug}/${team.slug}`}
-                        className="inline-flex items-center gap-2 text-sm border border-border rounded-md px-3 py-1.5 text-foreground/85 hover:border-primary hover:bg-primary hover:text-primary-foreground transition-colors"
+                        className="inline-flex items-center gap-2 text-[13px] sm:text-sm border border-border rounded-md px-2.5 sm:px-3 py-1 sm:py-1.5 text-foreground/85 hover:border-primary hover:bg-primary hover:text-primary-foreground transition-colors"
                       >
                         {cupLogo && (
                           <img

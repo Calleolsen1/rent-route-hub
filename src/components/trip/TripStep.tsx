@@ -18,7 +18,7 @@ export function StepHeader({
   return (
     <div className="flex items-start gap-3 mb-4">
       <span
-        className="mt-0.5 h-9 w-9 flex-shrink-0 rounded-md bg-primary text-primary-foreground flex items-center justify-center font-display text-xl font-bold italic tabular-nums"
+        className="mt-0.5 h-8 w-8 sm:h-9 sm:w-9 flex-shrink-0 rounded-md bg-primary text-primary-foreground flex items-center justify-center font-display text-xl font-bold italic tabular-nums"
         aria-hidden
       >
         {n}
@@ -27,7 +27,7 @@ export function StepHeader({
         <p className="eyebrow text-primary uppercase mb-0.5">
           Steg {n} · {eyebrow}
         </p>
-        <h2 className="font-display text-[28px] md:text-[34px] leading-tight">{title}</h2>
+        <h2 className="font-display text-[23px] sm:text-[28px] md:text-[34px] leading-[1.05]">{title}</h2>
         {children && <div className="mt-1 text-xs text-muted-foreground">{children}</div>}
       </div>
     </div>

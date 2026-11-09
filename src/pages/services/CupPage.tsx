@@ -67,13 +67,13 @@ export default function CupPage() {
       />
 
       {/* Matches */}
-      <section className="pt-10 md:pt-14 pb-6 bg-background">
+      <section className="pt-7 md:pt-14 pb-6 bg-background">
         <div className="sb-container">
           <h2 className="font-display text-3xl md:text-[44px]">{`Matcher i ${name}`}</h2>
           {description && (
-            <p className="mt-4 max-w-4xl text-[15px] leading-relaxed text-foreground/80 whitespace-pre-line">{description}</p>
+            <p className="mt-3 md:mt-4 max-w-4xl text-sm md:text-[15px] leading-relaxed text-foreground/80 whitespace-pre-line">{description}</p>
           )}
-          <div className="mt-8">
+          <div className="mt-5 md:mt-8">
             <UpcomingEventsList
               sport="soccer"
               tournaments={cup.tournaments}

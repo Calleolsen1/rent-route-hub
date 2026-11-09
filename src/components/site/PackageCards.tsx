@@ -35,8 +35,8 @@ export default function PackageCards({ eyebrow, title, features, venuePhoto, alt
     <section className={alt ? "sb-section-alt" : "sb-section"}>
       <div className="sb-container">
         <p className="eyebrow text-primary uppercase mb-1">{eyebrow}</p>
-        <h2 className="font-display text-3xl md:text-[44px] mb-8 md:mb-10">{title}</h2>
-        <ul className={`grid gap-5 sm:grid-cols-2 ${features.length >= 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}>
+        <h2 className="font-display text-3xl md:text-[44px] mb-5 md:mb-10">{title}</h2>
+        <ul className={`grid grid-cols-2 gap-x-3 gap-y-5 sm:gap-5 ${features.length >= 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}>
           {features.map((f, i) => {
             const space = f.indexOf(" ");
             const lead = space > 0 ? f.slice(0, space) : f;
@@ -47,8 +47,8 @@ export default function PackageCards({ eyebrow, title, features, venuePhoto, alt
                 <div className="aspect-[4/3] overflow-hidden rounded-lg bg-navy-deep">
                   <img src={photoFor(lead, venuePhoto)} alt="" loading="lazy" className="h-full w-full object-cover" />
                 </div>
-                <h3 className="mt-4 font-display text-[22px] text-foreground">{lead}</h3>
-                {rest && <p className="mt-1 text-sm text-foreground/75 leading-relaxed">{rest}</p>}
+                <h3 className="mt-2.5 sm:mt-4 font-display text-lg sm:text-[22px] text-foreground">{lead}</h3>
+                {rest && <p className="mt-0.5 sm:mt-1 text-[13px] sm:text-sm text-foreground/75 leading-snug sm:leading-relaxed">{rest}</p>}
               </li>
             );
           })}

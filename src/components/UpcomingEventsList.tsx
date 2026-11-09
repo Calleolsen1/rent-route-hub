@@ -208,7 +208,7 @@ export default function UpcomingEventsList({
 
   if (!events.length) {
     return (
-      <div className="text-center py-10">
+      <div className="text-center py-4 md:py-10">
         {!hideEmptyMessage && (
           <p className="text-muted-foreground text-sm mb-2">
             {emptyMessage ?? "Inga evenemang matchade - testa att rensa filtren."}
@@ -249,11 +249,11 @@ export default function UpcomingEventsList({
         </h2>
       )}
       {showFilters && months.length > 1 && (
-        <div className="flex flex-wrap items-center gap-2 mb-5">
+        <div className="sb-scroll-row items-center mb-4 md:mb-5">
           <button
             type="button"
             onClick={() => setMonth(null)}
-            className={`rounded-md border px-3.5 py-1.5 font-display uppercase font-semibold text-sm tracking-wide transition-colors ${
+            className={`shrink-0 whitespace-nowrap rounded-md border px-3 md:px-3.5 py-1.5 font-display uppercase font-semibold text-sm tracking-wide transition-colors ${
               month === null
                 ? "border-primary bg-primary text-primary-foreground"
                 : "border-border bg-background text-muted-foreground hover:border-primary/40"
@@ -270,7 +270,7 @@ export default function UpcomingEventsList({
                 key={m}
                 type="button"
                 onClick={() => setMonth(m === month ? null : m)}
-                className={`rounded-md border px-3.5 py-1.5 font-display uppercase font-semibold text-sm tracking-wide transition-colors ${
+                className={`shrink-0 whitespace-nowrap rounded-md border px-3 md:px-3.5 py-1.5 font-display uppercase font-semibold text-sm tracking-wide transition-colors ${
                   month === m
                     ? "border-primary bg-primary text-primary-foreground"
                     : "border-border bg-background text-muted-foreground hover:border-primary/40"
@@ -290,7 +290,7 @@ export default function UpcomingEventsList({
       )}
 
       {/* Fixture rows (sportsbreaks-style): date block | match | crests | price + CTA */}
-      <div className={`flex flex-col ${compact ? "gap-3" : "gap-4"}`}>
+      <div className={`flex flex-col ${compact ? "gap-2.5 md:gap-3" : "gap-3 md:gap-4"}`}>
         {visible.map((e) => {
           const headline =
             e.sport === "soccer"
@@ -321,23 +321,27 @@ export default function UpcomingEventsList({
               key={e.id}
               to={`/sport/event/${e.id}`}
               aria-label={`${headline}, ${formatEventDate(e.starts_at)}`}
-              className={`group sb-card grid grid-cols-[72px_1fr] md:grid-cols-[110px_1fr_auto_auto] items-center gap-x-4 md:gap-x-6 gap-y-3 p-4 md:px-5 md:py-4 hover:border-primary/50 hover:shadow-md transition-all ${hiddenByMobileSearch ? "hidden md:grid" : ""}`}
+              className={`group sb-card grid grid-cols-[58px_1fr] md:grid-cols-[110px_1fr_auto_auto] items-center gap-x-3 md:gap-x-6 gap-y-2.5 p-3 md:px-5 md:py-4 hover:border-primary/50 hover:shadow-md transition-all ${hiddenByMobileSearch ? "hidden md:grid" : ""}`}
             >
               {/* Date block */}
-              <div className="self-stretch flex flex-col justify-center border-r border-border pr-4 md:pr-6">
-                <span className="font-display font-bold text-2xl md:text-[28px] leading-none text-foreground whitespace-nowrap">
-                  {d.day} {d.month}
+              <div className="self-stretch flex flex-col justify-center border-r border-border pr-3 md:pr-6">
+                <span className="font-display font-bold text-[22px] md:text-[28px] leading-none text-foreground">
+                  <span className="md:hidden">{d.day}<br />{d.month}</span>
+                  <span className="hidden md:inline whitespace-nowrap">{d.day} {d.month}</span>
                 </span>
-                <span className="mt-1.5 text-xs text-muted-foreground leading-tight">{d.weekday}</span>
-                <span className="text-xs text-muted-foreground leading-tight">{d.year}</span>
+                <span className="mt-1 md:mt-1.5 text-[11px] md:text-xs text-muted-foreground leading-tight">
+                  <span className="md:hidden">{d.weekday.slice(0, 3)}</span>
+                  <span className="hidden md:inline">{d.weekday}</span>
+                </span>
+                <span className="text-[11px] md:text-xs text-muted-foreground leading-tight">{d.year}</span>
               </div>
 
               {/* Match */}
               <div className="min-w-0">
-                <p className="eyebrow !tracking-[0.04em] !text-[13px] text-primary uppercase leading-none mb-1.5 truncate">
+                <p className="eyebrow !tracking-[0.04em] !text-[12px] md:!text-[13px] text-primary uppercase leading-none mb-1 md:mb-1.5 truncate">
                   {e.tournament_name}
                 </p>
-                <h3 className="font-display text-lg md:text-[22px] leading-tight text-foreground group-hover:text-primary transition-colors">
+                <h3 className="font-display text-[17px] md:text-[22px] leading-[1.1] text-foreground group-hover:text-primary transition-colors">
                   {headline}
                 </h3>
                 {(e.venue_name || e.city) && (
@@ -363,7 +367,7 @@ export default function UpcomingEventsList({
               </div>
 
               {/* Price + CTA */}
-              <div className="col-span-2 md:col-span-1 flex items-center justify-between md:justify-end gap-4 border-t border-border pt-3 md:border-0 md:pt-0">
+              <div className="col-span-2 md:col-span-1 flex items-center justify-between md:justify-end gap-3 md:gap-4 border-t border-border pt-2.5 md:border-0 md:pt-0">
                 {showPrices ? (
                   <PriceTag
                     currentSek={displayPrice}
@@ -376,9 +380,9 @@ export default function UpcomingEventsList({
                     showFrom={true}
                   />
                 ) : (
-                  <span className="text-sm text-muted-foreground whitespace-nowrap">Pris på förfrågan</span>
+                  <span className="text-[13px] md:text-sm text-muted-foreground whitespace-nowrap">Pris på förfrågan</span>
                 )}
-                <span className="sb-btn-primary h-10 min-w-[150px] shrink-0">
+                <span className="sb-btn-primary h-8 md:h-10 px-3.5 md:px-6 text-[13px] md:text-[15px] md:min-w-[150px] shrink-0">
                   {showPrices ? "Köp" : "Se erbjudanden"}
                 </span>
               </div>

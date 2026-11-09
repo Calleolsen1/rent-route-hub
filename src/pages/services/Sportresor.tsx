@@ -68,7 +68,7 @@ export default function Sportresor() {
  }`}
  >
  {/* Image */}
- <div className="aspect-[4/3] overflow-hidden rounded-lg">
+ <div className="aspect-[16/10] md:aspect-[4/3] overflow-hidden rounded-lg">
  <img
  src={sport.image}
  alt={sport.title}

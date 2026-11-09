@@ -67,7 +67,7 @@ const Footer = () => {
                 placeholder="Ange din e-postadress...*"
                 aria-label="E-postadress för nyhetsbrev"
                 autoComplete="email"
-                className="min-w-0 flex-1 h-11 rounded-md bg-white text-foreground placeholder:text-muted-foreground px-4 text-base focus:outline-none focus:ring-2 focus:ring-white/60"
+                className="w-full min-w-0 sm:flex-1 h-11 rounded-md bg-white text-foreground placeholder:text-muted-foreground px-4 text-base focus:outline-none focus:ring-2 focus:ring-white/60"
                 disabled={submitting}
               />
               <button type="submit" disabled={submitting} className="sb-btn-light h-11 shrink-0">

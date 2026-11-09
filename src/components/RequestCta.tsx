@@ -22,7 +22,7 @@ const RequestCta = ({
   const { open } = useInquiryDialog();
 
   return (
-    <section className="sb-container pt-2 pb-0 text-center">
+    <section className="hidden md:block sb-container pt-2 pb-0 text-center">
       <Button
         size="lg"
         className="h-11 rounded-lg bg-primary hover:bg-navy-deep px-8 font-display uppercase font-semibold text-base tracking-wide"

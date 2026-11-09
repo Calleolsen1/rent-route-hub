@@ -91,7 +91,7 @@ export default function Services() {
   <section key={cat.id} id={cat.id} className={index % 2 === 1 ? "sb-section-alt" : "sb-section"}>
    <div className="sb-container">
    <div className={`grid md:grid-cols-2 gap-8 lg:gap-14 items-center ${index % 2 === 1 ? "md:[&>*:first-child]:order-2" : ""}`}>
-    <div className="aspect-[4/3] overflow-hidden rounded-lg">
+    <div className="aspect-[16/10] md:aspect-[4/3] overflow-hidden rounded-lg">
     <img
      src={cat.image}
      alt={cat.title}

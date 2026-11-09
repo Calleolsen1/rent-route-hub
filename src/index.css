@@ -245,11 +245,17 @@
     @apply w-full max-w-[1120px] mx-auto px-4 sm:px-6;
   }
   .sb-section {
-    @apply py-12 md:py-16;
+    @apply py-9 md:py-16;
   }
   .sb-section-alt {
-    @apply py-12 md:py-16 bg-cream;
+    @apply py-9 md:py-16 bg-cream;
   }
+  /* Horizontal chip/tab rows on phones: one swipeable line, no scrollbar */
+  .sb-scroll-row {
+    @apply flex flex-nowrap gap-2 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap;
+    scrollbar-width: none;
+  }
+  .sb-scroll-row::-webkit-scrollbar { display: none; }
   .sb-card {
     @apply bg-card border border-border rounded-lg;
   }

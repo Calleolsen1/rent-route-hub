@@ -96,7 +96,7 @@ export default function VIPService() {
  {/* Concierge image + intro text */}
  <section className="sb-section">
  <div className="sb-container grid md:grid-cols-2 gap-8 lg:gap-14 items-center">
- <div className="aspect-[4/3] overflow-hidden rounded-lg">
+ <div className="aspect-[16/10] md:aspect-[4/3] overflow-hidden rounded-lg">
  <img
  src={vipConcierge}
  alt="Personlig concierge service"
@@ -166,7 +166,7 @@ export default function VIPService() {
  ))}
  </div>
  </div>
- <div className="aspect-[4/3] overflow-hidden rounded-lg">
+ <div className="aspect-[16/10] md:aspect-[4/3] overflow-hidden rounded-lg">
  <img
  src={vipJet}
  alt="Privatjet interiör"

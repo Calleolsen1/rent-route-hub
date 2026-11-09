@@ -94,7 +94,7 @@ export default function WeekendGetaway() {
  }`}
  >
  {/* Image */}
- <div className="aspect-[4/3] overflow-hidden rounded-lg">
+ <div className="aspect-[16/10] md:aspect-[4/3] overflow-hidden rounded-lg">
  <img
  src={dest.image}
  alt={dest.city}

@@ -77,7 +77,7 @@ export default function LeaguePage() {
           <p className="eyebrow text-primary uppercase mb-1">
             Klubbar i {leagueName}
           </p>
-          <h2 className="font-display text-2xl sm:text-3xl md:text-[44px] mb-6 sm:mb-10">Vilket lag vill du se live?</h2>
+          <h2 className="font-display text-[26px] sm:text-3xl md:text-[44px] mb-5 sm:mb-10">Vilket lag vill du se live?</h2>
           <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
             {teams.map((team) => {
               const venueImage =

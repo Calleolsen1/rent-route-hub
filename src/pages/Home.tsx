@@ -522,7 +522,7 @@ const Home = () => {
               <CarouselContent>
                 {heroSlides.map((slide, idx) => (
                   <CarouselItem key={idx}>
-                    <div className={`relative h-[54vh] min-h-[340px] max-h-[640px] md:h-[58vh] md:min-h-[420px] overflow-hidden bg-navy ${slidesLoaded ? "" : "[&>*]:invisible"}`}>
+                    <div className={`relative h-[44vh] min-h-[300px] max-h-[640px] md:h-[58vh] md:min-h-[420px] overflow-hidden bg-navy ${slidesLoaded ? "" : "[&>*]:invisible"}`}>
                       {slidesLoaded && (
                         <img
                           src={slide.image}
@@ -534,12 +534,12 @@ const Home = () => {
                       <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/95 via-navy-deep/45 to-transparent" />
                       <div className="absolute inset-0 bg-gradient-to-r from-navy-deep/60 to-transparent" />
                       {/* Side padding clears the prev/next arrows (shown from sm). */}
-                      <div className="relative h-full flex items-end p-5 pb-12 sm:p-8 sm:pl-20 md:p-14 md:pl-24">
+                      <div className="relative h-full flex items-end p-4 pb-10 sm:p-8 sm:pl-20 md:p-14 md:pl-24">
                         <div className="max-w-xl">
                           <p className="eyebrow text-sky-300 uppercase mb-2 sm:mb-3">
                             {slide.eyebrow}
                           </p>
-                          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white leading-[0.98] mb-5 sm:mb-7">
+                          <h1 className="font-display text-[34px] sm:text-5xl md:text-6xl lg:text-7xl text-white leading-[0.98] mb-4 sm:mb-7">
                             {slide.title}
                             <br />
                             <em className="italic text-sky-200">{slide.italic}</em>
@@ -785,7 +785,7 @@ const Home = () => {
                       ))}
                     </div>
                     <blockquote className="text-[15px] text-foreground/85 leading-relaxed mb-6 italic flex-1">
-                      "{t.quote}"
+                      "{t.quote.replace(/^["“”]+|["“”]+$/g, "")}"
                     </blockquote>
                     <div>
                       <div className="font-display uppercase font-semibold text-base text-foreground">{t.author}</div>

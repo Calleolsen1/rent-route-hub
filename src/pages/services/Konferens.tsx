@@ -124,7 +124,7 @@ export default function Konferens() {
               ))}
             </div>
           </div>
-          <div className="aspect-[4/3] overflow-hidden rounded-lg">
+          <div className="aspect-[16/10] md:aspect-[4/3] overflow-hidden rounded-lg">
             <img
               src={konferens2}
               alt="Konferens utomlands"
@@ -137,7 +137,7 @@ export default function Konferens() {
       {/* Full Service - short pitch */}
       <section className="sb-section">
         <div className="sb-container grid md:grid-cols-2 gap-8 lg:gap-14 items-center">
-          <div className="aspect-[4/3] overflow-hidden rounded-lg md:order-1">
+          <div className="aspect-[16/10] md:aspect-[4/3] overflow-hidden rounded-lg md:order-1">
             <img
               src={konferens1}
               alt="Konferensmiddag"

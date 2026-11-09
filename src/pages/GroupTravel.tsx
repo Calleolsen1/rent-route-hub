@@ -60,7 +60,7 @@ export default function GroupTravel() {
                 Vi har byggt upp ett omfattande nätverk av hotell, destinationer, restauranger, aktiviteter och samarbetspartners som gör det möjligt att skapa resor med både kvalitet och personlighet. Oavsett om det handlar om en mindre ledningsgrupp, en företagskonferens eller en större gruppresa har vi erfarenheten och kapaciteten att ta hand om hela arrangemanget.
               </p>
             </div>
-            <div className="aspect-[4/3] overflow-hidden rounded-lg">
+            <div className="aspect-[16/10] md:aspect-[4/3] overflow-hidden rounded-lg">
               <img
                 src={groupCorporate}
                 alt="Konferensresa i grupp"
@@ -75,7 +75,7 @@ export default function GroupTravel() {
       <section className="sb-section-alt">
         <div className="sb-container">
           <div className="grid md:grid-cols-2 gap-8 lg:gap-14 items-center">
-            <div className="aspect-[4/3] overflow-hidden rounded-lg md:order-1">
+            <div className="aspect-[16/10] md:aspect-[4/3] overflow-hidden rounded-lg md:order-1">
               <img
                 src={groupAdventure}
                 alt="Gruppresor och logistik"

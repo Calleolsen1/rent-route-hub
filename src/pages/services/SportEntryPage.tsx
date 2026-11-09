@@ -142,18 +142,18 @@ export default function SportEntryPage() {
       {raceFacts && <RaceFactsGrid facts={raceFacts} weekend={raceWeekend} city={info.city} venue={info.venue} />}
 
       {/* Fixtures */}
-      <section className="pt-10 md:pt-14 pb-10 md:pb-14 bg-background">
+      <section className="pt-7 md:pt-14 pb-9 md:pb-14 bg-background">
         <div className="sb-container">
           {sport.entry_kind === "race" && (
             <p className="eyebrow text-primary uppercase mb-1">Köp biljett direkt</p>
           )}
           <h2 className="font-display text-3xl md:text-[44px]">{labels.upcomingTitle(info.name)}</h2>
           {intro && (
-            <p className="mt-4 max-w-4xl text-[15px] leading-relaxed text-foreground/80 whitespace-pre-line">
+            <p className="mt-3 md:mt-4 max-w-4xl text-sm md:text-[15px] leading-relaxed text-foreground/80 whitespace-pre-line">
               {intro}
             </p>
           )}
-          <div className="mt-8">
+          <div className="mt-5 md:mt-8">
             <UpcomingEventsList
               {...{ [labels.queryField]: info.name }}
               {...raceSeason}
@@ -169,7 +169,7 @@ export default function SportEntryPage() {
             />
           </div>
           {!eventsEmpty && (
-            <div className="mt-6 sb-card bg-cream border-transparent flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-4 text-center sm:text-left">
+            <div className="mt-4 md:mt-6 sb-card bg-cream border-transparent flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-4 md:px-5 text-center sm:text-left">
               <p className="text-sm text-foreground/80">
                 Hittar du inte matchen du letar efter? Vi kan säkert fixa det ändå.
               </p>
@@ -212,31 +212,31 @@ export default function SportEntryPage() {
       {!raceFacts && (info.city || groupOrDate || info.venue) && (
         <section className="sb-section-alt">
           <div className="sb-container">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4">
               {info.city && (
-                <div className="sb-card flex items-center gap-4 p-5">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-primary text-white"><MapPin className="h-5 w-5" /></span>
+                <div className="sb-card flex items-center gap-3 sm:gap-4 p-3 sm:p-5">
+                  <span className="flex h-9 w-9 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-md bg-primary text-white"><MapPin className="h-5 w-5" /></span>
                   <div>
                     <p className="eyebrow !text-[13px] !tracking-[0.04em] text-muted-foreground uppercase">Stad</p>
-                    <p className="font-display text-xl font-semibold uppercase leading-tight">{info.city}</p>
+                    <p className="font-display text-lg sm:text-xl font-semibold uppercase leading-tight">{info.city}</p>
                   </div>
                 </div>
               )}
               {groupOrDate && (
-                <div className="sb-card flex items-center gap-4 p-5">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-primary text-white"><Calendar className="h-5 w-5" /></span>
+                <div className="sb-card flex items-center gap-3 sm:gap-4 p-3 sm:p-5">
+                  <span className="flex h-9 w-9 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-md bg-primary text-white"><Calendar className="h-5 w-5" /></span>
                   <div>
                     <p className="eyebrow !text-[13px] !tracking-[0.04em] text-muted-foreground uppercase">{labels.groupLabel}</p>
-                    <p className="font-display text-xl font-semibold uppercase leading-tight">{groupOrDate}</p>
+                    <p className="font-display text-lg sm:text-xl font-semibold uppercase leading-tight">{groupOrDate}</p>
                   </div>
                 </div>
               )}
               {info.venue && (
-                <div className="sb-card flex items-center gap-4 p-5">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-primary text-white"><VenueIcon className="h-5 w-5" /></span>
+                <div className="sb-card flex items-center gap-3 sm:gap-4 p-3 sm:p-5">
+                  <span className="flex h-9 w-9 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-md bg-primary text-white"><VenueIcon className="h-5 w-5" /></span>
                   <div>
                     <p className="eyebrow !text-[13px] !tracking-[0.04em] text-muted-foreground uppercase">{labels.venueLabel}</p>
-                    <p className="font-display text-xl font-semibold uppercase leading-tight">{info.venue}</p>
+                    <p className="font-display text-lg sm:text-xl font-semibold uppercase leading-tight">{info.venue}</p>
                   </div>
                 </div>
               )}
