@@ -40,7 +40,7 @@ export default function BookingCard({
 }) {
   const trip = extras.hotel || extras.flight;
   const next = nextStep(extras);
-  const checkout = t.canBuy && t.hasTickets && !trip && !next;
+  const checkout = t.checkoutAllowed && t.hasTickets && !trip && !next;
   const add = (key: keyof Extras, step: string) => {
     onExtras({ ...extras, [key]: true });
     // Let the step open before scrolling to it.
