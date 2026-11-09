@@ -132,7 +132,7 @@ export default function FAQ() {
  </section>
 
  {/* Category filter */}
- <section className="bg-background/95 backdrop-blur-sm border-b border-border sticky top-16 md:top-[72px] z-30">
+ <section className="bg-background/95 backdrop-blur-sm border-b border-border sticky top-[72px] md:top-24 z-30">
  <div className="sb-container">
  <div className="flex gap-2 overflow-x-auto py-3 scrollbar-hide">
  {categories.map((cat) => (

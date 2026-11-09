@@ -68,17 +68,17 @@ const Navbar = () => {
         <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
           {/* 3-col grid keeps the menu group dead-centered regardless of how wide
               the logo or right-side controls become */}
-          <div className="grid grid-cols-[1fr_auto_1fr] items-center h-16 md:h-20 gap-4">
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center h-[72px] md:h-24 gap-4">
             {/* Logo */}
             <Link
               to="/"
               className="col-start-2 row-start-1 justify-self-center flex items-center gap-3 flex-shrink-0 xl:col-start-1 xl:justify-self-start"
             >
-              <img src={brandLogo.url} alt="KAISEN TRAVEL GROUP" width={238} height={90} className="block w-[140px] md:w-[172px] h-auto object-contain" />
+              <img src={brandLogo.url} alt="KAISEN TRAVEL GROUP" width={238} height={90} className="block w-[150px] md:w-[200px] h-auto object-contain" />
             </Link>
 
             {/* Desktop nav */}
-            <div className="hidden xl:flex h-full items-center gap-x-8 2xl:gap-x-10">
+            <div className="hidden xl:flex h-full items-center gap-x-9 2xl:gap-x-12">
               {sports.map((sport) => {
                 const isOpen = openMenu === sport.slug;
                 const sportEntries = entriesFor(sport.id);
@@ -94,7 +94,7 @@ const Navbar = () => {
                       to={`/services/sportresor/${sport.slug}`}
                       onFocus={() => setOpenMenu(sport.slug)}
                       aria-expanded={isOpen}
-                      className="flex items-center gap-1 whitespace-nowrap text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors py-2"
+                      className="flex items-center gap-1 whitespace-nowrap text-[16px] tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors py-2"
                     >
                       {sport.label}
                       <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
@@ -165,7 +165,7 @@ const Navbar = () => {
                 <Link
                   key={item.id}
                   to={item.href}
-                  className="whitespace-nowrap text-sm tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors"
+                  className="whitespace-nowrap text-[16px] tracking-wide font-medium text-foreground/80 hover:text-primary transition-colors"
                 >
                   {item.label}
                 </Link>
@@ -175,7 +175,7 @@ const Navbar = () => {
             {/* Right side */}
             <div className="col-start-1 row-start-1 justify-self-start flex items-center gap-3 flex-shrink-0 xl:col-start-3 xl:justify-self-end">
               {/* Language - Swedish only */}
-              <span className="hidden xl:flex items-center gap-1 text-sm text-foreground/70 py-2" aria-label="Språk: svenska">
+              <span className="hidden xl:flex items-center gap-1.5 text-[15px] text-foreground/70 py-2" aria-label="Språk: svenska">
                 <Globe className="h-4 w-4" />
                 <span className="text-xs uppercase tracking-wider">SV</span>
               </span>
@@ -210,7 +210,7 @@ const Navbar = () => {
                 <Button
                   size="sm"
                   variant="outline"
-                  className="hidden xl:flex border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-none px-4 tracking-wider text-xs"
+                  className="hidden xl:flex h-11 border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-none px-6 tracking-wider text-sm"
                   onClick={() => setAuthDialogOpen(true)}
                 >
                   Logga in
@@ -220,7 +220,7 @@ const Navbar = () => {
               <Link to="/contact" className="hidden xl:block">
                 <Button
                   size="sm"
-                  className="rounded-none px-4 tracking-wider text-xs bg-primary hover:bg-primary/90"
+                  className="h-11 rounded-none px-6 tracking-wider text-sm bg-primary hover:bg-primary/90"
                 >
                   Planera din resa
                 </Button>
@@ -243,7 +243,7 @@ const Navbar = () => {
 
         {/* Mobile menu */}
         {mobileOpen && (
-          <div className="xl:hidden border-t bg-card px-4 py-4 space-y-1 max-h-[calc(100dvh-5rem)] overflow-y-auto overscroll-contain">
+          <div className="xl:hidden border-t bg-card px-4 py-4 space-y-1 max-h-[calc(100dvh-6rem)] overflow-y-auto overscroll-contain">
             {sports.map((sport) => {
               const sportEntries = entriesFor(sport.id);
               if (!sportEntries.length) return null;

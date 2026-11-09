@@ -241,7 +241,7 @@ export default function EventDetail() {
       </section>
 
       {/* Step tabs - jump to tickets / hotel / flight; sticks under the header */}
-      <div className="sticky top-16 md:top-[72px] z-30 bg-background/95 backdrop-blur-sm border-y border-border">
+      <div className="sticky top-[72px] md:top-24 z-30 bg-background/95 backdrop-blur-sm border-y border-border">
         <div className="sb-container flex justify-center">
           <div className="flex gap-1 overflow-x-auto py-2">
             {[

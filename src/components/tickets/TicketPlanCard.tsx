@@ -38,7 +38,7 @@ export default function TicketPlanCard({
   const interactive = !!t.onPlanColors && t.onPlanColors.size > 0;
 
   return (
-    <div id="arenakarta" className="rounded-lg border border-border bg-card p-3 shadow-sm scroll-mt-36">
+    <div id="arenakarta" className="rounded-lg border border-border bg-card p-3 shadow-sm scroll-mt-40">
       <div className="flex items-center justify-between px-1 pb-2">
         <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-foreground/70 font-sans">Arenan</p>
         <button

@@ -49,7 +49,7 @@ export default function HotelStep({
   const dayLabel = (d: string) => (d === h.matchDay ? `${shortDate(d)} (match)` : shortDate(d));
 
   return (
-    <div id="hotell" className="scroll-mt-36">
+    <div id="hotell" className="scroll-mt-40">
       <StepHeader n={2} eyebrow="Hotell" title="Välj om ni önskar hotellrekommendation">
         {h.covered && h.city
           ? "Vi erbjuder alltid centrala hotell inklusive frukost i kategori 3-5 stjärnigt - utvalda av våra resespecialister. Vi har avtalspriser med de flesta hotellen. Välj kategori nedan så återkommer vi med prisförslag på valt hotell samt likvärdiga alternativ."

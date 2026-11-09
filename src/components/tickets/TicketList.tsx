@@ -18,7 +18,7 @@ export default function TicketList({ t, sport = "soccer" }: { t: EventTickets; s
   const label = football ? "Matchbiljetter" : "Biljetter";
 
   return (
-    <div id="biljetter" className="scroll-mt-36">
+    <div id="biljetter" className="scroll-mt-40">
       <StepHeader
         n={1}
         eyebrow={label}

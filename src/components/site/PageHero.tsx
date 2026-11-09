@@ -40,7 +40,7 @@ export default function PageHero({ image, imageAlt, eyebrow, title, logo, logoAl
       <img src={resizedImage(image, 1600)} srcSet={responsiveSrcSet(image)} sizes="100vw" alt={imageAlt} className="absolute inset-0 h-full w-full object-cover" decoding="async" fetchPriority="high" />
       <div className="absolute inset-0 bg-gradient-to-r from-navy-deep via-navy-deep/85 to-navy-deep/55" />
 
-      <div className="relative w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10 py-6 md:py-12 flex items-end justify-between gap-6">
+      <div className="relative w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10 py-10 md:py-16 lg:py-20 min-h-[220px] md:min-h-[320px] flex items-end justify-between gap-6">
         <div className="min-w-0 max-w-4xl">
           {eyebrow && <p className="eyebrow text-white/75 uppercase mb-1.5">{eyebrow}</p>}
           <h1 className="font-display text-[32px] sm:text-5xl md:text-6xl text-white">{typeof title === "string" ? noBreakHyphen(title) : title}</h1>
@@ -65,7 +65,7 @@ export default function PageHero({ image, imageAlt, eyebrow, title, logo, logoAl
           {cta && <div className="mt-4 md:mt-6">{cta}</div>}
         </div>
         {logo && (
-          <div className="hidden sm:flex shrink-0 h-24 w-24 md:h-28 md:w-28 items-center justify-center rounded-lg bg-white p-3 shadow-lg">
+          <div className="hidden sm:flex shrink-0 h-24 w-24 md:h-32 md:w-32 items-center justify-center rounded-lg bg-white p-3 shadow-lg">
             <img src={logo} alt={logoAlt ?? ""} className="h-full w-full object-contain" />
           </div>
         )}

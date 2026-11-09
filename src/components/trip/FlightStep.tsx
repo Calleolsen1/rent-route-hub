@@ -26,7 +26,7 @@ export default function FlightStep({
   const otherText = other && from !== "Annan ort" ? from : "";
 
   return (
-    <div id="flyg" className="scroll-mt-36">
+    <div id="flyg" className="scroll-mt-40">
       <StepHeader n={3} eyebrow="Flyg" title="Välj om ni önskar hjälp med flyg">
         Vi har egen IATA-licens och har därmed tillgång till och kan boka de flesta flygbolag.
       </StepHeader>
