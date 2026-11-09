@@ -14,7 +14,9 @@ export function isResizable(url: string | null | undefined): url is string {
 export function resizedImage(url: string, width: number, quality = 72): string {
   if (!isResizable(url)) return url;
   const base = url.replace(OBJECT_PATH, RENDER_PATH).split("?")[0];
-  return `${base}?width=${width}&quality=${quality}`;
+  // resize=contain keeps the whole photo at its own aspect ratio; without it
+  // the render endpoint crops a centre strip at the original height.
+  return `${base}?width=${width}&resize=contain&quality=${quality}`;
 }
 
 /** srcSet for a photo that can be resized; undefined otherwise. */
