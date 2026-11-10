@@ -47,6 +47,8 @@ Deno.serve(async (req) => {
       .map((o) => ({
         category_id: o.category_id,
         name: o.name,
+        ...(o.short_name && { short_name: o.short_name }),
+        ...(o.section && { section: o.section }),
         description: o.description,
         color: null,
         image_url: o.image_url,

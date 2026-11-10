@@ -35,6 +35,10 @@ export type TicketGroup = {
   image_url?: string | null;
   /** Admin only: which supplier sells this row ("travelconnection" | "p1"). */
   supplier?: string;
+  /** Shorter row label (F1: the grandstand); `name` keeps the day for requests. */
+  short_name?: string;
+  /** List heading this row sits under (F1: the day - "Hela helgen", "Söndag"…). */
+  section?: string;
 };
 
 type TicketsResponse = {

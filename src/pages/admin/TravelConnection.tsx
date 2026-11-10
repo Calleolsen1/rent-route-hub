@@ -248,7 +248,7 @@ export default function AdminTravelConnection() {
       const res = await invoke<{ environment: string; stats: Record<string, number> }>("p1-sync", { trigger: "manual" });
       const s = res.stats;
       toast.success(
-        `P1 (${res.environment}): ${s.matched + s.kept_manual} kopplade · ${s.created} nya F1-lopp · ${s.unmatched} utan match · ${s.other} utanför sortimentet`,
+        `P1 (${res.environment}): ${s.matched + s.kept_manual} kopplade · ${s.created} nya F1-lopp · ${s.unmatched} utan match · ${s.other} utanför sortimentet${s.packages ? ` · ${s.packages} resepaket hoppades över` : ""}${s.races_hidden ? ` · ${s.races_hidden} dubblettlopp dolda` : ""}`,
       );
     } catch (e) {
       toast.error(`P1: ${(e as Error).message}`);

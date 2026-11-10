@@ -11,6 +11,9 @@ import StadiumPlan from "@/components/StadiumPlan";
 // the quantities feed a request (nothing is booked); see useEventTickets. Hovering a row lights up its area on
 // the seating plan in the right-hand column; only that row is highlighted.
 
+/** Order of F1 day headings; anything else after them. */
+const SECTION_ORDER = ["Hela helgen", "Lördag–söndag", "Söndag", "Lördag", "Fredag", "Torsdag", "Hospitality", "F1 Experiences"];
+
 export default function TicketList({ t, sport = "soccer" }: { t: EventTickets; sport?: string | null }) {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   // Football sells match tickets, so the step says matchbiljetter; F1 keeps biljetter.
@@ -46,7 +49,7 @@ export default function TicketList({ t, sport = "soccer" }: { t: EventTickets; s
                 <div className="min-w-0 flex-1">
                   <div className="flex items-start justify-between gap-3">
                     <p className="font-medium leading-snug">
-                      {g.name}
+                      {g.short_name ?? g.name}
                       {g.supplier && (
                         <span className="ml-2 align-middle rounded border border-amber-300 bg-amber-50 px-1 text-[10px] font-normal text-amber-900">
                           {g.supplier === "p1" ? "P1" : "TC"}
@@ -151,12 +154,24 @@ export default function TicketList({ t, sport = "soccer" }: { t: EventTickets; s
 
   // Match tickets and hospitality as two short lists instead of one long
   // one (two suppliers easily make 10+ rows). Generic tiers stay one list.
-  const hosp = t.isGeneric ? [] : t.groups.filter((g) => g.tier === "hospitality");
-  const plain = t.isGeneric ? t.groups : t.groups.filter((g) => g.tier !== "hospitality");
-  const sections = [
-    { key: "match", label, groups: plain },
-    { key: "hospitality", label: "Hospitality", groups: hosp },
-  ].filter((sec) => sec.groups.length);
+  // F1 rows come with their day as a section ("Hela helgen", "Söndag"…).
+  const bySection = !t.isGeneric && t.groups.some((g) => g.section);
+  const sections = bySection
+    ? (() => {
+        const m = new Map<string, typeof t.groups>();
+        for (const g of t.groups) {
+          const k = g.section ?? (g.tier === "hospitality" ? "Hospitality" : label);
+          m.set(k, [...(m.get(k) ?? []), g]);
+        }
+        const rank = (k: string) => (SECTION_ORDER.indexOf(k) + 1 || 99);
+        return [...m.entries()]
+          .sort(([a], [b]) => rank(a) - rank(b))
+          .map(([k, groups]) => ({ key: k, label: k, groups }));
+      })()
+    : [
+        { key: "match", label, groups: t.isGeneric ? t.groups : t.groups.filter((g) => g.tier !== "hospitality") },
+        { key: "hospitality", label: "Hospitality", groups: t.isGeneric ? [] : t.groups.filter((g) => g.tier === "hospitality") },
+      ].filter((sec) => sec.groups.length);
 
   return (
     <div id="biljetter" className="scroll-mt-24">
@@ -186,8 +201,8 @@ export default function TicketList({ t, sport = "soccer" }: { t: EventTickets; s
         </div>
       )}
 
-      {sections.map((sec) => (
-        <div key={sec.key} className={sec.key === "hospitality" && sections.length > 1 ? "mt-6" : ""}>
+      {sections.map((sec, i) => (
+        <div key={sec.key} className={i > 0 ? "mt-6" : ""}>
           {sections.length > 1 && (
             <p className="mb-2 text-sm font-medium text-foreground">{sec.label}</p>
           )}
