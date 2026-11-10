@@ -118,8 +118,10 @@ async function fetchContent(db: Db, p1: P1Client, id: string, prev?: InfoRow): P
     const raw = await p1.categoryContent(id);
     row = { ...parseContent(raw), raw };
   } catch (e) {
+    // Not stored: a stored row would hide the category for a week. The
+    // in-memory `tried` mark backs off retries for a few hours instead.
     console.warn(`[p1_pricing] content ${id}:`, (e as Error).message);
-    row = { raw: { error: (e as Error).message } };
+    return;
   }
   const fresh = { p1_category_id: id, ...row, fetched_at: new Date().toISOString() };
   await db.from("p1_category_info").upsert(fresh, { onConflict: "p1_category_id" });

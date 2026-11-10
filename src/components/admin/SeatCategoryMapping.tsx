@@ -89,8 +89,8 @@ export default function SeatCategoryMapping() {
 
   /**
    * Fill this list without waiting for page views: one upcoming match per
-   * stadium where BOTH suppliers sell, fetched one at a time (Travel
-   * Connection allows 60 requests a minute, shared with the live site).
+   * stadium where BOTH suppliers sell, one every 6 s (Travel Connection
+   * allows 60 requests a minute, shared with the live site).
    */
   const scanVenues = async () => {
     const now = new Date().toISOString();
@@ -117,7 +117,8 @@ export default function SeatCategoryMapping() {
     for (let i = 0; i < ids.length; i++) {
       await supabase.functions.invoke("event-tickets", { body: { event_id: ids[i] } }).catch(() => null);
       setScan({ done: i + 1, total: ids.length });
-      await new Promise((r) => setTimeout(r, 2500));
+      // A new stadium can cost several TC calls (one per unseen category).
+      await new Promise((r) => setTimeout(r, 6000));
     }
     setScan(null);
     toast.success(`${ids.length} arenor inlästa`);

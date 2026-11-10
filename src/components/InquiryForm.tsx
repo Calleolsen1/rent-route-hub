@@ -191,11 +191,12 @@ export default function InquiryForm({
                 .join(" + ")}`
             : null,
         ].filter(Boolean).join(" · ") || undefined,
-        message: hasSelection
+        message: (hasSelection
           ? `${parsed.data.message}\n\nValt på matchsidan:\n${selection!.map((l) => `- ${l}`).join("\n")}${
               supplierNote?.length ? `\n\nLeverantör (internt):\n${supplierNote.map((l) => `- ${l}`).join("\n")}` : ""
             }`
-          : parsed.data.message,
+          : parsed.data.message
+        ).slice(0, 4000), // submit-inquiry rejects longer
         source_page:
           typeof window !== "undefined" ? window.location.pathname : undefined,
         turnstile_token: turnstileToken ?? undefined,
