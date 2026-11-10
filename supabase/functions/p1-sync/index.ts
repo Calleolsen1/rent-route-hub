@@ -40,6 +40,18 @@ export function parseSwedishDate(text: string | null | undefined): Date | null {
   return new Date(Date.UTC(Number(m[3]), MONTHS_SV[m[2]], Number(m[1]), 12));
 }
 
+/**
+ * A travel package (hotel/transfer included), not tickets: "Bronze, 3-Day +
+ * Leonardo Hotel Maastricht, 4-nights + Transfer", "Apex 1 - 3-Day - Travel
+ * Package". KAISEN books hotels itself, and P1 lists these as a second event
+ * for the same race, which made the race appear twice.
+ */
+export function isP1Package(e: P1Event): boolean {
+  const names = (e.bookingOptionProducts ?? []).flatMap((o) => (o.products ?? []).map((p) => `${p.categoryName ?? ""} ${p.productName ?? ""}`));
+  const text = `${e.title} ${names.join(" ")}`;
+  return /travel package|\bhotel\b|\d+-nights?\b|\+\s*transfer/i.test(text);
+}
+
 /** Race day for a P1 F1 event: the weekend's end when given, else its start. */
 const raceDay = (e: P1Event): Date => new Date(e.end ?? e.start);
 
@@ -104,7 +116,7 @@ Deno.serve(async (req) => {
     const taken = new Set<string>([...sticky.values()].map((s) => s.event_id).filter((id): id is string => !!id));
 
     const matcher = new FootballMatcher(ourEvents);
-    const stats = { fetched: p1Events.length, football: 0, f1: 0, other: 0, matched: 0, created: 0, unmatched: 0, kept_manual: 0 };
+    const stats = { fetched: p1Events.length, football: 0, f1: 0, other: 0, matched: 0, created: 0, unmatched: 0, kept_manual: 0, packages: 0, races_hidden: 0 };
     const rows: Record<string, unknown>[] = [];
     const seen = new Set<string>();
     const navUsed = new Set<string>(); // one created race per F1 menu entry
@@ -112,6 +124,20 @@ Deno.serve(async (req) => {
     for (const e of p1Events) {
       if (seen.has(e.id)) continue;
       seen.add(e.id);
+      // Hotel packages are not tickets; never linked (see isP1Package).
+      if (isP1Package(e)) {
+        const keepPkg = sticky.get(e.id);
+        stats.packages++;
+        rows.push({
+          p1_event_id: e.id, in_scope: false, p1_kind: isP1Football(e) ? "football" : isP1F1(e) ? "f1" : "other",
+          p1_title: e.title, p1_series: e.series?.name ?? null, p1_home_team: e.homeTeam?.name ?? null,
+          p1_away_team: e.awayTeam?.name ?? null, p1_starts_at: e.start, p1_venue: e.venue?.name ?? null,
+          p1_date_confirmed: e.isDateConfirmed, last_seen_at: now.toISOString(), updated_at: now.toISOString(),
+          event_id: keepPkg?.event_id ?? null, match_method: keepPkg?.match_method ?? "none",
+          match_note: keepPkg ? null : "Resepaket med hotell - kopplas inte",
+        });
+        continue;
+      }
       const kind = isP1Football(e) ? "football" : isP1F1(e) ? "f1" : "other";
       stats[kind]++;
       const base = {
@@ -212,6 +238,19 @@ Deno.serve(async (req) => {
     for (let i = 0; i < rows.length; i += 200) {
       const { error } = await admin.from("p1_event_links").upsert(rows.slice(i, i + 200), { onConflict: "p1_event_id" });
       if (error) throw new Error(`p1_event_links upsert: ${error.message}`);
+    }
+    // Races this sync created that no P1 event sells any more (e.g. the
+    // duplicate a hotel package made) leave the listings. Recreating one
+    // later upserts it back to 'upcoming'.
+    {
+      const { data: created } = await admin.from("events").select("id").eq("source", "p1").eq("status", "upcoming");
+      const linked = new Set(rows.map((r) => r.event_id).filter(Boolean) as string[]);
+      const orphans = ((created ?? []) as { id: string }[]).map((r) => r.id).filter((id) => !linked.has(id));
+      if (orphans.length) {
+        const { error } = await admin.from("events").update({ status: "cancelled" }).in("id", orphans);
+        if (error) throw new Error(`hide orphan races: ${error.message}`);
+        stats.races_hidden = orphans.length;
+      }
     }
     // Not seen this run (sold out of P1, or the other environment's ids).
     await admin

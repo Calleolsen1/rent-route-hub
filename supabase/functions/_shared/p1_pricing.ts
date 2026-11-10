@@ -14,7 +14,7 @@ import { rateToSek } from "./fx.ts";
 import { customerPrice, htmlToLines, loadContext, resolveMarkup, type Markup } from "./tc_pricing.ts";
 import { translateCategory } from "./translate.ts";
 import { background } from "./background.ts";
-import { P1Client, p1MaxQty, type P1Product } from "./p1.ts";
+import { P1Client, isP1F1, p1MaxQty, type P1Product } from "./p1.ts";
 
 // deno-lint-ignore no-explicit-any
 type Db = any;
@@ -26,6 +26,10 @@ export interface P1Offer {
   p1_product_id: string;
   p1_category_id: string | null;
   name: string;
+  /** F1: the grandstand alone for the row; `name` (with the day) goes into requests. */
+  short_name: string | null;
+  /** F1: list section — "Hela helgen", "Söndag", …, "Hospitality". */
+  section: string | null;
   description: string[];
   image_url: string | null;
   tier: Tier;
@@ -77,6 +81,48 @@ export function p1PropertyLines(p: P1Product): string[] {
   return (p.properties ?? [])
     .filter((x) => x.value && x.value.trim() && !/vip[_\s]*level/i.test(x.productPropertyKey) && !/^[A-Z0-9_]+$/.test(x.productPropertyKey))
     .map((x) => `${x.productPropertyKey.replace(/([a-z])([A-Z])/g, "$1 $2")}: ${x.value!.trim()}`);
+}
+
+// ─── F1 names ─────────────────────────────────────────────────────────────
+//
+// P1 sells F1 per day: the booking option is the day ("Fri/Sat/Sun",
+// "Sunday", "Friday ") or a kind ("Hospitality", "F1 Experiences"), and the
+// names repeat it: "Fri/Sat/Sun - Marina Grandstand - 3-Day (Fri/Sat/Sun)".
+// The page wants "Marina Grandstand" under a "Hela helgen" heading; requests
+// get "Marina Grandstand – 3 dagar (fre–sön)" so KAISEN knows the day.
+
+const DAY_SV: [RegExp, string, string][] = [
+  // [token, list section, label in the full name]
+  [/^thu(rsday)?\/fri\/sat\/sun$/i, "Hela helgen", "4 dagar (tor–sön)"],
+  [/^fri\/sat\/sun$/i, "Hela helgen", "3 dagar (fre–sön)"],
+  [/^sat\/sun$/i, "Lördag–söndag", "lör–sön"],
+  [/^sunday$/i, "Söndag", "söndag"],
+  [/^saturday$/i, "Lördag", "lördag"],
+  [/^friday$/i, "Fredag", "fredag"],
+  [/^thursday$/i, "Torsdag", "torsdag"],
+];
+const DURATION = /^(\d)-days?$/i;
+const KIND: [RegExp, string][] = [[/^hospitality$/i, "Hospitality"], [/^f1 experiences?$/i, "F1 Experiences"]];
+export const F1_SECTION_ORDER = ["Hela helgen", "Lördag–söndag", "Söndag", "Lördag", "Fredag", "Torsdag", "Hospitality", "F1 Experiences"];
+
+const isDayToken = (t: string) => DAY_SV.some(([re]) => re.test(t)) || DURATION.test(t) || KIND.some(([re]) => re.test(t));
+
+export function f1Naming(p: P1Product, optionName: string | null): { name: string; short: string; section: string; hospitality: boolean } {
+  const opt = (optionName ?? "").trim();
+  const raw = [p.categoryName, p.productName].map((x) => (x ?? "").trim()).filter(Boolean).join(" - ");
+  const parts = raw.split(/\s+[-–]\s+|\s*\|\s*|\s*,\s*/).map((x) => x.replace(/\s*\([^)]*\)\s*$/, "").trim()).filter(Boolean);
+  const day = DAY_SV.find(([re]) => re.test(opt)) ?? DAY_SV.find(([re]) => parts.some((x) => re.test(x)));
+  const kind = KIND.find(([re]) => re.test(opt)) ?? KIND.find(([re]) => parts.some((x) => re.test(x)));
+  const dur = parts.map((x) => x.match(DURATION)).find(Boolean);
+  const seat: string[] = [];
+  for (const x of parts) if (!isDayToken(x) && x.toLowerCase() !== opt.toLowerCase() && !seat.includes(x)) seat.push(x);
+  const short = seat.join(" – ") || (kind ? kind[1] : "Biljett");
+  const section = kind ? kind[1] : day ? day[1] : "Övrigt";
+  const when = day ? day[2] : dur ? `${dur[1]} dagar` : "";
+  const name = kind
+    ? `${short} – ${kind[1]}${dur ? `, ${dur[1]} dagar` : day ? `, ${day[2]}` : ""}`
+    : when ? `${short} – ${when}` : short;
+  return { name, short: dur && kind ? `${short} · ${dur[1]} dagar` : short, section, hospitality: !!kind };
 }
 
 // ─── Category content (cached, translated in the background) ──────────────
@@ -173,7 +219,8 @@ export async function priceP1Event(db: Db, eventId: string, league: string | nul
 
   const options = ev.bookingOptionProducts ?? [];
   const several = options.length > 1;
-  const products = options.flatMap((o) => (o.products ?? []).map((p) => ({ p, option: several ? o.bookingOption.name : null })));
+  const f1 = isP1F1(ev);
+  const products = options.flatMap((o) => (o.products ?? []).map((p) => ({ p, option: several || f1 ? o.bookingOption.name : null })));
   const catIds = [...new Set(products.map(({ p }) => p.categoryId).filter((x): x is string => !!x))];
 
   const [fx, ctx, content] = await Promise.all([
@@ -188,7 +235,8 @@ export async function priceP1Event(db: Db, eventId: string, league: string | nul
     const baseSek = Math.round(supplierPrice * fx.rateToSek);
     const maxQty = p1MaxQty(p);
     const info = p.categoryId ? content.get(p.categoryId) : undefined;
-    const name = p1Name(p, option);
+    const f1n = f1 ? f1Naming(p, option) : null;
+    const name = f1n ? f1n.name : p1Name(p, option);
     const description = info?.description_sv?.length ? info.description_sv : info?.description?.length ? info.description : p1PropertyLines(p);
     const vip = vipLevel(p);
     return {
@@ -196,9 +244,11 @@ export async function priceP1Event(db: Db, eventId: string, league: string | nul
       p1_product_id: p.id,
       p1_category_id: p.categoryId,
       name,
+      short_name: f1n?.short ?? null,
+      section: f1n?.section ?? null,
       description,
       image_url: info?.image_url ?? p.ticketCategoryImageUrl ?? null,
-      tier: vip != null && vip >= 2 ? "hospitality" : guessTier(name, description),
+      tier: f1n ? (f1n.hospitality ? "hospitality" : "match") : vip != null && vip >= 2 ? "hospitality" : guessTier(name, description),
       available: p.available && maxQty > 0,
       max_qty: Math.max(maxQty, 1),
       supplier_price: supplierPrice,

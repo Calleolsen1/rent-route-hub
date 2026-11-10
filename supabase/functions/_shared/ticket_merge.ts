@@ -22,6 +22,10 @@ export interface Offer {
   /** What the page selects and the checkout/request reads. */
   category_id: string | null;
   name: string;
+  /** Shorter row label (F1: grandstand without the day); `name` stays full. */
+  short_name?: string | null;
+  /** List section (F1: the day); null = split by tier. */
+  section?: string | null;
   description: string[];
   color: string | null;
   image_url: string | null;
@@ -53,6 +57,8 @@ export interface Link {
 export interface MergedGroup {
   category_id: string | null;
   name: string;
+  short_name: string | null;
+  section: string | null;
   description: string[];
   color: string | null;
   image_url: string | null;
@@ -91,6 +97,8 @@ export function pickSupplier(offers: Offer[]): Supplier {
 const toGroup = (o: Offer, seat: SeatCategory | null, useSeatText: boolean): MergedGroup => ({
   category_id: o.category_id,
   name: seat && useSeatText ? seat.name : o.name,
+  short_name: seat && useSeatText ? null : o.short_name ?? null,
+  section: o.section ?? null,
   description: seat && useSeatText && seat.description.length ? seat.description : o.description,
   // TC colours drive the stadium plan; a seat category may set its own.
   color: seat?.color ?? o.color,

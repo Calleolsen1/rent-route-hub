@@ -95,6 +95,8 @@ Deno.serve(async (req) => {
         supplier_category_id: o.p1_category_id ?? o.p1_product_id,
         category_id: o.category_id,
         name: o.name,
+        short_name: o.short_name,
+        section: o.section,
         description: o.description,
         color: null,
         image_url: o.image_url,
@@ -151,6 +153,8 @@ Deno.serve(async (req) => {
     const groups = merged.map((g) => ({
       category_id: g.category_id,
       name: g.name,
+      ...(g.short_name && { short_name: g.short_name }),
+      ...(g.section && { section: g.section }),
       description: g.description,
       color: g.color,
       image_url: g.image_url,
