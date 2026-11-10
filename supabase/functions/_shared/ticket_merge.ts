@@ -262,8 +262,14 @@ export function mergeOffers(offers: Offer[], links: Link[], seats: SeatCategory[
   );
 }
 
-/** Our stadium key for an event: venue name, else race name, else home team. */
-export function venueKey(e: { venue_name?: string | null; race_name?: string | null; home_team?: string | null }): string | null {
-  const k = (e.venue_name || e.race_name || e.home_team || "").trim();
-  return k || null;
+/**
+ * Our stadium key for an event: the home team for football (its ground; venue
+ * names are missing on some fixtures and vary - "Etihad Stadium" vs none,
+ * "Wanda" vs "Riyadh Air Metropolitano"), the race name for F1.
+ * Keep in step with src/components/admin/SeatCategoryMapping.tsx and the
+ * migration 20261110160000_venue_key_home_team.sql.
+ */
+export function venueKey(e: { sport?: string | null; venue_name?: string | null; race_name?: string | null; home_team?: string | null }): string | null {
+  const k = (e.sport === "formula1" ? e.race_name || e.venue_name : e.home_team || e.venue_name || e.race_name) ?? "";
+  return k.trim() || null;
 }

@@ -56,7 +56,7 @@ Deno.serve(async (req) => {
     const [isAdmin, { data: pricesPublic }, { data: ev }] = await Promise.all([
       callerIsAdmin(req),
       db.rpc("get_platform_bool", { p_key: "public_prices_enabled", p_default: false }),
-      db.from("events").select("tournament_name, venue_name, race_name, home_team").eq("id", event_id).maybeSingle(),
+      db.from("events").select("sport, tournament_name, venue_name, race_name, home_team").eq("id", event_id).maybeSingle(),
     ]);
     const showPrices = isAdmin || pricesPublic === true;
     const venue = ev ? venueKey(ev) : null;

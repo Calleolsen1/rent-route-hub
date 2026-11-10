@@ -208,15 +208,16 @@ export default function SeatCategoryMapping() {
     ]);
     const both = [...new Set([...((tcl ?? []) as { event_id: string }[]), ...((p1l ?? []) as { event_id: string }[])].map((r) => r.event_id))];
     if (!both.length) return toast.info("Inga matcher med biljetter hittades.");
-    const evs: { id: string; venue_name: string | null; race_name: string | null; home_team: string | null }[] = [];
+    const evs: { id: string; sport: string | null; venue_name: string | null; race_name: string | null; home_team: string | null }[] = [];
     for (let i = 0; i < both.length; i += 150) {
-      const { data } = await db.from("events").select("id, venue_name, race_name, home_team, starts_at")
+      const { data } = await db.from("events").select("id, sport, venue_name, race_name, home_team, starts_at")
         .in("id", both.slice(i, i + 150)).gte("starts_at", now).order("starts_at");
       evs.push(...(data ?? []));
     }
     const perVenue = new Map<string, string>();
     for (const e of evs) {
-      const k = (e.venue_name || e.race_name || e.home_team || "").trim();
+      // Same key as event-tickets (ticket_merge.ts venueKey): home team / race.
+      const k = ((e.sport === "formula1" ? e.race_name || e.venue_name : e.home_team || e.venue_name || e.race_name) ?? "").trim();
       if (k && !perVenue.has(k)) perVenue.set(k, e.id);
     }
     const ids = [...perVenue.values()];
