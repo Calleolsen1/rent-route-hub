@@ -118,7 +118,10 @@ export function f1Naming(p: P1Product, optionName: string | null): { name: strin
   // Live names also carry the race ("Miami GP 2027 2027-04-29"); the page already says which race.
   const isRaceTitle = (x: string) => /\b20\d{2}-\d{2}-\d{2}\b/.test(x) || /\b(gp|grand prix)\b.*\b20\d{2}\b/i.test(x);
   for (const x of parts) if (!isDayToken(x) && !isRaceTitle(x) && x.toLowerCase() !== opt.toLowerCase() && !seat.includes(x)) seat.push(x);
-  const short = seat.join(" – ") || (kind ? kind[1] : "Biljett");
+  // "Gold 2 VIP Lounge – Friday Access Only" -> "… – endast fredag"
+  const DAY_WORD: Record<string, string> = { thursday: "torsdag", friday: "fredag", saturday: "lördag", sunday: "söndag" };
+  const sv = (x: string) => x.replace(/\b(thursday|friday|saturday|sunday)\s+access\s+only\b/gi, (_m, d: string) => `endast ${DAY_WORD[d.toLowerCase()]}`);
+  const short = seat.map(sv).join(" – ") || (kind ? kind[1] : "Biljett");
   const section = kind ? kind[1] : day ? day[1] : "Övrigt";
   const when = day ? day[2] : dur ? `${dur[1]} dagar` : "";
   const name = kind
