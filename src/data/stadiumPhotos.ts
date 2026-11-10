@@ -76,14 +76,14 @@ export const STADIUM_PHOTOS: Record<string, StadiumPhoto> = {
     credit: { author: "Archibald99", license: "Public domain", source: "https://commons.wikimedia.org/wiki/File:Ibrox_Inside.jpg" },
   },
   "Bayern München": {
-    url: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Allianz_arena_at_night_Richard_Bartz.jpg/1280px-Allianz_arena_at_night_Richard_Bartz.jpg",
+    url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/FC_Bayern_vs._1899_Hoffenheim_2012-10-06_at_Allianz_Arena_Munich.jpg/1280px-FC_Bayern_vs._1899_Hoffenheim_2012-10-06_at_Allianz_Arena_Munich.jpg",
     venue: "Allianz Arena",
-    credit: { author: "Richard Bartz, Munich aka Makro Freak", license: "CC BY-SA 2.5", source: "https://commons.wikimedia.org/wiki/File:Allianz_arena_at_night_Richard_Bartz.jpg" },
+    credit: { author: "TomHarmsen", license: "CC BY-SA 3.0", source: "https://commons.wikimedia.org/wiki/File:FC_Bayern_vs._1899_Hoffenheim_2012-10-06_at_Allianz_Arena_Munich.jpg" },
   },
   "Borussia Dortmund": {
-    url: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Signal_iduna_park_stadium_dortmund_2.jpg/1280px-Signal_iduna_park_stadium_dortmund_2.jpg",
+    url: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/2012-02-26_Dortmund01_%286791756854%29.jpg/1280px-2012-02-26_Dortmund01_%286791756854%29.jpg",
     venue: "Signal Iduna Park",
-    credit: { author: "Arne Müseler / www.arne-mueseler.com", license: "CC BY-SA 3.0 de", source: "https://commons.wikimedia.org/wiki/File:Signal_iduna_park_stadium_dortmund_2.jpg" },
+    credit: { author: "Markus Unger", license: "CC BY 2.0", source: "https://commons.wikimedia.org/wiki/File:2012-02-26_Dortmund01_(6791756854).jpg" },
   },
   "Bayer Leverkusen": {
     url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/BayArena_Leverkusen_in_12-2018.jpg/1280px-BayArena_Leverkusen_in_12-2018.jpg",

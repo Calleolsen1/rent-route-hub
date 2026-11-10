@@ -71,7 +71,7 @@ export default function SportPage() {
 
   usePageMeta({
     title: sport
-      ? `${sport.label}resor - biljetter, hotell och transfer | Kaisen Travel Group`
+      ? `${sport.slug === "fotboll" ? "Fotbolls" : sport.label}resor - biljetter, hotell och transfer | Kaisen Travel Group`
       : "Sportresor | Kaisen Travel Group",
     description: sport
       ? `Välj liga, lag eller race och få ett komplett reseupplägg med hotell, flyg och transfer från KAISEN TRAVEL GROUP.`
@@ -258,8 +258,14 @@ export default function SportPage() {
       )}
 
       <CtaBand
-        eyebrow={`Boka din ${sport.label.toLowerCase()}resa`}
-        title="Hittar du inte laget eller matchen?"
+        eyebrow={
+          isRace
+            ? "Boka din Formel-1 resa"
+            : sport.slug === "fotboll"
+              ? "Boka din fotbollsresa"
+              : `Boka din ${sport.label.toLowerCase()}resa`
+        }
+        title={isRace ? "Hittar du inte loppet?" : "Hittar du inte laget eller matchen?"}
         text="Hör av dig till oss så undersöker vi möjligheterna via vårt nätverk av leverantörer."
       >
         <Link to="/contact" className="sb-btn-light">

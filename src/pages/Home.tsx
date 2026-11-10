@@ -745,12 +745,12 @@ const Home = () => {
                         </div>
                       ) : null}
                       <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
-                        <h3 className="font-display !font-normal text-base sm:text-lg text-white mb-0.5 leading-tight">{service.title}</h3>
-                        <p className="text-[9px] sm:text-[10px] tracking-wider text-white uppercase font-sans">{service.subtitle}</p>
+                        <h3 className="font-display !font-normal text-lg sm:text-xl text-white mb-0.5 leading-tight">{service.title}</h3>
+                        <p className="text-[10px] sm:text-[11px] tracking-wider text-white uppercase font-sans">{service.subtitle}</p>
                       </div>
                     </div>
-                    <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed mb-2 line-clamp-3">{service.description}</p>
-                    <span className="text-primary text-[11px] sm:text-xs font-medium tracking-wide flex items-center gap-2 transition-all group-hover:gap-3">
+                    <p className="text-muted-foreground text-sm sm:text-[15px] leading-relaxed mb-2 line-clamp-3">{service.description}</p>
+                    <span className="text-primary text-xs sm:text-sm font-medium tracking-wide flex items-center gap-2 transition-all group-hover:gap-3">
                       {service.ctaLabel ?? "Läs mer"} <ArrowRight className="h-3 w-3" />
                     </span>
                   </Link>
