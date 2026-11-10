@@ -264,6 +264,18 @@ const whyUs = [
   },
 ];
 
+/**
+ * Slide labels are typed in admin; one written in capitals ("EXPERIENCE
+ * MAKES THE DIFFERENCE") would shout next to the others ("Från fotboll till
+ * F1"). All-caps text is shown as a sentence; anything else as written.
+ */
+function sentenceCase(s: string): string {
+  const letters = s.replace(/[^A-Za-zÅÄÖåäöÉé]/g, "");
+  if (letters.length < 4 || letters !== letters.toUpperCase()) return s;
+  const lower = s.toLowerCase();
+  return lower.charAt(0).toUpperCase() + lower.slice(1);
+}
+
 const Home = () => {
   const [activeHero, setActiveHero] = useState(0);
   const [heroApi, setHeroApi] = useState<CarouselApi>();
@@ -555,7 +567,7 @@ const Home = () => {
                       <div className="relative h-full flex items-end p-5 pb-12 sm:p-8 sm:pl-20 md:p-14 md:pl-24">
                         <div className="max-w-2xl">
                           <p className="text-[11px] eyebrow text-white uppercase mb-2 sm:mb-4 font-sans">
-                            {slide.eyebrow}
+                            {sentenceCase(slide.eyebrow)}
                           </p>
                           <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl !font-medium text-white !leading-tight mb-4 sm:mb-6 [overflow-wrap:normal]">
                             {slide.title}
