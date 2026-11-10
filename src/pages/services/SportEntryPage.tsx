@@ -172,7 +172,7 @@ export default function SportEntryPage() {
                     raceName={info.name}
                     when={raceWeekend ?? info.date_text}
                     venue={info.venue}
-                    raceDay={raceFacts?.schedule.at(-1)?.date ?? null}
+                    raceDay={raceFacts?.schedule.slice(-1)[0]?.date ?? null}
                   />
                 ) : undefined
               }
