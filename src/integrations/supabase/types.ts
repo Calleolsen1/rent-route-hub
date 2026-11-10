@@ -2366,26 +2366,41 @@ export type Database = {
         Row: {
           color: string | null
           description: Json
+          description_sv: Json | null
           fetched_at: string
           guest_data_requirements: Json | null
           name: string | null
+          name_sv: string | null
+          sv_source: string | null
           tc_category_id: number
+          translated_at: string | null
+          translated_from: Json | null
         }
         Insert: {
           color?: string | null
           description?: Json
+          description_sv?: Json | null
           fetched_at?: string
           guest_data_requirements?: Json | null
           name?: string | null
+          name_sv?: string | null
+          sv_source?: string | null
           tc_category_id: number
+          translated_at?: string | null
+          translated_from?: Json | null
         }
         Update: {
           color?: string | null
           description?: Json
+          description_sv?: Json | null
           fetched_at?: string
           guest_data_requirements?: Json | null
           name?: string | null
+          name_sv?: string | null
+          sv_source?: string | null
           tc_category_id?: number
+          translated_at?: string | null
+          translated_from?: Json | null
         }
         Relationships: []
       }
