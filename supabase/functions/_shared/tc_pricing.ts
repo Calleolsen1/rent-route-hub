@@ -12,7 +12,7 @@
 // then the customer price is rounded UP to price_rounding_sek (1 = off).
 
 import { rateToSek, type FxRate } from "./fx.ts";
-import { translateCategory } from "./translate.ts";
+import { translateCategory, translationSource } from "./translate.ts";
 import { planSignedUrl } from "./tc_venues.ts";
 import { background } from "./background.ts";
 import {
@@ -228,7 +228,7 @@ async function translateRow(db: Db, r: InfoRow): Promise<void> {
   await db.from("tc_ticket_category_info").update({
     name_sv: sv.name,
     description_sv: sv.lines,
-    translated_from: r.description ?? [],
+    translated_from: translationSource(r.description),
     sv_source: "ai",
     translated_at: new Date().toISOString(),
   }).eq("tc_category_id", r.tc_category_id);
@@ -260,7 +260,7 @@ async function categoryInfo(db: Db, tc: TravelConnectionClient, ids: number[]): 
   });
   const untranslated = [...rows.values()].filter((r) =>
     r.sv_source !== "manual" &&
-    (!r.description_sv || !sameLines(r.translated_from, r.description)) &&
+    (!r.description_sv || !sameLines(r.translated_from, translationSource(r.description))) &&
     Date.now() - (translationTried.get(r.tc_category_id) ?? 0) > TRANSLATION_RETRY_MS
   );
   if (stale.length || untranslated.length) {
@@ -269,7 +269,7 @@ async function categoryInfo(db: Db, tc: TravelConnectionClient, ids: number[]): 
       const refreshed = await Promise.all(stale.map((id) => fetchCategory(db, tc, id, rows.get(id))));
       const toTranslate = new Map(untranslated.map((r) => [r.tc_category_id, r]));
       for (const r of refreshed) {
-        if (r && r.sv_source !== "manual" && !sameLines(r.translated_from, r.description)) toTranslate.set(r.tc_category_id, r);
+        if (r && r.sv_source !== "manual" && !sameLines(r.translated_from, translationSource(r.description))) toTranslate.set(r.tc_category_id, r);
       }
       await Promise.all([...toTranslate.values()].map((r) => translateRow(db, r)));
     })());

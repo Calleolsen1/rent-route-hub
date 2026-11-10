@@ -22,7 +22,17 @@ const SYSTEM = `You translate ticket-category descriptions for a Swedish sports-
 
 Keep every fact exactly: stand, tier, block and row names, times, what is included, restrictions. Do not add, drop or soften anything — a rule like "away team support prohibited" must stay a clear rule. Keep proper nouns (stadium stands, lounges, bars, block codes like AM1) untranslated. Write prices and times as given.
 
+Ticket terms: "General Admission" stays "General Admission" (at football it is an ordinary seated ticket, at F1 an unseated area - never call it standing or "ståplats"). "Padded seats" are "vadderade säten". "Hospitality" stays "hospitality".
+
 Return one Swedish line per input line, in the same order. For the name: "CAT 2" style names become "Kategori 2"; translate other names naturally.`;
+
+/**
+ * Bumped when the translation instructions change: stored translations made
+ * from an older version are redone once (translated_from carries the mark).
+ */
+export const TRANSLATION_VERSION = "@sv2";
+/** What translated_from must equal for a translation of `lines` to be current. */
+export const translationSource = (lines: string[] | null | undefined) => [TRANSLATION_VERSION, ...(lines ?? [])];
 
 // Plain JSON schema (no zod): one fewer library to load from the CDN.
 const SCHEMA = {

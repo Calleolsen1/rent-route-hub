@@ -12,7 +12,7 @@
 
 import { rateToSek } from "./fx.ts";
 import { cleanLines, customerPrice, htmlToLines, loadContext, resolveMarkup, type Markup } from "./tc_pricing.ts";
-import { translateCategory } from "./translate.ts";
+import { translateCategory, translationSource } from "./translate.ts";
 import { background } from "./background.ts";
 import { P1Client, isP1F1, p1MaxQty, type P1Product } from "./p1.ts";
 
@@ -183,7 +183,7 @@ async function fetchContent(db: Db, p1: P1Client, id: string, prev?: InfoRow): P
 
 const needsSwedish = (r: InfoRow) =>
   r.sv_source !== "manual" && !!r.description?.length &&
-  JSON.stringify(r.translated_from ?? []) !== JSON.stringify(r.description);
+  JSON.stringify(r.translated_from ?? []) !== JSON.stringify(translationSource(r.description));
 
 /** Swedish description, once per text change. Failures retry after RETRY_MS (see translate.ts for why it can fail). */
 async function translate(db: Db, r: InfoRow): Promise<void> {
@@ -192,7 +192,7 @@ async function translate(db: Db, r: InfoRow): Promise<void> {
   const sv = await translateCategory(r.name ?? "", r.description ?? []);
   if (!sv) return;
   await db.from("p1_category_info").update({
-    name_sv: sv.name, description_sv: sv.lines, translated_from: r.description, sv_source: "ai", translated_at: new Date().toISOString(),
+    name_sv: sv.name, description_sv: sv.lines, translated_from: translationSource(r.description), sv_source: "ai", translated_at: new Date().toISOString(),
   }).eq("p1_category_id", r.p1_category_id);
 }
 const translateTried = new Map<string, number>();
