@@ -100,14 +100,14 @@ export default function SeatCategoryMapping() {
         const tc = ls.filter((l) => l.supplier === "travelconnection").sort((a, b) => price(a) - price(b));
         const p1 = ls.filter((l) => l.supplier === "p1").sort((a, b) => price(a) - price(b));
         const open = p1.filter((p) => currentChoice(p, ls) === "");
-        // Suggest among unanswered rows and TC categories not yet chosen.
-        const taken = new Set(p1.map((p) => currentChoice(p, ls)).filter((c) => c.startsWith("tc:")));
-        const freeTc = tc.filter((t) => !taken.has(`tc:${t.supplier_category_id}`));
+        // Suggestions from ALL categories, so they stay put whatever is
+        // answered (a wrong pick never makes the right suggestion vanish).
         const suggestion = new Map<string, string>();
-        for (const [a, b] of autoPairs(freeTc.map(asOffer), open.map(asOffer))) {
+        for (const [a, b] of autoPairs(tc.map(asOffer), p1.map(asOffer))) {
           suggestion.set(`p1:${b.supplier_category_id}`, `tc:${a.supplier_category_id}`);
         }
-        return { name, tc, p1, links: ls, open: tc.length ? open.length : 0, suggestion };
+        const pending = open.filter((p) => suggestion.has(key(p))).length;
+        return { name, tc, p1, links: ls, open: tc.length ? open.length : 0, suggestion, pending };
       })
       .filter((x) => x.p1.length > 0)
       .filter((x) => !q || x.name.toLowerCase().includes(q.toLowerCase()))
@@ -144,7 +144,10 @@ export default function SeatCategoryMapping() {
   const apply = async (p: LinkRow, choice: Choice, all: LinkRow[]) => {
     const before = p.seat_category_id;
     let after: string | null = null;
-    if (choice === "hide") {
+    if (choice === "clear") {
+      const { error } = await updateLink(p, { hidden: false, seat_category_id: null });
+      if (error) throw error;
+    } else if (choice === "hide") {
       const { error } = await updateLink(p, { hidden: true, seat_category_id: null });
       if (error) throw error;
     } else if (choice === "own") {
@@ -162,16 +165,34 @@ export default function SeatCategoryMapping() {
     }
   };
 
-  const run = async (fn: () => Promise<void>, ok: string) => {
+  const run = async (fn: () => Promise<void>, ok: string, undo?: () => Promise<void>) => {
     setBusy(true);
     try {
       await fn();
-      toast.success(ok);
+      toast.success(ok, undo ? { action: { label: "Ångra", onClick: () => run(undo, "Ångrat") }, duration: 8000 } : undefined);
     } catch (e) {
       toast.error((e as Error).message);
     }
     setBusy(false);
     await load();
+  };
+
+  /** Save one row's answer, with an undo back to what it was. */
+  const choose = (p: LinkRow, choice: Choice, all: LinkRow[]) => {
+    const prev = currentChoice(p, all) || "clear";
+    if (choice === prev) return;
+    const name = choice === "hide" ? "Dold" : choice === "clear" ? "Återställd" : "Sparat";
+    run(
+      () => apply(p, choice, all),
+      `${name}: ${p.supplier_name}`,
+      // Re-read the row before undoing: its seat may have changed.
+      async () => {
+        const { data } = await db.from("supplier_category_links").select("*")
+          .eq("supplier", p.supplier).eq("supplier_category_id", p.supplier_category_id).eq("venue_key", p.venue_key).single();
+        const { data: fresh } = await db.from("supplier_category_links").select("*").eq("venue_key", p.venue_key);
+        await apply(data as LinkRow, prev, (fresh ?? []) as LinkRow[]);
+      },
+    );
   };
 
   /** Fill the list without waiting for page views: one match per stadium where both suppliers sell. */
@@ -232,7 +253,8 @@ export default function SeatCategoryMapping() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-muted-foreground max-w-2xl">
           Välj vilken Travel Connection-kategori varje P1-kategori motsvarar. Samma plats visas då som{" "}
-          <span className="text-foreground">en rad</span> på sajten och säljs via det bästa erbjudandet.
+          <span className="text-foreground">en rad</span> på sajten och säljs via det bästa erbjudandet. Rader märkta{" "}
+          <span className="text-primary">auto</span> slås redan ihop enligt förslaget tills du väljer något annat.
         </p>
         <div className="flex items-center gap-3">
           <span className="text-sm text-muted-foreground">{openTotal ? `${openTotal} att granska` : "Allt granskat"}</span>
@@ -274,7 +296,7 @@ export default function SeatCategoryMapping() {
                   {v.p1.length} från P1 · {v.tc.length} från Travel Connection
                 </p>
               </div>
-              {v.suggestion.size > 0 && (
+              {v.pending > 0 && (
                 <Button
                   size="sm"
                   disabled={busy}
@@ -288,7 +310,7 @@ export default function SeatCategoryMapping() {
                   }
                 >
                   <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-                  Godkänn förslagen ({v.suggestion.size})
+                  Godkänn förslagen ({v.pending})
                 </Button>
               )}
             </header>
@@ -303,7 +325,8 @@ export default function SeatCategoryMapping() {
               {v.p1.map((p) => {
                 const cur = currentChoice(p, v.links);
                 const sug = v.suggestion.get(key(p));
-                const value = cur || sug || "";
+                const sugTc = sug ? v.tc.find((t) => `tc:${t.supplier_category_id}` === sug) : undefined;
+                const showSug = !!sugTc && cur !== sug;
                 return (
                   <li key={key(p)} className="grid gap-2 px-4 py-3 md:grid-cols-[1fr_minmax(240px,320px)] md:items-center">
                     <div className="min-w-0">
@@ -316,16 +339,33 @@ export default function SeatCategoryMapping() {
                       {p.supplier_description?.[0] && (
                         <p className="text-xs text-muted-foreground line-clamp-1">{p.supplier_description[0]}</p>
                       )}
+                      {showSug && (
+                        <div className="mt-2 inline-flex max-w-full items-center gap-2 rounded-md border border-primary/30 bg-primary/5 pl-2 pr-1 py-1 text-xs">
+                          <Sparkles className="h-3.5 w-3.5 shrink-0 text-primary" />
+                          <span className="truncate">
+                            <span className="text-muted-foreground">Förslag: samma som </span>
+                            <span className="font-medium text-foreground">{sugTc!.supplier_name}</span>
+                          </span>
+                          <button
+                            type="button"
+                            disabled={busy}
+                            onClick={() => choose(p, sug!, v.links)}
+                            className="shrink-0 rounded bg-primary px-2 py-0.5 font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+                          >
+                            Använd
+                          </button>
+                        </div>
+                      )}
                     </div>
                     <div className="flex items-center gap-2">
                       <select
                         aria-label={`Motsvarighet för ${p.supplier_name}`}
-                        className={`h-9 w-full rounded-md border px-2 text-sm ${cur ? "border-border bg-background" : "border-amber-300 bg-amber-50"}`}
-                        value={value}
+                        className={`h-9 w-full rounded-md border px-2 text-sm ${cur ? "border-border bg-background" : "border-dashed border-muted-foreground/40 bg-background text-muted-foreground"}`}
+                        value={cur}
                         disabled={busy}
-                        onChange={(e) => e.target.value && run(() => apply(p, e.target.value, v.links), "Sparat")}
+                        onChange={(e) => choose(p, e.target.value || "clear", v.links)}
                       >
-                        {!value && <option value="">Välj…</option>}
+                        <option value="">{cur ? "Ej vald - återställ" : "Välj…"}</option>
                         {v.tc.length > 0 && (
                           <optgroup label="Samma plats som (Travel Connection)">
                             {v.tc.map((t) => (
@@ -343,9 +383,9 @@ export default function SeatCategoryMapping() {
                         {cur ? (
                           <Check className="ml-auto h-4 w-4 text-emerald-600" aria-label="Sparat" />
                         ) : sug ? (
-                          <span className="text-amber-800">förslag</span>
+                          <span className="text-primary" title="Sajten slår redan ihop enligt förslaget tills du väljer">auto</span>
                         ) : (
-                          <span className="text-muted-foreground">ej vald</span>
+                          <span className="text-amber-700">ej vald</span>
                         )}
                       </span>
                     </div>
