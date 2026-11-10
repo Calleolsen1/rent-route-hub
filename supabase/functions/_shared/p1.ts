@@ -168,6 +168,7 @@ export function p1MaxQty(p: P1Product): number {
     .filter((r) => r.type === "Max" && r.value)
     .map((r) => Number(r.value))
     .find((n) => Number.isFinite(n) && n > 0);
-  const stock = p.hasUnlimitedStock ? 20 : Math.max(0, Number(p.stock ?? 0));
+  // stock null = not reported (not "none left"); availability says if it sells.
+  const stock = p.hasUnlimitedStock || p.stock == null ? 20 : Math.max(0, Number(p.stock));
   return Math.max(0, Math.min(20, restrictionMax ?? 20, stock));
 }

@@ -63,7 +63,10 @@ Deno.serve(async (req) => {
 
     const tc = new TravelConnectionClient({ store: dbTokenStore(db) });
     const [tcPriced, p1Priced] = await Promise.all([
-      settle("travelconnection", priceEvent(db, tc, event_id, { fresh: isAdmin })),
+      // One retry: a hiccup (slow answer, token just rotated) shouldn't
+      // swap the real tickets for the generic tiers.
+      settle("travelconnection", priceEvent(db, tc, event_id, { fresh: isAdmin })
+        .catch(() => priceEvent(db, tc, event_id, { fresh: isAdmin }))),
       settle("p1", priceP1Event(db, event_id, ev?.tournament_name ?? null)),
     ]);
 
