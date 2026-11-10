@@ -331,7 +331,12 @@ export default function EventDetail() {
               <TicketPlanCard
                 t={t}
                 venueName={event.venue_name}
-                photoUrl={teamPhotos[`${event.sport}|${event.sport === "formula1" ? event.race_name : event.home_team}`] ?? null}
+                // Without a seating plan the card would only repeat the hero
+                // photo above (every F1 race today), so it shows nothing then.
+                photoUrl={(() => {
+                  const p = teamPhotos[`${event.sport}|${entryName}`] ?? null;
+                  return p && p !== venuePhoto ? p : null;
+                })()}
               />
             </div>
             <div className="order-3 lg:order-none">
