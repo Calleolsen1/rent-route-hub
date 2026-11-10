@@ -2,6 +2,7 @@
 // of every secret the rest of the system depends on. Never returns the values
 // themselves, so it's safe to expose to authenticated admins.
 
+import { translateCategoryStrict } from "../_shared/translate.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
@@ -80,6 +81,10 @@ Deno.serve(async (req) => {
 
         // Claude: translates supplier ticket descriptions to Swedish
         anthropic_api_key: has("ANTHROPIC_API_KEY"),
+        // A real one-line translation, so a broken key or call shows here.
+        translation_test: await translateCategoryStrict("Long side", ["Padded seats, block 102"])
+          .then((r) => `ok: ${r.lines[0]}`)
+          .catch((e: { status?: number; message?: string }) => `fel: ${e?.status ? `${e.status} ` : ""}${e?.message ?? String(e)}`),
 
         // misc
         site_url: Deno.env.get("SITE_URL") ?? null,

@@ -14,6 +14,8 @@ type ConfigStatus = {
   travelconnection_environment?: "sandbox" | "production";
   travelconnection_orders_enabled?: boolean;
   anthropic_api_key?: boolean;
+  /** "ok: <svensk rad>" or "fel: <orsak>" from a real one-line translation. */
+  translation_test?: string;
   stripe_sandbox: boolean;
   stripe_live: boolean;
   payments_sandbox_webhook: boolean;
@@ -224,7 +226,11 @@ export default function AdminDiagnostics() {
           <SecretCheck label="PAYMENTS_LIVE_WEBHOOK_SECRET" ok={config?.payments_live_webhook} />
           <SecretCheck label="LOVABLE_API_KEY" ok={config?.lovable_api_key} required hint="För Stripe-proxy via Lovable" />
           <SecretCheck label="RESEND_API_KEY" ok={config?.resend_api_key} required hint="För all e-post" />
-          <SecretCheck label="ANTHROPIC_API_KEY" ok={config?.anthropic_api_key} hint="Översätter biljettbeskrivningar till svenska - utan den visas engelska" />
+          <SecretCheck
+            label="ANTHROPIC_API_KEY"
+            ok={config?.anthropic_api_key && (config?.translation_test ?? "ok").startsWith("ok")}
+            hint={config?.translation_test ? `Översättningstest - ${config.translation_test}` : "Översätter biljettbeskrivningar till svenska - utan den visas engelska"}
+          />
           <SecretCheck label="SITE_URL" ok={!!config?.site_url} value={config?.site_url} hint={config?.site_url ?? "Default: https://rent-route-hub.lovable.app"} />
         </div>
       </Section>
