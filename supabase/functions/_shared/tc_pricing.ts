@@ -105,7 +105,8 @@ export function htmlToLines(html: string | null | undefined): string[] {
  * supplier text, so these would be dead "klicka här" lines - drop them, in
  * English and in Swedish translation alike.
  */
-const LINK_ONLY = /\b(click here|klicka här|tryck här|see (the )?product video|produktvideo|view (it )?here|se (den )?här|in 3d|i 3d)\b/i;
+// No trailing \b: "produktvideon" must match too, and \b doesn't work after "ä".
+const LINK_ONLY = /(click here|klicka här|tryck här|product video|produktvideo|video here|videon här|view (it )?here|se (den )?här\s*$|\bin 3d\b|\bi 3d\b)/i;
 export const cleanLines = (lines: string[]): string[] => lines.filter((l) => !LINK_ONLY.test(l));
 
 /** "CAT 2" -> "Kategori 2"; anything else (session names etc.) as-is. */
