@@ -151,7 +151,9 @@ export default function EventImage({
     >
       <img src={resizedImage(backdrop, 1000)} alt="" aria-hidden="true" loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
       <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${c1}b3 0%, ${c2}99 100%)` }} />
-      {/* Faint pitch/track arc so the plate reads as sport, not a colour swatch */}
+      {/* Faint pitch lines so a football plate reads as sport, not a colour
+          swatch. Football only - a race has no pitch. */}
+      {!isRace && (
       <svg
         className="absolute inset-0 w-full h-full opacity-[0.14]"
         viewBox="0 0 400 240"
@@ -163,6 +165,7 @@ export default function EventImage({
         <rect x="0" y="62" width="58" height="116" fill="none" stroke={ink} strokeWidth="1.5" />
         <rect x="342" y="62" width="58" height="116" fill="none" stroke={ink} strokeWidth="1.5" />
       </svg>
+      )}
 
       <div className="relative h-full flex flex-col items-center justify-center text-center px-4">
         <p
