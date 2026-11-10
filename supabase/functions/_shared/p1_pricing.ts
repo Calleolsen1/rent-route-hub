@@ -115,7 +115,9 @@ export function f1Naming(p: P1Product, optionName: string | null): { name: strin
   const kind = KIND.find(([re]) => re.test(opt)) ?? KIND.find(([re]) => parts.some((x) => re.test(x)));
   const dur = parts.map((x) => x.match(DURATION)).find(Boolean);
   const seat: string[] = [];
-  for (const x of parts) if (!isDayToken(x) && x.toLowerCase() !== opt.toLowerCase() && !seat.includes(x)) seat.push(x);
+  // Live names also carry the race ("Miami GP 2027 2027-04-29"); the page already says which race.
+  const isRaceTitle = (x: string) => /\b20\d{2}-\d{2}-\d{2}\b/.test(x) || /\b(gp|grand prix)\b.*\b20\d{2}\b/i.test(x);
+  for (const x of parts) if (!isDayToken(x) && !isRaceTitle(x) && x.toLowerCase() !== opt.toLowerCase() && !seat.includes(x)) seat.push(x);
   const short = seat.join(" – ") || (kind ? kind[1] : "Biljett");
   const section = kind ? kind[1] : day ? day[1] : "Övrigt";
   const when = day ? day[2] : dur ? `${dur[1]} dagar` : "";
