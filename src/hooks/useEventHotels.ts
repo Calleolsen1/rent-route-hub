@@ -83,6 +83,8 @@ export function useEventHotels(eventId: string | undefined, startsAt: string | n
   const [arrival, setArrival] = useState<string | null>(null);
   const [nights, setNights] = useState(2);
   const [rooms, setRooms] = useState<Rooms>({ double: 1 });
+  // Wished hotel class when no partner hotel is listed (KAISEN sources one).
+  const [stars, setStars] = useState<3 | 4 | 5>(4);
   // Several hotels can be picked: KAISEN quotes each, the visitor chooses.
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
@@ -148,7 +150,9 @@ export function useEventHotels(eventId: string | undefined, startsAt: string | n
   const selectionLine =
     hotelNames.length > 1
       ? `Hotell - pris på ${hotelNames.length} alternativ: ${hotelNames.join("; ")}. ${datesText}, ${roomsText(rooms)}`
-      : `Hotell: ${hotelNames[0] ?? "förslag från KAISEN"}, ${datesText}, ${roomsText(rooms)}`;
+      : hotelNames[0]
+        ? `Hotell: ${hotelNames[0]}, ${datesText}, ${roomsText(rooms)}`
+        : `Hotell: förslag från KAISEN, ${stars} stjärnor, ${datesText}, ${roomsText(rooms)}`;
 
   return {
     covered,
@@ -162,6 +166,8 @@ export function useEventHotels(eventId: string | undefined, startsAt: string | n
     setNights,
     rooms,
     setRoom,
+    stars,
+    setStars,
     roomCount,
     hotels,
     pricesVisible: !!data?.prices_visible,

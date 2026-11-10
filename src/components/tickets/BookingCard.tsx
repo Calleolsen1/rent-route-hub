@@ -97,7 +97,7 @@ export default function BookingCard({
                   </ul>
                 </>
               ) : (
-                <p className="font-medium">{hotels.hotelNames[0] ?? "Förslag från KAISEN"}</p>
+                <p className="font-medium">{hotels.hotelNames[0] ?? `Förslag från KAISEN · ${hotels.stars} stjärnor`}</p>
               )}
               <p className="text-xs text-muted-foreground">{hotels.datesText}</p>
               <p className="text-xs text-muted-foreground">{hotels.roomsText}</p>

@@ -131,17 +131,43 @@ export default function HotelStep({
 
 
           {/* Hotels */}
-          {!h.covered ? (
-            <p className="text-sm text-muted-foreground">
-              Vi föreslår hotell nära arenan efter era önskemål och skickar alternativ med pris i vårt svar.
-            </p>
+          {!h.covered || (!h.loading && h.hotels.length === 0) ? (
+            // No partner hotels to pick from: the visitor says which class,
+            // KAISEN finds the hotel (it goes into the request).
+            <div className="rounded-lg border border-border bg-card p-4">
+              <span className="block text-[10px] uppercase tracking-wider text-muted-foreground mb-2">Hotellstandard</span>
+              <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label="Hotellstandard">
+                {([3, 4, 5] as const).map((n) => {
+                  const active = h.stars === n;
+                  return (
+                    <button
+                      key={n}
+                      type="button"
+                      role="radio"
+                      aria-checked={active}
+                      onClick={() => h.setStars(n)}
+                      className={`flex flex-col items-center gap-1 rounded-lg border px-2 py-3 transition-colors ${
+                        active ? "border-primary bg-primary/5 ring-1 ring-primary" : "border-border hover:border-primary/40"
+                      }`}
+                    >
+                      <span className="flex gap-0.5 text-amber-500" aria-hidden>
+                        {Array.from({ length: n }).map((_, i) => (
+                          <Star key={i} className="h-4 w-4 fill-current" />
+                        ))}
+                      </span>
+                      <span className={`text-sm ${active ? "font-medium text-foreground" : "text-muted-foreground"}`}>{n} stjärnor</span>
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="mt-3 text-xs text-muted-foreground">
+                {h.covered
+                  ? "Inga lediga rum hos våra hotellpartners de här datumen - vi hittar ett hotell i vald standard och skickar alternativ med pris."
+                  : "Vi föreslår centrala hotell i vald standard och skickar alternativ med pris i vårt svar."}
+              </p>
+            </div>
           ) : h.loading && h.hotels.length === 0 ? (
             <HotelListSkeleton />
-          ) : h.hotels.length === 0 ? (
-            <div className="rounded-lg border border-dashed border-border bg-card px-4 py-6 text-sm text-muted-foreground text-center">
-              Inga lediga rum hos våra hotellpartners de här datumen. Prova andra datum - eller skicka förfrågan ändå, så
-              hittar vi ett hotell åt er.
-            </div>
           ) : (
             <div
               className={`rounded-lg border border-border bg-card divide-y divide-border overflow-hidden transition-opacity ${
