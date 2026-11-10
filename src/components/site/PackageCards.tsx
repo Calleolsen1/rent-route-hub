@@ -6,7 +6,9 @@ import { PHOTO } from "@/data/photos";
 const unsplash = (id: string) => `https://images.unsplash.com/${id}?w=900&q=75&auto=format&fit=crop`;
 const hotelImage = unsplash("photo-1618773928121-c32242e63f39");
 const flightImage = unsplash("photo-1593182440709-4b7b56482c55");
-const transferImage = unsplash("photo-1772466669620-310c35f9deb2");
+// Black Mercedes S-Class; portrait original, so cropped 4:3 around the car.
+const transferImage =
+  "https://images.unsplash.com/photo-1609521247503-8de40462e427?w=900&h=675&q=75&auto=format&fit=crop&crop=focalpoint&fp-x=0.5&fp-y=0.6";
 
 type Props = {
   eyebrow: string;
