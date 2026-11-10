@@ -46,10 +46,18 @@ export function parseSwedishDate(text: string | null | undefined): Date | null {
  * Package". KAISEN books hotels itself, and P1 lists these as a second event
  * for the same race, which made the race appear twice.
  */
+// A product is a package when it bundles hotel nights or transfer ("+
+// Leonardo Hotel…, 4-nights + Transfer", "- Travel Package"). A lone
+// hospitality product named after a hotel ("Fairmont Hotel VIP Suite",
+// "Event Box VIP North (Lindner Hotel)") is a ticket, not a package.
+const PACKAGE_PRODUCT = /travel package|\d+[- ]nights?\b|\+\s*transfer|\+\s*[^+,]*\bhotel\b/i;
+
 export function isP1Package(e: P1Event): boolean {
+  if (/travel package/i.test(e.title)) return true;
   const names = (e.bookingOptionProducts ?? []).flatMap((o) => (o.products ?? []).map((p) => `${p.categoryName ?? ""} ${p.productName ?? ""}`));
-  const text = `${e.title} ${names.join(" ")}`;
-  return /travel package|\bhotel\b|\d+-nights?\b|\+\s*transfer/i.test(text);
+  // Most of its products must be packages: one hotel-named suite among 58
+  // Monaco tickets must not hide the race.
+  return names.length > 0 && names.filter((n) => PACKAGE_PRODUCT.test(n)).length * 2 > names.length;
 }
 
 /** Race day for a P1 F1 event: the weekend's end when given, else its start. */
