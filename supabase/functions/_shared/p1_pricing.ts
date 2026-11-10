@@ -11,7 +11,7 @@
 // content API, translated to Swedish once in the background.
 
 import { rateToSek } from "./fx.ts";
-import { customerPrice, htmlToLines, loadContext, resolveMarkup, type Markup } from "./tc_pricing.ts";
+import { cleanLines, customerPrice, htmlToLines, loadContext, resolveMarkup, type Markup } from "./tc_pricing.ts";
 import { translateCategory } from "./translate.ts";
 import { background } from "./background.ts";
 import { P1Client, isP1F1, p1MaxQty, type P1Product } from "./p1.ts";
@@ -48,6 +48,8 @@ export interface P1Priced {
   guest_details_required: boolean;
   fx: { rateToSek: number; stale: boolean };
   offers: P1Offer[];
+  /** Content/translation was started for this view; the page may ask again shortly. */
+  translating: boolean;
 }
 
 /** Strip the fixture prefix P1 puts in front of names. */
@@ -195,8 +197,8 @@ async function translate(db: Db, r: InfoRow): Promise<void> {
 }
 const translateTried = new Map<string, number>();
 
-async function contentFor(db: Db, p1: P1Client, ids: string[]): Promise<Map<string, InfoRow>> {
-  const out = new Map<string, InfoRow>();
+async function contentFor(db: Db, p1: P1Client, ids: string[]): Promise<Map<string, InfoRow> & { translating?: boolean }> {
+  const out: Map<string, InfoRow> & { translating?: boolean } = new Map<string, InfoRow>();
   if (!ids.length) return out;
   const { data } = await db
     .from("p1_category_info")
@@ -216,6 +218,7 @@ async function contentFor(db: Db, p1: P1Client, ids: string[]): Promise<Map<stri
     !todo.includes(r.p1_category_id) && needsSwedish(r) && Date.now() - (translateTried.get(r.p1_category_id) ?? 0) > RETRY_MS
   );
   if (untranslated.length) background("p1 translate", Promise.all(untranslated.map((r) => translate(db, r))));
+  out.translating = todo.length > 0 || untranslated.length > 0;
   return out;
 }
 
@@ -255,7 +258,7 @@ export async function priceP1Event(db: Db, eventId: string, league: string | nul
     const info = p.categoryId ? content.get(p.categoryId) : undefined;
     const f1n = f1 ? f1Naming(p, option) : null;
     const name = f1n ? f1n.name : p1Name(p, option);
-    const description = info?.description_sv?.length ? info.description_sv : info?.description?.length ? info.description : p1PropertyLines(p);
+    const description = cleanLines(info?.description_sv?.length ? info.description_sv : info?.description?.length ? info.description : p1PropertyLines(p));
     const vip = vipLevel(p);
     return {
       category_id: `p1:${p.id}`,
@@ -283,5 +286,6 @@ export async function priceP1Event(db: Db, eventId: string, league: string | nul
     guest_details_required: (ev.requiredTicketHolderFields ?? []).length > 0,
     fx: { rateToSek: fx.rateToSek, stale: fx.stale },
     offers,
+    translating: !!content.translating,
   };
 }

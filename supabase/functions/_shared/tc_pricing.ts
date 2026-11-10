@@ -59,6 +59,8 @@ export interface PricedEvent {
   /** Official seating plan (signed URL to our copy), painted in the category colours. */
   plan_url: string | null;
   options: PricedOption[];
+  /** A Swedish translation was started for this view; the page may ask again shortly. */
+  translating?: boolean;
 }
 
 export const tcCategoryKey = (optionId: number) => `tc_${optionId}`;
@@ -96,6 +98,15 @@ export function htmlToLines(html: string | null | undefined): string[] {
     .map((l) => l.replace(/\s+/g, " ").trim())
     .filter((l) => l.length > 1);
 }
+
+/**
+ * Lines that only made sense as a link at the supplier ("See product video
+ * here", "explore your view in 3D click here"). Links are stripped from
+ * supplier text, so these would be dead "klicka här" lines - drop them, in
+ * English and in Swedish translation alike.
+ */
+const LINK_ONLY = /\b(click here|klicka här|tryck här|see (the )?product video|produktvideo|view (it )?here|se (den )?här|in 3d|i 3d)\b/i;
+export const cleanLines = (lines: string[]): string[] => lines.filter((l) => !LINK_ONLY.test(l));
 
 /** "CAT 2" -> "Kategori 2"; anything else (session names etc.) as-is. */
 export function displayName(name: string | null | undefined, fallbackId: number): string {
@@ -230,8 +241,8 @@ async function translateRow(db: Db, r: InfoRow): Promise<void> {
  * response — they used to run first, costing seconds per view, and a failed
  * translation was retried on every single view.
  */
-async function categoryInfo(db: Db, tc: TravelConnectionClient, ids: number[]): Promise<Map<number, CategoryInfo>> {
-  const out = new Map<number, CategoryInfo>();
+async function categoryInfo(db: Db, tc: TravelConnectionClient, ids: number[]): Promise<Map<number, CategoryInfo> & { translating?: boolean }> {
+  const out: Map<number, CategoryInfo> & { translating?: boolean } = new Map<number, CategoryInfo>();
   if (!ids.length) return out;
   const { data } = await db
     .from("tc_ticket_category_info")
@@ -253,6 +264,7 @@ async function categoryInfo(db: Db, tc: TravelConnectionClient, ids: number[]): 
     Date.now() - (translationTried.get(r.tc_category_id) ?? 0) > TRANSLATION_RETRY_MS
   );
   if (stale.length || untranslated.length) {
+    out.translating = untranslated.length > 0 || stale.length > 0;
     background("category refresh", (async () => {
       const refreshed = await Promise.all(stale.map((id) => fetchCategory(db, tc, id, rows.get(id))));
       const toTranslate = new Map(untranslated.map((r) => [r.tc_category_id, r]));
@@ -387,7 +399,7 @@ export async function priceEvent(
         tc_category_id: o.ticket_category,
         name: optionDisplayName(o.name, ci, o.ticket_category),
         // Swedish when translated; English until then, never nothing.
-        description: ci?.description_sv ?? ci?.description ?? [],
+        description: cleanLines(ci?.description_sv ?? ci?.description ?? []),
         color: ci?.color ?? null,
         available,
         max_qty: available ? o.max_purchase_qty : 0,
@@ -448,5 +460,5 @@ export async function priceEvent(
   const out = priced.map((p) => p.out);
   // Available first, then cheapest.
   out.sort((a, b) => Number(b.available) - Number(a.available) || a.final_sek - b.final_sek);
-  return { ...base, options: out };
+  return { ...base, options: out, translating: !!info.translating };
 }

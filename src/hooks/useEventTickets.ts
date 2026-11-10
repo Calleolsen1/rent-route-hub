@@ -48,6 +48,8 @@ type TicketsResponse = {
   guest_details_required?: boolean;
   plan_url?: string | null;
   groups: TicketGroup[];
+  /** The server is translating some texts to Swedish right now. */
+  translating?: boolean;
 };
 
 export const rowKey = (g: TicketGroup) => g.category_id ?? g.name;
@@ -115,6 +117,17 @@ export function useEventTickets(eventId: string | undefined, sport: string | nul
       if (merged) {
         setData(merged);
         setLoading(false);
+        // First view of a category: its Swedish text is being made in the
+        // background. Ask once more shortly so this visitor gets it too.
+        if (merged.translating) {
+          await new Promise((r) => setTimeout(r, 8000));
+          if (cancelled) return;
+          const again = await supabase.functions
+            .invoke("event-tickets", { body: { event_id: eventId } })
+            .then(({ data: d, error: e }) => (e ? null : (d as TicketsResponse)))
+            .catch(() => null);
+          if (!cancelled && again?.groups?.length) setData(again);
+        }
         return;
       }
 

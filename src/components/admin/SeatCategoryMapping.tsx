@@ -195,16 +195,19 @@ export default function SeatCategoryMapping() {
     );
   };
 
-  /** Fill the list without waiting for page views: one match per stadium where both suppliers sell. */
+  /**
+   * Warm every stadium without waiting for page views: one upcoming match per
+   * stadium with tickets from either supplier. That fills this list and has
+   * every category's Swedish text made before a customer opens the page.
+   */
   const scanVenues = async () => {
     const now = new Date().toISOString();
     const [{ data: tcl }, { data: p1l }] = await Promise.all([
       db.from("tc_product_links").select("event_id").in("match_method", ["auto", "manual"]).not("event_id", "is", null),
       db.from("p1_event_links").select("event_id").neq("match_method", "ignored").not("event_id", "is", null),
     ]);
-    const tcSet = new Set(((tcl ?? []) as { event_id: string }[]).map((r) => r.event_id));
-    const both = ((p1l ?? []) as { event_id: string }[]).map((r) => r.event_id).filter((id) => tcSet.has(id));
-    if (!both.length) return toast.info("Inga matcher med båda leverantörerna hittades.");
+    const both = [...new Set([...((tcl ?? []) as { event_id: string }[]), ...((p1l ?? []) as { event_id: string }[])].map((r) => r.event_id))];
+    if (!both.length) return toast.info("Inga matcher med biljetter hittades.");
     const evs: { id: string; venue_name: string | null; race_name: string | null; home_team: string | null }[] = [];
     for (let i = 0; i < both.length; i += 150) {
       const { data } = await db.from("events").select("id, venue_name, race_name, home_team, starts_at")
@@ -232,7 +235,7 @@ export default function SeatCategoryMapping() {
   const scanButton = (
     <Button size="sm" variant="outline" disabled={!!scan} onClick={scanVenues}>
       {scan ? <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5 mr-1.5" />}
-      {scan ? `Läser in ${scan.done}/${scan.total}…` : "Läs in arenor"}
+      {scan ? `Läser in ${scan.done}/${scan.total}…` : "Läs in alla arenor"}
     </Button>
   );
 
@@ -240,7 +243,7 @@ export default function SeatCategoryMapping() {
   if (!links.some((l) => l.supplier === "p1")) {
     return (
       <div className="py-10 space-y-3 text-sm text-muted-foreground">
-        <p>Inga P1-kategorier inlästa än. De kommer när en matchsida visas - eller läs in alla arenor med båda leverantörerna nu.</p>
+        <p>Inga P1-kategorier inlästa än. De kommer när en matchsida visas - eller läs in alla arenor nu (översätter också alla biljettexter i förväg).</p>
         {scanButton}
       </div>
     );

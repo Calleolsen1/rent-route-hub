@@ -176,6 +176,8 @@ Deno.serve(async (req) => {
       preview: isAdmin && pricesPublic !== true,
       guest_details_required: !!tcPriced?.guest_details_required || !!p1Priced?.guest_details_required,
       plan_url: tcPriced?.plan_url ?? (await settle("plan", planForHomeTeam(db, event_id))),
+      // Texts are being translated right now: the page asks once more shortly.
+      translating: !!tcPriced?.translating || !!p1Priced?.translating,
       ...(isAdmin && {
         venue_key: venue,
         suppliers: {
