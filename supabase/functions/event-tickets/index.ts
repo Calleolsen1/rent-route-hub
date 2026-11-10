@@ -159,7 +159,7 @@ Deno.serve(async (req) => {
       max_qty: g.max_qty,
       request_only: g.request_only,
       ...(showPrices && g.final_sek != null && { final_sek: g.final_sek }),
-      ...(isAdmin && { supplier: g.supplier, seat_category_id: g.seat_category_id, alternatives: g.alternatives ?? [], ...g.admin }),
+      ...(isAdmin && { supplier: g.supplier, seat_category_id: g.seat_category_id, auto_paired: !!g.auto_paired, alternatives: g.alternatives ?? [], ...g.admin }),
     }));
 
     const supplier = merged.some((g) => g.supplier === "travelconnection")

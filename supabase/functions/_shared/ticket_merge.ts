@@ -65,6 +65,8 @@ export interface MergedGroup {
   seat_category_id: string | null;
   /** Other supplier's offers for the same seat category (admin only). */
   alternatives?: { supplier: Supplier; name: string; final_sek: number | null; available: boolean }[];
+  /** Merged by the automatic pairing, not by an admin link. */
+  auto_paired?: boolean;
   admin?: Record<string, unknown>;
 }
 
@@ -103,6 +105,99 @@ const toGroup = (o: Offer, seat: SeatCategory | null, useSeatText: boolean): Mer
   ...(o.admin && { admin: o.admin }),
 });
 
+// ─── Automatic pairing (until an admin links a stadium) ──────────────────
+//
+// Unlinked categories from the two suppliers are compared per match; when
+// they clearly are the same seats, only the better offer is shown. Checked
+// against real fixtures: same name (Shortside / Shortside), a shared block
+// code (Club Deck CD4-CD6 / CD2 or CD6), one name inside the other
+// (Longside / Longside Lower, 93:20 Lounge ticket / 93:20 Lounge), or two
+// shared meaningful words (Longside Monte Mario / Tribuna Monte Mario).
+// Different products (Green Room / Heart of the City; block 141 / 118-119)
+// don't pair. One-to-one, strongest pairs first. Admin links override.
+
+const NOISE = new Set([
+  "ticket", "tickets", "package", "packages", "seat", "seats", "seating", "official", "match", "matchday",
+  "the", "and", "with", "of", "at", "in", "on", "or", "a", "sb", "together", "request", "plus", "block", "blocks",
+  "category", "kategori", "standard", "location", "e", "up", "to", "day",
+]);
+
+// Words many different products share ("Rose & Ball Hospitality" and "Blues
+// Dining Hospitality" are different lounges). They never prove a pair on
+// their own. Stand/side words (longside, tribuna, east…) do count.
+const GENERIC = new Set([
+  "hospitality", "lounge", "premium", "vip", "club", "lower", "upper", "tier", "level", "central",
+  "dining", "experience", "executive", "box", "sports", "bar", "food", "included", "restaurant", "pre", "prime",
+]);
+
+/** TC names some categories "Kategori 2"; their first description line says where it is. */
+const meaningfulName = (o: Offer) => (/^kategori\s*\d+[a-z]?$/i.test(o.name.trim()) && o.description[0] ? o.description[0] : o.name);
+
+export function nameTokens(s: string): string[] {
+  return s
+    .toLowerCase()
+    .replace(/(long|short)\s+side/g, "$1side")
+    .replace(/match\s+day/g, "matchday")
+    .replace(/half\s*way/g, "halfway")
+    .replace(/\bblocks?\s+[a-z]{0,3}\d{1,4}(\s*[-–&/]\s*[a-z]{0,3}\d{1,4})*/g, " ") // block codes are compared separately
+    .split(/[^a-z0-9:åäöéüñ]+/)
+    .filter((w) => w && !NOISE.has(w) && !/^\d{1,2}$/.test(w));
+}
+
+/** Block codes: "CD4-CD6", "AM3", "F41", "block 141", "002-003", "WL1". */
+export function blockCodes(s: string): Set<string> {
+  const out = new Set<string>();
+  const t = s.toLowerCase();
+  for (const m of t.matchAll(/\b([a-z]{1,3})(\d{1,3})\b/g)) {
+    if (["cat", "row", "rows", "u", "no"].includes(m[1])) continue;
+    out.add(m[1] + m[2]);
+  }
+  for (const m of t.matchAll(/\b\d{3}\b/g)) out.add(m[0]);
+  for (const m of t.matchAll(/\bblocks?\s+(\d{1,3})\b/g)) out.add(`b${Number(m[1])}`);
+  return out;
+}
+
+/** 0 = different seats; higher = more certainly the same. */
+export function pairScore(a: Offer, b: Offer): number {
+  const na = nameTokens(meaningfulName(a)), nb = nameTokens(meaningfulName(b));
+  const sa = new Set(na), sb = new Set(nb);
+  if (sa.size && sa.size === sb.size && [...sa].every((w) => sb.has(w))) return 4; // same name
+  const ba = blockCodes(`${a.name} ${a.description.slice(0, 2).join(" ")}`);
+  const bb = blockCodes(`${b.name} ${b.description.slice(0, 2).join(" ")}`);
+  const sharedBlock = [...ba].some((x) => bb.has(x));
+  const sharedWords = [...sa].filter((w) => sb.has(w));
+  const distinct = sharedWords.filter((w) => !GENERIC.has(w)).length;
+  const [small] = sa.size <= sb.size ? [sa, sb] : [sb, sa];
+  const subset = small.size > 0 && sharedWords.length === small.size && [...small].some((w) => !GENERIC.has(w));
+  const jaccard = sharedWords.length / Math.max(1, new Set([...sa, ...sb]).size);
+  const hospitality = a.tier === "hospitality" || b.tier === "hospitality";
+  if (sharedBlock && distinct >= 1) return 3.5;
+  if (subset) return 2 + jaccard;
+  // Lounges can share a block, so a block alone only pairs plain tickets.
+  if (sharedBlock && !hospitality) return 2;
+  if (distinct >= 2 && jaccard >= 0.5) return 1 + jaccard;
+  return 0;
+}
+
+/** Strongest one-to-one TC↔P1 pairs among unlinked offers. */
+export function autoPairs(tc: Offer[], p1: Offer[]): [Offer, Offer][] {
+  const cands: { a: Offer; b: Offer; s: number }[] = [];
+  for (const a of tc) for (const b of p1) {
+    const s = pairScore(a, b);
+    if (s > 0) cands.push({ a, b, s });
+  }
+  cands.sort((x, y) => y.s - x.s);
+  const usedA = new Set<Offer>(), usedB = new Set<Offer>();
+  const out: [Offer, Offer][] = [];
+  for (const c of cands) {
+    if (usedA.has(c.a) || usedB.has(c.b)) continue;
+    usedA.add(c.a);
+    usedB.add(c.b);
+    out.push([c.a, c.b]);
+  }
+  return out;
+}
+
 export function mergeOffers(offers: Offer[], links: Link[], seats: SeatCategory[]): MergedGroup[] {
   const linkBy = new Map(links.map((l) => [linkKey(l.supplier, l.supplier_category_id), l]));
   const seatBy = new Map(seats.map((s) => [s.id, s]));
@@ -130,7 +225,23 @@ export function mergeOffers(offers: Offer[], links: Link[], seats: SeatCategory[
       out.push(g);
     }
   }
-  for (const o of loose) out.push(toGroup(o, null, false));
+  // Unlinked: pair the obvious duplicates automatically, show the rest as is.
+  const pairs = autoPairs(loose.filter((o) => o.supplier === "travelconnection"), loose.filter((o) => o.supplier === "p1"));
+  const paired = new Set<Offer>();
+  for (const [tc, p1] of pairs) {
+    paired.add(tc);
+    paired.add(p1);
+    const winner = pickSupplier([tc, p1]) === "p1" ? p1 : tc;
+    const loser = winner === tc ? p1 : tc;
+    // The winner's own name/description (it's what gets booked); TC's colour
+    // so the row still lights its area on the stadium plan.
+    const g = toGroup(winner, null, false);
+    g.color = tc.color;
+    g.alternatives = [{ supplier: loser.supplier, name: loser.name, final_sek: loser.final_sek, available: loser.available }];
+    g.auto_paired = true;
+    out.push(g);
+  }
+  for (const o of loose) if (!paired.has(o)) out.push(toGroup(o, null, false));
 
   // Match tickets before hospitality; within each, available first, then
   // the admin's order for seat categories, then price.
