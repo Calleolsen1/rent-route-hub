@@ -176,17 +176,24 @@ async function fetchContent(db: Db, p1: P1Client, id: string, prev?: InfoRow): P
   }
   const fresh = { p1_category_id: id, ...row, fetched_at: new Date().toISOString() };
   await db.from("p1_category_info").upsert(fresh, { onConflict: "p1_category_id" });
-  const desc = (row.description ?? []) as string[];
-  const needsSv = prev?.sv_source !== "manual" && desc.length && JSON.stringify(prev?.translated_from ?? []) !== JSON.stringify(desc);
-  if (needsSv) {
-    const sv = await translateCategory(row.name ?? "", desc);
-    if (sv) {
-      await db.from("p1_category_info").update({
-        name_sv: sv.name, description_sv: sv.lines, translated_from: desc, sv_source: "ai", translated_at: new Date().toISOString(),
-      }).eq("p1_category_id", id);
-    }
-  }
+  await translate(db, { ...(prev ?? {}), ...(fresh as Partial<InfoRow>), p1_category_id: id } as InfoRow);
 }
+
+const needsSwedish = (r: InfoRow) =>
+  r.sv_source !== "manual" && !!r.description?.length &&
+  JSON.stringify(r.translated_from ?? []) !== JSON.stringify(r.description);
+
+/** Swedish description, once per text change. Failures retry after RETRY_MS (see translate.ts for why it can fail). */
+async function translate(db: Db, r: InfoRow): Promise<void> {
+  if (!needsSwedish(r)) return;
+  translateTried.set(r.p1_category_id, Date.now());
+  const sv = await translateCategory(r.name ?? "", r.description ?? []);
+  if (!sv) return;
+  await db.from("p1_category_info").update({
+    name_sv: sv.name, description_sv: sv.lines, translated_from: r.description, sv_source: "ai", translated_at: new Date().toISOString(),
+  }).eq("p1_category_id", r.p1_category_id);
+}
+const translateTried = new Map<string, number>();
 
 async function contentFor(db: Db, p1: P1Client, ids: string[]): Promise<Map<string, InfoRow>> {
   const out = new Map<string, InfoRow>();
@@ -203,6 +210,12 @@ async function contentFor(db: Db, p1: P1Client, ids: string[]): Promise<Map<stri
     return old && Date.now() - (tried.get(id) ?? 0) > RETRY_MS;
   });
   if (todo.length) background("p1 content", Promise.all(todo.map((id) => fetchContent(db, p1, id, out.get(id)))));
+  // Content already cached but still in English (translation failed or was
+  // never tried): retry the translation alone, backing off per category.
+  const untranslated = [...out.values()].filter((r) =>
+    !todo.includes(r.p1_category_id) && needsSwedish(r) && Date.now() - (translateTried.get(r.p1_category_id) ?? 0) > RETRY_MS
+  );
+  if (untranslated.length) background("p1 translate", Promise.all(untranslated.map((r) => translate(db, r))));
   return out;
 }
 
