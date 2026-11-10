@@ -16,6 +16,9 @@ const SECTION_ORDER = ["Hela helgen", "Lördag–söndag", "Söndag", "Lördag",
 
 export default function TicketList({ t, sport = "soccer" }: { t: EventTickets; sport?: string | null }) {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  // Rows opened at least once keep their image mounted (just hidden), so
+  // closing and reopening doesn't reload and re-lay-out it.
+  const [seen, setSeen] = useState<Record<string, boolean>>({});
   // Football sells match tickets, so the step says matchbiljetter; F1 keeps biljetter.
   const football = sport !== "formula1";
   const label = football ? "Matchbiljetter" : "Biljetter";
@@ -65,13 +68,17 @@ export default function TicketList({ t, sport = "soccer" }: { t: EventTickets; s
                       {g.description[0]}
                     </p>
                   )}
-                  {open && g.image_url && (
-                    <img
-                      src={g.image_url}
-                      alt={`Utsikt från ${g.name}`}
-                      loading="lazy"
-                      className="mt-2 w-full max-w-sm rounded-md border border-border object-cover"
-                    />
+                  {g.image_url && (open || seen[key]) && (
+                    // Fixed box: the space is reserved before the image
+                    // arrives, so nothing below it jumps.
+                    <div className={`mt-2 w-full max-w-md aspect-[4/3] overflow-hidden rounded-md border border-border bg-white ${open ? "" : "hidden"}`}>
+                      <img
+                        src={g.image_url}
+                        alt={`Utsikt från ${g.short_name ?? g.name}`}
+                        decoding="async"
+                        className="h-full w-full object-contain"
+                      />
+                    </div>
                   )}
                   {open && g.description.length > 1 && (
                     <ul className="mt-1.5 space-y-1 text-xs text-muted-foreground list-disc pl-4">
@@ -86,7 +93,10 @@ export default function TicketList({ t, sport = "soccer" }: { t: EventTickets; s
                       {hasMore && (
                         <button
                           type="button"
-                          onClick={() => setExpanded((p) => ({ ...p, [key]: !open }))}
+                          onClick={() => {
+                            setExpanded((p) => ({ ...p, [key]: !open }));
+                            setSeen((p) => (p[key] ? p : { ...p, [key]: true }));
+                          }}
                           className="text-primary hover:underline inline-flex items-center gap-0.5"
                         >
                           {open ? "Visa mindre" : "Visa mer"}
