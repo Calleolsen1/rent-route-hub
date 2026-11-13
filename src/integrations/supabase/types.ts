@@ -2127,6 +2127,45 @@ export type Database = {
         }
         Relationships: []
       }
+      supplier_texts_sv: {
+        Row: {
+          created_at: string
+          key: string
+          lines_en: string[]
+          lines_sv: string[] | null
+          name_en: string | null
+          name_sv: string | null
+          supplier: string
+          sv_source: string | null
+          translated_at: string | null
+          translated_from: string[] | null
+        }
+        Insert: {
+          created_at?: string
+          key: string
+          lines_en?: string[]
+          lines_sv?: string[] | null
+          name_en?: string | null
+          name_sv?: string | null
+          supplier: string
+          sv_source?: string | null
+          translated_at?: string | null
+          translated_from?: string[] | null
+        }
+        Update: {
+          created_at?: string
+          key?: string
+          lines_en?: string[]
+          lines_sv?: string[] | null
+          name_en?: string | null
+          name_sv?: string | null
+          supplier?: string
+          sv_source?: string | null
+          translated_at?: string | null
+          translated_from?: string[] | null
+        }
+        Relationships: []
+      }
       system_errors: {
         Row: {
           created_at: string
