@@ -34,6 +34,8 @@ export interface P1Offer {
   description: string[];
   /** P1's own English, for matching against the other suppliers. */
   name_en: string;
+  /** F1 day for pairing: "weekend", "satsun", "sun", "sat", "fri", "thu"; null = unknown. */
+  day: string | null;
   description_en: string[];
   image_url: string | null;
   tier: Tier;
@@ -108,12 +110,13 @@ const DAY_SV: [RegExp, string, string][] = [
   [/^thursday$/i, "Torsdag", "torsdag"],
 ];
 const DURATION = /^(\d)-days?$/i;
+const DAY_KEY: Record<string, string> = { "Lördag–söndag": "satsun", "Söndag": "sun", "Lördag": "sat", "Fredag": "fri", "Torsdag": "thu" };
 const KIND: [RegExp, string][] = [[/^hospitality$/i, "Hospitality"], [/^f1 experiences?$/i, "F1 Experiences"]];
 export const F1_SECTION_ORDER = ["Hela helgen", "Lördag–söndag", "Söndag", "Lördag", "Fredag", "Torsdag", "Hospitality", "F1 Experiences"];
 
 const isDayToken = (t: string) => DAY_SV.some(([re]) => re.test(t)) || DURATION.test(t) || KIND.some(([re]) => re.test(t));
 
-export function f1Naming(p: P1Product, optionName: string | null): { name: string; short: string; section: string; hospitality: boolean } {
+export function f1Naming(p: P1Product, optionName: string | null): { name: string; short: string; section: string; hospitality: boolean; day: string | null; seat_en: string } {
   const opt = (optionName ?? "").trim();
   const raw = [p.categoryName, p.productName].map((x) => (x ?? "").trim()).filter(Boolean).join(" - ");
   const parts = raw.split(/\s+[-–]\s+|\s*\|\s*|\s*,\s*/).map((x) => x.replace(/\s*\([^)]*\)\s*$/, "").trim()).filter(Boolean);
@@ -128,12 +131,16 @@ export function f1Naming(p: P1Product, optionName: string | null): { name: strin
   const DAY_WORD: Record<string, string> = { thursday: "torsdag", friday: "fredag", saturday: "lördag", sunday: "söndag" };
   const sv = (x: string) => x.replace(/\b(thursday|friday|saturday|sunday)\s+access\s+only\b/gi, (_m, d: string) => `endast ${DAY_WORD[d.toLowerCase()]}`);
   const short = seat.map(sv).join(" – ") || (kind ? kind[1] : "Biljett");
-  const section = kind ? kind[1] : day ? day[1] : "Övrigt";
+  // A 3- or 4-day ticket without a day token is the whole weekend too.
+  const weekend = !day && dur && Number(dur[1]) >= 3;
+  const section = kind ? kind[1] : day ? day[1] : weekend ? "Hela helgen" : "Övrigt";
+  // Day key for pairing with other suppliers (same as xs2_pricing's).
+  const dayKey = day ? (day[1] === "Hela helgen" ? "weekend" : DAY_KEY[day[1]] ?? null) : weekend ? "weekend" : null;
   const when = day ? day[2] : dur ? `${dur[1]} dagar` : "";
   const name = kind
     ? `${short} – ${kind[1]}${dur ? `, ${dur[1]} dagar` : day ? `, ${day[2]}` : ""}`
     : when ? `${short} – ${when}` : short;
-  return { name, short: dur && kind ? `${short} · ${dur[1]} dagar` : short, section, hospitality: !!kind };
+  return { name, short: dur && kind ? `${short} · ${dur[1]} dagar` : short, section, hospitality: !!kind, day: dayKey, seat_en: seat.join(" – ") || short };
 }
 
 // ─── Category content (cached, translated in the background) ──────────────
@@ -272,7 +279,9 @@ export async function priceP1Event(db: Db, eventId: string, league: string | nul
       short_name: f1n?.short ?? null,
       section: f1n?.section ?? null,
       description,
-      name_en: name,
+      // F1: the grandstand alone (the day is compared via `day`).
+      name_en: f1n ? f1n.seat_en : name,
+      day: f1n?.day ?? null,
       description_en: cleanLines(info?.description?.length ? info.description : p1PropertyLines(p)),
       image_url: info?.image_url ?? p.ticketCategoryImageUrl ?? null,
       tier: f1n ? (f1n.hospitality ? "hospitality" : "match") : vip != null && vip >= 2 ? "hospitality" : guessTier(name, description),

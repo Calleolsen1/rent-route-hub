@@ -127,3 +127,22 @@ Deno.test("a loose XS2 offer joins a seat an admin linked", () => {
   assertEquals(row.supplier, "xs2");
   assertEquals(row.alternatives?.[0].supplier, "p1");
 });
+
+Deno.test("numbered seats only pair with the same number (Turn 1 is not Turn 18)", () => {
+  assertEquals(pairScore(xs2("Turn 1"), p1("Turn 18 Grandstand")), 0);
+  assertEquals(pairScore(xs2("Corner 1"), p1("Corner 2 - SB")), 0);
+  assert(pairScore(xs2("Turn 18"), p1("Turn 18 Grandstand")) > 0);
+  assert(pairScore(xs2("Lateral 2"), p1("Lateral")) > 0, "a number on one side only is fine");
+  assert(pairScore(xs2("Marina"), p1("Marina Grandstand – 3 dagar")) > 0, "day counts are not seat numbers");
+});
+
+Deno.test("F1: different days never pair, the same day does", () => {
+  assertEquals(pairScore(xs2("Marina", [], { day: "fri" }), p1("Marina Grandstand", [], { day: "weekend" })), 0);
+  assert(pairScore(xs2("Marina", [], { day: "weekend" }), p1("Marina Grandstand", [], { day: "weekend" })) > 0);
+  // Miami as seen live: XS2 and P1 sell the same three grandstands for the weekend.
+  const m = mergeOffers([
+    xs2("Marina", [], { day: "weekend" }), xs2("Turn 1", [], { day: "weekend" }), xs2("Start Finish", [], { day: "weekend" }),
+    p1("Marina Grandstand", [], { day: "weekend" }), p1("Turn 18 Grandstand", [], { day: "weekend" }), p1("Start/Finish Grandstand", [], { day: "weekend" }),
+  ], [], []);
+  assertEquals(m.length, 4, "Marina and Start/Finish merge; Turn 1 and Turn 18 stay apart");
+});

@@ -47,6 +47,8 @@ export interface Offer {
    */
   pair_name?: string;
   pair_description?: string[];
+  /** F1 day ("weekend", "sat", …): two offers for different days are never the same ticket. */
+  day?: string | null;
 }
 
 export interface SeatCategory {
@@ -193,8 +195,23 @@ function levelsConflict(a: Set<string>, b: Set<string>): boolean {
   });
 }
 
+/**
+ * Plain numbers in a name: "Turn 1" / "Turn 18", "Corner 1" / "Corner 2",
+ * "Gold 2 VIP Lounge" are different seats. nameTokens drops them (they are
+ * noise in descriptions: "up to 4 seats"), so names compare them here.
+ */
+export function nameNumbers(s: string): Set<string> {
+  const t = s.toLowerCase()
+    .replace(/\bblocks?\s+[a-z]{0,3}\d{1,4}(\s*[-–&/]\s*[a-z]{0,3}\d{1,4})*/g, " ") // compared as block codes
+    .replace(/\b\d+\s*(-\s*)?(days?|dagar|seats?|platser|persons?|personer|people|%)/g, " ");
+  return new Set([...t.matchAll(/(?<![a-z0-9])(\d{1,2})(?![a-z0-9])/g)].map((m) => String(Number(m[1]))));
+}
+
 /** 0 = different seats; higher = more certainly the same. */
 export function pairScore(a: Offer, b: Offer): number {
+  if (a.day && b.day && a.day !== b.day) return 0;
+  const na = nameNumbers(pairName(a)), nb = nameNumbers(pairName(b));
+  if (na.size && nb.size && ![...na].some((n) => nb.has(n))) return 0;
   const levels = (o: Offer) => new Set(nameTokens(`${meaningfulName(o)} ${pairDesc(o)[0] ?? ""}`));
   if (levelsConflict(levels(a), levels(b))) return 0;
   const byName = namePairScore(a, b, meaningfulName(a), meaningfulName(b));

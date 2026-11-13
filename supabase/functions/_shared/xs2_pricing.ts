@@ -31,6 +31,8 @@ export interface Xs2Offer {
   /** XS2's English, for matching against the other suppliers. */
   name_en: string;
   description_en: string[];
+  /** F1 day for pairing (same keys as P1's); null for football. */
+  day: string | null;
   image_url: string | null;
   tier: Tier;
   available: boolean;
@@ -61,8 +63,11 @@ const DAYS: Record<string, [string, string]> = {
   fri: ["Fredag", "fredag"],
   thu: ["Torsdag", "torsdag"],
 };
-export const xs2Day = (sub: string | null | undefined): [string, string] | null =>
-  DAYS[(sub ?? "").replace(/_.*$/, "").toLowerCase()] ?? null;
+const subKey = (sub: string | null | undefined) => (sub ?? "").replace(/_.*$/, "").toLowerCase();
+export const xs2Day = (sub: string | null | undefined): [string, string] | null => DAYS[subKey(sub)] ?? null;
+/** Day key for pairing with P1: every whole-weekend variant is "weekend". */
+export const xs2DayKey = (sub: string | null | undefined): string | null =>
+  !xs2Day(sub) ? null : DAYS[subKey(sub)][0] === "Hela helgen" ? "weekend" : subKey(sub);
 
 /** Lots without a category ("0") are keyed by their title instead. */
 export const xs2CategoryKey = (t: Pick<Xs2Ticket, "category_id" | "ticket_title" | "category_name">): string =>
@@ -148,6 +153,7 @@ export function buildXs2Offers(
       description,
       name_en: labelEn,
       description_en: descriptionEn,
+      day: opts.f1 ? xs2DayKey(sub) : null,
       image_url: imageOf(cat),
       tier,
       available: !!best,
