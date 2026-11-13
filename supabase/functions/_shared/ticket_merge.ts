@@ -1,23 +1,27 @@
-// One ticket list from Travel Connection + P1 Travel.
+// One ticket list from Travel Connection + P1 Travel + XS2Event.
 //
 // Each supplier category can be linked (in admin) to one of KAISEN's own
 // seat categories for the stadium. The page then shows ONE row per seat
 // category, sold through the supplier with the better offer:
 //   1. a supplier with something available beats one that is sold out
 //   2. then the lower customer price
-//   3. on a tie, Travel Connection (it can go straight to checkout)
+//   3. on a tie, Travel Connection (it can go straight to checkout), then
+//      P1, then XS2
 // Every offer of the winning supplier in that category is kept (an F1 seat
 // can have one option per day); the losing supplier's offers are dropped.
 //
 // Unlinked supplier categories are shown as their own rows; hidden ones are
 // dropped. Pure — no I/O — so it is unit-tested.
 
-export type Supplier = "travelconnection" | "p1";
+export type Supplier = "travelconnection" | "p1" | "xs2";
+
+/** Tie-break order (TC first: it alone can go to checkout). */
+export const SUPPLIER_ORDER: Supplier[] = ["travelconnection", "p1", "xs2"];
 export type Tier = "match" | "hospitality";
 
 export interface Offer {
   supplier: Supplier;
-  /** Stable per stadium: TC ticket category id, P1 category id. */
+  /** Stable per stadium: TC ticket category id, P1 / XS2 category id. */
   supplier_category_id: string;
   /** What the page selects and the checkout/request reads. */
   category_id: string | null;
@@ -84,14 +88,14 @@ function best(offers: Offer[]): Offer | undefined {
   return [...offers].sort((a, b) => Number(b.available) - Number(a.available) || price(a) - price(b))[0];
 }
 
-/** Which supplier sells a seat category: available > cheaper > Travel Connection. */
+/** Which supplier sells a seat category: available > cheaper > TC > P1 > XS2. */
 export function pickSupplier(offers: Offer[]): Supplier {
-  const tc = best(offers.filter((o) => o.supplier === "travelconnection"));
-  const p1 = best(offers.filter((o) => o.supplier === "p1"));
-  if (!tc) return "p1";
-  if (!p1) return "travelconnection";
-  if (tc.available !== p1.available) return tc.available ? "travelconnection" : "p1";
-  return price(p1) < price(tc) ? "p1" : "travelconnection";
+  const tops = SUPPLIER_ORDER
+    .map((s) => best(offers.filter((o) => o.supplier === s)))
+    .filter((o): o is Offer => !!o);
+  // Stable sort keeps SUPPLIER_ORDER on ties.
+  tops.sort((a, b) => Number(b.available) - Number(a.available) || price(a) - price(b));
+  return tops[0]?.supplier ?? "travelconnection";
 }
 
 const toGroup = (o: Offer, seat: SeatCategory | null, useSeatText: boolean): MergedGroup => ({
@@ -187,7 +191,7 @@ export function pairScore(a: Offer, b: Offer): number {
   return 0;
 }
 
-/** Strongest one-to-one TC↔P1 pairs among unlinked offers. */
+/** Strongest one-to-one pairs between two suppliers' unlinked offers (a = the anchor side). */
 export function autoPairs(tc: Offer[], p1: Offer[]): [Offer, Offer][] {
   const cands: { a: Offer; b: Offer; s: number }[] = [];
   for (const a of tc) for (const b of p1) {
@@ -204,6 +208,35 @@ export function autoPairs(tc: Offer[], p1: Offer[]): [Offer, Offer][] {
     out.push([c.a, c.b]);
   }
   return out;
+}
+
+/**
+ * Group unlinked offers that are the same seats: at most one offer per
+ * supplier in a group. Travel Connection's offers are the anchors; P1 then
+ * XS2 join the group whose members they pair with best (one-to-one), and
+ * whatever pairs with nothing starts its own group - so a P1 and an XS2
+ * offer can pair with each other where TC sells nothing.
+ */
+export function autoClusters(offers: Offer[]): Offer[][] {
+  const clusters: Offer[][] = offers.filter((o) => o.supplier === SUPPLIER_ORDER[0]).map((o) => [o]);
+  for (const s of SUPPLIER_ORDER.slice(1)) {
+    const mine = offers.filter((o) => o.supplier === s);
+    const cands: { c: Offer[]; o: Offer; s: number }[] = [];
+    for (const c of clusters) for (const o of mine) {
+      const score = Math.max(...c.map((m) => pairScore(m, o)));
+      if (score > 0) cands.push({ c, o, s: score });
+    }
+    cands.sort((x, y) => y.s - x.s);
+    const usedC = new Set<Offer[]>(), usedO = new Set<Offer>();
+    for (const x of cands) {
+      if (usedC.has(x.c) || usedO.has(x.o)) continue;
+      usedC.add(x.c);
+      usedO.add(x.o);
+      x.c.push(x.o);
+    }
+    for (const o of mine) if (!usedO.has(o)) clusters.push([o]);
+  }
+  return clusters;
 }
 
 export function mergeOffers(offers: Offer[], links: Link[], seats: SeatCategory[]): MergedGroup[] {
@@ -234,22 +267,22 @@ export function mergeOffers(offers: Offer[], links: Link[], seats: SeatCategory[
     }
   }
   // Unlinked: pair the obvious duplicates automatically, show the rest as is.
-  const pairs = autoPairs(loose.filter((o) => o.supplier === "travelconnection"), loose.filter((o) => o.supplier === "p1"));
-  const paired = new Set<Offer>();
-  for (const [tc, p1] of pairs) {
-    paired.add(tc);
-    paired.add(p1);
-    const winner = pickSupplier([tc, p1]) === "p1" ? p1 : tc;
-    const loser = winner === tc ? p1 : tc;
+  for (const cluster of autoClusters(loose)) {
+    if (cluster.length === 1) {
+      out.push(toGroup(cluster[0], null, false));
+      continue;
+    }
+    const sup = pickSupplier(cluster);
+    const winner = best(cluster.filter((o) => o.supplier === sup))!;
     // The winner's own name/description (it's what gets booked); TC's colour
     // so the row still lights its area on the stadium plan.
     const g = toGroup(winner, null, false);
-    g.color = tc.color;
-    g.alternatives = [{ supplier: loser.supplier, name: loser.name, final_sek: loser.final_sek, available: loser.available }];
+    g.color = cluster.find((o) => o.supplier === "travelconnection")?.color ?? winner.color;
+    g.alternatives = cluster.filter((o) => o !== winner)
+      .map((x) => ({ supplier: x.supplier, name: x.name, final_sek: x.final_sek, available: x.available }));
     g.auto_paired = true;
     out.push(g);
   }
-  for (const o of loose) if (!paired.has(o)) out.push(toGroup(o, null, false));
 
   // Match tickets before hospitality; within each, available first, then
   // the admin's order for seat categories, then price.

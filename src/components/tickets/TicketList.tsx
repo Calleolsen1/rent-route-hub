@@ -53,7 +53,7 @@ export default function TicketList({ t, sport = "soccer" }: { t: EventTickets; s
                       {g.short_name ?? g.name}
                       {g.supplier && (
                         <span className="ml-2 align-middle rounded border border-amber-300 bg-amber-50 px-1 text-[10px] font-normal text-amber-900">
-                          {g.supplier === "p1" ? "P1" : "TC"}
+                          {g.supplier === "p1" ? "P1" : g.supplier === "xs2" ? "XS2" : "TC"}
                         </span>
                       )}
                     </p>

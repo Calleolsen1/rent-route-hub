@@ -69,6 +69,9 @@ Deno.serve(async (req) => {
           ? "test"
           : "live",
 
+        // XS2Event — third ticket supplier, read-only key (request-only rows).
+        xs2_api_key: has("XS2_API_KEY"),
+
         // stripe
         stripe_sandbox: has("STRIPE_SANDBOX_API_KEY"),
         stripe_live: has("STRIPE_LIVE_API_KEY"),

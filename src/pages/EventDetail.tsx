@@ -102,12 +102,14 @@ export default function EventDetail() {
       ...(extras.hotel ? [hotels.selectionLine] : []),
       ...(extras.flight ? [`Flyg: ${flightFrom ? `från ${flightFrom}` : "avreseort ej vald"}`] : []),
     ];
-    // Where KAISEN books each ticket: P1 rows in the P1 portal, Travel
-    // Connection rows there; generic tiers are sourced by hand.
+    // Where KAISEN books each ticket: P1 rows in the P1 portal, XS2 rows in
+    // the XS2 portal, Travel Connection rows there; generic tiers by hand.
     const supplierNote = t.lines.map(({ g, n }) => {
       const id = g.category_id ?? "";
       const where = id.startsWith("p1:")
         ? `P1 Travel (produkt ${id.slice(3)})`
+        : id.startsWith("xs2:")
+        ? `XS2Event-portalen (kategori ${id.split(":")[1]})`
         : id.startsWith("generic:")
           ? "ingen leverantör - generell nivå"
           : "Travel Connection";

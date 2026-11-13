@@ -1,9 +1,9 @@
-// event-tickets — the match page's ticket list from BOTH suppliers, merged.
+// event-tickets — the match page's ticket list from ALL suppliers, merged.
 //
 // Body: { event_id: string }
 //
-// Asks Travel Connection and P1 Travel in parallel (either may fail or have
-// nothing without taking the other down), then merges them through KAISEN's
+// Asks Travel Connection, P1 Travel and XS2Event in parallel (any may fail
+// or have nothing without taking the others down), then merges them through KAISEN's
 // seat categories (_shared/ticket_merge.ts): one row per seat, sold through
 // the better offer. Prices are compared here, server-side, so the choice is
 // right even while prices are hidden from the public.
@@ -23,6 +23,7 @@ import { TravelConnectionClient, dbTokenStore } from "../_shared/travelconnectio
 import { priceEvent } from "../_shared/tc_pricing.ts";
 import { planForHomeTeam } from "../_shared/tc_venues.ts";
 import { guessTier, priceP1Event } from "../_shared/p1_pricing.ts";
+import { priceXs2Event } from "../_shared/xs2_pricing.ts";
 import { mergeOffers, venueKey, type Link, type Offer, type SeatCategory } from "../_shared/ticket_merge.ts";
 
 const corsHeaders = {
@@ -62,12 +63,13 @@ Deno.serve(async (req) => {
     const venue = ev ? venueKey(ev) : null;
 
     const tc = new TravelConnectionClient({ store: dbTokenStore(db) });
-    const [tcPriced, p1Priced] = await Promise.all([
+    const [tcPriced, p1Priced, xs2Priced] = await Promise.all([
       // One retry: a hiccup (slow answer, token just rotated) shouldn't
       // swap the real tickets for the generic tiers.
       settle("travelconnection", priceEvent(db, tc, event_id, { fresh: isAdmin })
         .catch(() => priceEvent(db, tc, event_id, { fresh: isAdmin }))),
       settle("p1", priceP1Event(db, event_id, ev?.tournament_name ?? null)),
+      settle("xs2", priceXs2Event(db, event_id, ev?.tournament_name ?? null)),
     ]);
 
     const offers: Offer[] = [
@@ -107,6 +109,27 @@ Deno.serve(async (req) => {
         request_only: true, // P1 is request-only for now (decided with KAISEN)
         admin: {
           p1_product_id: o.p1_product_id, p1_category_id: o.p1_category_id,
+          supplier_price: o.supplier_price, supplier_currency: o.supplier_currency, base_sek: o.base_sek,
+          markup_pct: o.markup.pct, markup_fixed_sek: o.markup.fixed, markup_source: o.markup.source,
+        },
+      })),
+      ...(xs2Priced?.offers ?? []).map((o): Offer => ({
+        supplier: "xs2",
+        supplier_category_id: o.xs2_category_id,
+        category_id: o.category_id,
+        name: o.name,
+        short_name: o.short_name,
+        section: o.section,
+        description: o.description,
+        color: null,
+        image_url: o.image_url,
+        tier: o.tier,
+        available: o.available,
+        max_qty: o.max_qty,
+        final_sek: o.final_sek,
+        request_only: true, // read-only API: KAISEN buys in the XS2 portal
+        admin: {
+          xs2_ticket_id: o.xs2_ticket_id, xs2_category_id: o.xs2_category_id,
           supplier_price: o.supplier_price, supplier_currency: o.supplier_currency, base_sek: o.base_sek,
           markup_pct: o.markup.pct, markup_fixed_sek: o.markup.fixed, markup_source: o.markup.source,
         },
@@ -168,7 +191,7 @@ Deno.serve(async (req) => {
 
     const supplier = merged.some((g) => g.supplier === "travelconnection")
       ? "travelconnection"
-      : merged.length ? "p1" : null;
+      : merged[0]?.supplier ?? null;
 
     return json({
       supplier,
@@ -183,6 +206,7 @@ Deno.serve(async (req) => {
         suppliers: {
           travelconnection: tcPriced ? { environment: tc.environment, tc_product_id: tcPriced.tc_product_id, options: tcPriced.options.length } : null,
           p1: p1Priced ? { environment: p1Priced.environment, p1_event_id: p1Priced.p1_event_id, offers: p1Priced.offers.length } : null,
+          xs2: xs2Priced ? { environment: xs2Priced.environment, xs2_event_id: xs2Priced.xs2_event_id, offers: xs2Priced.offers.length } : null,
         },
       }),
       groups,

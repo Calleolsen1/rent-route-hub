@@ -66,3 +66,31 @@ Deno.test("supplier choice", () => {
   assertEquals(pickSupplier([tc("a", [], { final_sek: 4000 }), p1("a", [], { final_sek: 4000 })]), "travelconnection");
   assertEquals(pickSupplier([tc("a", [], { final_sek: 3000, available: false }), p1("a", [], { final_sek: 4000 })]), "p1");
 });
+
+const xs2 = (n: string, d: string[] = [], x: Partial<Offer> = {}) => o("xs2", n, d, { request_only: true, ...x });
+
+Deno.test("three suppliers: same seat is one row, cheapest wins, rest are alternatives", () => {
+  const m = mergeOffers([
+    tc("Longside", [], { final_sek: 2000 }),
+    p1("Longside Lower", [], { final_sek: 1800 }),
+    xs2("Longside", [], { final_sek: 1500 }),
+    xs2("Corner"),
+  ], [], []);
+  assertEquals(m.length, 2);
+  const row = m.find((g) => g.auto_paired)!;
+  assertEquals(row.supplier, "xs2");
+  assertEquals(row.color, "#fff");
+  assertEquals(row.alternatives?.map((a) => a.supplier).sort(), ["p1", "travelconnection"]);
+});
+
+Deno.test("P1 and XS2 pair with each other where TC sells nothing", () => {
+  const m = mergeOffers([p1("Tribuna", [], { final_sek: 3000 }), xs2("Tribuna", [], { final_sek: 2500 })], [], []);
+  assertEquals(m.length, 1);
+  assertEquals(m[0].supplier, "xs2");
+});
+
+Deno.test("supplier choice with XS2: ties go TC > P1 > XS2, sold out loses", () => {
+  assertEquals(pickSupplier([p1("a", [], { final_sek: 4000 }), xs2("a", [], { final_sek: 4000 })]), "p1");
+  assertEquals(pickSupplier([tc("a", [], { final_sek: 4000 }), xs2("a", [], { final_sek: 4000 })]), "travelconnection");
+  assertEquals(pickSupplier([tc("a", [], { final_sek: 3000, available: false }), xs2("a", [], { final_sek: 5000 })]), "xs2");
+});

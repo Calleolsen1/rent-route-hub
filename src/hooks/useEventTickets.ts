@@ -33,7 +33,7 @@ export type TicketGroup = {
   /** Plain match ticket or hospitality (lounge, dining, box) — the list is split on it. */
   tier?: "match" | "hospitality";
   image_url?: string | null;
-  /** Admin only: which supplier sells this row ("travelconnection" | "p1"). */
+  /** Admin only: which supplier sells this row ("travelconnection" | "p1" | "xs2"). */
   supplier?: string;
   /** Shorter row label (F1: the grandstand); `name` keeps the day for requests. */
   short_name?: string;
@@ -191,7 +191,7 @@ export function useEventTickets(eventId: string | undefined, sport: string | nul
     .filter((g) => g.category_id && (qty[g.category_id] ?? 0) > 0)
     .map((g) => ({ g, n: qty[g.category_id!] }));
   const count = lines.reduce((s, l) => s + l.n, 0);
-  // Checkout only for Travel Connection tickets: a P1 row (request_only) in
+  // Checkout only for Travel Connection tickets: a P1/XS2 row (request_only) in
   // the selection sends the whole trip as a request instead.
   const checkoutAllowed = canBuy && data?.supplier === "travelconnection" && !lines.some((l) => l.g.request_only);
   const total = lines.reduce((s, l) => s + (l.g.final_sek ?? 0) * l.n, 0);

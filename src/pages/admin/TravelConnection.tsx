@@ -169,6 +169,7 @@ export default function AdminTravelConnection() {
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
   const [syncingP1, setSyncingP1] = useState(false);
+  const [syncingXs2, setSyncingXs2] = useState(false);
   const [environment, setEnvironment] = useState<"sandbox" | "production" | null>(null);
   const [lastSync, setLastSync] = useState<SyncLogRow | null>(null);
   const [linkTarget, setLinkTarget] = useState<LinkRow | null>(null);
@@ -257,6 +258,21 @@ export default function AdminTravelConnection() {
     }
   };
 
+  // XS2Event: third supplier, read-only key, request-only. Links its events
+  // onto our football fixtures and F1 races; never creates events.
+  const runXs2Sync = async () => {
+    setSyncingXs2(true);
+    try {
+      const res = await invoke<{ environment: string; stats: Record<string, number> }>("xs2-sync", { trigger: "manual" });
+      const s = res.stats;
+      toast.success(`XS2 (${res.environment}): ${s.matched + s.kept_manual} kopplade · ${s.unmatched} utan match (fotboll ${s.football}, F1 ${s.f1})`);
+    } catch (e) {
+      toast.error(`XS2: ${(e as Error).message}`);
+    } finally {
+      setSyncingXs2(false);
+    }
+  };
+
   const setMethod = async (row: LinkRow, patch: Partial<LinkRow>) => {
     const { error } = await db
       .from("tc_product_links")
@@ -311,6 +327,10 @@ export default function AdminTravelConnection() {
           <Button variant="outline" onClick={runP1Sync} disabled={syncingP1}>
             {syncingP1 ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <RefreshCw className="h-4 w-4 mr-2" />}
             Synka P1 Travel
+          </Button>
+          <Button variant="outline" onClick={runXs2Sync} disabled={syncingXs2}>
+            {syncingXs2 ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <RefreshCw className="h-4 w-4 mr-2" />}
+            Synka XS2
           </Button>
         </div>
       </div>

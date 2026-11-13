@@ -14,6 +14,7 @@ type ConfigStatus = {
   travelconnection_environment?: "sandbox" | "production";
   travelconnection_orders_enabled?: boolean;
   anthropic_api_key?: boolean;
+  xs2_api_key?: boolean;
   /** "ok: <svensk rad>" or "fel: <orsak>" from a real one-line translation. */
   translation_test?: string;
   stripe_sandbox: boolean;
@@ -220,6 +221,7 @@ export default function AdminDiagnostics() {
                 : "Sandlåda - inga riktiga köp"
             }
           />
+          <SecretCheck label="XS2_API_KEY" ok={config?.xs2_api_key} hint="XS2Event - läsnyckel, biljetter visas som förfrågan (köps manuellt i XS2-portalen)" />
           <SecretCheck label="STRIPE_SANDBOX_API_KEY" ok={config?.stripe_sandbox} required />
           <SecretCheck label="STRIPE_LIVE_API_KEY" ok={config?.stripe_live} hint="Krävs för live-betalningar" />
           <SecretCheck label="PAYMENTS_SANDBOX_WEBHOOK_SECRET" ok={config?.payments_sandbox_webhook} required />

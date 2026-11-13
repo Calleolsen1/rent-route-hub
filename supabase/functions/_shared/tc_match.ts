@@ -47,6 +47,9 @@ const NOISE = new Set([
  */
 const ALIASES: Record<string, string> = {
   "Inter Milan": "Inter",
+  "Internazionale": "Inter", // XS2
+  // XS2: "Lazio Roma" holds both "Lazio" and "Roma", so the subset rule refuses it.
+  "Lazio Roma": "Lazio",
   "RC Lens": "Racing Club de Lens",
   "Racing Lens": "Racing Club de Lens",
   "Bayern Munich": "Bayern München",

@@ -7,24 +7,25 @@ import { Check, Loader2, RefreshCw, Sparkles } from "lucide-react";
 import { formatSek } from "@/lib/formatSek";
 import { autoPairs, type Offer } from "../../../supabase/functions/_shared/ticket_merge";
 
-// Admin: which Travel Connection category is the same seat as each P1
-// category, per stadium. One question per P1 row:
+// Admin: which Travel Connection category is the same seat as each P1 / XS2
+// category, per stadium. One question per P1 or XS2 row:
 //   "Samma plats som <TC-kategori>"  -> one row on the site, best offer wins
-//   "Egen rad"                       -> P1 shown as its own row
-//   "Visa inte"                      -> P1 category hidden
+//   "Egen rad"                       -> shown as its own row
+//   "Visa inte"                      -> category hidden
 // Unanswered rows are pre-filled with the same suggestion the site already
 // applies automatically (ticket_merge.ts autoPairs), so a stadium is usually
 // one "Godkänn förslagen" click.
 //
 // Storage (unchanged): an answer is a seat_categories row shared by the
-// linked supplier categories; "Egen rad" is a seat holding only the P1 one,
+// linked supplier categories; "Egen rad" is a seat holding only the P1/XS2 one,
 // which also stops automatic pairing for it.
 
 // New tables, not in the generated types yet.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const db = supabase as any;
 
-type Supplier = "travelconnection" | "p1";
+type Supplier = "travelconnection" | "p1" | "xs2";
+const SUPPLIER_LABEL: Record<Supplier, string> = { travelconnection: "TC", p1: "P1", xs2: "XS2" };
 type Tier = "match" | "hospitality";
 
 interface LinkRow {
@@ -40,7 +41,7 @@ interface LinkRow {
   sample_price_sek: number | null;
 }
 
-/** Answer for a P1 row: "tc:<id>" | "own" | "hide" | "" (not answered). */
+/** Answer for a P1/XS2 row: "tc:<id>" | "own" | "hide" | "" (not answered). */
 type Choice = string;
 
 const key = (l: Pick<LinkRow, "supplier" | "supplier_category_id">) => `${l.supplier}:${l.supplier_category_id}`;
@@ -57,7 +58,7 @@ const asOffer = (l: LinkRow): Offer => ({
   available: true,
   max_qty: 1,
   final_sek: l.sample_price_sek,
-  request_only: l.supplier === "p1",
+  request_only: l.supplier !== "travelconnection",
 });
 
 function currentChoice(p: LinkRow, links: LinkRow[]): Choice {
@@ -90,7 +91,7 @@ export default function SeatCategoryMapping() {
     load();
   }, []);
 
-  // Per stadium: its P1 rows, current answers and suggestions.
+  // Per stadium: its P1/XS2 rows, current answers and suggestions.
   const venues = useMemo(() => {
     const by = new Map<string, LinkRow[]>();
     for (const l of links) by.set(l.venue_key, [...(by.get(l.venue_key) ?? []), l]);
@@ -98,13 +99,15 @@ export default function SeatCategoryMapping() {
     return [...by.entries()]
       .map(([name, ls]) => {
         const tc = ls.filter((l) => l.supplier === "travelconnection").sort((a, b) => price(a) - price(b));
-        const p1 = ls.filter((l) => l.supplier === "p1").sort((a, b) => price(a) - price(b));
+        const p1 = ls.filter((l) => l.supplier !== "travelconnection").sort((a, b) => price(a) - price(b));
         const open = p1.filter((p) => currentChoice(p, ls) === "");
         // Suggestions from ALL categories, so they stay put whatever is
         // answered (a wrong pick never makes the right suggestion vanish).
         const suggestion = new Map<string, string>();
-        for (const [a, b] of autoPairs(tc.map(asOffer), p1.map(asOffer))) {
-          suggestion.set(`p1:${b.supplier_category_id}`, `tc:${a.supplier_category_id}`);
+        for (const s of ["p1", "xs2"] as const) {
+          for (const [a, b] of autoPairs(tc.map(asOffer), p1.filter((l) => l.supplier === s).map(asOffer))) {
+            suggestion.set(`${s}:${b.supplier_category_id}`, `tc:${a.supplier_category_id}`);
+          }
         }
         const pending = open.filter((p) => suggestion.has(key(p))).length;
         return { name, tc, p1, links: ls, open: tc.length ? open.length : 0, suggestion, pending };
@@ -202,11 +205,12 @@ export default function SeatCategoryMapping() {
    */
   const scanVenues = async () => {
     const now = new Date().toISOString();
-    const [{ data: tcl }, { data: p1l }] = await Promise.all([
+    const [{ data: tcl }, { data: p1l }, { data: xs2l }] = await Promise.all([
       db.from("tc_product_links").select("event_id").in("match_method", ["auto", "manual"]).not("event_id", "is", null),
       db.from("p1_event_links").select("event_id").neq("match_method", "ignored").not("event_id", "is", null),
+      db.from("xs2_event_links").select("event_id").neq("match_method", "ignored").not("event_id", "is", null),
     ]);
-    const both = [...new Set([...((tcl ?? []) as { event_id: string }[]), ...((p1l ?? []) as { event_id: string }[])].map((r) => r.event_id))];
+    const both = [...new Set([...((tcl ?? []) as { event_id: string }[]), ...((p1l ?? []) as { event_id: string }[]), ...((xs2l ?? []) as { event_id: string }[])].map((r) => r.event_id))];
     if (!both.length) return toast.info("Inga matcher med biljetter hittades.");
     const evs: { id: string; sport: string | null; venue_name: string | null; race_name: string | null; home_team: string | null }[] = [];
     for (let i = 0; i < both.length; i += 150) {
@@ -241,10 +245,10 @@ export default function SeatCategoryMapping() {
   );
 
   if (loading) return <div className="py-12 flex justify-center"><Loader2 className="h-5 w-5 animate-spin" /></div>;
-  if (!links.some((l) => l.supplier === "p1")) {
+  if (!links.some((l) => l.supplier !== "travelconnection")) {
     return (
       <div className="py-10 space-y-3 text-sm text-muted-foreground">
-        <p>Inga P1-kategorier inlästa än. De kommer när en matchsida visas - eller läs in alla arenor nu (översätter också alla biljettexter i förväg).</p>
+        <p>Inga P1/XS2-kategorier inlästa än. De kommer när en matchsida visas - eller läs in alla arenor nu (översätter också alla biljettexter i förväg).</p>
         {scanButton}
       </div>
     );
@@ -256,7 +260,7 @@ export default function SeatCategoryMapping() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-muted-foreground max-w-2xl">
-          Välj vilken Travel Connection-kategori varje P1-kategori motsvarar. Samma plats visas då som{" "}
+          Välj vilken Travel Connection-kategori varje P1- och XS2-kategori motsvarar. Samma plats visas då som{" "}
           <span className="text-foreground">en rad</span> på sajten och säljs via det bästa erbjudandet. Rader märkta{" "}
           <span className="text-primary">auto</span> slås redan ihop enligt förslaget tills du väljer något annat.
         </p>
@@ -279,7 +283,7 @@ export default function SeatCategoryMapping() {
               >
                 <span className="truncate">{x.name}</span>
                 {!x.tc.length ? (
-                  <span className="text-[11px] text-muted-foreground shrink-0">bara P1</span>
+                  <span className="text-[11px] text-muted-foreground shrink-0">ingen TC</span>
                 ) : x.open ? (
                   <span className="text-[11px] rounded-full bg-amber-100 text-amber-900 px-2 py-0.5 shrink-0">{x.open}</span>
                 ) : (
@@ -297,7 +301,7 @@ export default function SeatCategoryMapping() {
               <div>
                 <h3 className="font-medium">{v.name}</h3>
                 <p className="text-xs text-muted-foreground">
-                  {v.p1.length} från P1 · {v.tc.length} från Travel Connection
+                  {v.p1.filter((l) => l.supplier === "p1").length} från P1 · {v.p1.filter((l) => l.supplier === "xs2").length} från XS2 · {v.tc.length} från Travel Connection
                 </p>
               </div>
               {v.pending > 0 && (
@@ -321,7 +325,7 @@ export default function SeatCategoryMapping() {
 
             {!v.tc.length && (
               <p className="px-4 py-3 text-xs text-muted-foreground border-b border-border">
-                Travel Connection säljer inget här, så P1 visas som det är. Välj "Visa inte" för kategorier ni inte vill ha på sajten.
+                Travel Connection säljer inget här, så P1/XS2 visas som de är. Välj "Visa inte" för kategorier ni inte vill ha på sajten.
               </p>
             )}
 
@@ -335,6 +339,7 @@ export default function SeatCategoryMapping() {
                   <li key={key(p)} className="grid gap-2 px-4 py-3 md:grid-cols-[1fr_minmax(240px,320px)] md:items-center">
                     <div className="min-w-0">
                       <p className="text-sm font-medium leading-snug">
+                        <span className="mr-1.5 rounded border border-border px-1 text-[10px] font-normal text-muted-foreground align-middle">{SUPPLIER_LABEL[p.supplier]}</span>
                         {p.supplier_name}
                         {p.sample_price_sek != null && (
                           <span className="ml-2 text-xs font-normal text-muted-foreground">{formatSek(p.sample_price_sek)}</span>
