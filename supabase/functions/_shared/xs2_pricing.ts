@@ -169,13 +169,24 @@ export async function priceXs2Event(db: Db, eventId: string, league: string | nu
   ]);
   if (!tickets.length) return null;
 
-  const currencies = [...new Set(tickets.map((t) => (t.currency_code || "EUR").toUpperCase()))];
+  // F1 lots mix currencies (EUR, USD, GBP, AED, QAR in one race). A rate
+  // that can't be fetched drops only the lots in that currency, never the
+  // whole event.
+  const cur = (t: Xs2Ticket) => (t.currency_code || "EUR").toUpperCase();
   const rates = new Map<string, number>();
-  await Promise.all(currencies.map(async (c) => rates.set(c, (await rateToSek(db, c)).rateToSek)));
+  await Promise.all([...new Set(tickets.map(cur))].map(async (c) => {
+    try {
+      rates.set(c, (await rateToSek(db, c)).rateToSek);
+    } catch (e) {
+      console.warn(`[xs2_pricing] no FX rate for ${c}:`, (e as Error).message);
+    }
+  }));
+  const priceable = tickets.filter((t) => rates.has(cur(t)));
+  if (!priceable.length) return null;
 
-  const offers = buildXs2Offers(tickets, categories, {
+  const offers = buildXs2Offers(priceable, categories, {
     f1: link.xs2_kind === "f1",
-    rate: (c) => rates.get((c || "EUR").toUpperCase()) ?? rates.get("EUR") ?? 0,
+    rate: (c) => rates.get((c || "EUR").toUpperCase())!,
     markup: resolveMarkup(ctx, undefined),
     rounding: ctx.rounding,
   });

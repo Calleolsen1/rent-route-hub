@@ -98,13 +98,23 @@ Deno.serve(async (req) => {
 
     // Our upcoming fixtures (schedule sources, supplier-seeded cups, and races
     // this sync created earlier).
-    const { data: ours, error: oursErr } = await admin
-      .from("events")
-      .select("id, sport, home_team, away_team, race_name, starts_at, external_tournament_id")
-      .eq("status", "upcoming")
-      .gte("starts_at", new Date(now.getTime() - DAY_MS).toISOString());
-    if (oursErr) throw new Error(`events: ${oursErr.message}`);
-    const ourEvents = (ours ?? []) as OurEvent[];
+    // Paged: PostgREST returns at most 1000 rows per request, and we list
+    // ~1500 upcoming events - one plain select silently dropped a third of
+    // them (whole F1 races among them) from matching.
+    const ourEvents: OurEvent[] = [];
+    for (let from = 0; ; from += 1000) {
+      const { data, error } = await admin
+        .from("events")
+        .select("id, sport, home_team, away_team, race_name, starts_at, external_tournament_id")
+        .eq("status", "upcoming")
+        .gte("starts_at", new Date(now.getTime() - DAY_MS).toISOString())
+        .order("starts_at")
+        .order("id")
+        .range(from, from + 999);
+      if (error) throw new Error(`events: ${error.message}`);
+      ourEvents.push(...((data ?? []) as OurEvent[]));
+      if (!data || data.length < 1000) break;
+    }
 
     // The F1 races in our menu (for creating missing race events).
     const { data: f1Sport } = await admin.from("nav_sports").select("id").eq("slug", "f1").maybeSingle();

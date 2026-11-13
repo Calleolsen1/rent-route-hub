@@ -54,13 +54,23 @@ Deno.serve(async (req) => {
     const now = new Date();
     const [football, f1] = await Promise.all([xs2.events("soccer", now), xs2.events("formula1", now)]);
 
-    const { data: ours, error: oursErr } = await admin
-      .from("events")
-      .select("id, sport, home_team, away_team, race_name, starts_at, external_tournament_id")
-      .eq("status", "upcoming")
-      .gte("starts_at", new Date(now.getTime() - DAY_MS).toISOString());
-    if (oursErr) throw new Error(`events: ${oursErr.message}`);
-    const ourEvents = (ours ?? []) as OurEvent[];
+    // Paged: PostgREST returns at most 1000 rows per request, and we list
+    // ~1500 upcoming events - one plain select silently dropped a third of
+    // them (whole F1 races among them) from matching.
+    const ourEvents: OurEvent[] = [];
+    for (let from = 0; ; from += 1000) {
+      const { data, error } = await admin
+        .from("events")
+        .select("id, sport, home_team, away_team, race_name, starts_at, external_tournament_id")
+        .eq("status", "upcoming")
+        .gte("starts_at", new Date(now.getTime() - DAY_MS).toISOString())
+        .order("starts_at")
+        .order("id")
+        .range(from, from + 999);
+      if (error) throw new Error(`events: ${error.message}`);
+      ourEvents.push(...((data ?? []) as OurEvent[]));
+      if (!data || data.length < 1000) break;
+    }
 
     const { data: existing } = await admin.from("xs2_event_links").select("xs2_event_id, event_id, match_method");
     const sticky = new Map<string, { event_id: string | null; match_method: string }>();
