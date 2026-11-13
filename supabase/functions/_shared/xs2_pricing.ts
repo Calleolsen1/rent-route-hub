@@ -13,6 +13,7 @@ import { rateToSek } from "./fx.ts";
 import { cleanLines, customerPrice, htmlToLines, loadContext, resolveMarkup, type Markup } from "./tc_pricing.ts";
 import { guessTier } from "./p1_pricing.ts";
 import { Xs2Client, xs2Buyable, type Xs2Category, type Xs2Ticket } from "./xs2.ts";
+import { svTexts, type SvItem, type SvText } from "./sv_texts.ts";
 
 // deno-lint-ignore no-explicit-any
 type Db = any;
@@ -27,6 +28,9 @@ export interface Xs2Offer {
   short_name: string | null;
   section: string | null;
   description: string[];
+  /** XS2's English, for matching against the other suppliers. */
+  name_en: string;
+  description_en: string[];
   image_url: string | null;
   tier: Tier;
   available: boolean;
@@ -42,6 +46,8 @@ export interface Xs2Priced {
   xs2_event_id: string;
   environment: string;
   offers: Xs2Offer[];
+  /** Swedish texts are being made for this view; the page may ask again shortly. */
+  translating: boolean;
 }
 
 // F1 days: sub_category -> [list section, label in the full name].
@@ -62,10 +68,20 @@ export const xs2Day = (sub: string | null | undefined): [string, string] | null 
 export const xs2CategoryKey = (t: Pick<Xs2Ticket, "category_id" | "ticket_title" | "category_name">): string =>
   t.category_id && t.category_id !== "0" ? t.category_id : `t:${(t.ticket_title ?? t.category_name ?? "biljett").trim().toLowerCase()}`;
 
-/** Customer text: XS2's Swedish description when there is one, else English; plus a few seat facts. */
-export function xs2Description(cat: Xs2Category | undefined, lot: Xs2Ticket | undefined): string[] {
+/** XS2's English description lines (the source we translate from). */
+export const xs2EnglishLines = (cat: Xs2Category | undefined): string[] => cleanLines(htmlToLines(cat?.description?.en_GB || null));
+
+/** "Category 2" -> "Kategori 2" (also the label used until a translation exists). */
+export const xs2Label = (name: string): string => name.replace(/^cat(?:egory)?\.?\s*(\d+[a-z]?)$/i, (_m, n: string) => `Kategori ${n.toUpperCase()}`);
+
+/**
+ * Customer text: our Swedish translation of XS2's English when made, else
+ * XS2's own Swedish (machine-made, sometimes garbled), else English; plus a
+ * few seat facts (already Swedish).
+ */
+export function xs2Description(cat: Xs2Category | undefined, lot: Xs2Ticket | undefined, svLines?: string[]): string[] {
   const d = cat?.description ?? {};
-  const lines = cleanLines(htmlToLines(d.sv_SE || d.en_GB || null));
+  const lines = svLines?.length ? cleanLines(svLines) : cleanLines(htmlToLines(d.sv_SE || d.en_GB || null));
   const facts: string[] = [];
   const opt = { ...(lot?.options ?? {}), ...(cat?.options ?? {}) };
   if (opt.covered_seat) facts.push("Tak över platsen");
@@ -88,7 +104,7 @@ const imageOf = (cat: Xs2Category | undefined): string | null => {
 export function buildXs2Offers(
   tickets: Xs2Ticket[],
   categories: Xs2Category[],
-  opts: { f1: boolean; rate: (currency: string) => number; markup: Markup; rounding: number },
+  opts: { f1: boolean; rate: (currency: string) => number; markup: Markup; rounding: number; sv?: Map<string, SvText> },
 ): Xs2Offer[] {
   const catBy = new Map(categories.map((c) => [c.category_id, c]));
   const groups = new Map<string, Xs2Ticket[]>();
@@ -110,11 +126,14 @@ export function buildXs2Offers(
     const buyable = lots.filter(xs2Buyable).sort((a, b) => sek(a) - sek(b));
     const best = buyable[0];
     const shown = best ?? lots[0];
-    const label = (cat?.category_name ?? shown.category_name ?? shown.ticket_title ?? "Biljett").trim();
+    const labelEn = (cat?.category_name ?? shown.category_name ?? shown.ticket_title ?? "Biljett").trim();
+    const sv = opts.sv?.get(catKey);
+    const label = sv?.name || xs2Label(labelEn);
     const day = opts.f1 ? xs2Day(sub) : null;
-    const description = xs2Description(cat, shown);
+    const description = xs2Description(cat, shown, sv?.lines);
+    const descriptionEn = xs2EnglishLines(cat);
     const type = cat?.category_type ?? shown.category_type;
-    const tier: Tier = type === "hospitality" ? "hospitality" : type ? "match" : guessTier(label, description);
+    const tier: Tier = type === "hospitality" ? "hospitality" : type ? "match" : guessTier(labelEn, descriptionEn);
     const supplierPrice = best ? Number(best.net_rate) / 100 : 0;
     const baseSek = best ? Math.round(sek(best)) : 0;
     const lotMax = Math.max(0, ...buyable.map((t) => Number(t.stock)));
@@ -127,6 +146,8 @@ export function buildXs2Offers(
       short_name: day ? label : null,
       section: day ? (tier === "hospitality" ? "Hospitality" : day[0]) : null,
       description,
+      name_en: labelEn,
+      description_en: descriptionEn,
       image_url: imageOf(cat),
       tier,
       available: !!best,
@@ -184,11 +205,23 @@ export async function priceXs2Event(db: Db, eventId: string, league: string | nu
   const priceable = tickets.filter((t) => rates.has(cur(t)));
   if (!priceable.length) return null;
 
+  // Swedish names/texts, one translation per XS2 category (cached).
+  const catBy = new Map(categories.map((c) => [c.category_id, c]));
+  const items = new Map<string, SvItem>();
+  for (const t of priceable) {
+    const key = xs2CategoryKey(t);
+    if (items.has(key)) continue;
+    const cat = catBy.get(t.category_id);
+    items.set(key, { key, name: (cat?.category_name ?? t.category_name ?? t.ticket_title ?? "").trim(), lines: xs2EnglishLines(cat) });
+  }
+  const { sv, translating } = await svTexts(db, "xs2", [...items.values()]);
+
   const offers = buildXs2Offers(priceable, categories, {
     f1: link.xs2_kind === "f1",
     rate: (c) => rates.get((c || "EUR").toUpperCase())!,
     markup: resolveMarkup(ctx, undefined),
     rounding: ctx.rounding,
+    sv,
   });
-  return { xs2_event_id: link.xs2_event_id, environment: xs2.environment, offers };
+  return { xs2_event_id: link.xs2_event_id, environment: xs2.environment, offers, translating };
 }

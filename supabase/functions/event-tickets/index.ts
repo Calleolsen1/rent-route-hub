@@ -79,6 +79,8 @@ Deno.serve(async (req) => {
         category_id: o.category_id,
         name: o.name,
         description: o.description,
+        pair_name: o.name_en,
+        pair_description: o.description_en,
         color: o.color,
         image_url: null,
         tier: guessTier(o.name, o.description),
@@ -100,6 +102,8 @@ Deno.serve(async (req) => {
         short_name: o.short_name,
         section: o.section,
         description: o.description,
+        pair_name: o.name_en,
+        pair_description: o.description_en,
         color: null,
         image_url: o.image_url,
         tier: o.tier,
@@ -121,6 +125,8 @@ Deno.serve(async (req) => {
         short_name: o.short_name,
         section: o.section,
         description: o.description,
+        pair_name: o.name_en,
+        pair_description: o.description_en,
         color: null,
         image_url: o.image_url,
         tier: o.tier,
@@ -200,7 +206,7 @@ Deno.serve(async (req) => {
       guest_details_required: !!tcPriced?.guest_details_required || !!p1Priced?.guest_details_required,
       plan_url: tcPriced?.plan_url ?? (await settle("plan", planForHomeTeam(db, event_id))),
       // Texts are being translated right now: the page asks once more shortly.
-      translating: !!tcPriced?.translating || !!p1Priced?.translating,
+      translating: !!tcPriced?.translating || !!p1Priced?.translating || !!xs2Priced?.translating,
       ...(isAdmin && {
         venue_key: venue,
         suppliers: {

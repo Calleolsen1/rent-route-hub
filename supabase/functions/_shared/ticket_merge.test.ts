@@ -94,3 +94,36 @@ Deno.test("supplier choice with XS2: ties go TC > P1 > XS2, sold out loses", () 
   assertEquals(pickSupplier([tc("a", [], { final_sek: 4000 }), xs2("a", [], { final_sek: 4000 })]), "travelconnection");
   assertEquals(pickSupplier([tc("a", [], { final_sek: 3000, available: false }), xs2("a", [], { final_sek: 5000 })]), "xs2");
 });
+
+// Live cases, 2026-11-13.
+Deno.test("pairs on the suppliers' own names when the shown name is Swedish", () => {
+  const t = tc("Långsidan, andra ringen", ["Andra ringen, ljusblå (Block 235, 236, 237 eller 238)"], { pair_name: "Longside 2nd Ring", pair_description: ["2nd ring, light blue (Block 235, 236, 237 or 238)"] });
+  const two = xs2("Långsidan, andra ringen", [], { pair_name: "Longside 2nd ring" });
+  const three = xs2("Långsidan, tredje ringen", [], { pair_name: "Longside 3rd ring" });
+  assert(pairScore(t, two) > 0);
+  assertEquals(pairScore(t, three), 0, "2nd ring is not 3rd ring");
+  const m = mergeOffers([t, two, three], [], []);
+  assertEquals(m.length, 2);
+});
+
+Deno.test("levels never pair", () => {
+  assertEquals(pairScore(tc("Longside Lower"), xs2("Longside Upper")), 0);
+  assertEquals(pairScore(tc("Longside second ring"), xs2("Longside 3rd ring")), 0);
+  assert(pairScore(tc("Longside second ring"), xs2("Longside 2nd ring")) > 0);
+});
+
+Deno.test("first description line names the product (Dugout 104 = Bench Experience)", () => {
+  const t = tc("Dugout 104", ["Bench Experience, Block 104", "First rows behind the home bench."], { tier: "match" });
+  const x = xs2("Bench Experience", ["Experience Atlético like never before"], H);
+  assert(pairScore(t, x) > 0);
+});
+
+Deno.test("a loose XS2 offer joins a seat an admin linked", () => {
+  const seats = [{ id: "S", name: "Longside Lateral Lower", description: [], tier: "match" as const, color: null, sort_order: 0 }];
+  const links = [{ supplier: "p1" as const, supplier_category_id: "Longside Lateral Lower - SB", seat_category_id: "S", hidden: false }];
+  const m = mergeOffers([p1("Longside Lateral Lower - SB", [], { final_sek: 3000 }), xs2("Lateral", [], { final_sek: 2500 }), xs2("Gol")], links, seats);
+  assertEquals(m.length, 2);
+  const row = m.find((g) => g.seat_category_id === "S")!;
+  assertEquals(row.supplier, "xs2");
+  assertEquals(row.alternatives?.[0].supplier, "p1");
+});

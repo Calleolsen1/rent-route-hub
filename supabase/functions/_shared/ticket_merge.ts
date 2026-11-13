@@ -40,6 +40,13 @@ export interface Offer {
   request_only: boolean;
   /** Admin-only extras, passed through. */
   admin?: Record<string, unknown>;
+  /**
+   * The supplier's own (English) name/description, for pairing only. Shown
+   * text may already be Swedish ("Långsidan, andra ringen"), which can't be
+   * compared with another supplier's English ("Longside 2nd ring").
+   */
+  pair_name?: string;
+  pair_description?: string[];
 }
 
 export interface SeatCategory {
@@ -142,12 +149,20 @@ const GENERIC = new Set([
   "dining", "experience", "executive", "box", "sports", "bar", "food", "included", "restaurant", "pre", "prime",
 ]);
 
+const pairName = (o: Offer) => o.pair_name ?? o.name;
+const pairDesc = (o: Offer) => o.pair_description ?? o.description;
+
 /** TC names some categories "Kategori 2"; their first description line says where it is. */
-const meaningfulName = (o: Offer) => (/^kategori\s*\d+[a-z]?$/i.test(o.name.trim()) && o.description[0] ? o.description[0] : o.name);
+const meaningfulName = (o: Offer) =>
+  /^(kategori|category|cat)\s*\d+[a-z]?$/i.test(pairName(o).trim()) && pairDesc(o)[0] ? pairDesc(o)[0] : pairName(o);
+
+const ORDINALS: Record<string, string> = { first: "1st", second: "2nd", third: "3rd", fourth: "4th" };
 
 export function nameTokens(s: string): string[] {
   return s
     .toLowerCase()
+    .replace(/\b(first|second|third|fourth)\b/g, (w) => ORDINALS[w])
+    .replace(/\b(1|2|3|4)(st|nd|rd|th)?\s+(ring|tier|level|floor)\b/g, (_m, n: string, _x, w: string) => `${n}${["st", "nd", "rd", "th"][Number(n) - 1]} ${w}`)
     .replace(/(long|short)\s+side/g, "$1side")
     .replace(/match\s+day/g, "matchday")
     .replace(/half\s*way/g, "halfway")
@@ -169,13 +184,40 @@ export function blockCodes(s: string): Set<string> {
   return out;
 }
 
+/** Words that put two seats on different levels: never the same seats. */
+const LEVELS = [["upper", "lower", "middle"], ["1st", "2nd", "3rd", "4th"]];
+function levelsConflict(a: Set<string>, b: Set<string>): boolean {
+  return LEVELS.some((group) => {
+    const la = group.filter((w) => a.has(w)), lb = group.filter((w) => b.has(w));
+    return la.length > 0 && lb.length > 0 && !la.some((w) => lb.includes(w));
+  });
+}
+
 /** 0 = different seats; higher = more certainly the same. */
 export function pairScore(a: Offer, b: Offer): number {
-  const na = nameTokens(meaningfulName(a)), nb = nameTokens(meaningfulName(b));
+  const levels = (o: Offer) => new Set(nameTokens(`${meaningfulName(o)} ${pairDesc(o)[0] ?? ""}`));
+  if (levelsConflict(levels(a), levels(b))) return 0;
+  const byName = namePairScore(a, b, meaningfulName(a), meaningfulName(b));
+  // A short first description line can carry the product's real name
+  // ("Dugout 104" -> "Bench Experience, Block 104"). Weaker than a name.
+  const line = (o: Offer) => {
+    const l = pairDesc(o)[0] ?? "";
+    return l && nameTokens(l).length <= 5 ? l : null;
+  };
+  const la = line(a), lb = line(b);
+  const byLine = Math.max(
+    la ? namePairScore(a, b, la, meaningfulName(b)) : 0,
+    lb ? namePairScore(a, b, meaningfulName(a), lb) : 0,
+  );
+  return Math.max(byName, Math.min(byLine, 2.5));
+}
+
+function namePairScore(a: Offer, b: Offer, nameA: string, nameB: string): number {
+  const na = nameTokens(nameA), nb = nameTokens(nameB);
   const sa = new Set(na), sb = new Set(nb);
   if (sa.size && sa.size === sb.size && [...sa].every((w) => sb.has(w))) return 4; // same name
-  const ba = blockCodes(`${a.name} ${a.description.slice(0, 2).join(" ")}`);
-  const bb = blockCodes(`${b.name} ${b.description.slice(0, 2).join(" ")}`);
+  const ba = blockCodes(`${pairName(a)} ${pairDesc(a).slice(0, 2).join(" ")}`);
+  const bb = blockCodes(`${pairName(b)} ${pairDesc(b).slice(0, 2).join(" ")}`);
   const sharedBlock = [...ba].some((x) => bb.has(x));
   const sharedWords = [...sa].filter((w) => sb.has(w));
   const distinct = sharedWords.filter((w) => !GENERIC.has(w)).length;
@@ -251,6 +293,27 @@ export function mergeOffers(offers: Offer[], links: Link[], seats: SeatCategory[
     const seatId = l?.seat_category_id && seatBy.has(l.seat_category_id) ? l.seat_category_id : null;
     if (seatId) bySeat.set(seatId, [...(bySeat.get(seatId) ?? []), o]);
     else loose.push(o);
+  }
+
+  // A loose offer that is clearly the same seats as an admin-linked seat
+  // category joins it, when that supplier isn't in the seat yet (e.g. a new
+  // XS2 category at a stadium where P1/TC were linked by hand).
+  {
+    const cands: { seatId: string; o: Offer; s: number }[] = [];
+    for (const [seatId, list] of bySeat) for (const o of loose) {
+      if (list.some((x) => x.supplier === o.supplier)) continue;
+      const score = Math.max(...list.map((m) => pairScore(m, o)));
+      if (score > 0) cands.push({ seatId, o, s: score });
+    }
+    cands.sort((x, y) => y.s - x.s);
+    const joined = new Set<Offer>();
+    for (const c of cands) {
+      const list = bySeat.get(c.seatId)!;
+      if (joined.has(c.o) || list.some((x) => x.supplier === c.o.supplier)) continue;
+      list.push(c.o);
+      joined.add(c.o);
+    }
+    if (joined.size) loose.splice(0, loose.length, ...loose.filter((o) => !joined.has(o)));
   }
 
   const out: MergedGroup[] = [];

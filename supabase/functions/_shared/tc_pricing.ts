@@ -40,6 +40,9 @@ export interface PricedOption {
   tc_category_id: number;
   name: string;
   description: string[];
+  /** Supplier's own English, for matching against other suppliers. */
+  name_en: string;
+  description_en: string[];
   color: string | null;
   available: boolean;
   max_qty: number;
@@ -401,6 +404,8 @@ export async function priceEvent(
         name: optionDisplayName(o.name, ci, o.ticket_category),
         // Swedish when translated; English until then, never nothing.
         description: cleanLines(ci?.description_sv ?? ci?.description ?? []),
+        name_en: (o.name || ci?.name || "").trim(),
+        description_en: cleanLines(ci?.description ?? []),
         color: ci?.color ?? null,
         available,
         max_qty: available ? o.max_purchase_qty : 0,

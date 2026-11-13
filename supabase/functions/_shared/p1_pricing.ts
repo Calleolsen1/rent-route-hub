@@ -15,6 +15,7 @@ import { cleanLines, customerPrice, htmlToLines, loadContext, resolveMarkup, typ
 import { translateCategory, translationSource } from "./translate.ts";
 import { background } from "./background.ts";
 import { P1Client, isP1F1, p1MaxQty, type P1Product } from "./p1.ts";
+import { svTexts } from "./sv_texts.ts";
 
 // deno-lint-ignore no-explicit-any
 type Db = any;
@@ -31,6 +32,9 @@ export interface P1Offer {
   /** F1: list section — "Hela helgen", "Söndag", …, "Hospitality". */
   section: string | null;
   description: string[];
+  /** P1's own English, for matching against the other suppliers. */
+  name_en: string;
+  description_en: string[];
   image_url: string | null;
   tier: Tier;
   available: boolean;
@@ -251,7 +255,7 @@ export async function priceP1Event(db: Db, eventId: string, league: string | nul
   ]);
   const markup = resolveMarkup(ctx, undefined);
 
-  const offers: P1Offer[] = products.map(({ p, option }) => {
+  const built = products.map(({ p, option }): P1Offer => {
     const supplierPrice = Number(p.price?.amount ?? 0);
     const baseSek = Math.round(supplierPrice * fx.rateToSek);
     const maxQty = p1MaxQty(p);
@@ -268,6 +272,8 @@ export async function priceP1Event(db: Db, eventId: string, league: string | nul
       short_name: f1n?.short ?? null,
       section: f1n?.section ?? null,
       description,
+      name_en: name,
+      description_en: cleanLines(info?.description?.length ? info.description : p1PropertyLines(p)),
       image_url: info?.image_url ?? p.ticketCategoryImageUrl ?? null,
       tier: f1n ? (f1n.hospitality ? "hospitality" : "match") : vip != null && vip >= 2 ? "hospitality" : guessTier(name, description),
       available: p.available && maxQty > 0,
@@ -280,12 +286,25 @@ export async function priceP1Event(db: Db, eventId: string, league: string | nul
     };
   });
 
+  // Swedish names (P1 names are English: "Longside Upper"). The row label
+  // is translated: the football name, or the F1 grandstand (short) - the
+  // F1 day part is already Swedish.
+  const label = (o: P1Offer) => o.short_name ?? o.name;
+  const names = await svTexts(db, "p1", built.map((o) => ({ key: `name:${label(o)}`, name: label(o), lines: [] })));
+  const offers: P1Offer[] = built.map((o) => {
+    const sv = names.sv.get(`name:${label(o)}`)?.name;
+    if (!sv) return o;
+    return o.short_name
+      ? { ...o, short_name: sv, name: o.name.startsWith(o.short_name) ? sv + o.name.slice(o.short_name.length) : o.name }
+      : { ...o, name: sv };
+  });
+
   return {
     p1_event_id: ev.id,
     environment: p1.environment,
     guest_details_required: (ev.requiredTicketHolderFields ?? []).length > 0,
     fx: { rateToSek: fx.rateToSek, stale: fx.stale },
     offers,
-    translating: !!content.translating,
+    translating: !!content.translating || names.translating,
   };
 }
