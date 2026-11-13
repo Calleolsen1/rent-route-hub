@@ -2789,6 +2789,71 @@ export type Database = {
         }
         Relationships: []
       }
+      xs2_event_links: {
+        Row: {
+          created_at: string
+          event_id: string | null
+          last_seen_at: string
+          match_method: string
+          match_note: string | null
+          updated_at: string
+          xs2_away_team: string | null
+          xs2_date_confirmed: boolean
+          xs2_event_id: string
+          xs2_has_tickets: boolean
+          xs2_home_team: string | null
+          xs2_kind: string
+          xs2_starts_at: string | null
+          xs2_title: string
+          xs2_tournament: string | null
+          xs2_venue: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_id?: string | null
+          last_seen_at?: string
+          match_method?: string
+          match_note?: string | null
+          updated_at?: string
+          xs2_away_team?: string | null
+          xs2_date_confirmed?: boolean
+          xs2_event_id: string
+          xs2_has_tickets?: boolean
+          xs2_home_team?: string | null
+          xs2_kind: string
+          xs2_starts_at?: string | null
+          xs2_title: string
+          xs2_tournament?: string | null
+          xs2_venue?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_id?: string | null
+          last_seen_at?: string
+          match_method?: string
+          match_note?: string | null
+          updated_at?: string
+          xs2_away_team?: string | null
+          xs2_date_confirmed?: boolean
+          xs2_event_id?: string
+          xs2_has_tickets?: boolean
+          xs2_home_team?: string | null
+          xs2_kind?: string
+          xs2_starts_at?: string | null
+          xs2_title?: string
+          xs2_tournament?: string | null
+          xs2_venue?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "xs2_event_links_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       booking_margin_view: {
