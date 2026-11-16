@@ -104,7 +104,7 @@ export default function VIPService() {
  Familjesemester, en helg i en annan stad eller en affärsresa med tätt schema: du får samma noggranna service.
  </p>
  <p className="text-foreground/80 leading-relaxed mb-8 text-[15px]">
- Vi planerar varje del i förväg, och från första kontakt till hemkomst når du oss på telefon.
+ Vi planerar varje del i förväg och från första kontakt till hemkomst når du oss på telefon.
  </p>
  <Link to="/contact" className="sb-btn-primary">
  Kom i kontakt

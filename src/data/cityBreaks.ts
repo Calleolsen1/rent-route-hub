@@ -24,7 +24,7 @@ export const CITY_BREAKS: Record<string, CityBreak> = {
   },
   "manchester": {
     title: "Gör det till en citybreak i Manchester",
-    text: "Manchester bjuder på mer än fotboll. Utforska de kreativa kvarteren i Northern Quarter med caféer, vintagebutiker och street art, eller ta en promenad längs kanalerna i Castlefield.\n\nStaden är känd för sin musikscen och sitt nattliv, och i centrum finns gott om shopping. Kombinera matchen med en weekend i en av Englands mest levande städer.",
+    text: "Manchester bjuder på mer än fotboll. Utforska de kreativa kvarteren i Northern Quarter med caféer, vintagebutiker och street art, eller ta en promenad längs kanalerna i Castlefield.\n\nStaden är känd för sin musikscen och sitt nattliv och i centrum finns gott om shopping. Kombinera matchen med en weekend i en av Englands mest levande städer.",
     image: "https://images.unsplash.com/photo-1515586838455-8f8f940d6853?w=1600&q=80&auto=format&fit=crop",
   },
   "birmingham": {

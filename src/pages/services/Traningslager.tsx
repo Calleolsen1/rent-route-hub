@@ -51,7 +51,7 @@ const camps = [
     sport: "Simning",
     location: "Torremolinos, Spanien",
     title: "50-metersbassäng under öppen himmel",
-    desc: "Hårda pass i uppvärmd 50-metersbassäng utomhus, och sol mellan passen. I Torremolinos får simmarna bra träning och tid tillsammans som grupp.",
+    desc: "Hårda pass i uppvärmd 50-metersbassäng utomhus och sol mellan passen. I Torremolinos får simmarna bra träning och tid tillsammans som grupp.",
     price: "från 8 700 kr / person",
   },
   {
@@ -218,7 +218,7 @@ export default function Traningslager() {
  Ni fokuserar på träningen
  </h2>
  <p className="text-foreground/80 leading-relaxed text-[15px]">
- Ett läger har många delar som ska passa ihop. Vi ordnar transport, boende, träningstider och det praktiska, och anpassar upplägget efter vad laget vill uppnå.
+ Ett läger har många delar som ska passa ihop. Vi ordnar transport, boende, träningstider och det praktiska och anpassar upplägget efter vad laget vill uppnå.
  </p>
  </div>
  </div>
@@ -236,7 +236,7 @@ export default function Traningslager() {
  Ett läger är också dagarna mellan passen. Vi planerar fritiden lika noga som träningen, med aktiviteter och middagar som för laget närmare varandra.
  </p>
  <p className="text-foreground/80 leading-relaxed text-[15px]">
- Målet är att alla kommer hem lite starkare, och lite mer av ett lag.
+ Målet är att alla kommer hem lite starkare och lite mer av ett lag.
  </p>
  </div>
  <div>

@@ -19,7 +19,7 @@ const sports = [
  heading: "Formel 1-resor",
  image: f1Image,
  description:
- "Se kvalet och racet på plats. Vi ordnar resor till F1-banorna i kalendern, och du kan boka biljetter, hotell, flyg och transfer var för sig eller som en hel resa.",
+ "Se kvalet och racet på plats. Vi ordnar resor till F1-banorna i kalendern och du kan boka biljetter, hotell, flyg och transfer var för sig eller som en hel resa.",
  features: [
  "Biljetter till träningar, kval och race",
  "Flygresa från samtliga Sveriges flygplatser",
@@ -34,7 +34,7 @@ const sports = [
  heading: "Fotbollsresor",
  image: fotbollImage,
  description:
- "Derbyn i Premier League, Serie A och La Liga, och matcher i Champions League. Du kan boka matchbiljetter, hotell, flyg och transfer var för sig eller som en hel resa.",
+ "Derbyn i Premier League, Serie A och La Liga och matcher i Champions League. Du kan boka matchbiljetter, hotell, flyg och transfer var för sig eller som en hel resa.",
  features: [
  "Premier League, La Liga, Bundesliga, Serie A och fler ligor",
  "Champions League, Europa League och inhemska cuper",

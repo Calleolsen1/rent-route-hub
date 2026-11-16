@@ -130,7 +130,7 @@ export default function GroupTravel() {
           </div>
           <ol className="grid md:grid-cols-3 gap-x-10">
             {[
-              { t: "Vi lyssnar", d: "Vad är syftet med resan? Vad vill ni uppleva, och vad ska deltagarna ta med sig hem?" },
+              { t: "Vi lyssnar", d: "Vad är syftet med resan? Vad vill ni uppleva och vad ska deltagarna ta med sig hem?" },
               { t: "Vi sätter ihop resan", d: "Utifrån era önskemål väljer vi resmål, boende, aktiviteter och program som hänger ihop." },
               { t: "Ni reser", d: "Ni berättar vad ni vill uppnå. Vi tar hand om resten, före och under resan." },
             ].map((step, i) => (
