@@ -23,7 +23,7 @@ import { ArrowDown, ArrowLeft } from "lucide-react";
 import Footer from "@/components/Footer";
 import RequestCta from "@/components/RequestCta";
 import Navbar from "@/components/Navbar";
-import { eventDateParts, formatEventDateTime, formatSek } from "@/lib/formatSek";
+import { eventDateParts, formatEventDateTime, formatEventDateTimeTbc, formatSek } from "@/lib/formatSek";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { usePageMeta } from "@/lib/usePageMeta";
 import { noBreakHyphen } from "@/lib/noBreakHyphen";
@@ -194,6 +194,11 @@ export default function EventDetail() {
       ? `${event.home_team} vs ${event.away_team}`
       : event.race_name;
   const dateBlock = eventDateParts(event.starts_at);
+  // F1 starttider är inte bekräftade av leverantören, så loppet visar "kl. Tbc".
+  const whenLine =
+    event.sport === "formula1"
+      ? formatEventDateTimeTbc(event.starts_at)
+      : formatEventDateTime(event.starts_at);
   const kind = event.sport === "formula1" ? "race" : "team";
   // The club/race menu entry carries the city and package lines.
   const entryName = event.sport === "formula1" ? event.race_name : event.home_team;
@@ -226,7 +231,7 @@ export default function EventDetail() {
             <p className="eyebrow text-primary mb-2">{event.tournament_name}</p>
             <h1 className="font-display text-3xl md:text-[34px] lg:text-[40px] leading-[1.1]">{noBreakHyphen(headline)}</h1>
             <p className="mt-4 text-[15px] text-foreground/80">
-              {dateBlock.weekday} {formatEventDateTime(event.starts_at)}
+              {dateBlock.weekday} {whenLine}
             </p>
             {event.venue_name && (
               <p className="mt-1 text-[15px] text-foreground/80">
@@ -345,7 +350,7 @@ export default function EventDetail() {
               <BookingCard
                 t={t}
                 headline={headline ?? event.tournament_name}
-                when={formatEventDateTime(event.starts_at)}
+                when={whenLine}
                 venue={event.venue_name ? `${event.venue_name}${event.city ? `, ${event.city}` : ""}` : null}
                 hotels={hotels}
                 extras={extras}
@@ -383,7 +388,7 @@ export default function EventDetail() {
             type="contact"
             eyebrow="Prisförfrågan"
             heading={`Begär pris - ${headline ?? event.tournament_name}`}
-            intro={`${formatEventDateTime(event.starts_at)}${event.venue_name ? ` · ${event.venue_name}` : ""}. Skriv gärna om ni vill sitta ihop eller har andra önskemål - vi återkommer med pris och tillgänglighet.`}
+            intro={`${whenLine}${event.venue_name ? ` · ${event.venue_name}` : ""}. Skriv gärna om ni vill sitta ihop eller har andra önskemål - vi återkommer med pris och tillgänglighet.`}
             presetTopic={[
               headline ?? event.tournament_name,
               `event:${event.id}`,

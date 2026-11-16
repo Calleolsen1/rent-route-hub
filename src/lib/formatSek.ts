@@ -74,6 +74,15 @@ export const formatEventDateTime = (iso: string) => {
   });
 };
 
+/**
+ * Datumrad där klockslaget alltid visas som "kl. Tbc".
+ *
+ * F1-loppens starttider är inte bekräftade av leverantören när loppen läggs ut,
+ * så sidorna visar datumet utan tid: "2 maj 2027 kl. Tbc".
+ */
+export const formatEventDateTimeTbc = (iso: string) =>
+  `${formatEventDateOnly(iso)} kl. Tbc`;
+
 /** Kort datum t.ex. "19 Sep" (alltid svensk tid). */
 export const svDateShort = (iso: string) => {
   const s = new Date(iso).toLocaleDateString("sv-SE", { day: "numeric", month: "short", timeZone: TZ });
