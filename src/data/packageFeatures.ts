@@ -7,7 +7,7 @@ export const DEFAULT_FEATURES_BY_KIND: Record<string, string[]> = {
     "Transfer - möjlighet att förboka transport till hotell",
   ],
   race: [
-    "Biljetter - Weekend alt söndag i olika kategorier",
+    "Biljetter - Weekendbiljett i olika kategorier",
     "Hotell - Centralt inklusive frukost i olika kategorier",
     "Flyg - Avresa från valfri flygplats",
     "Transfers - Möjlighet att förboka transport till hotell",
