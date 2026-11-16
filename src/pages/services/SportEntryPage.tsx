@@ -250,7 +250,8 @@ export default function SportEntryPage() {
         eyebrow={labels.whatsIncluded}
         title={labels.packageTitle(sport.label, info.venue)}
         features={features}
-        venuePhoto={venuePhoto}
+        kind={sport.entry_kind}
+        venuePhoto={isRace ? heroSrc : venuePhoto}
       />
 
       {cityBreak && <CityBreak data={cityBreak} alt />}
