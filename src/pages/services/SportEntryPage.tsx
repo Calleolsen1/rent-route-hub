@@ -182,7 +182,7 @@ export default function SportEntryPage() {
             <div className="mt-4 md:mt-6 sb-card bg-cream border-transparent flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-4 md:px-5 text-center sm:text-left">
               <p className="text-sm text-foreground/80">
                 {isRace
-                  ? "Hittar du inte loppet du söker? Hör av dig, så kollar vi vad vi kan ordna."
+                  ? "Hittar du inte loppet du söker?"
                   : "Hittar du inte matchen du letar efter? Hör av dig, så kollar vi vad vi kan ordna."}
               </p>
               <button
